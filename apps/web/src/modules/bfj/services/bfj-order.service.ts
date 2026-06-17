@@ -4,6 +4,7 @@ import { getActiveExchangeRate } from './exchange-rate.service'
 import { calculateCostEstimate } from './cost-calculator.service'
 import { createAuditLog } from '@/lib/audit'
 import { notifyUser } from '@/modules/notification/notification.service'
+import { sendBfjStatusEmail } from '@/lib/email.service'
 
 export type CreateBfjOrderInput = {
   customerId: string
@@ -184,7 +185,14 @@ export async function adminUpdateOrderStatus(
 ) {
   const order = await prisma.bfjOrder.findUnique({
     where: { id: orderId },
-    select: { id: true, status: true, customerId: true, orderNumber: true },
+    select: {
+      id: true,
+      status: true,
+      customerId: true,
+      orderNumber: true,
+      trackingVn: true,
+      customer: { select: { email: true, profile: { select: { fullName: true } } } },
+    },
   })
   if (!order) throw new Error('Không tìm thấy đơn hàng')
 
@@ -226,6 +234,21 @@ export async function adminUpdateOrderStatus(
       data: { orderId, status: newStatus },
       channel: 'IN_APP',
     })
+  }
+
+  // Send email notification (fire-and-forget, do not block status update)
+  const customerEmail = order.customer?.email
+  const fullName = order.customer?.profile?.fullName ?? 'Khách hàng'
+  if (customerEmail) {
+    sendBfjStatusEmail({
+      email: customerEmail,
+      fullName,
+      orderNumber: order.orderNumber,
+      orderId,
+      status: newStatus,
+      adminNotes,
+      trackingVn: order.trackingVn,
+    }).catch((err) => console.error('[BFJ Email]', err))
   }
 
   return updated

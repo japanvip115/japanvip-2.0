@@ -375,3 +375,180 @@ export async function testSmtpConnection(cfg: SmtpConfig): Promise<void> {
   const transporter = createTransport(cfg)
   await transporter.verify()
 }
+
+// ─── Cập nhật trạng thái đơn Mua Hộ ─────────────────────────────────────────
+
+const BFJ_STATUS_EMAIL_CONFIG: Partial<Record<string, {
+  subject: string
+  headline: string
+  icon: string
+  color: string
+  bgColor: string
+  borderColor: string
+  message: string
+  showCta: boolean
+}>> = {
+  AWAITING_DEPOSIT: {
+    subject: 'Yêu cầu đặt cọc để xác nhận đơn hàng',
+    headline: 'Đơn hàng cần đặt cọc',
+    icon: '💳',
+    color: '#92400e',
+    bgColor: '#fffbeb',
+    borderColor: '#fcd34d',
+    message: 'Japan VIP đã xem xét đơn và cần bạn hoàn tất đặt cọc để chúng tôi tiến hành đặt hàng tại Nhật Bản.',
+    showCta: true,
+  },
+  DEPOSIT_RECEIVED: {
+    subject: 'Đã nhận đặt cọc — Đơn đang được xử lý',
+    headline: 'Đã nhận đặt cọc',
+    icon: '✅',
+    color: '#14532d',
+    bgColor: '#f0fdf4',
+    borderColor: '#86efac',
+    message: 'Japan VIP đã xác nhận khoản đặt cọc của bạn. Chúng tôi đang tiến hành đặt hàng tại Nhật Bản.',
+    showCta: false,
+  },
+  ORDERING: {
+    subject: 'Đơn hàng đang được đặt tại Nhật Bản',
+    headline: 'Đang đặt hàng tại Nhật',
+    icon: '🛒',
+    color: '#1e3a5f',
+    bgColor: '#eff6ff',
+    borderColor: '#93c5fd',
+    message: 'Nhân viên Japan VIP đang tiến hành đặt hàng cho bạn tại Nhật Bản. Chúng tôi sẽ cập nhật khi hàng được xác nhận.',
+    showCta: false,
+  },
+  ORDERED_FROM_JAPAN: {
+    subject: 'Đã đặt hàng thành công tại Nhật Bản',
+    headline: 'Đã đặt hàng tại Nhật',
+    icon: '📦',
+    color: '#1e3a5f',
+    bgColor: '#eff6ff',
+    borderColor: '#93c5fd',
+    message: 'Đơn hàng đã được đặt thành công tại Nhật Bản và đang chờ xử lý từ người bán. Thời gian về kho Nhật thường từ 3–7 ngày.',
+    showCta: false,
+  },
+  IN_TRANSIT_JP: {
+    subject: 'Hàng đang vận chuyển trong nội địa Nhật Bản',
+    headline: 'Đang vận chuyển tại Nhật',
+    icon: '🚚',
+    color: '#4c1d95',
+    bgColor: '#f5f3ff',
+    borderColor: '#c4b5fd',
+    message: 'Kiện hàng đang được vận chuyển đến kho Japan VIP tại Nhật Bản. Sau khi tập kết, hàng sẽ được gửi về Việt Nam.',
+    showCta: false,
+  },
+  CUSTOMS_CLEARANCE: {
+    subject: 'Hàng đang làm thủ tục hải quan',
+    headline: 'Đang làm thủ tục hải quan',
+    icon: '🛃',
+    color: '#4c1d95',
+    bgColor: '#f5f3ff',
+    borderColor: '#c4b5fd',
+    message: 'Kiện hàng đang được thông quan tại cửa khẩu. Quá trình này thường mất 1–3 ngày làm việc.',
+    showCta: false,
+  },
+  IN_TRANSIT_VN: {
+    subject: 'Hàng đang vận chuyển về Việt Nam',
+    headline: 'Đang vận chuyển về Việt Nam',
+    icon: '✈️',
+    color: '#4c1d95',
+    bgColor: '#f5f3ff',
+    borderColor: '#c4b5fd',
+    message: 'Tuyệt vời! Hàng đã thông quan và đang trên đường về Việt Nam. Chúng tôi sẽ liên hệ khi có mã vận đơn nội địa.',
+    showCta: false,
+  },
+  DELIVERED: {
+    subject: 'Đơn hàng đã được giao thành công',
+    headline: 'Giao hàng thành công',
+    icon: '🎉',
+    color: '#14532d',
+    bgColor: '#f0fdf4',
+    borderColor: '#86efac',
+    message: 'Đơn hàng của bạn đã được giao thành công. Cảm ơn bạn đã tin tưởng Japan VIP!',
+    showCta: false,
+  },
+  CANCELLED: {
+    subject: 'Đơn hàng đã bị huỷ',
+    headline: 'Đơn hàng đã bị huỷ',
+    icon: '❌',
+    color: '#7f1d1d',
+    bgColor: '#fef2f2',
+    borderColor: '#fecaca',
+    message: 'Rất tiếc, đơn hàng của bạn đã bị huỷ. Vui lòng liên hệ Japan VIP để biết thêm chi tiết hoặc để tạo đơn mới.',
+    showCta: false,
+  },
+  REFUNDED: {
+    subject: 'Hoàn tiền đặt cọc thành công',
+    headline: 'Đã hoàn tiền',
+    icon: '💰',
+    color: '#374151',
+    bgColor: '#f9fafb',
+    borderColor: '#d1d5db',
+    message: 'Khoản đặt cọc đã được hoàn lại vào ví Japan VIP của bạn. Bạn có thể rút tiền hoặc sử dụng cho đơn hàng tiếp theo.',
+    showCta: false,
+  },
+}
+
+export async function sendBfjStatusEmail(opts: {
+  email: string
+  fullName: string
+  orderNumber: string
+  orderId: string
+  status: string
+  adminNotes?: string | null
+  trackingVn?: string | null
+}) {
+  const config = BFJ_STATUS_EMAIL_CONFIG[opts.status]
+  if (!config) return // không gửi email cho status không có config
+
+  const cfg = await getSmtpConfig()
+  const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://store.japanvip.vn'
+
+  const trackingSection = opts.trackingVn
+    ? `<div style="background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:12px 16px;margin-bottom:20px">
+        <p style="margin:0;font-size:13px;color:#14532d;font-weight:600">📦 Mã vận đơn VN: <span style="font-family:monospace;font-size:14px">${opts.trackingVn}</span></p>
+       </div>`
+    : ''
+
+  const notesSection = opts.adminNotes
+    ? `<div style="background:#fffbeb;border-left:3px solid #f59e0b;border-radius:0 8px 8px 0;padding:12px 14px;margin-bottom:20px">
+        <p style="font-size:13px;color:#78350f;margin:0"><strong>Ghi chú từ Japan VIP:</strong> ${opts.adminNotes}</p>
+       </div>`
+    : ''
+
+  const ctaSection = config.showCta
+    ? `${divider()}${btn(`${APP_URL}/dashboard/orders`, 'Xem đơn hàng & Đặt cọc →')}`
+    : `${divider()}${btn(`${APP_URL}/dashboard/orders`, 'Theo dõi đơn hàng →')}`
+
+  await createTransport(cfg).sendMail({
+    from: cfg.from,
+    to: opts.email,
+    subject: `[Japan VIP] ${config.subject} — ${opts.orderNumber}`,
+    html: emailLayout(`
+      <!-- Status banner -->
+      <div style="background:${config.bgColor};border:1.5px solid ${config.borderColor};border-radius:12px;padding:20px 24px;margin-bottom:24px;text-align:center">
+        <p style="margin:0 0 8px;font-size:36px;line-height:1">${config.icon}</p>
+        <p style="margin:0 0 4px;font-size:20px;font-weight:800;color:${config.color}">${config.headline}</p>
+        <p style="margin:0;font-size:12px;font-family:monospace;color:#9ca3af">Đơn hàng: ${opts.orderNumber}</p>
+      </div>
+
+      <p style="margin:0 0 24px;font-size:14px;color:#374151;line-height:1.6">
+        Xin chào <strong style="color:#111">${opts.fullName}</strong>,<br/>
+        ${config.message}
+      </p>
+
+      ${trackingSection}
+      ${notesSection}
+      ${ctaSection}
+
+      ${divider()}
+      <p style="margin:0;font-size:12px;color:#9ca3af;text-align:center">
+        Cần hỗ trợ?
+        <a href="tel:0988969896" style="color:#b91c1c;text-decoration:none;font-weight:600">0988.969.896</a>
+        ·
+        <a href="https://zalo.me/0988969896" style="color:#b91c1c;text-decoration:none;font-weight:600">Chat Zalo</a>
+      </p>
+    `),
+  })
+}

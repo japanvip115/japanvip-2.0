@@ -2,7 +2,8 @@ import type { Metadata } from 'next'
 import { prisma } from '@japanvip/db'
 import { formatVND } from '@japanvip/utils'
 import Link from 'next/link'
-import { ShoppingBag, Gavel, TrendingUp, Users } from 'lucide-react'
+import { ShoppingBag, Gavel, TrendingUp, Users, Wallet, ShieldAlert } from 'lucide-react'
+import { BFJ_STATUS_COLORS, BFJ_STATUS_LABELS } from '@/lib/bfj-status'
 
 export const metadata: Metadata = { title: 'Admin — Tổng Quan' }
 export const revalidate = 30
@@ -21,6 +22,8 @@ export default async function AdminDashboardPage() {
     recentAuctions,
     totalRevenue,
     bfjMonthStats,
+    pendingDeposits,
+    openFraudFlags,
   ] = await Promise.all([
     prisma.user.count({ where: { status: 'ACTIVE' } }),
     prisma.bfjOrder.count(),
@@ -47,20 +50,14 @@ export default async function AdminDashboardPage() {
       _count: { id: true },
       _sum: { estimatedVnd: true, profitVnd: true },
     }),
+    prisma.transaction.count({ where: { type: 'DEPOSIT', status: 'PENDING' } }),
+    prisma.fraudFlag.count({ where: { resolved: false } }),
   ])
 
   const bfjMonthCount = bfjMonthStats._count.id
   const bfjMonthRevenue = Number(bfjMonthStats._sum.estimatedVnd ?? 0)
   const bfjMonthProfit = Number(bfjMonthStats._sum.profitVnd ?? 0)
   const bfjProfitRate = bfjMonthRevenue > 0 ? (bfjMonthProfit / bfjMonthRevenue) * 100 : 0
-
-  const BFJ_STATUS_COLORS: Record<string, string> = {
-    PENDING_REVIEW: 'bg-yellow-500/15 text-yellow-400 ring-1 ring-inset ring-yellow-500/20',
-    AWAITING_DEPOSIT: 'bg-yellow-500/15 text-yellow-400 ring-1 ring-inset ring-yellow-500/20',
-    CONFIRMED: 'bg-blue-500/15 text-blue-400 ring-1 ring-inset ring-blue-500/20',
-    DELIVERED: 'bg-green-500/15 text-green-400 ring-1 ring-inset ring-green-500/20',
-    CANCELLED: 'bg-red-500/15 text-red-400 ring-1 ring-inset ring-red-500/20',
-  }
 
   return (
     <div className="space-y-6">
@@ -108,9 +105,9 @@ export default async function AdminDashboardPage() {
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         {[
           { href: '/admin/orders', icon: ShoppingBag, label: 'Đơn Mua Hộ cần duyệt', badge: pendingOrders > 0 ? pendingOrders : null },
-          { href: '/admin/auctions/new', icon: Gavel, label: 'Tạo phiên đấu giá', badge: null },
-          { href: '/admin/settings/bfj', icon: TrendingUp, label: 'Cài đặt Mua Hộ', badge: null },
+          { href: '/admin/finance', icon: Wallet, label: 'Duyệt nạp tiền', badge: pendingDeposits > 0 ? pendingDeposits : null },
           { href: '/admin/users', icon: Users, label: 'Quản lý người dùng', badge: null },
+          { href: '/admin/fraud-flags', icon: ShieldAlert, label: 'Cảnh báo gian lận', badge: openFraudFlags > 0 ? openFraudFlags : null },
         ].map(({ href, icon: Icon, label, badge }) => (
           <Link
             key={href}
@@ -150,8 +147,8 @@ export default async function AdminDashboardPage() {
                     </p>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${BFJ_STATUS_COLORS[o.status] ?? 'bg-gray-500/15 text-gray-400 ring-1 ring-inset ring-gray-500/20'}`}>
-                      {o.status.replace(/_/g, ' ')}
+                    <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${BFJ_STATUS_COLORS[o.status as keyof typeof BFJ_STATUS_COLORS] ?? 'bg-gray-500/15 text-gray-400 ring-1 ring-inset ring-gray-500/20'}`}>
+                      {BFJ_STATUS_LABELS[o.status as keyof typeof BFJ_STATUS_LABELS] ?? o.status}
                     </span>
                     <span className="text-sm font-bold text-gray-300">{formatVND(Number(o.estimatedVnd))}</span>
                   </div>

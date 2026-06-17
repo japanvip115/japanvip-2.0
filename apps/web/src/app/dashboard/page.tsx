@@ -4,6 +4,7 @@ import { prisma } from '@japanvip/db'
 import { formatVND } from '@japanvip/utils'
 import { getWalletBalance } from '@/modules/payment/wallet.service'
 import { getUnreadCount } from '@/modules/notification/notification.service'
+import { BFJ_STATUS_LABELS, BFJ_STATUS_COLORS_LIGHT } from '@/lib/bfj-status'
 import Link from 'next/link'
 
 export const metadata: Metadata = { title: 'Dashboard — Japan VIP' }
@@ -40,18 +41,6 @@ export default async function DashboardPage() {
       },
     }),
   ])
-
-  const BFJ_STATUS_COLORS: Record<string, string> = {
-    PENDING_REVIEW: 'bg-yellow-100 text-yellow-700',
-    AWAITING_DEPOSIT: 'bg-orange-100 text-orange-700',
-    CONFIRMED: 'bg-blue-100 text-blue-700',
-    PURCHASING: 'bg-purple-100 text-purple-700',
-    SHIPPING_JP: 'bg-indigo-100 text-indigo-700',
-    CUSTOMS: 'bg-pink-100 text-pink-700',
-    SHIPPING_VN: 'bg-cyan-100 text-cyan-700',
-    DELIVERED: 'bg-green-100 text-green-700',
-    CANCELLED: 'bg-gray-100 text-gray-500',
-  }
 
   return (
     <div className="space-y-6">
@@ -121,8 +110,8 @@ export default async function DashboardPage() {
                     <p className="text-xs text-gray-400">{new Date(o.createdAt).toLocaleDateString('vi-VN')}</p>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${BFJ_STATUS_COLORS[o.status] ?? 'bg-gray-100 text-gray-500'}`}>
-                      {o.status.replace(/_/g, ' ')}
+                    <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${BFJ_STATUS_COLORS_LIGHT[o.status as keyof typeof BFJ_STATUS_COLORS_LIGHT] ?? 'bg-gray-100 text-gray-500 border border-gray-300'}`}>
+                      {BFJ_STATUS_LABELS[o.status as keyof typeof BFJ_STATUS_LABELS] ?? o.status}
                     </span>
                     <span className="text-sm font-bold text-gray-700">{formatVND(Number(o.estimatedVnd))}</span>
                   </div>
