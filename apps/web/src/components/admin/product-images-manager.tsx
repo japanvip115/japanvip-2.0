@@ -23,47 +23,44 @@ export function ProductImagesManager({
   const [error, setError] = useState('')
 
   async function handleUpload(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0]
-    if (!file) return
+    const files = Array.from(e.target.files ?? [])
+    if (files.length === 0) return
 
     const ALLOWED = ['image/jpeg', 'image/png', 'image/webp', 'image/avif']
-    if (!ALLOWED.includes(file.type)) { setError('Chỉ chấp nhận JPG, PNG, WebP, AVIF'); return }
-    if (file.size > 10 * 1024 * 1024) { setError('File tối đa 10MB'); return }
-
     setUploading(true)
     setError('')
 
-    try {
-      // 1. Upload file to server (R2 in prod, local in dev)
-      const formData = new FormData()
-      formData.append('file', file)
-      formData.append('folder', 'products')
+    for (const file of files) {
+      if (!ALLOWED.includes(file.type)) { setError('Chỉ chấp nhận JPG, PNG, WebP, AVIF'); continue }
+      if (file.size > 10 * 1024 * 1024) { setError('File tối đa 10MB'); continue }
 
-      const uploadRes = await fetch('/api/v1/admin/products/upload-url', {
-        method: 'POST',
-        body: formData,
-      })
-      const upload = await uploadRes.json()
-      if (!upload.success) throw new Error(upload.error)
+      try {
+        const formData = new FormData()
+        formData.append('file', file)
+        formData.append('folder', 'products')
 
-      // 2. Save image record linked to product
-      const saveRes = await fetch(`/api/v1/admin/products/${productId}/images`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url: upload.data.publicUrl, isPrimary: images.length === 0 }),
-      })
-      const saved = await saveRes.json()
-      if (saved.success) {
-        setImages((prev) => [...prev, { ...saved.data, altText: saved.data.altText ?? '' }])
-      } else {
-        throw new Error(saved.error)
+        const uploadRes = await fetch('/api/v1/admin/products/upload-url', { method: 'POST', body: formData })
+        const upload = await uploadRes.json()
+        if (!upload.success) throw new Error(upload.error)
+
+        const saveRes = await fetch(`/api/v1/admin/products/${productId}/images`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url: upload.data.publicUrl, isPrimary: images.length === 0 }),
+        })
+        const saved = await saveRes.json()
+        if (saved.success) {
+          setImages((prev) => [...prev, { ...saved.data, altText: saved.data.altText ?? '' }])
+        } else {
+          throw new Error(saved.error)
+        }
+      } catch (err: unknown) {
+        setError(err instanceof Error ? err.message : 'Upload thất bại')
       }
-    } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Upload thất bại')
-    } finally {
-      setUploading(false)
-      e.target.value = ''
     }
+
+    setUploading(false)
+    e.target.value = ''
   }
 
   async function setPrimary(imageId: string) {
@@ -121,7 +118,7 @@ export function ProductImagesManager({
         <label className={`flex h-24 w-24 cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-600 text-gray-500 hover:border-gray-400 hover:text-gray-300 transition ${uploading ? 'opacity-50 pointer-events-none' : ''}`}>
           <span className="text-2xl">{uploading ? '⏳' : '+'}</span>
           <span className="text-xs mt-1">{uploading ? 'Đang tải...' : 'Thêm ảnh'}</span>
-          <input type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={handleUpload} disabled={uploading} />
+          <input type="file" accept="image/jpeg,image/png,image/webp,image/avif" multiple className="hidden" onChange={handleUpload} disabled={uploading} />
         </label>
       </div>
 

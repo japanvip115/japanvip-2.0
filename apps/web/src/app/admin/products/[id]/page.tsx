@@ -2,15 +2,11 @@ import type { Metadata } from 'next'
 import { prisma } from '@japanvip/db'
 import { notFound } from 'next/navigation'
 import { ProductForm } from '@/components/admin/product-form'
-import { ProductPriceForm } from '@/components/admin/product-price-form'
-import { ProductClassificationForm } from '@/components/admin/product-classification-form'
-import { ProductSeoForm } from '@/components/admin/product-seo-form'
 import { ProductImagesManager } from '@/components/admin/product-images-manager'
 import { ProductAttributesManager } from '@/components/admin/product-attributes-manager'
 import Link from 'next/link'
 import { ChevronRight, Plus } from 'lucide-react'
 import type { ProductStatus } from '@japanvip/db'
-import { formatVND } from '@japanvip/utils'
 import { ProductPublishButton } from '@/components/admin/product-publish-button'
 
 type Props = { params: Promise<{ id: string }> }
@@ -98,94 +94,32 @@ export default async function AdminProductDetailPage({ params }: Props) {
         </div>
       </div>
 
-      {/* ── Main grid ── */}
-      <div className="grid grid-cols-1 gap-5 xl:grid-cols-3">
-        {/* Left: Edit form */}
-        <div className="xl:col-span-2 space-y-5">
-          <ProductForm
-            mode="edit"
-            productId={product.id}
-            initialData={{
-              name: product.name,
-              slug: product.slug,
-              description: product.description ?? '',
-            }}
-          />
-        </div>
+      {/* ── Main edit form (2-col layout built-in) ── */}
+      <ProductForm
+        mode="edit"
+        productId={product.id}
+        categories={categories}
+        brands={brands}
+        initialData={{
+          name: product.name,
+          slug: product.slug,
+          description: product.description ?? '',
+          categoryId: product.categoryId ?? '',
+          brandId: product.brandId ?? '',
+          condition: product.condition as 'NEW' | 'LIKE_NEW' | 'GOOD' | 'FAIR',
+          ownerType: product.ownerType as 'JAPANVIP' | 'PARTNER',
+          status: (product.status === 'ACTIVE' ? 'ACTIVE' : 'DRAFT') as 'DRAFT' | 'ACTIVE',
+          badge: (product.badge as 'NEW_ARRIVAL' | 'SOLD_OUT' | 'ORDER_ONLY' | null) ?? null,
+          originUrl: product.originUrl ?? '',
+          salePrice: product.salePrice ? Number(product.salePrice) : null,
+          marketPrice: product.marketPrice ? Number(product.marketPrice) : null,
+          metaTitle: product.metaTitle ?? '',
+          metaDesc: product.metaDesc ?? '',
+        }}
+      />
 
-        {/* Right sidebar */}
-        <div className="space-y-5">
-          {/* Quick stats */}
-          <div className="rounded-xl border border-gray-700 bg-gray-800/60 p-5">
-            <h3 className="mb-3 text-xs font-semibold uppercase tracking-wide text-gray-500">Thông tin</h3>
-            <dl className="space-y-2.5">
-              {[
-                { label: 'Trạng thái', value: <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ring-1 ring-inset ${statusCfg.cls}`}>{statusCfg.label}</span> },
-                { label: 'Danh mục', value: product.category?.name ?? '—' },
-                { label: 'Thương hiệu', value: product.brand?.name ?? '—' },
-                { label: 'Tổng đấu giá', value: product.auctions.length },
-                { label: 'Ngày tạo', value: new Date(product.createdAt).toLocaleDateString('vi-VN') },
-              ].map(({ label, value }) => (
-                <div key={label} className="flex items-center justify-between gap-2">
-                  <dt className="text-xs text-gray-500">{label}</dt>
-                  <dd className="text-xs font-medium text-gray-200">{value}</dd>
-                </div>
-              ))}
-            </dl>
-          </div>
-
-          {/* Price editor */}
-          <ProductPriceForm
-            productId={product.id}
-            initialSalePrice={product.salePrice ? Number(product.salePrice) : null}
-            initialMarketPrice={product.marketPrice ? Number(product.marketPrice) : null}
-            initialRating={product.rating ? Number(product.rating) : null}
-            initialReviewCount={product.reviewCount ?? 0}
-          />
-
-          {/* Recent auctions */}
-          {product.auctions.length > 0 && (
-            <div className="rounded-xl border border-gray-700 bg-gray-800/60 overflow-hidden">
-              <div className="border-b border-gray-700 px-5 py-3">
-                <h3 className="text-xs font-semibold uppercase tracking-wide text-gray-500">Phiên đấu giá gần đây</h3>
-              </div>
-              <div className="divide-y divide-gray-700/50">
-                {product.auctions.map((a) => (
-                  <Link
-                    key={a.id}
-                    href={`/admin/auctions/${a.id}`}
-                    className="group flex items-center justify-between px-5 py-3 transition-colors hover:bg-gray-700/40"
-                  >
-                    <div className="min-w-0">
-                      <p className="font-mono text-xs text-gray-500 group-hover:text-gray-400">{a.auctionNumber}</p>
-                      <p className="text-xs font-medium text-gray-200">{Number(a.currentPrice).toLocaleString('vi-VN')}₫</p>
-                      <p className="text-xs text-gray-600">{a.bidCount} lượt đặt</p>
-                    </div>
-                    <span className={`text-xs font-semibold ${a.status === 'LIVE' ? 'text-green-400' : 'text-gray-600'}`}>
-                      {a.status}
-                    </span>
-                  </Link>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* ── Classification + Images side by side ── */}
+      {/* ── Images + Attributes ── */}
       <div className="grid grid-cols-1 gap-5 xl:grid-cols-2">
-        <ProductClassificationForm
-          productId={product.id}
-          categories={categories}
-          brands={brands}
-          initialCategoryId={product.categoryId ?? ''}
-          initialBrandId={product.brandId ?? ''}
-          initialOwnerType={product.ownerType as 'JAPANVIP' | 'PARTNER'}
-          initialCondition={product.condition as 'NEW' | 'LIKE_NEW' | 'GOOD' | 'FAIR'}
-          initialStatus={product.status as 'DRAFT' | 'ACTIVE' | 'SOLD' | 'ARCHIVED'}
-          initialBadge={(product.badge as 'NEW_ARRIVAL' | 'SOLD_OUT' | 'ORDER_ONLY' | null) ?? null}
-          initialOriginUrl={product.originUrl ?? ''}
-        />
         <div className="rounded-xl border border-gray-700 bg-gray-800/60 p-5">
           <h3 className="mb-4 text-sm font-semibold text-gray-200">Hình Ảnh Sản Phẩm</h3>
           <ProductImagesManager
@@ -199,27 +133,40 @@ export default async function AdminProductDetailPage({ params }: Props) {
             }))}
           />
         </div>
+        <div className="rounded-xl border border-gray-700 bg-gray-800/60 p-5">
+          <h2 className="mb-4 text-sm font-semibold text-gray-200">Thông Số Kỹ Thuật</h2>
+          <ProductAttributesManager
+            productId={product.id}
+            initialAttributes={product.attributes.map((a) => ({
+              id: a.id,
+              name: a.name,
+              value: a.value,
+            }))}
+          />
+        </div>
       </div>
 
-      {/* ── SEO ── */}
-      <ProductSeoForm
-        productId={product.id}
-        initialMetaTitle={product.metaTitle ?? ''}
-        initialMetaDesc={product.metaDesc ?? ''}
-      />
-
-      {/* ── Attributes ── */}
-      <div className="rounded-xl border border-gray-700 bg-gray-800/60 p-5">
-        <h2 className="mb-4 text-sm font-semibold text-gray-200">Thông Số Kỹ Thuật</h2>
-        <ProductAttributesManager
-          productId={product.id}
-          initialAttributes={product.attributes.map((a) => ({
-            id: a.id,
-            name: a.name,
-            value: a.value,
-          }))}
-        />
-      </div>
+      {/* ── Recent auctions ── */}
+      {product.auctions.length > 0 && (
+        <div className="rounded-xl border border-gray-700 bg-gray-800/60 overflow-hidden">
+          <div className="border-b border-gray-700 px-5 py-3">
+            <h3 className="text-xs font-semibold uppercase tracking-wide text-gray-500">Phiên đấu giá gần đây</h3>
+          </div>
+          <div className="divide-y divide-gray-700/50">
+            {product.auctions.map((a) => (
+              <Link key={a.id} href={`/admin/auctions/${a.id}`}
+                className="group flex items-center justify-between px-5 py-3 transition-colors hover:bg-gray-700/40">
+                <div className="min-w-0">
+                  <p className="font-mono text-xs text-gray-500 group-hover:text-gray-400">{a.auctionNumber}</p>
+                  <p className="text-xs font-medium text-gray-200">{Number(a.currentPrice).toLocaleString('vi-VN')}₫</p>
+                  <p className="text-xs text-gray-600">{a.bidCount} lượt đặt</p>
+                </div>
+                <span className={`text-xs font-semibold ${a.status === 'LIVE' ? 'text-green-400' : 'text-gray-600'}`}>{a.status}</span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   )
 }

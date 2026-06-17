@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 import './globals.css'
 import { getAllFontVariableClasses, getFontCssVar } from '@/lib/fonts'
 import { getActiveFont } from '@/lib/font-settings'
+import { ContentProtection } from '@/components/content-protection'
+import { prisma } from '@japanvip/db'
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://store.japanvip.vn'),
@@ -34,8 +36,12 @@ export const metadata: Metadata = {
 }
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const activeFont = await getActiveFont()
+  const [activeFont, protectionSetting] = await Promise.all([
+    getActiveFont(),
+    prisma.siteSetting.findUnique({ where: { key: 'content_protection_enabled' } }).catch(() => null),
+  ])
   const activeFontVar = getFontCssVar(activeFont)
+  const contentProtectionEnabled = protectionSetting?.value !== 'false'
 
   return (
     <html
@@ -48,7 +54,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         {/* style.css dùng cho homepage content — load globally để tránh giật khi chuyển trang */}
         <link rel="stylesheet" href="/style.css" />
       </head>
-      <body>{children}</body>
+      <body>
+        <ContentProtection enabled={contentProtectionEnabled} />
+        {children}
+      </body>
     </html>
   )
 }

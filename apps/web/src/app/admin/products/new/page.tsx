@@ -24,7 +24,7 @@ export default async function AdminProductNewPage() {
         <h1 className="text-2xl font-bold text-white">Thêm Sản Phẩm Mới</h1>
         <p className="text-sm text-gray-400">Tạo sản phẩm để dùng trong đấu giá hoặc cửa hàng</p>
       </div>
-      <ProductForm mode="create" />
+      <ProductForm mode="create" categories={categories} brands={brands} />
     </div>
   )
 }
