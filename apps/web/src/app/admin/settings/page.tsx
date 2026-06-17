@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { prisma } from '@japanvip/db'
+import { ContentProtectionToggle } from '@/components/admin/content-protection-toggle'
 
 export const metadata: Metadata = { title: 'Admin — Cài Đặt' }
 
@@ -40,16 +42,36 @@ const SETTING_ITEMS = [
     title: 'IP Bị Chặn',
     desc: 'Quản lý danh sách IP bị chặn khỏi hệ thống đấu giá',
   },
+  {
+    href: '/admin/settings/oauth',
+    icon: '🔑',
+    title: 'Google OAuth',
+    desc: 'Cài đặt Client ID và Client Secret cho tính năng đăng nhập bằng Google',
+  },
 ]
 
-export default function AdminSettingsPage() {
+export default async function AdminSettingsPage() {
+  const setting = await prisma.siteSetting.findUnique({ where: { key: 'content_protection_enabled' } })
+  const isProtectionEnabled = setting?.value !== 'false'
+
   return (
-    <div>
-      <div className="mb-6">
+    <div className="space-y-8">
+      <div>
         <h1 className="text-2xl font-bold text-white">Cài Đặt Hệ Thống</h1>
         <p className="text-sm text-gray-400">Cấu hình giao diện và vận hành</p>
       </div>
 
+      {/* Quick toggles */}
+      <div className="rounded-xl border border-gray-700 bg-gray-800/60 overflow-hidden">
+        <div className="border-b border-gray-700 bg-gray-800 px-5 py-3">
+          <p className="text-xs font-semibold uppercase tracking-widest text-gray-400">Bảo vệ nội dung</p>
+        </div>
+        <div className="px-5 py-4">
+          <ContentProtectionToggle enabled={isProtectionEnabled} />
+        </div>
+      </div>
+
+      {/* Settings grid */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 max-w-2xl">
         {SETTING_ITEMS.map((item) => (
           <Link

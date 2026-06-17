@@ -132,15 +132,34 @@ export default function ImportUrlPage() {
               </span>
             )}
           </label>
-          <input
-            type="url"
-            value={url}
-            onChange={(e) => { setUrl(e.target.value); setStatus('idle') }}
-            onKeyDown={(e) => e.key === 'Enter' && handleImport()}
-            placeholder="Dán URL sản phẩm vào đây..."
-            disabled={status === 'loading'}
-            className="w-full rounded-lg border border-gray-700 bg-gray-900 px-3 py-2.5 font-mono text-sm text-gray-100 placeholder-gray-600 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500/30 disabled:opacity-50"
-          />
+          <div className="relative">
+            <input
+              type="url"
+              value={url}
+              onChange={(e) => { setUrl(e.target.value); setStatus('idle') }}
+              onKeyDown={(e) => e.key === 'Enter' && handleImport()}
+              placeholder="Dán URL sản phẩm vào đây..."
+              disabled={status === 'loading'}
+              className="w-full rounded-lg border border-gray-700 bg-gray-900 px-3 py-2.5 pr-20 font-mono text-sm text-gray-100 placeholder-gray-600 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500/30 disabled:opacity-50"
+            />
+            {url ? (
+              <button type="button" onClick={() => { setUrl(''); setStatus('idle') }}
+                className="absolute right-2 top-1/2 -translate-y-1/2 rounded px-2 py-1 text-xs text-gray-500 hover:text-red-400 transition-colors">
+                ✕ Xoá
+              </button>
+            ) : (
+              <button type="button"
+                onClick={async () => {
+                  try {
+                    const text = await navigator.clipboard.readText()
+                    if (text.startsWith('http')) { setUrl(text.trim()); setStatus('idle') }
+                  } catch {}
+                }}
+                className="absolute right-2 top-1/2 -translate-y-1/2 rounded px-2 py-1 text-xs text-blue-400 hover:text-blue-200 hover:bg-blue-500/20 transition-colors">
+                📋 Dán
+              </button>
+            )}
+          </div>
           <p className="mt-1.5 text-xs text-gray-500">
             Ví dụ: {detectedSite?.example ?? SUPPORTED_SITES[0]?.example ?? ''}
           </p>

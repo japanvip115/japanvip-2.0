@@ -112,42 +112,11 @@ export default async function ProductsPage({ searchParams }: { searchParams: Sea
   }
 
   return (
-    <div className="container py-8">
-      {/* Breadcrumb */}
-      <nav className="mb-6 flex items-center gap-2 text-sm text-gray-400">
-        <Link href="/" className="hover:text-brand-red">Trang chủ</Link>
-        <span>/</span>
-        {activeCategory ? (
-          <>
-            <Link href="/san-pham" className="hover:text-brand-red">Sản phẩm</Link>
-            <span>/</span>
-            <span className="text-gray-700">{activeCategory.name}</span>
-          </>
-        ) : (
-          <span className="text-gray-700">Sản phẩm</span>
-        )}
-      </nav>
+    <div className="container pt-12 pb-14 lg:pt-16">
 
       <div className="flex gap-8">
         {/* Sidebar */}
         <aside className="hidden w-60 flex-shrink-0 lg:block">
-          {/* Search */}
-          <form method="GET" className="mb-5">
-            <div className="flex overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition focus-within:border-brand-red focus-within:ring-2 focus-within:ring-red-100">
-              <input
-                name="q"
-                defaultValue={q}
-                placeholder="Tìm sản phẩm..."
-                className="flex-1 bg-transparent px-4 py-2.5 text-sm outline-none placeholder:text-gray-400"
-              />
-              <button type="submit" className="flex items-center justify-center bg-brand-red px-3.5 text-white hover:bg-red-700 transition-colors">
-                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-              </button>
-            </div>
-          </form>
-
           {/* Categories */}
           <div className="mb-1 rounded-2xl border border-gray-100 bg-white shadow-sm overflow-hidden">
             <div className="flex items-center gap-2 border-b border-gray-100 px-4 py-3">

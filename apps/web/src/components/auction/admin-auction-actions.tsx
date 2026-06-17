@@ -50,8 +50,7 @@ export function AdminAuctionActions({ auctionId, currentStatus, createdBy, creat
       })
       const data = await res.json()
       if (data.success) {
-        setSuccess(`Đã chuyển sang "${AUCTION_STATUS_LABELS[newStatus]}"`)
-        router.refresh()
+        router.push('/admin/auctions')
       } else {
         setError(data.error ?? `Lỗi ${res.status}: Không thể cập nhật trạng thái`)
       }

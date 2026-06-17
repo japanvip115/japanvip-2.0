@@ -75,6 +75,8 @@ export type ProductItem = {
   name: string
   slug: string
   originPrice: number | null
+  salePrice: number | null
+  marketPrice: number | null
   condition: string
   brand: { name: string } | null
   category: { name: string; slug: string } | null
@@ -365,8 +367,8 @@ export default function HomePageClient({
                     </div>
                     <div className="url-examples">
                       <span>Ví dụ:</span>
-                      <a href="#" onClick={() => router.push('/mua-ho')}>amazon.co.jp/...</a>
-                      <a href="#" onClick={() => router.push('/mua-ho')}>item.rakuten.co.jp/...</a>
+                      <button onClick={() => router.push('/mua-ho')}>amazon.co.jp/...</button>
+                      <button onClick={() => router.push('/mua-ho')}>item.rakuten.co.jp/...</button>
                     </div>
                   </div>
                 </div>
@@ -412,7 +414,7 @@ export default function HomePageClient({
                   <span className="section-label">Đấu Giá Trực Tiếp</span>
                   <h2 style={{whiteSpace:'nowrap', fontSize:'1.5rem'}}>Phiên Đấu Giá Đang Diễn Ra</h2>
                 </div>
-                <a href="#" onClick={() => router.push('/dau-gia')} className="see-all-link">Xem Tất Cả <span>→</span></a>
+                <button onClick={() => router.push('/dau-gia')} className="see-all-link">Xem Tất Cả <span>→</span></button>
               </div>
               {auctions.length === 0 ? (
                 <div className="empty-state">
@@ -429,7 +431,7 @@ export default function HomePageClient({
             <div className="container">
               <div className="section-header">
                 <div><span className="section-label">Nổi Bật</span><h2 style={{fontSize:'1.5rem'}}>Sản Phẩm Bán Chạy</h2></div>
-                <a href="#" onClick={() => router.push('/dau-gia')} className="see-all-link">Xem Tất Cả <span>→</span></a>
+                <button onClick={() => router.push('/san-pham')} className="see-all-link">Xem Tất Cả <span>→</span></button>
               </div>
               {products.length === 0 ? (
                 <div className="empty-state">
@@ -452,10 +454,15 @@ export default function HomePageClient({
                         <h3>{p.name}</h3>
                         <div className="product-origin">🇯🇵 Hàng Nhật Chính Hãng</div>
                         <div className="product-price">
-                          {p.originPrice
-                            ? <span className="price-main">{p.originPrice.toLocaleString('vi-VN')}₫</span>
-                            : <span className="price-main">Liên hệ</span>
-                          }
+                          {(() => {
+                            const price = p.salePrice ?? p.originPrice
+                            const old = p.marketPrice ?? (p.salePrice && p.originPrice && p.originPrice > p.salePrice ? p.originPrice : null)
+                            if (!price) return <span className="price-main">Liên hệ</span>
+                            return <>
+                              <span className="price-main">{price.toLocaleString('vi-VN')}₫</span>
+                              {old && old > price && <span className="price-old" style={{textDecoration:'line-through',color:'#999',fontSize:'0.85em',marginLeft:6}}>{old.toLocaleString('vi-VN')}₫</span>}
+                            </>
+                          })()}
                         </div>
                         <button className="btn-buy" onClick={(e) => { e.stopPropagation(); router.push(`/${p.slug}`) }}>Mua Ngay</button>
                       </div>

@@ -26,7 +26,11 @@ export default async function LoginPage({ searchParams }: Props) {
           <div className="mb-5 rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
             {error === 'CredentialsSignin'
               ? 'Email hoặc mật khẩu không đúng. Vui lòng thử lại.'
-              : 'Đã có lỗi xảy ra. Vui lòng thử lại.'}
+              : error === 'OAuthAccountNotLinked'
+              ? 'Email này đã đăng ký bằng phương thức khác. Vui lòng đăng nhập bằng email/mật khẩu.'
+              : error === 'AccessDenied'
+              ? 'Tài khoản bị từ chối truy cập.'
+              : `Lỗi đăng nhập Google: ${error}. Vui lòng thử lại.`}
           </div>
         )}
         <LoginForm callbackUrl={callbackUrl ?? '/dashboard'} />

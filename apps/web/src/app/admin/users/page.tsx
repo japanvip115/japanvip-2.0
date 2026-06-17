@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { prisma } from '@japanvip/db'
 import Link from 'next/link'
-import type { UserRole, UserStatus } from '@japanvip/db'
+import type { UserRole, UserStatus, Prisma } from '@japanvip/db'
 import { Users } from 'lucide-react'
 
 export const metadata: Metadata = { title: 'Admin — Quản Lý Người Dùng' }
@@ -39,19 +39,21 @@ const ROLE_COLORS: Record<UserRole, string> = {
   SUPER_ADMIN: 'text-red-400',
 }
 
-type SearchParams = Promise<{ role?: string; status?: string; page?: string; q?: string }>
+type SearchParams = Promise<{ role?: string; status?: string; page?: string; q?: string; deposit?: string }>
 
 export const dynamic = 'force-dynamic'
 
 export default async function AdminUsersPage({ searchParams }: { searchParams: SearchParams }) {
-  const { role = 'ALL', status = '', page = '1', q = '' } = await searchParams
+  const { role = 'ALL', status = '', page = '1', q = '', deposit = '' } = await searchParams
   const pageNum = Math.max(1, parseInt(page))
   const take = 25
   const skip = (pageNum - 1) * take
 
-  const where = {
+  const where: Prisma.UserWhereInput = {
     ...(role !== 'ALL' ? { role: role as UserRole } : {}),
     ...(status ? { status: status as UserStatus } : {}),
+    ...(deposit === 'yes' ? { transactions: { some: { type: 'DEPOSIT' as const, status: 'COMPLETED' as const } } } : {}),
+    ...(deposit === 'no' ? { NOT: { transactions: { some: { type: 'DEPOSIT' as const, status: 'COMPLETED' as const } } } } : {}),
     ...(q
       ? {
           OR: [
@@ -64,7 +66,7 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: S
     deletedAt: null,
   }
 
-  const [users, total] = await Promise.all([
+  const [rawUsers, total] = await Promise.all([
     prisma.user.findMany({
       where,
       orderBy: { createdAt: 'desc' },
@@ -90,6 +92,21 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: S
     }),
     prisma.user.count({ where }),
   ])
+
+  // Phân tầng: 0=Đã cọc, 1=Chưa cọc (có hoạt động), 2=Nhận tin tức (chưa có gì)
+  function getUserTier(u: typeof rawUsers[0]): number {
+    const hasDeposit = u.transactions[0]?.status === 'COMPLETED'
+    if (hasDeposit) return 0
+    const hasActivity = u._count.bfjOrders > 0 || u._count.bids > 0
+    if (hasActivity) return 1
+    return 2
+  }
+
+  const users = [...rawUsers].sort((a, b) => {
+    const tierDiff = getUserTier(a) - getUserTier(b)
+    if (tierDiff !== 0) return tierDiff
+    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  })
 
   const totalPages = Math.ceil(total / take)
 
@@ -143,20 +160,45 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: S
           </form>
         </div>
 
-        <div className="flex flex-wrap gap-1">
-          {ROLE_TABS.map((tab) => (
-            <Link
-              key={tab.value}
-              href={`/admin/users?role=${tab.value}&q=${q}&status=${status}`}
-              className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
-                role === tab.value
-                  ? 'bg-red-600 text-white'
-                  : 'bg-gray-800 border border-gray-700 text-gray-300 hover:bg-gray-700 hover:text-white'
-              }`}
-            >
-              {tab.label}
-            </Link>
-          ))}
+        <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-1">
+            {ROLE_TABS.map((tab) => (
+              <Link
+                key={tab.value}
+                href={`/admin/users?role=${tab.value}&q=${q}&status=${status}&deposit=${deposit}`}
+                className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
+                  role === tab.value
+                    ? 'bg-red-600 text-white'
+                    : 'bg-gray-800 border border-gray-700 text-gray-300 hover:bg-gray-700 hover:text-white'
+                }`}
+              >
+                {tab.label}
+              </Link>
+            ))}
+          </div>
+          <div className="flex flex-wrap gap-1 border-l border-gray-700 pl-2">
+            {[
+              { label: 'Tất cả cọc', value: '' },
+              { label: '✓ Đã cọc', value: 'yes' },
+              { label: '— Chưa cọc', value: 'no' },
+            ].map((tab) => (
+              <Link
+                key={tab.value}
+                href={`/admin/users?role=${role}&q=${q}&status=${status}&deposit=${tab.value}`}
+                className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
+                  deposit === tab.value
+                    ? tab.value === 'yes'
+                      ? 'bg-green-700 text-white'
+                      : tab.value === 'no'
+                      ? 'bg-gray-600 text-white'
+                      : 'bg-red-600 text-white'
+                    : 'bg-gray-800 border border-gray-700 text-gray-300 hover:bg-gray-700 hover:text-white'
+                }`}
+              >
+                {tab.label}
+              </Link>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -183,17 +225,30 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: S
                 </td>
               </tr>
             ) : (
-              users.map((user) => (
-                <tr key={user.id} className="hover:bg-gray-700/30 transition-colors cursor-pointer">
+              users.map((user) => {
+                const tier = getUserTier(user)
+                const rowClass =
+                  tier === 0
+                    ? 'border-l-2 border-l-green-500 bg-green-900/5 hover:bg-green-900/10'
+                    : tier === 1
+                    ? 'border-l-2 border-l-yellow-500 bg-yellow-900/5 hover:bg-yellow-900/10'
+                    : 'border-l-2 border-l-gray-600 hover:bg-gray-700/20 opacity-70'
+                return (
+                <tr key={user.id} className={`transition-colors cursor-pointer ${rowClass}`}>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
                       <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-gray-700 text-sm font-bold text-gray-300">
                         {(user.profile?.fullName ?? user.email).charAt(0).toUpperCase()}
                       </div>
                       <div className="min-w-0">
-                        <p className="max-w-[180px] truncate text-sm font-medium text-gray-300">
-                          {user.profile?.fullName ?? '—'}
-                        </p>
+                        <div className="flex items-center gap-1.5">
+                          <p className="max-w-[160px] truncate text-sm font-medium text-gray-300">
+                            {user.profile?.fullName ?? '—'}
+                          </p>
+                          {tier === 0 && <span className="shrink-0 rounded-full bg-green-500/20 px-1.5 py-0.5 text-[10px] font-semibold text-green-400">Đã cọc</span>}
+                          {tier === 1 && <span className="shrink-0 rounded-full bg-yellow-500/20 px-1.5 py-0.5 text-[10px] font-semibold text-yellow-400">Hoạt động</span>}
+                          {tier === 2 && <span className="shrink-0 rounded-full bg-gray-700 px-1.5 py-0.5 text-[10px] font-semibold text-gray-500">Tin tức</span>}
+                        </div>
                         <p className="font-mono text-xs text-gray-500">{user.id.slice(0, 8)}…</p>
                       </div>
                     </div>
@@ -239,7 +294,7 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: S
                     </Link>
                   </td>
                 </tr>
-              ))
+              )})
             )}
           </tbody>
         </table>
