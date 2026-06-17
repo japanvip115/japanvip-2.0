@@ -157,6 +157,23 @@ export function AuctionDetailClient({
     }
   }, [userId, minIncrement])
 
+  function mapBidError(code: string, serverMessage?: string): string {
+    // Ưu tiên message từ server nếu có (thường có thông tin chi tiết hơn)
+    if (serverMessage && serverMessage !== code) return serverMessage
+    const map: Record<string, string> = {
+      CROSS_AUCTION_LIMIT: 'Tổng nghĩa vụ các phiên đang tham gia vượt quá 10× tiền cọc. Vui lòng nạp thêm cọc hoặc chờ kết thúc phiên khác.',
+      DEPOSIT_REQUIRED: 'Bạn cần nạp tiền đặt cọc để tham gia đấu giá.',
+      INSUFFICIENT_DEPOSIT: 'Số dư đặt cọc không đủ cho mức giá này.',
+      AUCTION_NOT_LIVE: 'Phiên đấu giá chưa bắt đầu hoặc đã kết thúc.',
+      BID_TOO_LOW: 'Giá đặt phải cao hơn giá hiện tại.',
+      SELLER_CANNOT_BID: 'Người bán không thể tham gia đấu giá của mình.',
+      ACCOUNT_SUSPENDED: 'Tài khoản của bạn đã bị tạm khóa. Vui lòng liên hệ hỗ trợ.',
+      RATE_LIMITED: 'Bạn đang đặt giá quá nhanh. Vui lòng chờ vài giây.',
+      DUPLICATE_REQUEST: 'Yêu cầu trùng lặp, giá đặt đã được ghi nhận.',
+    }
+    return map[code] ?? code
+  }
+
   async function handleBid() {
     if (!isLoggedIn) {
       window.location.href = '/login?callbackUrl=' + encodeURIComponent(window.location.pathname)
@@ -191,7 +208,7 @@ export function AuctionDetailClient({
         setBidSuccess(`Đặt giá ${formatVND(bidAmount)} thành công!`)
         setTimeout(() => setBidSuccess(''), 4000)
       } else {
-        setBidError(data.error ?? 'Có lỗi xảy ra')
+        setBidError(mapBidError(data.error ?? '', data.message))
       }
     } catch {
       setBidError('Không thể kết nối. Vui lòng thử lại.')
@@ -242,7 +259,7 @@ export function AuctionDetailClient({
         setBidSuccess(`Max Bid ${formatVND(maxBidAmount)} đã được đặt!`)
         setTimeout(() => setBidSuccess(''), 5000)
       } else {
-        setBidError(data.message ?? 'Có lỗi xảy ra')
+        setBidError(mapBidError(data.error ?? '', data.message ?? 'Có lỗi xảy ra'))
       }
     } catch {
       setBidError('Không thể kết nối. Vui lòng thử lại.')
