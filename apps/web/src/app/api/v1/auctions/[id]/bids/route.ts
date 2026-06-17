@@ -140,10 +140,14 @@ export async function POST(req: NextRequest, { params }: Params) {
     `
     const existingLiability = topBids.reduce((sum, r) => sum + Number(r.max_amount), 0)
     if (existingLiability + body.amount > depositSum * 10) {
+      const maxAllowed = depositSum * 10 - existingLiability
+      const message = existingLiability === 0
+        ? `Giá đặt (${body.amount.toLocaleString('vi-VN')}₫) vượt quá 10× tiền cọc của bạn (${depositSum.toLocaleString('vi-VN')}₫). Vui lòng nạp thêm tiền đặt cọc để tham gia.`
+        : `Bạn đang tham gia ${topBids.length} phiên khác (tổng ${existingLiability.toLocaleString('vi-VN')}₫). Mức giá tối đa bạn có thể đặt thêm là ${maxAllowed > 0 ? maxAllowed.toLocaleString('vi-VN') : 0}₫.`
       return NextResponse.json({
         success: false,
         error: 'CROSS_AUCTION_LIMIT',
-        message: `Tổng nghĩa vụ các phiên đang tham gia (${existingLiability.toLocaleString('vi-VN')}₫) + bid mới vượt quá 10× tiền cọc.`,
+        message,
         code: 'CROSS_AUCTION_LIMIT',
       }, { status: 403 })
     }
