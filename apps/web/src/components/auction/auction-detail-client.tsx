@@ -167,7 +167,10 @@ export function AuctionDetailClient({
     try {
       const res = await fetch(`/api/v1/auctions/${auctionId}/bids`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'x-idempotency-key': crypto.randomUUID(),
+        },
         body: JSON.stringify({ amount: bidAmount, deviceFingerprint: deviceFp || undefined }),
       })
       const data = await res.json()
@@ -219,7 +222,10 @@ export function AuctionDetailClient({
     try {
       const res = await fetch(`/api/v1/auctions/${auctionId}/max-bid`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'x-idempotency-key': crypto.randomUUID(),
+        },
         body: JSON.stringify({ maxAmount: maxBidAmount, deviceFingerprint: deviceFp || undefined }),
       })
       const data = await res.json()
