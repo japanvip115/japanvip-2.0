@@ -98,6 +98,7 @@ export async function POST(req: NextRequest) {
   let html: string
   try {
     const isEnAmazon = isAmazon && url.includes('language=en_US')
+    const parsedUrl = new URL(url)
     const res = await fetch(url, {
       headers: {
         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
@@ -108,15 +109,28 @@ export async function POST(req: NextRequest) {
         'Accept-Encoding': 'gzip, deflate, br',
         'Cache-Control': 'no-cache',
         'Pragma': 'no-cache',
+        'Referer': `${parsedUrl.protocol}//${parsedUrl.hostname}/`,
+        'sec-ch-ua': '"Chromium";v="124", "Google Chrome";v="124", "Not-A.Brand";v="99"',
+        'sec-ch-ua-mobile': '?0',
+        'sec-ch-ua-platform': '"macOS"',
         'Sec-Fetch-Dest': 'document',
         'Sec-Fetch-Mode': 'navigate',
-        'Sec-Fetch-Site': 'none',
+        'Sec-Fetch-Site': 'same-origin',
         'Sec-Fetch-User': '?1',
         'Upgrade-Insecure-Requests': '1',
+        'DNT': '1',
       },
       signal: AbortSignal.timeout(15000),
     })
-    if (!res.ok) return apiError(`Trang trả về lỗi HTTP ${res.status}`, 422)
+    if (!res.ok) {
+      if (res.status === 403) {
+        return apiError(
+          'Trang web này đang chặn truy cập từ server (Cloudflare protection). Vui lòng thử trang khác hoặc nhập thủ công.',
+          422
+        )
+      }
+      return apiError(`Trang trả về lỗi HTTP ${res.status}`, 422)
+    }
     html = await res.text()
     // Amazon CAPTCHA detection
     if (isAmazon && (html.includes('Type the characters you see') || html.includes('Robot Check') || html.includes('/errors/validateCaptcha'))) {
