@@ -2,9 +2,7 @@ import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
   typedRoutes: false,
-  outputFileTracingIncludes: {
-    '/**': ['../../node_modules/.prisma/**', '../../node_modules/@prisma/**'],
-  },
+  serverExternalPackages: ['@prisma/client', '.prisma/client'],
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: '*.r2.cloudflarestorage.com' },
