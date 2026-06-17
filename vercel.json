@@ -1,6 +1,0 @@
-{
-  "buildCommand": "cd ../.. && pnpm --filter @japanvip/web build",
-  "installCommand": "cd ../.. && pnpm install",
-  "outputDirectory": ".next",
-  "framework": "nextjs"
-}
