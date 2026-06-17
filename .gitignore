@@ -34,3 +34,5 @@ pnpm-debug.log*
 # Testing
 coverage
 .nyc_output
+.vercel
+apps/web/src/generated/prisma/libquery_engine-*.node
