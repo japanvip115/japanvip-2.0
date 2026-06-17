@@ -3,14 +3,5 @@
   "installCommand": "cd ../.. && pnpm install",
   "outputDirectory": ".next",
   "framework": "nextjs",
-  "crons": [
-    {
-      "path": "/api/v1/admin/cron/end-auctions",
-      "schedule": "* * * * *"
-    },
-    {
-      "path": "/api/v1/admin/cron/cleanup",
-      "schedule": "0 2 * * *"
-    }
-  ]
+  "crons": []
 }
