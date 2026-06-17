@@ -4,7 +4,7 @@ import { getAllFontVariableClasses, getFontCssVar } from '@/lib/fonts'
 import { getActiveFont } from '@/lib/font-settings'
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? 'https://japanvip.vn'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://store.japanvip.vn'),
   title: {
     default: 'Japan VIP — Hàng Gia Dụng Nội Địa Nhật Bản Chính Hãng',
     template: '%s | Japan VIP',
@@ -12,11 +12,11 @@ export const metadata: Metadata = {
   description:
     'Phân phối hàng gia dụng nội địa Nhật Bản mới 100%, chính hãng. Dịch vụ mua hộ từ Nhật, đấu giá hàng Nhật uy tín tại Việt Nam.',
   keywords: ['hàng nội địa Nhật', 'gia dụng Nhật Bản', 'mua hộ Nhật', 'đấu giá hàng Nhật'],
-  authors: [{ name: 'Japan VIP', url: 'https://japanvip.vn' }],
+  authors: [{ name: 'Japan VIP', url: 'https://store.japanvip.vn' }],
   openGraph: {
     type: 'website',
     locale: 'vi_VN',
-    url: 'https://japanvip.vn',
+    url: 'https://store.japanvip.vn',
     siteName: 'Japan VIP',
     title: 'Japan VIP — Hàng Gia Dụng Nội Địa Nhật Bản Chính Hãng',
     description: 'Phân phối hàng gia dụng nội địa Nhật Bản mới 100%, chính hãng.',

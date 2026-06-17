@@ -4,6 +4,7 @@ import { getWalletBalance } from '@/modules/payment/wallet.service'
 import { prisma } from '@japanvip/db'
 import { formatVND } from '@japanvip/utils'
 import { DepositRequestForm } from '@/components/wallet/deposit-request-form'
+import { WithdrawForm } from '@/components/wallet/withdraw-form'
 
 export const metadata: Metadata = { title: 'Ví Tiền' }
 export const dynamic = 'force-dynamic'
@@ -100,10 +101,17 @@ export default async function WalletPage() {
         </div>
       )}
 
-      {/* Deposit form */}
-      <div>
-        <p className="mb-3 text-sm font-bold text-gray-700">Đặt cọc tham gia đấu giá</p>
-        <DepositRequestForm userId={userId} bankInfo={BANK_INFO} />
+      {/* Action buttons */}
+      <div className="flex gap-3">
+        <div className="flex-1">
+          <p className="mb-3 text-sm font-bold text-gray-700">Đặt cọc tham gia đấu giá</p>
+          <DepositRequestForm userId={userId} bankInfo={BANK_INFO} />
+        </div>
+        {balance.available > 0 && (
+          <div className="flex items-end">
+            <WithdrawForm availableBalance={balance.available} />
+          </div>
+        )}
       </div>
 
       {/* Transaction history */}

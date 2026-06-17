@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { UserActions } from '@/components/admin/user-actions'
 import { DepositActions } from '@/app/admin/finance/deposit-actions'
+import { ResetPasswordButton } from '@/components/admin/reset-password-button'
 import { CheckCircle2, AlertCircle } from 'lucide-react'
 import type { UserRole, UserStatus } from '@japanvip/db'
 
@@ -260,6 +261,9 @@ export default async function AdminUserDetailPage({ params }: Props) {
                 <span className="text-xs font-semibold uppercase tracking-wide text-gray-400">Ngày đăng ký</span>
                 <span className="text-sm text-gray-300">{new Date(user.createdAt).toLocaleDateString('vi-VN')}</span>
               </div>
+            </div>
+            <div className="mt-4 pt-4 border-t border-gray-700">
+              <ResetPasswordButton userId={user.id} />
             </div>
           </div>
 

@@ -1,5 +1,6 @@
 import nodemailer from 'nodemailer'
 import { prisma } from '@japanvip/db'
+import { decryptIfNeeded } from '@/lib/encrypt'
 
 type SmtpConfig = {
   host: string
@@ -19,7 +20,7 @@ async function getSmtpConfig(): Promise<SmtpConfig> {
         port: setting.smtpPort,
         secure: setting.smtpSecure,
         user: setting.smtpUser,
-        pass: setting.smtpPass,
+        pass: decryptIfNeeded(setting.smtpPass) ?? '',
         from: setting.smtpFrom ?? `Japan VIP <${setting.smtpUser}>`,
       }
     }
@@ -149,7 +150,7 @@ export async function sendQuoteRequestEmail(opts: {
   notes?: string | null
 }) {
   const cfg = await getSmtpConfig()
-  const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://japanvip.vn'
+  const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://store.japanvip.vn'
   const { email, fullName, productName, productImage, productModel, sourceUrl, notes } = opts
 
   await createTransport(cfg).sendMail({
@@ -200,7 +201,7 @@ export async function sendBidConfirmationEmail(opts: {
   endsAt: string
 }) {
   const cfg = await getSmtpConfig()
-  const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://japanvip.vn'
+  const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://store.japanvip.vn'
   const { email, fullName, auctionTitle, auctionId, bidAmount, currentPrice, endsAt } = opts
   const endDate = new Date(endsAt).toLocaleString('vi-VN', { dateStyle: 'short', timeStyle: 'short' })
 
@@ -256,7 +257,7 @@ export async function sendAuctionOutbidEmail(opts: {
   yourBid: number
 }) {
   const cfg = await getSmtpConfig()
-  const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://japanvip.vn'
+  const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://store.japanvip.vn'
   const { email, fullName, auctionTitle, auctionId, newPrice, yourBid } = opts
 
   await createTransport(cfg).sendMail({
@@ -308,7 +309,7 @@ export async function sendAuctionWinEmail(opts: {
   settlementDueDays?: number
 }) {
   const cfg = await getSmtpConfig()
-  const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://japanvip.vn'
+  const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://store.japanvip.vn'
   const { email, fullName, auctionTitle, auctionId, hammerPrice, buyerPremium, totalPayable, settlementDueDays = 3 } = opts
 
   await createTransport(cfg).sendMail({

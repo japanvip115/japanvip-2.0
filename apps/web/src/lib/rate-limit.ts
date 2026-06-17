@@ -13,6 +13,7 @@ const CONFIGS: Record<string, RateLimitConfig> = {
   'auction:max-bid': { limit: 5,  windowSeconds: 30 },
   'auction:watch':   { limit: 20, windowSeconds: 60 },
   'bid:otp':         { limit: 3,  windowSeconds: 60 },
+  'admin:upload':    { limit: 30, windowSeconds: 60 },
   'default':         { limit: 60, windowSeconds: 60 },
 }
 

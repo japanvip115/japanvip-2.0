@@ -4,10 +4,11 @@ import { hasRole } from '@/lib/auth-types'
 import { prisma } from '@japanvip/db'
 import { z } from 'zod'
 import { invalidateCache, CacheKey } from '@/lib/redis'
+import { approveWithdrawal, rejectWithdrawal } from '@/modules/payment/wallet.service'
 
 type Params = { params: Promise<{ txnId: string }> }
 
-const approveSchema = z.object({
+const actionSchema = z.object({
   action: z.enum(['approve', 'reject']),
   rejectReason: z.string().max(300).optional(),
 })
@@ -15,11 +16,12 @@ const approveSchema = z.object({
 export async function POST(req: Request, { params }: Params) {
   const session = await auth()
   if (!session?.user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   if (!hasRole((session.user as any).role, 'ADMIN')) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
   const { txnId } = await params
   const body = await req.json()
-  const parsed = approveSchema.safeParse(body)
+  const parsed = actionSchema.safeParse(body)
   if (!parsed.success) return NextResponse.json({ error: 'Invalid input' }, { status: 400 })
 
   const { action, rejectReason } = parsed.data
@@ -31,47 +33,66 @@ export async function POST(req: Request, { params }: Params) {
   })
 
   if (!txn) return NextResponse.json({ error: 'Không tìm thấy giao dịch' }, { status: 404 })
-  if (txn.type !== 'DEPOSIT') return NextResponse.json({ error: 'Không phải giao dịch nạp tiền' }, { status: 400 })
   if (txn.status !== 'PENDING') return NextResponse.json({ error: 'Giao dịch đã được xử lý' }, { status: 409 })
 
-  if (action === 'approve') {
-    await prisma.$transaction(async (tx) => {
-      const wallet = await tx.wallet.findUnique({ where: { id: txn.walletId } })
-      if (!wallet) throw new Error('Ví không tồn tại')
+  try {
+    if (txn.type === 'WITHDRAWAL') {
+      if (action === 'approve') {
+        await approveWithdrawal(txnId, adminId)
+        return NextResponse.json({ success: true, action: 'approved' })
+      } else {
+        await rejectWithdrawal(txnId, adminId, rejectReason ?? 'Yêu cầu bị từ chối')
+        return NextResponse.json({ success: true, action: 'rejected' })
+      }
+    }
 
-      const balanceBefore = Number(wallet.balance)
-      const balanceAfter = balanceBefore + Number(txn.amount)
+    // DEPOSIT flow
+    if (txn.type !== 'DEPOSIT') {
+      return NextResponse.json({ error: 'Loại giao dịch không hỗ trợ' }, { status: 400 })
+    }
 
-      await tx.wallet.update({
-        where: { id: txn.walletId },
-        data: { balance: { increment: Number(txn.amount) } },
+    if (action === 'approve') {
+      await prisma.$transaction(async (tx) => {
+        const wallet = await tx.wallet.findUnique({ where: { id: txn.walletId } })
+        if (!wallet) throw new Error('Ví không tồn tại')
+
+        const balanceBefore = Number(wallet.balance)
+        const balanceAfter = balanceBefore + Number(txn.amount)
+
+        await tx.wallet.update({
+          where: { id: txn.walletId },
+          data: { balance: { increment: Number(txn.amount) } },
+        })
+
+        await tx.transaction.update({
+          where: { id: txnId },
+          data: {
+            status: 'COMPLETED',
+            balanceBefore,
+            balanceAfter,
+            createdBy: adminId,
+            notes: `Đã duyệt bởi admin`,
+          },
+        })
       })
 
-      await tx.transaction.update({
-        where: { id: txnId },
-        data: {
-          status: 'COMPLETED',
-          balanceBefore,
-          balanceAfter,
-          createdBy: adminId,
-          notes: `Đã duyệt bởi admin`,
-        },
-      })
+      await invalidateCache(CacheKey.userWallet(txn.userId))
+      return NextResponse.json({ success: true, action: 'approved' })
+    }
+
+    // reject deposit
+    await prisma.transaction.update({
+      where: { id: txnId },
+      data: {
+        status: 'FAILED',
+        createdBy: adminId,
+        notes: rejectReason ? `Từ chối: ${rejectReason}` : 'Yêu cầu bị từ chối',
+      },
     })
 
-    await invalidateCache(CacheKey.userWallet(txn.userId))
-    return NextResponse.json({ success: true, action: 'approved' })
+    return NextResponse.json({ success: true, action: 'rejected' })
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : 'Lỗi không xác định'
+    return NextResponse.json({ error: msg }, { status: 400 })
   }
-
-  // reject
-  await prisma.transaction.update({
-    where: { id: txnId },
-    data: {
-      status: 'FAILED',
-      createdBy: adminId,
-      notes: rejectReason ? `Từ chối: ${rejectReason}` : 'Yêu cầu bị từ chối',
-    },
-  })
-
-  return NextResponse.json({ success: true, action: 'rejected' })
 }

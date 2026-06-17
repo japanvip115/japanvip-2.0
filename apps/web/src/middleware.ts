@@ -23,7 +23,14 @@ export async function middleware(req: NextRequest) {
   for (const route of PROTECTED) {
     if (!route.pattern.test(pathname)) continue
 
-    const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET })
+    const secureCookie = process.env.NODE_ENV === 'production'
+    const cookieName = secureCookie ? '__Secure-authjs.session-token' : 'authjs.session-token'
+    const token = await getToken({
+      req,
+      secret: process.env.NEXTAUTH_SECRET ?? process.env.AUTH_SECRET,
+      cookieName,
+      salt: cookieName,
+    })
 
     if (!token) {
       if (pathname.startsWith('/api/')) {

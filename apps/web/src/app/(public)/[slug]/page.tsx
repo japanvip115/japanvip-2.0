@@ -314,7 +314,7 @@ export default async function ProductDetailPage({ params }: Props) {
             <div className="flex items-center gap-2">
               <span className="text-xs text-gray-400 shrink-0">Chia sẻ:</span>
               <a
-                href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(`https://japanvip.vn/${product.slug}`)}`}
+                href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(`https://store.japanvip.vn/${product.slug}`)}`}
                 target="_blank" rel="noopener noreferrer"
                 title="Chia sẻ Facebook"
                 className="flex h-9 w-9 items-center justify-center rounded-full bg-[#1877F2] text-white hover:opacity-90 transition shadow-sm"

@@ -2,10 +2,12 @@ import { NextResponse } from 'next/server'
 import { prisma } from '@japanvip/db'
 import { auth } from '@/lib/auth'
 import { hasRole } from '@/lib/auth-types'
+import { encryptIfNeeded, decryptIfNeeded } from '@/lib/encrypt'
 
 function maskSecret(value: string | null | undefined): string {
   if (!value) return ''
-  return '•'.repeat(Math.max(0, value.length - 4)) + value.slice(-4)
+  const plain = decryptIfNeeded(value) ?? ''
+  return '•'.repeat(Math.max(0, plain.length - 4)) + plain.slice(-4)
 }
 
 export async function GET() {
@@ -55,11 +57,11 @@ export async function PUT(req: Request) {
         surchargeRate: surchargeRate ?? 0,
         depositRate: depositRate ?? 0.30,
         translationProvider: translationProvider ?? 'none',
-        translationApiKey: translationApiKey || null,
+        translationApiKey: translationApiKey ? encryptIfNeeded(translationApiKey) : null,
         smtpHost: smtpHost || null,
         smtpPort: smtpPort ?? 465,
         smtpUser: smtpUser || null,
-        smtpPass: smtpPass || null,
+        smtpPass: smtpPass ? encryptIfNeeded(smtpPass) : null,
         smtpFrom: smtpFrom || null,
         smtpSecure: smtpSecure ?? true,
       },
@@ -70,13 +72,13 @@ export async function PUT(req: Request) {
         ...(depositRate !== undefined && { depositRate }),
         ...(translationProvider !== undefined && { translationProvider }),
         ...(!isMasked(translationApiKey) && translationApiKey !== undefined && {
-          translationApiKey: translationApiKey || null,
+          translationApiKey: translationApiKey ? encryptIfNeeded(translationApiKey) : null,
         }),
         ...(smtpHost !== undefined && { smtpHost: smtpHost || null }),
         ...(smtpPort !== undefined && { smtpPort }),
         ...(smtpUser !== undefined && { smtpUser: smtpUser || null }),
         ...(!isMasked(smtpPass) && smtpPass !== undefined && {
-          smtpPass: smtpPass || null,
+          smtpPass: smtpPass ? encryptIfNeeded(smtpPass) : null,
         }),
         ...(smtpFrom !== undefined && { smtpFrom: smtpFrom || null }),
         ...(smtpSecure !== undefined && { smtpSecure }),

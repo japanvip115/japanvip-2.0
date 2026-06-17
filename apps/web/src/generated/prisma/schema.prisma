@@ -1,0 +1,975 @@
+generator client {
+  provider      = "prisma-client-js"
+  output        = "../../../apps/web/src/generated/prisma"
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ─────────────────────────────────────────
+// DOMAIN 1: IDENTITY & AUTH
+// ─────────────────────────────────────────
+
+enum UserRole {
+  CUSTOMER
+  PARTNER
+  ADMIN
+  SUPER_ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+  PENDING_VERIFY
+}
+
+model User {
+  id               String     @id @default(uuid()) @db.Uuid
+  email            String     @unique @db.VarChar(255)
+  phone            String?    @unique @db.VarChar(20)
+  passwordHash     String?    @map("password_hash")
+  role             UserRole   @default(CUSTOMER)
+  status           UserStatus @default(PENDING_VERIFY)
+  emailVerified    Boolean    @default(false) @map("email_verified")
+  fraudScore       Int        @default(0) @map("fraud_score")
+  sessionVersion   Int        @default(0) @map("session_version")
+  failedLoginCount Int        @default(0) @map("failed_login_count")
+  lockedUntil      DateTime?  @map("locked_until") @db.Timestamptz
+  createdAt        DateTime   @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt        DateTime   @updatedAt @map("updated_at") @db.Timestamptz
+  deletedAt        DateTime?  @map("deleted_at") @db.Timestamptz
+
+  profile           UserProfile?
+  addresses         Address[]
+  accounts          Account[]
+  sessions          Session[]
+  wallet            Wallet?
+  transactions      Transaction[]
+  notifications     Notification[]
+  partnerProfile    PartnerProfile?
+  bfjOrders         BfjOrder[]
+  bfjQuoteRequests  BfjQuoteRequest[]
+  bids              Bid[]
+  createdAuctions   Auction[]          @relation("AuctionCreator")
+  partnerAuctions   Auction[]          @relation("AuctionPartner")
+  auctionWins       Auction[]          @relation("AuctionWinner")
+  maxBids           AuctionMaxBid[]
+  watchlists        AuctionWatchlist[]
+  auditLogs         AuditLog[]
+  fraudFlags        FraudFlag[]        @relation("FraudFlagUser")
+  fraudResolved     FraudFlag[]        @relation("FraudFlagResolver")
+  blogPosts         BlogPost[]
+  partnerApprovals  PartnerProfile[]   @relation("PartnerApprovedBy")
+  adminTransactions Transaction[]      @relation("TransactionCreatedBy")
+  loginHistory      LoginHistory[]
+  bidConfirmOtps    BidConfirmOtp[]
+
+  @@index([email])
+  @@index([phone])
+  @@index([role])
+  @@index([status])
+  @@map("users")
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+model UserProfile {
+  id          String    @id @default(uuid()) @db.Uuid
+  userId      String    @unique @map("user_id") @db.Uuid
+  fullName    String?   @map("full_name") @db.VarChar(255)
+  avatarUrl   String?   @map("avatar_url")
+  dateOfBirth DateTime? @map("date_of_birth") @db.Date
+  gender      Gender?
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt   DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_profiles")
+}
+
+model Address {
+  id            String   @id @default(uuid()) @db.Uuid
+  userId        String   @map("user_id") @db.Uuid
+  label         String?  @db.VarChar(50)
+  recipientName String   @map("recipient_name") @db.VarChar(255)
+  phone         String   @db.VarChar(20)
+  province      String   @db.VarChar(100)
+  district      String   @db.VarChar(100)
+  ward          String   @db.VarChar(100)
+  street        String
+  isDefault     Boolean  @default(false) @map("is_default")
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt     DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bfjOrders BfjOrder[]
+
+  @@index([userId])
+  @@map("addresses")
+}
+
+// NextAuth required models
+model Account {
+  id                String  @id @default(uuid()) @db.Uuid
+  userId            String  @map("user_id") @db.Uuid
+  type              String
+  provider          String
+  providerAccountId String  @map("provider_account_id")
+  refreshToken      String? @map("refresh_token")
+  accessToken       String? @map("access_token")
+  expiresAt         Int?    @map("expires_at")
+  tokenType         String? @map("token_type")
+  scope             String?
+  idToken           String? @map("id_token")
+  sessionState      String? @map("session_state")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(uuid()) @db.Uuid
+  sessionToken String   @unique @map("session_token")
+  userId       String   @map("user_id") @db.Uuid
+  expires      DateTime @db.Timestamptz
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime @db.Timestamptz
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+model EmailOtp {
+  id        String    @id @default(uuid()) @db.Uuid
+  email     String    @db.VarChar(255)
+  code      String    @db.VarChar(6)
+  purpose   String    @db.VarChar(50) // 'verify_email' | 'reset_password'
+  expiresAt DateTime  @map("expires_at") @db.Timestamptz
+  usedAt    DateTime? @map("used_at") @db.Timestamptz
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz
+
+  @@index([email, purpose])
+  @@map("email_otps")
+}
+
+model BfjQuoteRequest {
+  id           String   @id @default(uuid()) @db.Uuid
+  userId       String   @map("user_id") @db.Uuid
+  sourceUrl    String   @map("source_url") @db.VarChar(2000)
+  productName  String   @map("product_name") @db.VarChar(500)
+  productImage String?  @map("product_image") @db.VarChar(2000)
+  productModel String?  @map("product_model") @db.VarChar(100)
+  notes        String?
+  emailSent    Boolean  @default(false) @map("email_sent")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@map("bfj_quote_requests")
+}
+
+// ─────────────────────────────────────────
+// DOMAIN 2: PRODUCT CATALOG
+// ─────────────────────────────────────────
+
+model Category {
+  id          String   @id @default(uuid()) @db.Uuid
+  parentId    String?  @map("parent_id") @db.Uuid
+  name        String   @db.VarChar(255)
+  slug        String   @unique @db.VarChar(255)
+  description String?
+  imageUrl    String?  @map("image_url")
+  icon        String?  @db.VarChar(255)
+  sortOrder   Int      @default(0) @map("sort_order")
+  isActive    Boolean  @default(true) @map("is_active")
+  metaTitle   String?  @map("meta_title") @db.VarChar(255)
+  metaDesc    String?  @map("meta_desc")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  parent   Category?  @relation("CategoryChildren", fields: [parentId], references: [id])
+  children Category[] @relation("CategoryChildren")
+  products Product[]
+
+  @@index([parentId])
+  @@index([slug])
+  @@map("categories")
+}
+
+model Brand {
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String   @unique @db.VarChar(255)
+  slug        String   @unique @db.VarChar(255)
+  logoUrl     String?  @map("logo_url")
+  country     String   @default("Japan") @db.VarChar(100)
+  description String?
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  products Product[]
+
+  @@index([slug])
+  @@map("brands")
+}
+
+enum ProductOwnerType {
+  JAPANVIP
+  PARTNER
+}
+
+enum ProductCondition {
+  NEW
+  LIKE_NEW
+  GOOD
+  FAIR
+}
+
+enum ProductStatus {
+  DRAFT
+  ACTIVE
+  SOLD
+  ARCHIVED
+}
+
+model Product {
+  id          String           @id @default(uuid()) @db.Uuid
+  categoryId  String?          @map("category_id") @db.Uuid
+  brandId     String?          @map("brand_id") @db.Uuid
+  ownerType   ProductOwnerType @map("owner_type")
+  ownerId     String?          @map("owner_id") @db.Uuid
+  name        String           @db.VarChar(500)
+  slug        String           @unique @db.VarChar(500)
+  description String?
+  condition   ProductCondition @default(NEW)
+  originUrl   String?          @map("origin_url")
+  originPrice Decimal?         @map("origin_price") @db.Decimal(15, 2)
+  salePrice   Decimal?         @map("sale_price") @db.Decimal(15, 2)
+  marketPrice Decimal?         @map("market_price") @db.Decimal(15, 2)
+  status      ProductStatus    @default(DRAFT)
+  badge       String?          @db.VarChar(20)
+  rating      Decimal?         @db.Decimal(2, 1)
+  reviewCount Int              @default(0) @map("review_count")
+  metaTitle   String?          @map("meta_title") @db.VarChar(255)
+  metaDesc    String?          @map("meta_desc")
+  createdAt   DateTime         @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt   DateTime         @updatedAt @map("updated_at") @db.Timestamptz
+
+  category   Category?          @relation(fields: [categoryId], references: [id])
+  brand      Brand?             @relation(fields: [brandId], references: [id])
+  images     ProductImage[]
+  attributes ProductAttribute[]
+  auctions   Auction[]
+
+  @@index([categoryId])
+  @@index([brandId])
+  @@index([slug])
+  @@index([status])
+  @@index([ownerType, ownerId])
+  @@map("products")
+}
+
+model ProductImage {
+  id        String   @id @default(uuid()) @db.Uuid
+  productId String   @map("product_id") @db.Uuid
+  url       String
+  altText   String?  @map("alt_text") @db.VarChar(255)
+  sortOrder Int      @default(0) @map("sort_order")
+  isPrimary Boolean  @default(false) @map("is_primary")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
+  @@map("product_images")
+}
+
+model ProductAttribute {
+  id        String   @id @default(uuid()) @db.Uuid
+  productId String   @map("product_id") @db.Uuid
+  name      String   @db.VarChar(255)
+  value     String
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
+  @@map("product_attributes")
+}
+
+// ─────────────────────────────────────────
+// DOMAIN 3: BUY FROM JAPAN (BFJ)
+// ─────────────────────────────────────────
+
+model ExchangeRate {
+  id           String   @id @default(uuid()) @db.Uuid
+  fromCurrency String   @map("from_currency") @db.VarChar(10)
+  toCurrency   String   @map("to_currency") @db.VarChar(10)
+  rate         Decimal  @db.Decimal(20, 6)
+  source       String   @default("manual") @db.VarChar(100)
+  isActive     Boolean  @default(true) @map("is_active")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt    DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  bfjOrders BfjOrder[]
+
+  @@index([fromCurrency, toCurrency, isActive])
+  @@map("exchange_rates")
+}
+
+enum BfjOrderStatus {
+  PENDING_REVIEW
+  AWAITING_DEPOSIT
+  DEPOSIT_RECEIVED
+  ORDERING
+  ORDERED_FROM_JAPAN
+  IN_TRANSIT_JP
+  CUSTOMS_CLEARANCE
+  IN_TRANSIT_VN
+  DELIVERED
+  CANCELLED
+  REFUNDED
+}
+
+model BfjOrder {
+  id                 String         @id @default(uuid()) @db.Uuid
+  orderNumber        String         @unique @map("order_number") @db.VarChar(50)
+  customerId         String         @map("customer_id") @db.Uuid
+  status             BfjOrderStatus @default(PENDING_REVIEW)
+  exchangeRateId     String?        @map("exchange_rate_id") @db.Uuid
+  serviceFeeRate     Decimal        @default(0.08) @map("service_fee_rate") @db.Decimal(5, 4)
+  estimatedJpy       Decimal?       @map("estimated_jpy") @db.Decimal(15, 2)
+  estimatedVnd       Decimal?       @map("estimated_vnd") @db.Decimal(20, 2)
+  finalJpy           Decimal?       @map("final_jpy") @db.Decimal(15, 2)
+  finalVnd           Decimal?       @map("final_vnd") @db.Decimal(20, 2)
+  depositRate        Decimal        @default(0.30) @map("deposit_rate") @db.Decimal(5, 4)
+  depositAmount      Decimal?       @map("deposit_amount") @db.Decimal(20, 2)
+  depositPaid        Boolean        @default(false) @map("deposit_paid")
+  depositProofUrl    String?        @map("deposit_proof_url")
+  depositProofNote   String?        @map("deposit_proof_note")
+  depositSubmittedAt DateTime?      @map("deposit_submitted_at") @db.Timestamptz
+  profitVnd          Decimal?       @map("profit_vnd") @db.Decimal(20, 2)
+  notes              String?
+  adminNotes         String?        @map("admin_notes")
+  addressId          String?        @map("address_id") @db.Uuid
+  trackingJp         String?        @map("tracking_jp") @db.VarChar(255)
+  trackingVn         String?        @map("tracking_vn") @db.VarChar(255)
+  createdAt          DateTime       @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt          DateTime       @updatedAt @map("updated_at") @db.Timestamptz
+
+  customer     User           @relation(fields: [customerId], references: [id])
+  exchangeRate ExchangeRate?  @relation(fields: [exchangeRateId], references: [id])
+  address      Address?       @relation(fields: [addressId], references: [id])
+  items        BfjOrderItem[]
+
+  @@index([customerId])
+  @@index([status])
+  @@index([orderNumber])
+  @@map("bfj_orders")
+}
+
+enum BfjSourcePlatform {
+  AMAZON_JP
+  RAKUTEN
+  MERCARI
+  YAHOO_SHOPPING
+  OTHER
+}
+
+enum BfjItemStatus {
+  PENDING
+  CONFIRMED
+  ORDERED
+  UNAVAILABLE
+}
+
+model BfjOrderItem {
+  id             String            @id @default(uuid()) @db.Uuid
+  orderId        String            @map("order_id") @db.Uuid
+  sourcePlatform BfjSourcePlatform @map("source_platform")
+  sourceUrl      String            @map("source_url")
+  productName    String?           @map("product_name")
+  productImage   String?           @map("product_image")
+  unitPriceJpy   Decimal?          @map("unit_price_jpy") @db.Decimal(15, 2)
+  quantity       Int               @default(1)
+  variation      String?
+  notes          String?
+  status         BfjItemStatus     @default(PENDING)
+  createdAt      DateTime          @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt      DateTime          @updatedAt @map("updated_at") @db.Timestamptz
+
+  order BfjOrder @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+  @@map("bfj_order_items")
+}
+
+model BfjUrlParseLog {
+  id           String   @id @default(uuid()) @db.Uuid
+  url          String
+  platform     String   @db.VarChar(50)
+  parsedData   Json?    @map("parsed_data")
+  success      Boolean  @default(false)
+  errorMessage String?  @map("error_message")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@index([platform])
+  @@index([success])
+  @@map("bfj_url_parse_logs")
+}
+
+// ─────────────────────────────────────────
+// DOMAIN 4: AUCTION
+// ─────────────────────────────────────────
+
+enum AuctionType {
+  JAPANVIP_OWNED
+  PARTNER_CONSIGNMENT
+}
+
+enum AuctionStatus {
+  DRAFT
+  SCHEDULED
+  LIVE
+  ENDED
+  CANCELLED
+  SETTLED
+}
+
+model Auction {
+  id             String        @id @default(uuid()) @db.Uuid
+  auctionNumber  String        @unique @map("auction_number") @db.VarChar(50)
+  productId      String        @map("product_id") @db.Uuid
+  type           AuctionType
+  partnerId      String?       @map("partner_id") @db.Uuid
+  status         AuctionStatus @default(DRAFT)
+  startPrice     Decimal       @map("start_price") @db.Decimal(20, 2)
+  reservePrice   Decimal?      @map("reserve_price") @db.Decimal(20, 2)
+  buyNowPrice    Decimal?      @map("buy_now_price") @db.Decimal(20, 2)
+  minIncrement   Decimal       @default(10000) @map("min_increment") @db.Decimal(20, 2)
+  currentPrice   Decimal       @map("current_price") @db.Decimal(20, 2)
+  bidCount       Int           @default(0) @map("bid_count")
+  startsAt       DateTime      @map("starts_at") @db.Timestamptz
+  endsAt         DateTime      @map("ends_at") @db.Timestamptz
+  extendedEnd    DateTime?     @map("extended_end") @db.Timestamptz
+  autoExtend     Boolean       @default(true) @map("auto_extend")
+  extendMinutes  Int           @default(5) @map("extend_minutes")
+  extendTrigger  Int           @default(3) @map("extend_trigger")
+  winnerId       String?       @map("winner_id") @db.Uuid
+  winningBidId   String?       @map("winning_bid_id") @db.Uuid
+  commissionRate Decimal       @default(0.10) @map("commission_rate") @db.Decimal(5, 4)
+  buyerPremium   Decimal       @default(0.03) @map("buyer_premium") @db.Decimal(5, 4)
+  settlementDue  DateTime?     @map("settlement_due") @db.Timestamptz
+  createdBy      String        @map("created_by") @db.Uuid
+  createdAt      DateTime      @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt      DateTime      @updatedAt @map("updated_at") @db.Timestamptz
+
+  product    Product            @relation(fields: [productId], references: [id])
+  partner    User?              @relation("AuctionPartner", fields: [partnerId], references: [id])
+  winner     User?              @relation("AuctionWinner", fields: [winnerId], references: [id])
+  creator    User               @relation("AuctionCreator", fields: [createdBy], references: [id])
+  bids       Bid[]
+  maxBids    AuctionMaxBid[]
+  watchlists AuctionWatchlist[]
+  settlement AuctionSettlement?
+
+  @@index([status])
+  @@index([startsAt, endsAt])
+  @@index([partnerId])
+  @@index([winnerId])
+  @@map("auctions")
+}
+
+enum BidStatus {
+  ACTIVE
+  OUTBID
+  WINNING
+  CANCELLED
+}
+
+model Bid {
+  id                String    @id @default(uuid()) @db.Uuid
+  auctionId         String    @map("auction_id") @db.Uuid
+  bidderId          String    @map("bidder_id") @db.Uuid
+  amount            Decimal   @db.Decimal(20, 2)
+  isAutoBid         Boolean   @default(false) @map("is_auto_bid")
+  maxAutoBid        Decimal?  @map("max_auto_bid") @db.Decimal(20, 2)
+  ipAddress         String?   @map("ip_address") @db.Inet
+  userAgent         String?   @map("user_agent")
+  deviceFingerprint String?   @map("device_fingerprint") @db.VarChar(64)
+  flagged           Boolean   @default(false)
+  flagReason        String?   @map("flag_reason") @db.Text
+  status            BidStatus @default(ACTIVE)
+  createdAt         DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt         DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+
+  auction Auction @relation(fields: [auctionId], references: [id])
+  bidder  User    @relation(fields: [bidderId], references: [id])
+
+  @@index([auctionId, amount(sort: Desc)])
+  @@index([bidderId, auctionId])
+  @@index([status])
+  @@index([flagged])
+  @@index([auctionId, ipAddress])
+  @@index([auctionId, deviceFingerprint])
+  @@map("bids")
+}
+
+model AuctionMaxBid {
+  id        String   @id @default(uuid()) @db.Uuid
+  auctionId String   @map("auction_id") @db.Uuid
+  bidderId  String   @map("bidder_id") @db.Uuid
+  maxAmount Decimal  @map("max_amount") @db.Decimal(20, 2)
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  auction Auction @relation(fields: [auctionId], references: [id], onDelete: Cascade)
+  bidder  User    @relation(fields: [bidderId], references: [id], onDelete: Cascade)
+
+  @@unique([auctionId, bidderId])
+  @@index([auctionId, isActive])
+  @@map("auction_max_bids")
+}
+
+model AuctionWatchlist {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  auctionId String   @map("auction_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  auction Auction @relation(fields: [auctionId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, auctionId])
+  @@map("auction_watchlists")
+}
+
+enum SettlementStatus {
+  PENDING
+  PAID
+  OVERDUE
+  CANCELLED
+}
+
+model AuctionSettlement {
+  id                 String           @id @default(uuid()) @db.Uuid
+  auctionId          String           @unique @map("auction_id") @db.Uuid
+  winnerId           String           @map("winner_id") @db.Uuid
+  hammerPrice        Decimal          @map("hammer_price") @db.Decimal(20, 2)
+  buyerPremiumAmount Decimal          @map("buyer_premium_amount") @db.Decimal(20, 2)
+  totalPayable       Decimal          @map("total_payable") @db.Decimal(20, 2)
+  partnerId          String?          @map("partner_id") @db.Uuid
+  commissionAmount   Decimal?         @map("commission_amount") @db.Decimal(20, 2)
+  partnerPayout      Decimal?         @map("partner_payout") @db.Decimal(20, 2)
+  status             SettlementStatus @default(PENDING)
+  paidAt             DateTime?        @map("paid_at") @db.Timestamptz
+  transactionId      String?          @map("transaction_id") @db.Uuid
+  createdAt          DateTime         @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt          DateTime         @updatedAt @map("updated_at") @db.Timestamptz
+
+  auction Auction @relation(fields: [auctionId], references: [id])
+
+  @@index([winnerId])
+  @@index([status])
+  @@map("auction_settlements")
+}
+
+// ─────────────────────────────────────────
+// DOMAIN 5: FINANCE & WALLET
+// ─────────────────────────────────────────
+
+model Wallet {
+  id            String   @id @default(uuid()) @db.Uuid
+  userId        String   @unique @map("user_id") @db.Uuid
+  balance       Decimal  @default(0) @db.Decimal(20, 2)
+  lockedBalance Decimal  @default(0) @map("locked_balance") @db.Decimal(20, 2)
+  currency      String   @default("VND") @db.VarChar(10)
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt     DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  user         User          @relation(fields: [userId], references: [id])
+  transactions Transaction[]
+
+  @@map("wallets")
+}
+
+enum TransactionType {
+  DEPOSIT
+  WITHDRAWAL
+  BFJ_PAYMENT
+  BFJ_REFUND
+  AUCTION_HOLD
+  AUCTION_RELEASE
+  AUCTION_SETTLE
+  COMMISSION_PAYOUT
+  ADJUSTMENT
+}
+
+enum TransactionDirection {
+  CREDIT
+  DEBIT
+}
+
+enum TransactionStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REVERSED
+}
+
+model Transaction {
+  id            String               @id @default(uuid()) @db.Uuid
+  txnNumber     String               @unique @map("txn_number") @db.VarChar(100)
+  walletId      String               @map("wallet_id") @db.Uuid
+  userId        String               @map("user_id") @db.Uuid
+  type          TransactionType
+  amount        Decimal              @db.Decimal(20, 2)
+  direction     TransactionDirection
+  balanceBefore Decimal              @map("balance_before") @db.Decimal(20, 2)
+  balanceAfter  Decimal              @map("balance_after") @db.Decimal(20, 2)
+  referenceType String?              @map("reference_type") @db.VarChar(50)
+  referenceId   String?              @map("reference_id") @db.Uuid
+  paymentMethod String?              @map("payment_method") @db.VarChar(100)
+  paymentRef    String?              @map("payment_ref") @db.VarChar(255)
+  status        TransactionStatus    @default(PENDING)
+  notes         String?
+  createdBy     String?              @map("created_by") @db.Uuid
+  createdAt     DateTime             @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt     DateTime             @updatedAt @map("updated_at") @db.Timestamptz
+
+  wallet        Wallet @relation(fields: [walletId], references: [id])
+  user          User   @relation(fields: [userId], references: [id])
+  createdByUser User?  @relation("TransactionCreatedBy", fields: [createdBy], references: [id])
+
+  @@index([userId])
+  @@index([walletId])
+  @@index([status])
+  @@index([type])
+  @@index([referenceType, referenceId])
+  @@map("transactions")
+}
+
+// ─────────────────────────────────────────
+// DOMAIN 6: PARTNER
+// ─────────────────────────────────────────
+
+enum PartnerStatus {
+  PENDING
+  APPROVED
+  SUSPENDED
+}
+
+model PartnerProfile {
+  id                    String        @id @default(uuid()) @db.Uuid
+  userId                String        @unique @map("user_id") @db.Uuid
+  companyName           String?       @map("company_name") @db.VarChar(255)
+  taxId                 String?       @map("tax_id") @db.VarChar(50)
+  bankName              String?       @map("bank_name") @db.VarChar(255)
+  bankAccount           String?       @map("bank_account") @db.VarChar(100)
+  bankHolder            String?       @map("bank_holder") @db.VarChar(255)
+  commissionTier        String        @default("DEFAULT") @map("commission_tier") @db.VarChar(50)
+  defaultCommissionRate Decimal       @default(0.10) @map("default_commission_rate") @db.Decimal(5, 4)
+  status                PartnerStatus @default(PENDING)
+  approvedAt            DateTime?     @map("approved_at") @db.Timestamptz
+  approvedBy            String?       @map("approved_by") @db.Uuid
+  createdAt             DateTime      @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt             DateTime      @updatedAt @map("updated_at") @db.Timestamptz
+
+  user     User  @relation(fields: [userId], references: [id])
+  approver User? @relation("PartnerApprovedBy", fields: [approvedBy], references: [id])
+
+  @@index([status])
+  @@map("partner_profiles")
+}
+
+// ─────────────────────────────────────────
+// DOMAIN 7: NOTIFICATION
+// ─────────────────────────────────────────
+
+enum NotificationChannel {
+  IN_APP
+  EMAIL
+  SMS
+  ZALO
+}
+
+enum NotificationStatus {
+  PENDING
+  SENT
+  FAILED
+  READ
+}
+
+model Notification {
+  id        String              @id @default(uuid()) @db.Uuid
+  userId    String              @map("user_id") @db.Uuid
+  type      String              @db.VarChar(100)
+  title     String              @db.VarChar(255)
+  body      String
+  data      Json?
+  channel   NotificationChannel @default(IN_APP)
+  status    NotificationStatus  @default(PENDING)
+  readAt    DateTime?           @map("read_at") @db.Timestamptz
+  sentAt    DateTime?           @map("sent_at") @db.Timestamptz
+  createdAt DateTime            @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime            @updatedAt @map("updated_at") @db.Timestamptz
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, status])
+  @@index([type])
+  @@map("notifications")
+}
+
+// ─────────────────────────────────────────
+// DOMAIN 8: CONTENT / CMS
+// ─────────────────────────────────────────
+
+model BlogCategory {
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String   @db.VarChar(255)
+  slug      String   @unique @db.VarChar(255)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  posts BlogPost[]
+
+  @@map("blog_categories")
+}
+
+enum BlogPostStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+model BlogPost {
+  id           String         @id @default(uuid()) @db.Uuid
+  authorId     String         @map("author_id") @db.Uuid
+  categoryId   String?        @map("category_id") @db.Uuid
+  title        String         @db.VarChar(500)
+  slug         String         @unique @db.VarChar(500)
+  excerpt      String?
+  content      String
+  thumbnailUrl String?        @map("thumbnail_url")
+  status       BlogPostStatus @default(DRAFT)
+  publishedAt  DateTime?      @map("published_at") @db.Timestamptz
+  metaTitle    String?        @map("meta_title") @db.VarChar(255)
+  metaDesc     String?        @map("meta_desc")
+  ogImage      String?        @map("og_image")
+  createdAt    DateTime       @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt    DateTime       @updatedAt @map("updated_at") @db.Timestamptz
+
+  author   User          @relation(fields: [authorId], references: [id])
+  category BlogCategory? @relation(fields: [categoryId], references: [id])
+
+  @@index([slug])
+  @@index([status])
+  @@index([publishedAt])
+  @@map("blog_posts")
+}
+
+model Banner {
+  id        String    @id @default(uuid()) @db.Uuid
+  title     String    @db.VarChar(255)
+  imageUrl  String    @map("image_url")
+  linkUrl   String?   @map("link_url")
+  position  String    @db.VarChar(100)
+  sortOrder Int       @default(0) @map("sort_order")
+  startsAt  DateTime? @map("starts_at") @db.Timestamptz
+  endsAt    DateTime? @map("ends_at") @db.Timestamptz
+  isActive  Boolean   @default(true) @map("is_active")
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@index([position, isActive])
+  @@map("banners")
+}
+
+model SeoPage {
+  id            String   @id @default(uuid()) @db.Uuid
+  pagePath      String   @unique @map("page_path") @db.VarChar(500)
+  title         String?  @db.VarChar(255)
+  description   String?
+  ogTitle       String?  @map("og_title") @db.VarChar(255)
+  ogDescription String?  @map("og_description")
+  ogImage       String?  @map("og_image")
+  canonicalUrl  String?  @map("canonical_url")
+  robots        String   @default("index,follow") @db.VarChar(100)
+  schemaJson    Json?    @map("schema_json")
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt     DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@map("seo_pages")
+}
+
+// ─────────────────────────────────────────
+// DOMAIN 9: AUDIT & SECURITY
+// ─────────────────────────────────────────
+
+model AuditLog {
+  id           String   @id @default(uuid()) @db.Uuid
+  userId       String?  @map("user_id") @db.Uuid
+  action       String   @db.VarChar(255)
+  resourceType String   @map("resource_type") @db.VarChar(100)
+  resourceId   String?  @map("resource_id") @db.Uuid
+  oldValues    Json?    @map("old_values")
+  newValues    Json?    @map("new_values")
+  ipAddress    String?  @map("ip_address") @db.Inet
+  userAgent    String?  @map("user_agent")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  user User? @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([action])
+  @@index([resourceType, resourceId])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
+
+enum FraudSeverity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+model FraudFlag {
+  id         String        @id @default(uuid()) @db.Uuid
+  userId     String        @map("user_id") @db.Uuid
+  type       String        @db.VarChar(100)
+  severity   FraudSeverity
+  details    Json?
+  resolved   Boolean       @default(false)
+  resolvedBy String?       @map("resolved_by") @db.Uuid
+  createdAt  DateTime      @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt  DateTime      @updatedAt @map("updated_at") @db.Timestamptz
+
+  user     User  @relation("FraudFlagUser", fields: [userId], references: [id])
+  resolver User? @relation("FraudFlagResolver", fields: [resolvedBy], references: [id])
+
+  @@index([userId])
+  @@index([resolved])
+  @@index([severity])
+  @@map("fraud_flags")
+}
+
+model BlockedIp {
+  id        String   @id @default(uuid()) @db.Uuid
+  ip        String   @unique @db.Inet
+  reason    String?  @db.Text
+  blockedBy String?  @map("blocked_by") @db.VarChar(255)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@index([ip])
+  @@map("blocked_ips")
+}
+
+model BidConfirmOtp {
+  id              String   @id @default(uuid()) @db.Uuid
+  userId          String   @map("user_id") @db.Uuid
+  auctionId       String   @map("auction_id") @db.Uuid
+  amount          Decimal  @db.Decimal(20, 2)
+  otp             String   @db.VarChar(6)
+  expiresAt       DateTime @map("expires_at") @db.Timestamptz
+  used            Boolean  @default(false)
+  requestCount    Int      @default(1) @map("request_count")
+  lastRequestedAt DateTime @default(now()) @map("last_requested_at") @db.Timestamptz
+  createdAt       DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, auctionId])
+  @@map("bid_confirm_otps")
+}
+
+model LoginHistory {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  ip        String?  @db.Inet
+  userAgent String?  @map("user_agent")
+  success   Boolean  @default(true)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([ip])
+  @@map("login_histories")
+}
+
+// ─────────────────────────────────────────
+// DOMAIN 10: SITE CONFIGURATION
+// ─────────────────────────────────────────
+
+model SiteSetting {
+  key       String   @id @db.VarChar(255)
+  value     String
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@map("site_settings")
+}
+
+// ─────────────────────────────────────────
+// DOMAIN 11: BFJ (MUA HÀNG NHẬT) SETTINGS
+// ─────────────────────────────────────────
+
+// Singleton row (id = 'default') — admin-configurable fee parameters
+model BfjSetting {
+  id                  String   @id @default("default") @db.VarChar(50)
+  serviceFeeRate      Decimal  @default(0.08) @map("service_fee_rate") @db.Decimal(5, 4)
+  domesticShippingJpy Decimal  @default(0) @map("domestic_shipping_jpy") @db.Decimal(10, 2)
+  surchargeRate       Decimal  @default(0) @map("surcharge_rate") @db.Decimal(5, 4)
+  depositRate         Decimal  @default(0.30) @map("deposit_rate") @db.Decimal(5, 4)
+  translationProvider String   @default("none") @map("translation_provider") @db.VarChar(20)
+  translationApiKey   String?  @map("translation_api_key") @db.VarChar(500)
+  smtpHost            String?  @map("smtp_host") @db.VarChar(255)
+  smtpPort            Int      @default(465) @map("smtp_port")
+  smtpUser            String?  @map("smtp_user") @db.VarChar(255)
+  smtpPass            String?  @map("smtp_pass") @db.VarChar(500)
+  smtpFrom            String?  @map("smtp_from") @db.VarChar(255)
+  smtpSecure          Boolean  @default(true) @map("smtp_secure")
+  updatedAt           DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@map("bfj_settings")
+}
+
+// Shipping tiers JP → VN (editable by admin)
+model BfjShippingTier {
+  id            String   @id @default(uuid()) @db.Uuid
+  label         String   @db.VarChar(100)
+  maxWeightKg   Decimal? @map("max_weight_kg") @db.Decimal(8, 2)
+  priceVnd      Int      @map("price_vnd")
+  actualCostVnd Int      @default(0) @map("actual_cost_vnd")
+  estimatedDays String   @map("estimated_days") @db.VarChar(50)
+  sortOrder     Int      @default(0) @map("sort_order")
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt     DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@index([sortOrder])
+  @@map("bfj_shipping_tiers")
+}

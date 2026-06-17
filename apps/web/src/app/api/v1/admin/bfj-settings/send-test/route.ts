@@ -3,6 +3,7 @@ import { auth } from '@/lib/auth'
 import { hasRole } from '@/lib/auth-types'
 import { prisma } from '@japanvip/db'
 import nodemailer from 'nodemailer'
+import { decryptIfNeeded } from '@/lib/encrypt'
 
 export async function POST(req: Request) {
   const session = await auth()
@@ -26,7 +27,7 @@ export async function POST(req: Request) {
       port = setting.smtpPort
       secure = setting.smtpSecure
       user = setting.smtpUser
-      pass = setting.smtpPass
+      pass = decryptIfNeeded(setting.smtpPass)
       from = from || setting.smtpFrom || `Japan VIP <${setting.smtpUser}>`
     }
 

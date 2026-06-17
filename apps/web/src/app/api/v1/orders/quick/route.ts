@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
     const otpValid = await verifyOtp(body.email, body.otpCode, 'quick_order')
     if (!otpValid) return apiError('Mã OTP không đúng hoặc đã hết hạn. Vui lòng gửi lại.', 400)
 
-    const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://japanvip.vn'
+    const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://store.japanvip.vn'
     const fmtVND = (n: number) => n.toLocaleString('vi-VN') + '₫'
     const orderRef = `DH${Date.now().toString(36).toUpperCase()}`
 
