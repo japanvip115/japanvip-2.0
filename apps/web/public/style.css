@@ -42,7 +42,7 @@
   --radius-full: 9999px;
 
   --font-sans: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-serif: 'Be Vietnam Pro', sans-serif;
+  --font-serif: var(--font-sans);
 
   --header-height: 130px;
   --transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
