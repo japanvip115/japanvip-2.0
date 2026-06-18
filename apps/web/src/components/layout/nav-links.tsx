@@ -53,7 +53,7 @@ export function NavLinks() {
           <div key={item.href} className="group relative">
             <Link
               href={item.href}
-              className={`flex items-center gap-1 rounded-md px-3 py-1.5 text-sm font-medium transition-all duration-200 border-b-2
+              className={`flex items-center gap-1 rounded-md px-3 py-1.5 text-[15px] font-medium transition-all duration-200 border-b-2
                 ${isActive(item.href)
                   ? 'border-white text-white'
                   : 'border-transparent text-white/80 hover:text-white hover:border-white/60'}`}
@@ -84,7 +84,7 @@ export function NavLinks() {
           <Link
             key={item.href}
             href={item.href}
-            className={`rounded-md px-3 py-1.5 text-sm font-medium transition-all duration-200 border-b-2
+            className={`rounded-md px-3 py-1.5 text-[15px] font-medium transition-all duration-200 border-b-2
               ${isActive(item.href)
                 ? 'border-white text-white'
                 : 'border-transparent text-white/80 hover:text-white hover:border-white/60'}`}

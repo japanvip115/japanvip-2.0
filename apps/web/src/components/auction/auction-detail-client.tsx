@@ -72,7 +72,7 @@ export function AuctionDetailClient({
 }: Props) {
   const [status, setStatus] = useState<AuctionStatus>(initialStatus)
   const [currentPrice, setCurrentPrice] = useState(initialCurrentPrice)
-  const [bidCount, setBidCount] = useState(() => initialBidCount + Math.floor(Math.random() * 36) + 15)
+  const [bidCount, setBidCount] = useState(initialBidCount)
   const [endsAt, setEndsAt] = useState(initialExtendedEnd ?? initialEndsAt)
   const [bids, setBids] = useState<Bid[]>(initialBids)
   const [winnerId, setWinnerId] = useState<string | null>(initialWinnerId)
@@ -88,14 +88,20 @@ export function AuctionDetailClient({
   const [sseConnected, setSseConnected] = useState(false)
   const [pricePulse, setPricePulse] = useState(false)
   const [extendedPulse, setExtendedPulse] = useState(false)
-  const [viewers, setViewers] = useState(() => Math.floor(Math.random() * 30) + 20)
-  const [follows] = useState(() => Math.floor(Math.random() * 60) + 40)
+  const [viewers, setViewers] = useState(0)
+  const [follows, setFollows] = useState(0)
   const esRef = useRef<EventSource | null>(null)
   const bidInputRef = useRef<HTMLInputElement>(null)
 
   const timeLeft = useCountdown(endsAt)
   const expired = timeLeft <= 0
   const isLive = status === 'LIVE'
+
+  // Init random viewers/follows after hydration to avoid SSR mismatch
+  useEffect(() => {
+    setViewers(Math.floor(Math.random() * 30) + 20)
+    setFollows(Math.floor(Math.random() * 60) + 40)
+  }, [])
 
   // Fluctuate viewer count to simulate live activity
   useEffect(() => {

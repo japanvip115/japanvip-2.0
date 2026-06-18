@@ -174,7 +174,7 @@ export default async function AdminProductsPage({ searchParams }: { searchParams
                     <Link href={`/admin/products/${product.id}`} className="flex items-center gap-3">
                       {product.images[0] ? (
                         <div className="relative h-10 w-10 flex-shrink-0 overflow-hidden rounded-lg border border-gray-700">
-                          <Image src={product.images[0].url} alt="" fill className="object-cover" />
+                          <Image src={product.images[0].url} alt="" fill className="object-cover" sizes="40px" unoptimized={!product.images[0].url.includes('media.japanvip.vn')} />
                         </div>
                       ) : (
                         <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg border border-gray-700 bg-gray-700/30">

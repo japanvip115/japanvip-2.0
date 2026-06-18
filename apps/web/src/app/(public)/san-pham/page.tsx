@@ -112,15 +112,14 @@ export default async function ProductsPage({ searchParams }: { searchParams: Sea
   }
 
   return (
-    <div className="container pt-12 pb-14 lg:pt-16">
+    <div className="container pt-20 pb-14 lg:pt-24">
 
       <div className="flex gap-8">
         {/* Sidebar */}
-        <aside className="hidden w-60 flex-shrink-0 lg:block">
+        <aside className="hidden w-60 flex-shrink-0 lg:block mt-8">
           {/* Categories */}
           <div className="mb-1 rounded-2xl border border-gray-100 bg-white shadow-sm overflow-hidden">
             <div className="flex items-center gap-2 border-b border-gray-100 px-4 py-3">
-              <span className="text-base">🗂️</span>
               <h3 className="text-xs font-bold uppercase tracking-widest text-gray-500">Danh Mục</h3>
             </div>
             <ul className="py-1.5">
@@ -160,7 +159,6 @@ export default async function ProductsPage({ searchParams }: { searchParams: Sea
           {/* Condition */}
           <div className="my-3 rounded-2xl border border-gray-100 bg-white shadow-sm overflow-hidden">
             <div className="flex items-center gap-2 border-b border-gray-100 px-4 py-3">
-              <span className="text-base">✨</span>
               <h3 className="text-xs font-bold uppercase tracking-widest text-gray-500">Tình Trạng</h3>
             </div>
             <ul className="py-1.5">
@@ -195,7 +193,6 @@ export default async function ProductsPage({ searchParams }: { searchParams: Sea
           {brands.length > 0 && (
             <div className="rounded-2xl border border-gray-100 bg-white shadow-sm overflow-hidden">
               <div className="flex items-center gap-2 border-b border-gray-100 px-4 py-3">
-                <span className="text-base">🏷️</span>
                 <h3 className="text-xs font-bold uppercase tracking-widest text-gray-500">Thương Hiệu</h3>
               </div>
               <ul className="max-h-52 overflow-y-auto py-1.5 scrollbar-thin">
@@ -231,7 +228,7 @@ export default async function ProductsPage({ searchParams }: { searchParams: Sea
         {/* Main content */}
         <div className="flex-1 min-w-0">
           {/* Toolbar */}
-          <div className="mb-6 flex items-center justify-between gap-4">
+          <div className="mb-6 mt-8 flex items-center justify-between gap-4">
             <div>
               <h1 className="text-xl font-bold text-gray-900">
                 {activeCategory?.name ?? (q ? `Kết quả cho "${q}"` : 'Tất Cả Sản Phẩm')}

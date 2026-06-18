@@ -51,7 +51,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       style={{ '--font-sans': `var(${activeFontVar})` } as React.CSSProperties}
     >
       <head>
-        {/* style.css dùng cho homepage content — load globally để tránh giật khi chuyển trang */}
         <link rel="stylesheet" href="/style.css" />
       </head>
       <body>

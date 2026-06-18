@@ -24,6 +24,8 @@ export default async function AdminDashboardPage() {
     bfjMonthStats,
     pendingDeposits,
     openFraudFlags,
+    totalProducts,
+    activeProducts,
   ] = await Promise.all([
     prisma.user.count({ where: { status: 'ACTIVE' } }),
     prisma.bfjOrder.count(),
@@ -52,6 +54,8 @@ export default async function AdminDashboardPage() {
     }),
     prisma.transaction.count({ where: { type: 'DEPOSIT', status: 'PENDING' } }),
     prisma.fraudFlag.count({ where: { resolved: false } }),
+    prisma.product.count(),
+    prisma.product.count({ where: { status: 'ACTIVE' } }),
   ])
 
   const bfjMonthCount = bfjMonthStats._count.id
@@ -64,9 +68,10 @@ export default async function AdminDashboardPage() {
       <h1 className="text-xl font-bold text-white">Tổng Quan Hệ Thống</h1>
 
       {/* Stats grid */}
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
         {[
           { label: 'Người dùng', value: totalUsers.toLocaleString(), sub: 'đang hoạt động', href: '/admin/users', color: 'text-blue-400' },
+          { label: 'Sản phẩm', value: totalProducts.toLocaleString(), sub: `${activeProducts} đang bán`, href: '/admin/products', color: 'text-purple-400' },
           { label: 'Đơn Mua Hộ', value: totalOrders.toLocaleString(), sub: `${pendingOrders} cần xử lý`, href: '/admin/orders', color: 'text-yellow-400' },
           { label: 'Phiên đấu giá', value: totalAuctions.toLocaleString(), sub: `${liveAuctions} đang LIVE`, href: '/admin/auctions', color: 'text-green-400' },
           { label: 'Doanh thu Mua Hộ', value: formatVND(totalRevenue), sub: 'tổng cộng', href: '/admin/finance', color: 'text-red-400' },

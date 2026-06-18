@@ -49,7 +49,7 @@ export async function Header() {
                 width={160}
                 height={56}
                 className="object-contain h-12 md:h-16 w-auto"
-                unoptimized
+                priority
               />
             ) : (
               <span className="text-xl md:text-2xl font-bold text-brand-red">Japan VIP</span>
@@ -57,7 +57,7 @@ export async function Header() {
           </Link>
 
           {/* Search — center (desktop only) */}
-          <div className="hidden md:block flex-1 px-4">
+          <div className="hidden md:flex flex-1 justify-center px-4">
             <HeaderSearch />
           </div>
 

@@ -292,7 +292,7 @@ export function ProductImagesManager({
             <div className="mb-4 rounded-xl border border-gray-700 bg-gray-800/50 p-4">
               <div className="flex items-center gap-3">
                 <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-lg border border-gray-600">
-                  <Image src={img.url} alt={img.altText} fill className="object-cover" unoptimized />
+                  <Image src={img.url} alt={img.altText} fill className="object-cover" sizes="64px" unoptimized={!img.url.includes('media.japanvip.vn')} />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-xs text-gray-500 truncate mb-2">{img.url.split('/').pop()}</p>

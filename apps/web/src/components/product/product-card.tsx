@@ -20,10 +20,10 @@ export function ProductCard({ product }: { product: ProductWithRelations }) {
   const badge = product.badge ? BADGE_CONFIG[product.badge] : null
 
   return (
-    <Link href={`/${product.slug}`} className="group block">
-      <div className="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm transition hover:shadow-md hover:-translate-y-0.5">
+    <Link href={`/${product.slug}`} className="group flex h-full">
+      <div className="flex flex-col w-full overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm transition hover:shadow-md hover:-translate-y-0.5">
         {/* Image */}
-        <div className="relative aspect-square overflow-hidden bg-gray-50">
+        <div className="relative aspect-square overflow-hidden bg-gray-50 flex-shrink-0">
           {image ? (
             <Image
               src={image.url}
@@ -43,7 +43,7 @@ export function ProductCard({ product }: { product: ProductWithRelations }) {
         </div>
 
         {/* Info */}
-        <div className="p-4">
+        <div className="flex flex-col flex-1 p-4">
           {(product.brand || product.category) && (
             <p className="mb-1 truncate text-xs text-gray-400">
               {product.brand?.name}

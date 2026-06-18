@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, Package, Gavel, Wallet, Bell, LogOut } from 'lucide-react'
+import { LayoutDashboard, Package, Gavel, Wallet, Bell, LogOut, MapPin } from 'lucide-react'
 import { signOut } from 'next-auth/react'
 import type { SessionUser } from '@/lib/auth-types'
 
@@ -11,6 +11,7 @@ const NAV_ITEMS = [
   { href: '/dashboard/orders', label: 'Đơn Hàng Mua Hộ', icon: Package },
   { href: '/dashboard/auctions', label: 'Đấu Giá', icon: Gavel },
   { href: '/dashboard/wallet', label: 'Ví Tiền', icon: Wallet },
+  { href: '/dashboard/addresses', label: 'Địa Chỉ', icon: MapPin },
   { href: '/dashboard/notifications', label: 'Thông Báo', icon: Bell },
 ]
 

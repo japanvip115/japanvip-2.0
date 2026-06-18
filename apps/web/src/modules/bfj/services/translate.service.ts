@@ -1,13 +1,15 @@
+import { translate as googleFreeTranslate } from '@vitalets/google-translate-api'
 import { prisma } from '@japanvip/db'
+import { decryptIfNeeded } from '@/lib/encrypt'
 
-type Provider = 'anthropic' | 'google' | 'none'
+type Provider = 'anthropic' | 'google' | 'google-free' | 'none'
 
 async function getTranslationConfig(): Promise<{ provider: Provider; apiKey: string | null }> {
   try {
     const setting = await prisma.bfjSetting.findUnique({ where: { id: 'default' } })
     return {
       provider: (setting?.translationProvider ?? 'none') as Provider,
-      apiKey: setting?.translationApiKey ?? null,
+      apiKey: decryptIfNeeded(setting?.translationApiKey) ?? null,
     }
   } catch {
     return { provider: 'none', apiKey: null }
@@ -23,7 +25,7 @@ async function translateViaAnthropic(text: string, apiKey: string): Promise<stri
       'content-type': 'application/json',
     },
     body: JSON.stringify({
-      model: 'claude-haiku-4-5-20251001',
+      model: 'claude-haiku-4-5',
       max_tokens: 200,
       messages: [{
         role: 'user',
@@ -48,8 +50,12 @@ async function translateViaGoogle(text: string, apiKey: string): Promise<string>
   if (!res.ok) throw new Error(`Google Translate ${res.status}`)
   const data = await res.json()
   const raw: string = data?.data?.translations?.[0]?.translatedText ?? ''
-  // Decode HTML entities Google sometimes returns (e.g. &#39; → ')
   return raw.replace(/&#(\d+);/g, (_, n) => String.fromCharCode(Number(n))).trim() || text
+}
+
+async function translateViaGoogleFree(text: string): Promise<string> {
+  const result = await googleFreeTranslate(text, { from: 'auto', to: 'vi' })
+  return result.text?.trim() || text
 }
 
 export async function translateProductName(englishName: string): Promise<string> {
@@ -57,10 +63,11 @@ export async function translateProductName(englishName: string): Promise<string>
 
   try {
     const { provider, apiKey } = await getTranslationConfig()
-    if (provider === 'none' || !apiKey) return englishName
+    if (provider === 'none') return englishName
 
-    if (provider === 'anthropic') return await translateViaAnthropic(englishName, apiKey)
-    if (provider === 'google') return await translateViaGoogle(englishName, apiKey)
+    if (provider === 'anthropic' && apiKey) return await translateViaAnthropic(englishName, apiKey)
+    if (provider === 'google' && apiKey) return await translateViaGoogle(englishName, apiKey)
+    if (provider === 'google-free') return await translateViaGoogleFree(englishName)
   } catch {
     // silently fallback
   }

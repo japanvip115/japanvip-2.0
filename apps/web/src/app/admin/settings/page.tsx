@@ -48,6 +48,12 @@ const SETTING_ITEMS = [
     title: 'Google OAuth',
     desc: 'Cài đặt Client ID và Client Secret cho tính năng đăng nhập bằng Google',
   },
+  {
+    href: '/admin/settings/homepage',
+    icon: '🏠',
+    title: 'Nội Dung Trang Chủ',
+    desc: 'Chỉnh sửa tiêu đề, mô tả, nút CTA và các đoạn văn bản trên trang chủ',
+  },
 ]
 
 export default async function AdminSettingsPage() {

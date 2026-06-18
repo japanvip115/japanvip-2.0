@@ -7,7 +7,7 @@ const PROTECTED: { pattern: RegExp; role: string }[] = [
   { pattern: /^\/partner/, role: 'PARTNER' },
   { pattern: /^\/admin/, role: 'ADMIN' },
   { pattern: /^\/api\/v1\/users/, role: 'CUSTOMER' },
-  { pattern: /^\/api\/v1\/bfj/, role: 'CUSTOMER' },
+  { pattern: /^\/api\/v1\/bfj\/(?!parse-url|estimate)/, role: 'CUSTOMER' },
   { pattern: /^\/api\/v1\/auctions\/[^/]+\/bids/, role: 'CUSTOMER' },
   { pattern: /^\/api\/v1\/partner/, role: 'PARTNER' },
   { pattern: /^\/api\/v1\/admin/, role: 'ADMIN' },

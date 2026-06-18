@@ -25,10 +25,10 @@ export async function POST(req: NextRequest) {
       return apiError('Folder không hợp lệ', 400)
     }
     if (!ALLOWED_MIME_TYPES.includes(file.type)) {
-      return apiError('Chỉ chấp nhận JPG, PNG, WebP, AVIF', 400)
+      return apiError('Chỉ chấp nhận JPG, PNG, WebP, AVIF, MP4, WebM', 400)
     }
     if (file.size > MAX_UPLOAD_BYTES) {
-      return apiError('File tối đa 10MB', 400)
+      return apiError('File tối đa 100MB', 400)
     }
 
     const buffer = Buffer.from(await file.arrayBuffer())

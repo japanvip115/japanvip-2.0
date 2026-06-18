@@ -70,6 +70,24 @@ export default async function OrderDetailPage({ params }: Props) {
         </p>
       </div>
 
+      {/* Pending review banner */}
+      {order.status === 'PENDING_REVIEW' && (
+        <div className="mb-6 rounded-xl border border-amber-200 bg-amber-50 p-5">
+          <div className="flex items-start gap-3">
+            <span className="text-2xl">⏳</span>
+            <div>
+              <p className="font-semibold text-amber-800">Đơn hàng đang được xem xét</p>
+              <p className="mt-1 text-sm text-amber-700">
+                Nhân viên Japan VIP đang kiểm tra sản phẩm và tính phí chính xác. Chúng tôi sẽ thông báo qua email khi có kết quả (thường trong 1–4 giờ làm việc).
+              </p>
+              <p className="mt-2 text-xs text-amber-600">
+                Cần gấp? <a href="https://zalo.me/0988969896" target="_blank" rel="noopener noreferrer" className="underline font-medium">Chat Zalo</a> hoặc gọi <a href="tel:0988969896" className="underline font-medium">0988.969.896</a>
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Items */}
       <div className="mb-6 rounded-xl border bg-white p-6">
         <h2 className="mb-4 font-bold text-gray-900">Sản phẩm ({order.items.length})</h2>

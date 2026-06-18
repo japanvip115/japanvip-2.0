@@ -60,7 +60,7 @@ export async function createBfjOrder(input: CreateBfjOrderInput) {
     data: {
       orderNumber,
       customerId: input.customerId,
-      status: 'PENDING_REVIEW',
+      status: estimatedVnd ? 'AWAITING_DEPOSIT' : 'PENDING_REVIEW',
       exchangeRateId: rateData.id === 'fallback' ? null : rateData.id,
       serviceFeeRate: 0.08,
       estimatedJpy,

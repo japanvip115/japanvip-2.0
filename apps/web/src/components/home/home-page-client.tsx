@@ -262,17 +262,118 @@ function AuctionSlider({ auctions, router }: { auctions: AuctionItem[]; router: 
   )
 }
 
+type HeroBanner = { id: string; title: string; imageUrl: string; linkUrl: string | null }
+
+function isVideo(url: string) {
+  return /\.(mp4|webm|mov)(\?|$)/i.test(url)
+}
+
+function HeroBannerSlider({ banners, router }: { banners: HeroBanner[]; router: ReturnType<typeof useRouter> }) {
+  const [idx, setIdx] = useState(0)
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
+  const go = (i: number) => setIdx((i + banners.length) % banners.length)
+
+  useEffect(() => {
+    timerRef.current = setInterval(() => setIdx((p) => (p + 1) % banners.length), 5000)
+    return () => { if (timerRef.current) clearInterval(timerRef.current) }
+  }, [banners.length])
+
+  const banner = banners[idx]!
+  const video = isVideo(banner.imageUrl)
+
+  return (
+    <section style={{ position: 'relative', overflow: 'hidden', height: 480, cursor: banner.linkUrl ? 'pointer' : 'default' }}
+      onClick={() => { if (banner.linkUrl) router.push(banner.linkUrl) }}
+    >
+      {video ? (
+        <video
+          key={banner.imageUrl}
+          src={banner.imageUrl}
+          autoPlay muted loop playsInline
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+        />
+      ) : (
+        <img
+          key={banner.imageUrl}
+          src={banner.imageUrl}
+          alt={banner.title}
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+        />
+      )}
+      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 60%)' }} />
+      {banner.title && (
+        <div style={{ position: 'absolute', bottom: 48, left: 0, right: 0, textAlign: 'center', color: '#fff' }}>
+          <h2 style={{ fontSize: 28, fontWeight: 700, textShadow: '0 2px 8px rgba(0,0,0,0.6)' }}>{banner.title}</h2>
+        </div>
+      )}
+      {banners.length > 1 && (
+        <>
+          <button
+            onClick={(e) => { e.stopPropagation(); go(idx - 1) }}
+            style={{ position: 'absolute', left: 16, top: '50%', transform: 'translateY(-50%)', background: 'rgba(0,0,0,0.4)', border: 'none', borderRadius: 9999, width: 40, height: 40, color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+          >‹</button>
+          <button
+            onClick={(e) => { e.stopPropagation(); go(idx + 1) }}
+            style={{ position: 'absolute', right: 16, top: '50%', transform: 'translateY(-50%)', background: 'rgba(0,0,0,0.4)', border: 'none', borderRadius: 9999, width: 40, height: 40, color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+          >›</button>
+          <div style={{ position: 'absolute', bottom: 16, left: 0, right: 0, display: 'flex', justifyContent: 'center', gap: 8 }}>
+            {banners.map((_, i) => (
+              <button
+                key={i}
+                onClick={(e) => { e.stopPropagation(); go(i) }}
+                style={{ width: i === idx ? 24 : 8, height: 8, borderRadius: 4, border: 'none', background: i === idx ? '#fff' : 'rgba(255,255,255,0.5)', cursor: 'pointer', transition: 'all 0.3s', padding: 0 }}
+              />
+            ))}
+          </div>
+        </>
+      )}
+    </section>
+  )
+}
+
+const DEFAULTS: Record<string, string> = {
+  home_hero_title: 'Gia Dụng Nhật Bản',
+  home_hero_accent: 'Đẳng Cấp Vượt Trội',
+  home_hero_desc: 'Mua hàng trực tiếp từ Amazon Japan, Rakuten, Mercari với dịch vụ trọn gói – Uy tín – Minh bạch – Nhanh chóng',
+  home_bfj_title: 'Dán Link – Nhận Báo Giá Trong 30 Giây',
+  home_bfj_desc: 'Chỉ cần copy đường dẫn sản phẩm từ các sàn Nhật Bản, chúng tôi sẽ tự động hiển thị giá, phí vận chuyển và tổng chi phí về Việt Nam.',
+  home_products_title: 'Sản Phẩm Bán Chạy',
+  home_auctions_title: 'Phiên Đấu Giá Đang Diễn Ra',
+  home_why_title: 'Trải Nghiệm Mua Sắm Nhật Bản Đỉnh Cao',
+  home_why_desc: 'Chúng tôi kết hợp công nghệ hiện đại với dịch vụ tận tâm để mang đến trải nghiệm mua hàng Nhật Bản tốt nhất cho người Việt.',
+  home_why_feat1_title: 'Thanh Toán An Toàn',
+  home_why_feat1_desc: 'Thanh toán đặt cọc qua ngân hàng bảo mật, hoàn tiền nếu không giao được hàng.',
+  home_why_feat2_title: 'Ảnh Thực Tế 100%',
+  home_why_feat2_desc: 'Chụp ảnh thực tế sản phẩm trước khi giao, không dùng ảnh quảng cáo.',
+  home_why_feat3_title: 'Đội Ngũ Tại Nhật',
+  home_why_feat3_desc: 'Nhân viên túc trực tại Nhật Bản, hỗ trợ mua hàng theo yêu cầu đặc biệt.',
+  home_cta_title: 'Sẵn Sàng Trải Nghiệm Gia Dụng Nhật Bản?',
+  home_cta_desc: 'Đăng ký ngay hôm nay để nhận ưu đãi phí dịch vụ 0% cho đơn hàng đầu tiên',
+  home_cta_btn1: 'Mua Hàng Nhật Ngay',
+  home_cta_btn2: 'Tham Gia Đấu Giá',
+  home_stat1_num: '5', home_stat1_suffix: '+', home_stat1_label: 'Năm Kinh Nghiệm',
+  home_stat2_num: '15', home_stat2_suffix: 'K+', home_stat2_label: 'Đơn Hàng Thành Công',
+  home_stat3_num: '98', home_stat3_suffix: '%', home_stat3_label: 'Khách Hài Lòng',
+  home_stat4_num: '500', home_stat4_suffix: '+', home_stat4_label: 'Thương Hiệu Nhật',
+}
+
 export default function HomePageClient({
   categories,
   products,
   auctions,
+  content = {},
+  heroBanners = [],
 }: {
   categories: CategoryItem[]
   products: ProductItem[]
   auctions: AuctionItem[]
+  content?: Record<string, string>
+  heroBanners?: HeroBanner[]
 }) {
   const router = useRouter()
   const nav = (page: string) => (window as any).navigate?.(page)
+  const t = (key: string) => content[key] || DEFAULTS[key] || ''
 
   return (
     <>
@@ -280,7 +381,8 @@ export default function HomePageClient({
 
         {/* ████ HOME ████ */}
         <div className="page active" id="page-home">
-          <section className="hero">
+          {heroBanners.length > 0 && <HeroBannerSlider banners={heroBanners} router={router} />}
+          <section className="hero" style={heroBanners.length > 0 ? { display: 'none' } : undefined}>
             <div className="hero-slides">
               <div className="hero-slide active" id="slide-1">
                 <div className="hero-bg" style={{background:'linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%)'}}>
@@ -289,8 +391,8 @@ export default function HomePageClient({
                 <div className="container">
                   <div className="hero-content">
                     <div className="hero-badge">✦ Nhật Bản Chính Hãng</div>
-                    <h1 className="hero-title">Gia Dụng Nhật Bản<br /><span className="hero-accent">Đẳng Cấp Vượt Trội</span></h1>
-                    <p className="hero-desc">Mua hàng trực tiếp từ Amazon Japan, Rakuten, Mercari với dịch vụ trọn gói – Uy tín – Minh bạch – Nhanh chóng</p>
+                    <h1 className="hero-title">{t('home_hero_title')}<br /><span className="hero-accent" style={{display:'block', marginTop:'0.35em'}}>{t('home_hero_accent')}</span></h1>
+                    <p className="hero-desc">{t('home_hero_desc')}</p>
                     <div className="hero-actions">
                       <button className="btn-primary" onClick={() => router.push('/mua-ho')}>Mua Hàng Nhật Ngay</button>
                       <button className="btn-outline-white" onClick={() => router.push('/dau-gia')}>Xem Đấu Giá Hôm Nay</button>
@@ -348,8 +450,8 @@ export default function HomePageClient({
               <div className="url-tool-wrapper">
                 <div className="url-tool-left">
                   <span className="section-label">Dịch Vụ Mua Hộ</span>
-                  <h2>Dán Link – Nhận Báo Giá Trong 30 Giây</h2>
-                  <p>Chỉ cần copy đường dẫn sản phẩm từ các sàn Nhật Bản, chúng tôi sẽ tự động hiển thị giá, phí vận chuyển và tổng chi phí về Việt Nam.</p>
+                  <h2>{t('home_bfj_title')}</h2>
+                  <p>{t('home_bfj_desc')}</p>
                   <div className="supported-sites">
                     <span className="site-badge amazon">Amazon JP</span>
                     <span className="site-badge rakuten">Rakuten</span>
@@ -412,7 +514,7 @@ export default function HomePageClient({
               <div className="section-header">
                 <div>
                   <span className="section-label">Đấu Giá Trực Tiếp</span>
-                  <h2 style={{whiteSpace:'nowrap', fontSize:'1.5rem'}}>Phiên Đấu Giá Đang Diễn Ra</h2>
+                  <h2 style={{whiteSpace:'nowrap', fontSize:'1.5rem'}}>{t('home_auctions_title')}</h2>
                 </div>
                 <button onClick={() => router.push('/dau-gia')} className="see-all-link">Xem Tất Cả <span>→</span></button>
               </div>
@@ -430,7 +532,7 @@ export default function HomePageClient({
           <section className="featured-section">
             <div className="container">
               <div className="section-header">
-                <div><span className="section-label">Nổi Bật</span><h2 style={{fontSize:'1.5rem'}}>Sản Phẩm Bán Chạy</h2></div>
+                <div><span className="section-label">Nổi Bật</span><h2 style={{fontSize:'1.5rem'}}>{t('home_products_title')}</h2></div>
                 <button onClick={() => router.push('/san-pham')} className="see-all-link">Xem Tất Cả <span>→</span></button>
               </div>
               {products.length === 0 ? (
@@ -443,7 +545,7 @@ export default function HomePageClient({
                     <div key={p.id} className="product-card" onClick={() => router.push(`/${p.slug}`)}>
                       <div className="product-img">
                         {p.images[0]
-                          ? <img src={p.images[0].url} alt={p.name} style={{width:'100%',height:'100%',objectFit:'cover'}} />
+                          ? <img src={p.images[0].url} alt={p.name} style={{width:'100%',height:'100%',objectFit:'contain',padding:'12px',background:'#fff'}} />
                           : <div className="product-img-placeholder" style={{background: CAT_GRADIENTS[i % CAT_GRADIENTS.length]}}><span style={{fontSize:'3rem'}}>{getCatEmoji(p.category?.name ?? p.name)}</span></div>
                         }
 
@@ -478,13 +580,13 @@ export default function HomePageClient({
               <div className="why-inner">
                 <div className="why-left">
                   <span className="section-label">Tại Sao Chọn JapanVip</span>
-                  <h2 style={{fontSize:'1.5rem'}}>Trải Nghiệm Mua Sắm Nhật Bản Đỉnh Cao</h2>
-                  <p>Chúng tôi kết hợp công nghệ hiện đại với dịch vụ tận tâm để mang đến trải nghiệm mua hàng Nhật Bản tốt nhất cho người Việt.</p>
+                  <h2 style={{fontSize:'1.5rem'}}>{t('home_why_title')}</h2>
+                  <p>{t('home_why_desc')}</p>
                   <div className="why-features">
                     {[
-                      {icon:'🔐',title:'Thanh Toán An Toàn',desc:'Thanh toán đặt cọc qua ngân hàng bảo mật, hoàn tiền nếu không giao được hàng.'},
-                      {icon:'📸',title:'Ảnh Thực Tế 100%',desc:'Chụp ảnh thực tế sản phẩm trước khi giao, không dùng ảnh quảng cáo.'},
-                      {icon:'🌐',title:'Đội Ngũ Tại Nhật',desc:'Nhân viên túc trực tại Nhật Bản, hỗ trợ mua hàng theo yêu cầu đặc biệt.'},
+                      {icon:'🔐',title:t('home_why_feat1_title'),desc:t('home_why_feat1_desc')},
+                      {icon:'📸',title:t('home_why_feat2_title'),desc:t('home_why_feat2_desc')},
+                      {icon:'🌐',title:t('home_why_feat3_title'),desc:t('home_why_feat3_desc')},
                     ].map(f => (
                       <div key={f.title} className="why-feat">
                         <div className="why-feat-icon">{f.icon}</div>
@@ -496,17 +598,17 @@ export default function HomePageClient({
                 </div>
                 <div className="why-right">
                   <div className="why-stats-grid">
-                    {[
-                      {num:'5+',label:'Năm Kinh Nghiệm',highlight:false},
-                      {num:'15K+',label:'Đơn Hàng Thành Công',highlight:true},
-                      {num:'98%',label:'Khách Hài Lòng',highlight:false},
-                      {num:'500+',label:'Thương Hiệu Nhật',highlight:true},
-                    ].map(s => (
-                      <div key={s.label} className={`why-stat${s.highlight?' highlight':''}`}>
-                        <div className="why-stat-num">{s.num}</div>
-                        <div className="why-stat-label">{s.label}</div>
-                      </div>
-                    ))}
+                    {([1,2,3,4] as const).map((n, i) => {
+                      const end = parseFloat(t(`home_stat${n}_num`)) || 0
+                      const suffix = t(`home_stat${n}_suffix`)
+                      const label = t(`home_stat${n}_label`)
+                      return (
+                        <div key={n} className={`why-stat${i % 2 === 1 ? ' highlight' : ''}`}>
+                          <div className="why-stat-num"><CountUp end={end} suffix={suffix} /></div>
+                          <div className="why-stat-label">{label}</div>
+                        </div>
+                      )
+                    })}
                   </div>
                 </div>
               </div>
@@ -543,12 +645,12 @@ export default function HomePageClient({
             <div className="container">
               <div className="cta-inner">
                 <div className="cta-text">
-                  <h2>Sẵn Sàng Trải Nghiệm Gia Dụng Nhật Bản?</h2>
-                  <p>Đăng ký ngay hôm nay để nhận ưu đãi phí dịch vụ 0% cho đơn hàng đầu tiên</p>
+                  <h2>{t('home_cta_title')}</h2>
+                  <p>{t('home_cta_desc')}</p>
                 </div>
                 <div className="cta-actions">
-                  <button className="btn-primary large" onClick={() => router.push('/mua-ho')}>Mua Hàng Nhật Ngay</button>
-                  <button className="btn-outline-white large" onClick={() => router.push('/dau-gia')}>Tham Gia Đấu Giá</button>
+                  <button className="btn-primary large" onClick={() => router.push('/mua-ho')}>{t('home_cta_btn1')}</button>
+                  <button className="btn-outline-white large" onClick={() => router.push('/dau-gia')}>{t('home_cta_btn2')}</button>
                 </div>
               </div>
             </div>

@@ -4,13 +4,14 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { TrendingUp, TrendingDown, Minus, RefreshCw, CheckCircle2, AlertCircle, Plus, Trash2, Loader2 } from 'lucide-react'
 
-type Tier = {
+type FreightRate = {
   id?: string
-  label: string
+  minWeightKg: number
   maxWeightKg: number | null
-  priceVnd: number
-  actualCostVnd: number
+  regularPricePerKg: number
+  difficultPricePerKg: number
   estimatedDays: string
+  sortOrder: number
 }
 
 type RateHistory = {
@@ -21,11 +22,14 @@ type RateHistory = {
 }
 
 type Props = {
+  freightRates: FreightRate[]
   setting: {
+
     serviceFeeRate: number
     domesticShippingJpy: number
     surchargeRate: number
     depositRate: number
+    profitMarginRate: number
     translationProvider: string
     translationApiKeyMasked: string
     smtpHost: string
@@ -35,7 +39,6 @@ type Props = {
     smtpFrom: string
     smtpSecure: boolean
   }
-  tiers: Tier[]
   currentRate: number
   rateHistory: RateHistory[]
 }
@@ -48,7 +51,7 @@ function fmt(n: number) {
   return new Intl.NumberFormat('vi-VN').format(n)
 }
 
-export function BfjSettingsForm({ setting, tiers: initialTiers, currentRate, rateHistory }: Props) {
+export function BfjSettingsForm({ setting, freightRates: initialFreightRates, currentRate, rateHistory }: Props) {
   const router = useRouter()
 
   // Exchange rate
@@ -61,9 +64,46 @@ export function BfjSettingsForm({ setting, tiers: initialTiers, currentRate, rat
   const [domesticShippingJpy, setDomesticShippingJpy] = useState(setting.domesticShippingJpy)
   const [surchargeRate, setSurchargeRate] = useState(setting.surchargeRate * 100)
   const [depositRate, setDepositRate] = useState(setting.depositRate * 100)
+  const [profitMarginRate, setProfitMarginRate] = useState(setting.profitMarginRate * 100)
 
-  // Shipping tiers
-  const [tiers, setTiers] = useState<Tier[]>(initialTiers)
+  // Freight rates (bảng cước per kg)
+  const [freightRates, setFreightRates] = useState<FreightRate[]>(initialFreightRates)
+  const [freightSaving, setFreightSaving] = useState(false)
+  const [freightMsg, setFreightMsg] = useState<{ ok: boolean; text: string } | null>(null)
+
+  function updateFreight(index: number, field: keyof FreightRate, value: string | number | null) {
+    setFreightRates((prev) => prev.map((r, i) => i === index ? { ...r, [field]: value } : r))
+  }
+
+  function addFreightRow() {
+    setFreightRates((prev) => [
+      ...prev,
+      { minWeightKg: 0, maxWeightKg: null, regularPricePerKg: 0, difficultPricePerKg: 0, estimatedDays: '2-5 ngày', sortOrder: prev.length },
+    ])
+  }
+
+  async function handleSaveFreight() {
+    setFreightSaving(true)
+    setFreightMsg(null)
+    try {
+      const res = await fetch('/api/v1/admin/bfj-freight-rates', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(freightRates.map((r, i) => ({ ...r, sortOrder: i }))),
+      })
+      const data = await res.json()
+      if (data.success) {
+        setFreightMsg({ ok: true, text: 'Đã lưu bảng cước' })
+        router.refresh()
+      } else {
+        setFreightMsg({ ok: false, text: data.error ?? 'Lỗi lưu' })
+      }
+    } catch {
+      setFreightMsg({ ok: false, text: 'Không thể kết nối' })
+    } finally {
+      setFreightSaving(false)
+    }
+  }
 
   // Translation settings
   const [translationProvider, setTranslationProvider] = useState(setting.translationProvider)
@@ -87,17 +127,6 @@ export function BfjSettingsForm({ setting, tiers: initialTiers, currentRate, rat
   // Save state
   const [saving, setSaving] = useState(false)
   const [saveMsg, setSaveMsg] = useState<{ ok: boolean; text: string } | null>(null)
-
-  function updateTier(index: number, field: keyof Tier, value: string | number | null) {
-    setTiers((prev) => prev.map((t, i) => i === index ? { ...t, [field]: value } : t))
-  }
-
-  function addTier() {
-    setTiers((prev) => [
-      ...prev,
-      { label: '', maxWeightKg: null, priceVnd: 0, actualCostVnd: 0, estimatedDays: '7–10 ngày' },
-    ])
-  }
 
   async function handleUpdateRate() {
     const r = parseFloat(newRate)
@@ -128,7 +157,7 @@ export function BfjSettingsForm({ setting, tiers: initialTiers, currentRate, rat
     setSaving(true)
     setSaveMsg(null)
     try {
-      const [r1, r2] = await Promise.all([
+      const [r1] = await Promise.all([
         fetch('/api/v1/admin/bfj-settings', {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
@@ -137,6 +166,7 @@ export function BfjSettingsForm({ setting, tiers: initialTiers, currentRate, rat
             domesticShippingJpy,
             surchargeRate: surchargeRate / 100,
             depositRate: depositRate / 100,
+            profitMarginRate: profitMarginRate / 100,
             translationProvider,
             translationApiKey,
             smtpHost: smtpHost || null,
@@ -147,13 +177,8 @@ export function BfjSettingsForm({ setting, tiers: initialTiers, currentRate, rat
             smtpSecure,
           }),
         }),
-        fetch('/api/v1/admin/bfj-shipping-tiers', {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(tiers),
-        }),
       ])
-      if (r1.ok && r2.ok) {
+      if (r1.ok) {
         setSaveMsg({ ok: true, text: 'Đã lưu tất cả cài đặt' })
         router.refresh()
       } else {
@@ -400,6 +425,20 @@ export function BfjSettingsForm({ setting, tiers: initialTiers, currentRate, rat
             </div>
             <p className="mt-1 text-xs text-gray-600">% đặt cọc khi tạo đơn</p>
           </div>
+
+          <div className="sm:col-span-2">
+            <label className={LABEL_CLS}>Lợi nhuận mục tiêu (%)</label>
+            <div className="flex items-center rounded-lg border border-yellow-600/40 bg-yellow-900/20 px-3 py-2 focus-within:border-yellow-500">
+              <input
+                type="number" min="0" max="100" step="0.5"
+                value={profitMarginRate}
+                onChange={(e) => setProfitMarginRate(Number(e.target.value))}
+                className="flex-1 bg-transparent text-sm text-yellow-200 outline-none tabular-nums"
+              />
+              <span className="text-xs text-yellow-600">%</span>
+            </div>
+            <p className="mt-1 text-xs text-gray-600">Markup nội bộ trên giá sản phẩm — không hiển thị thành dòng riêng cho khách</p>
+          </div>
         </div>
 
         {/* Preview row */}
@@ -408,21 +447,22 @@ export function BfjSettingsForm({ setting, tiers: initialTiers, currentRate, rat
           <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs">
             <span className="text-gray-400">Phí mua hộ: <span className="text-white">{fmt(Math.round(10000 * currentRate * serviceFeeRate / 100))}₫</span></span>
             {surchargeRate > 0 && <span className="text-gray-400">Phụ thu: <span className="text-white">{fmt(Math.round(10000 * currentRate * surchargeRate / 100))}₫</span></span>}
+            {profitMarginRate > 0 && <span className="text-yellow-500">Lợi nhuận: <span className="text-yellow-300">{fmt(Math.round(10000 * currentRate * profitMarginRate / 100))}₫</span></span>}
             {domesticShippingJpy > 0 && <span className="text-gray-400">Nội địa JP: <span className="text-white">¥{domesticShippingJpy}</span></span>}
           </div>
         </div>
       </div>
 
-      {/* ── Section 3: Bảng cước vận chuyển ── */}
+      {/* ── Section 3: Bảng cước vận chuyển JP → HN (per kg) ── */}
       <div className="rounded-xl border border-gray-700 bg-gray-800/60 overflow-hidden">
         <div className="flex items-center justify-between border-b border-gray-700 px-5 py-3.5">
           <div>
-            <h2 className="text-sm font-semibold text-gray-200">Bảng cước vận chuyển JP → VN</h2>
-            <p className="mt-0.5 text-xs text-gray-500">Giá thu khách vs giá thực JapanVIP trả — margin = lợi nhuận ship</p>
+            <h2 className="text-sm font-semibold text-gray-200">✈ Bảng Cước Vận Chuyển JP → HN (per kg)</h2>
+            <p className="mt-0.5 text-xs text-gray-500">Giá/kg theo trọng lượng — Hàng Thường vs Hàng Khó</p>
           </div>
           <button
             type="button"
-            onClick={addTier}
+            onClick={addFreightRow}
             className="flex items-center gap-1.5 rounded-lg border border-dashed border-gray-600 px-3 py-1.5 text-xs text-gray-400 hover:border-gray-400 hover:text-gray-200 transition-colors cursor-pointer"
           >
             <Plus className="h-3.5 w-3.5" />
@@ -434,109 +474,98 @@ export function BfjSettingsForm({ setting, tiers: initialTiers, currentRate, rat
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-gray-700 bg-gray-900/60">
-                <th className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Mức</th>
-                <th className="px-3 py-2.5 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Max (kg)</th>
+                <th className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Từ (kg)</th>
+                <th className="px-3 py-2.5 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Đến (kg)</th>
+                <th className="px-3 py-2.5 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Hàng Thường (₫/kg)</th>
+                <th className="px-3 py-2.5 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Hàng Khó (₫/kg)</th>
                 <th className="px-3 py-2.5 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Thời gian</th>
-                <th className="px-3 py-2.5 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Giá thu khách</th>
-                <th className="px-3 py-2.5 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Giá thực JVP trả</th>
-                <th className="px-3 py-2.5 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Margin</th>
                 <th className="px-3 py-2.5"></th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-700/50">
-              {tiers.map((tier, i) => {
-                const margin = tier.priceVnd - tier.actualCostVnd
-                const marginColor = margin > 0 ? 'text-green-400' : margin < 0 ? 'text-red-400' : 'text-gray-500'
-                return (
-                  <tr key={i} className="hover:bg-gray-700/20 transition-colors">
-                    <td className="px-4 py-2.5">
-                      <input
-                        value={tier.label}
-                        onChange={(e) => updateTier(i, 'label', e.target.value)}
-                        placeholder="Tên mức cước"
-                        className="w-full rounded-md border border-gray-700 bg-gray-900 px-2 py-1.5 text-xs text-gray-100 outline-none focus:border-red-500"
-                      />
-                    </td>
-                    <td className="px-3 py-2.5">
-                      <input
-                        type="number"
-                        value={tier.maxWeightKg ?? ''}
-                        onChange={(e) => updateTier(i, 'maxWeightKg', e.target.value ? Number(e.target.value) : null)}
-                        placeholder="∞"
-                        className="w-16 rounded-md border border-gray-700 bg-gray-900 px-2 py-1.5 text-xs text-gray-100 outline-none focus:border-red-500 tabular-nums"
-                      />
-                    </td>
-                    <td className="px-3 py-2.5">
-                      <input
-                        value={tier.estimatedDays}
-                        onChange={(e) => updateTier(i, 'estimatedDays', e.target.value)}
-                        className="w-24 rounded-md border border-gray-700 bg-gray-900 px-2 py-1.5 text-xs text-gray-100 outline-none focus:border-red-500"
-                      />
-                    </td>
-                    <td className="px-3 py-2.5">
-                      <div className="space-y-0.5">
-                        <input
-                          type="number"
-                          value={tier.priceVnd}
-                          onChange={(e) => updateTier(i, 'priceVnd', Number(e.target.value))}
-                          className="w-28 rounded-md border border-gray-700 bg-gray-900 px-2 py-1.5 text-xs text-gray-100 outline-none focus:border-red-500 tabular-nums"
-                        />
-                        {tier.priceVnd > 0 && <p className="text-[10px] text-gray-500">{fmt(tier.priceVnd)}₫</p>}
-                      </div>
-                    </td>
-                    <td className="px-3 py-2.5">
-                      <div className="space-y-0.5">
-                        <input
-                          type="number"
-                          value={tier.actualCostVnd}
-                          onChange={(e) => updateTier(i, 'actualCostVnd', Number(e.target.value))}
-                          placeholder="0"
-                          className="w-28 rounded-md border border-gray-700 bg-gray-900 px-2 py-1.5 text-xs text-gray-100 outline-none focus:border-yellow-500 tabular-nums"
-                        />
-                        {tier.actualCostVnd > 0 && <p className="text-[10px] text-gray-500">{fmt(tier.actualCostVnd)}₫</p>}
-                      </div>
-                    </td>
-                    <td className="px-3 py-2.5">
-                      <div className={`text-xs font-semibold tabular-nums ${marginColor}`}>
-                        {margin >= 0 ? '+' : ''}{fmt(margin)}₫
-                      </div>
-                      {tier.priceVnd > 0 && tier.actualCostVnd > 0 && (
-                        <p className="text-[10px] text-gray-600">
-                          {((margin / tier.priceVnd) * 100).toFixed(1)}%
-                        </p>
-                      )}
-                    </td>
-                    <td className="px-3 py-2.5">
-                      <button
-                        type="button"
-                        onClick={() => setTiers((prev) => prev.filter((_, j) => j !== i))}
-                        className="rounded-md p-1.5 text-gray-600 hover:bg-red-500/15 hover:text-red-400 transition-colors cursor-pointer"
-                      >
-                        <Trash2 className="h-3.5 w-3.5" />
-                      </button>
-                    </td>
-                  </tr>
-                )
-              })}
-            </tbody>
-            {tiers.length > 0 && (
-              <tfoot>
-                <tr className="border-t border-gray-700 bg-gray-900/40">
-                  <td colSpan={5} className="px-4 py-2 text-right text-xs text-gray-500">Tổng margin ship:</td>
-                  <td className="px-3 py-2">
-                    <span className="text-xs font-semibold text-green-400 tabular-nums">
-                      avg {tiers.length > 0 ? fmt(Math.round(tiers.reduce((s, t) => s + (t.priceVnd - t.actualCostVnd), 0) / tiers.length)) : 0}₫/đơn
-                    </span>
+              {freightRates.map((rate, i) => (
+                <tr key={i} className="hover:bg-gray-700/20 transition-colors">
+                  <td className="px-4 py-2.5">
+                    <input
+                      type="number" min="0" step="1"
+                      value={rate.minWeightKg}
+                      onChange={(e) => updateFreight(i, 'minWeightKg', Number(e.target.value))}
+                      className="w-20 rounded-md border border-gray-700 bg-gray-900 px-2 py-1.5 text-xs text-gray-100 outline-none focus:border-blue-500 tabular-nums"
+                    />
                   </td>
-                  <td></td>
+                  <td className="px-3 py-2.5">
+                    <input
+                      type="number" min="0" step="1"
+                      value={rate.maxWeightKg ?? ''}
+                      onChange={(e) => updateFreight(i, 'maxWeightKg', e.target.value ? Number(e.target.value) : null)}
+                      placeholder="∞"
+                      className="w-20 rounded-md border border-gray-700 bg-gray-900 px-2 py-1.5 text-xs text-gray-100 outline-none focus:border-blue-500 tabular-nums"
+                    />
+                  </td>
+                  <td className="px-3 py-2.5">
+                    <div className="space-y-0.5">
+                      <input
+                        type="number" min="0" step="1000"
+                        value={rate.regularPricePerKg}
+                        onChange={(e) => updateFreight(i, 'regularPricePerKg', Number(e.target.value))}
+                        className="w-28 rounded-md border border-gray-700 bg-gray-900 px-2 py-1.5 text-xs text-gray-100 outline-none focus:border-green-500 tabular-nums"
+                      />
+                      {rate.regularPricePerKg > 0 && <p className="text-[10px] text-gray-500">{fmt(rate.regularPricePerKg)}₫</p>}
+                    </div>
+                  </td>
+                  <td className="px-3 py-2.5">
+                    <div className="space-y-0.5">
+                      <input
+                        type="number" min="0" step="1000"
+                        value={rate.difficultPricePerKg}
+                        onChange={(e) => updateFreight(i, 'difficultPricePerKg', Number(e.target.value))}
+                        className="w-28 rounded-md border border-gray-700 bg-gray-900 px-2 py-1.5 text-xs text-gray-100 outline-none focus:border-orange-500 tabular-nums"
+                      />
+                      {rate.difficultPricePerKg > 0 && <p className="text-[10px] text-gray-500">{fmt(rate.difficultPricePerKg)}₫</p>}
+                    </div>
+                  </td>
+                  <td className="px-3 py-2.5">
+                    <input
+                      value={rate.estimatedDays}
+                      onChange={(e) => updateFreight(i, 'estimatedDays', e.target.value)}
+                      className="w-24 rounded-md border border-gray-700 bg-gray-900 px-2 py-1.5 text-xs text-gray-100 outline-none focus:border-blue-500"
+                    />
+                  </td>
+                  <td className="px-3 py-2.5">
+                    <button
+                      type="button"
+                      onClick={() => setFreightRates((prev) => prev.filter((_, j) => j !== i))}
+                      className="rounded-md p-1.5 text-gray-600 hover:bg-red-500/15 hover:text-red-400 transition-colors cursor-pointer"
+                    >
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </button>
+                  </td>
                 </tr>
-              </tfoot>
-            )}
+              ))}
+            </tbody>
           </table>
+        </div>
+
+        <div className="flex items-center gap-3 border-t border-gray-700 px-5 py-3">
+          <button
+            type="button"
+            onClick={handleSaveFreight}
+            disabled={freightSaving}
+            className="flex cursor-pointer items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-blue-500 disabled:opacity-50"
+          >
+            {freightSaving ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : null}
+            {freightSaving ? 'Đang lưu...' : 'Lưu bảng cước'}
+          </button>
+          {freightMsg && (
+            <div className={`flex items-center gap-1.5 text-xs ${freightMsg.ok ? 'text-green-400' : 'text-red-400'}`}>
+              {freightMsg.ok ? <CheckCircle2 className="h-3.5 w-3.5" /> : <AlertCircle className="h-3.5 w-3.5" />}
+              {freightMsg.text}
+            </div>
+          )}
         </div>
       </div>
 
-      {/* ── Section 4: Translation API ── */}
+      {/* ── Section 5: Translation API ── */}
       <div className="rounded-xl border border-gray-700 bg-gray-800/60 overflow-hidden">
         <div className="border-b border-gray-700 px-5 py-3">
           <h2 className="text-sm font-semibold text-gray-200">🌐 Tích Hợp Dịch Thuật</h2>
@@ -550,7 +579,8 @@ export function BfjSettingsForm({ setting, tiers: initialTiers, currentRate, rat
               {([
                 { value: 'none', label: 'Không dịch' },
                 { value: 'anthropic', label: 'Anthropic Claude' },
-                { value: 'google', label: 'Google Translate' },
+                { value: 'google-free', label: 'Google (Miễn phí)' },
+                { value: 'google', label: 'Google Cloud API' },
               ] as const).map((opt) => (
                 <button
                   key={opt.value}
@@ -568,7 +598,28 @@ export function BfjSettingsForm({ setting, tiers: initialTiers, currentRate, rat
             </div>
           </div>
 
-          {translationProvider !== 'none' && (
+          {translationProvider === 'google-free' && (
+            <div className="rounded-lg border border-green-700/40 bg-green-900/20 px-4 py-3">
+              <p className="text-xs text-green-400 font-medium mb-1">✓ Không cần API Key — miễn phí hoàn toàn</p>
+              <p className="text-xs text-gray-500">Dùng Google Translate unofficial API. Phù hợp dịch tên sản phẩm lẻ. Nếu server bị rate-limit thì chuyển sang Google Cloud API.</p>
+              <button
+                type="button"
+                onClick={handleTestTranslation}
+                disabled={testingTranslation}
+                className="mt-2 flex items-center gap-1.5 rounded-lg border border-gray-600 bg-gray-900 px-4 py-2 text-xs font-medium text-gray-300 transition hover:border-gray-400 disabled:opacity-40 cursor-pointer disabled:cursor-not-allowed"
+              >
+                {testingTranslation ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : null}
+                Test thử
+              </button>
+              {testResult && (
+                <div className={`mt-2 rounded-lg px-3 py-2 text-xs ${testResult.ok ? 'bg-green-500/10 text-green-400' : 'bg-red-500/10 text-red-400'}`}>
+                  {testResult.text}
+                </div>
+              )}
+            </div>
+          )}
+
+          {(translationProvider === 'anthropic' || translationProvider === 'google') && (
             <div>
               <label className={LABEL_CLS}>
                 {translationProvider === 'anthropic' ? 'Anthropic API Key' : 'Google Cloud API Key'}
@@ -593,7 +644,6 @@ export function BfjSettingsForm({ setting, tiers: initialTiers, currentRate, rat
                 </button>
               </div>
 
-              {/* Provider instructions */}
               <p className="mt-1.5 text-xs text-gray-500">
                 {translationProvider === 'anthropic'
                   ? 'Lấy tại console.anthropic.com → API Keys. Model sử dụng: claude-haiku (nhanh, rẻ).'
@@ -610,7 +660,7 @@ export function BfjSettingsForm({ setting, tiers: initialTiers, currentRate, rat
         </div>
       </div>
 
-      {/* ── Section 5: Email SMTP ── */}
+      {/* ── Section 6: Email SMTP ── */}
       <div className="rounded-xl border border-gray-700 bg-gray-800/60 overflow-hidden">
         <div className="border-b border-gray-700 px-5 py-3">
           <h2 className="text-sm font-semibold text-gray-200">📧 Email SMTP</h2>

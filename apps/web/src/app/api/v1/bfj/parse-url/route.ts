@@ -11,9 +11,8 @@ const schema = z.object({
 })
 
 export async function POST(req: NextRequest) {
-  const session = await auth()
-  if (!session) return apiError('Unauthorized', 401)
-
+  // Public endpoint — auth not required to view product info
+  // Price/estimate and order endpoints require auth separately
   const { allowed } = await rateLimit(req, 'bfj:parse-url')
   if (!allowed) return apiError('Quá nhiều yêu cầu, vui lòng thử lại sau', 429)
 

@@ -58,7 +58,6 @@ export default async function AdminBannersPage() {
                       src={banner.imageUrl}
                       alt={banner.title}
                       className="h-12 w-20 rounded object-cover bg-gray-700"
-                      onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
                     />
                     <div>
                       <div className="text-sm font-medium text-gray-300">{banner.title}</div>

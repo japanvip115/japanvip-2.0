@@ -41,7 +41,7 @@ export async function PUT(req: Request) {
   try {
     const body = await req.json()
     const {
-      serviceFeeRate, domesticShippingJpy, surchargeRate, depositRate,
+      serviceFeeRate, domesticShippingJpy, surchargeRate, depositRate, profitMarginRate,
       translationProvider, translationApiKey,
       smtpHost, smtpPort, smtpUser, smtpPass, smtpFrom, smtpSecure,
     } = body
@@ -56,12 +56,13 @@ export async function PUT(req: Request) {
         domesticShippingJpy: domesticShippingJpy ?? 0,
         surchargeRate: surchargeRate ?? 0,
         depositRate: depositRate ?? 0.30,
+        profitMarginRate: profitMarginRate ?? 0,
         translationProvider: translationProvider ?? 'none',
-        translationApiKey: translationApiKey ? encryptIfNeeded(translationApiKey) : null,
+        translationApiKey: (!isMasked(translationApiKey) && translationApiKey) ? encryptIfNeeded(translationApiKey) : null,
         smtpHost: smtpHost || null,
         smtpPort: smtpPort ?? 465,
         smtpUser: smtpUser || null,
-        smtpPass: smtpPass ? encryptIfNeeded(smtpPass) : null,
+        smtpPass: (!isMasked(smtpPass) && smtpPass) ? encryptIfNeeded(smtpPass) : null,
         smtpFrom: smtpFrom || null,
         smtpSecure: smtpSecure ?? true,
       },
@@ -70,6 +71,7 @@ export async function PUT(req: Request) {
         ...(domesticShippingJpy !== undefined && { domesticShippingJpy }),
         ...(surchargeRate !== undefined && { surchargeRate }),
         ...(depositRate !== undefined && { depositRate }),
+        ...(profitMarginRate !== undefined && { profitMarginRate }),
         ...(translationProvider !== undefined && { translationProvider }),
         ...(!isMasked(translationApiKey) && translationApiKey !== undefined && {
           translationApiKey: translationApiKey ? encryptIfNeeded(translationApiKey) : null,

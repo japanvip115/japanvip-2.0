@@ -106,7 +106,7 @@ export default async function AdminAuctionDetailPage({ params }: Props) {
             <div className="flex gap-4">
               {primaryImage && (
                 <div className="relative h-28 w-28 flex-shrink-0 overflow-hidden rounded-xl border border-gray-700">
-                  <Image src={primaryImage.url} alt={auction.product.name} fill className="object-contain" />
+                  <Image src={primaryImage.url} alt={auction.product.name} fill className="object-contain" sizes="(max-width:768px) 100vw, 50vw" unoptimized={!primaryImage.url.includes('media.japanvip.vn')} />
                 </div>
               )}
               <div className="min-w-0 space-y-1.5">

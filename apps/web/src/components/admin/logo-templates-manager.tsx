@@ -124,7 +124,7 @@ export function LogoTemplatesManager() {
             {templates.map((t) => (
               <div key={t.id} className="flex items-center gap-4 rounded-lg border border-gray-700 bg-gray-900/50 p-3">
                 <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-lg border border-gray-700 bg-white">
-                  <Image src={t.url} alt={t.name} fill className="object-contain p-1" unoptimized />
+                  <Image src={t.url} alt={t.name} fill className="object-contain p-1" sizes="64px" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-gray-200">{t.name}</p>

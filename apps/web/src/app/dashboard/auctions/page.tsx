@@ -143,7 +143,7 @@ export default async function DashboardAuctionsPage() {
                 >
                   <div className="relative h-14 w-14 flex-shrink-0 overflow-hidden rounded-lg border bg-gray-50">
                     {img
-                      ? <Image src={img} alt="" fill className="object-cover" />
+                      ? <Image src={img} alt="" fill className="object-cover" sizes="(max-width:640px) 50vw, 33vw" unoptimized={!img.includes('media.japanvip.vn')} />
                       : <div className="flex h-full items-center justify-center text-2xl">📦</div>
                     }
                   </div>
@@ -190,7 +190,7 @@ export default async function DashboardAuctionsPage() {
                 >
                   <div className="relative h-12 w-12 flex-shrink-0 overflow-hidden rounded-lg border bg-gray-50">
                     {img
-                      ? <Image src={img} alt="" fill className="object-cover" />
+                      ? <Image src={img} alt="" fill className="object-cover" sizes="(max-width:640px) 50vw, 33vw" unoptimized={!img.includes('media.japanvip.vn')} />
                       : <div className="flex h-full items-center justify-center text-xl">📦</div>
                     }
                   </div>

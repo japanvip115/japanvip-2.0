@@ -120,7 +120,7 @@ function LogoBlock({ logoUrl }: { logoUrl: string }) {
     <Link href="/" className="inline-block">
       {logoUrl ? (
         <span className="inline-block rounded-lg bg-white px-3 py-1.5">
-          <Image src={logoUrl} alt="Japan VIP" width={120} height={48} className="h-10 w-auto object-contain" unoptimized />
+          <Image src={logoUrl} alt="Japan VIP" width={120} height={48} className="h-10 w-auto object-contain" />
         </span>
       ) : (
         <div className="flex items-baseline gap-0.5">

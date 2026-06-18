@@ -20,6 +20,8 @@ export type CostEstimate = {
   domesticShippingVnd: number
   surchargeRate: number
   surchargeVnd: number
+  profitMarginRate: number
+  profitMarginVnd: number
   shippingEstimateVnd: number
   shippingMarginVnd: number
   shippingTiers: ShippingTier[]
@@ -35,6 +37,7 @@ const DEFAULT_SETTINGS = {
   domesticShippingJpy: 0,
   surchargeRate: 0,
   depositRate: 0.30,
+  profitMarginRate: 0,
 }
 
 const DEFAULT_TIERS: ShippingTier[] = [
@@ -56,6 +59,7 @@ async function getSettings() {
       domesticShippingJpy: setting ? Number(setting.domesticShippingJpy) : DEFAULT_SETTINGS.domesticShippingJpy,
       surchargeRate: setting ? Number(setting.surchargeRate) : DEFAULT_SETTINGS.surchargeRate,
       depositRate: setting ? Number(setting.depositRate) : DEFAULT_SETTINGS.depositRate,
+      profitMarginRate: setting ? Number(setting.profitMarginRate ?? 0) : DEFAULT_SETTINGS.profitMarginRate,
       tiers: tiers.length > 0
         ? tiers.map((t) => ({
             id: t.id,
@@ -86,13 +90,14 @@ export async function calculateCostEstimate(params: {
   ])
 
   const exchangeRate = rateData.rate
-  const { serviceFeeRate, domesticShippingJpy, surchargeRate, depositRate, tiers } = settings
+  const { serviceFeeRate, domesticShippingJpy, surchargeRate, depositRate, profitMarginRate, tiers } = settings
 
   const productPriceJpy = unitPriceJpy * quantity
   const productPriceVnd = Math.round(productPriceJpy * exchangeRate)
   const serviceFeeVnd = Math.round(productPriceVnd * serviceFeeRate)
   const domesticShippingVnd = Math.round(domesticShippingJpy * exchangeRate)
   const surchargeVnd = Math.round(productPriceVnd * surchargeRate)
+  const profitMarginVnd = Math.round(productPriceVnd * profitMarginRate)
 
   const tier =
     estimatedWeightKg !== undefined
@@ -101,9 +106,9 @@ export async function calculateCostEstimate(params: {
   const shippingEstimateVnd = tier.priceVnd
   const shippingMarginVnd = tier.priceVnd - tier.actualCostVnd
 
-  const totalEstimateVnd = productPriceVnd + serviceFeeVnd + domesticShippingVnd + surchargeVnd + shippingEstimateVnd
+  const totalEstimateVnd = productPriceVnd + serviceFeeVnd + domesticShippingVnd + surchargeVnd + profitMarginVnd + shippingEstimateVnd
   const depositAmountVnd = Math.round(totalEstimateVnd * depositRate)
-  const profitVnd = serviceFeeVnd + surchargeVnd + shippingMarginVnd
+  const profitVnd = serviceFeeVnd + surchargeVnd + profitMarginVnd + shippingMarginVnd
 
   return {
     productPriceJpy,
@@ -114,6 +119,8 @@ export async function calculateCostEstimate(params: {
     domesticShippingVnd,
     surchargeRate,
     surchargeVnd,
+    profitMarginRate,
+    profitMarginVnd,
     shippingEstimateVnd,
     shippingMarginVnd,
     shippingTiers: tiers,

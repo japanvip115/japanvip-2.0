@@ -51,10 +51,39 @@ function extractImageUrl(img: any): string {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function cleanHtml($: ReturnType<typeof cheerio.load>, el: any): string {
+  // Xóa hoàn toàn các thẻ không cần thiết
   $(el).find('script, iframe, form, style, noscript').remove()
   $(el).find('[class*="social"], [class*="share"], [class*="related"]').remove()
-  // Remove hidden elements
   $(el).find('[style*="display:none"], [style*="display: none"]').remove()
+
+  // Xóa backlink: thay <a href="...">text</a> → giữ lại text, bỏ thẻ a
+  $(el).find('a').each((_, anchor) => {
+    const href = $(anchor).attr('href') ?? ''
+    // Chỉ xóa link ngoại (http/https) hoặc link có href, giữ lại text bên trong
+    if (href && (href.startsWith('http') || href.startsWith('//'))) {
+      $(anchor).replaceWith($(anchor).html() ?? $(anchor).text())
+    } else {
+      // Link nội bộ (#anchor, relative) cũng xóa thẻ a, giữ text
+      $(anchor).replaceWith($(anchor).html() ?? $(anchor).text())
+    }
+  })
+
+  // Xóa các attribute không cần: onclick, data-*, id, class không quan trọng
+  $(el).find('*').each((_, node) => {
+    const attrs = (node as any).attribs ?? {}
+    for (const attr of Object.keys(attrs)) {
+      if (
+        attr.startsWith('on') ||
+        attr.startsWith('data-') ||
+        attr === 'id' ||
+        attr === 'class' ||
+        attr === 'style'
+      ) {
+        $(node).removeAttr(attr)
+      }
+    }
+  })
+
   return $(el).html()?.trim() ?? ''
 }
 

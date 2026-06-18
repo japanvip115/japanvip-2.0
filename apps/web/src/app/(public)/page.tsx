@@ -1,12 +1,14 @@
 import { prisma } from '@japanvip/db'
 import dynamicImport from 'next/dynamic'
+import { HOME_CONTENT_KEYS } from '@/lib/home-content-keys'
 
 const HomePageClient = dynamicImport(() => import('@/components/home/home-page-client'))
 
 export const dynamic = 'force-dynamic'
 
 export default async function HomePage() {
-  const [categories, products, liveAuctions] = await Promise.all([
+  const now = new Date()
+  const [categories, products, liveAuctions, contentRows, heroBanners] = await Promise.all([
     prisma.category.findMany({
       where: { isActive: true, parentId: null },
       orderBy: { sortOrder: 'asc' },
@@ -67,7 +69,23 @@ export default async function HomePage() {
         },
       },
     }),
+
+    prisma.siteSetting.findMany({ where: { key: { in: [...HOME_CONTENT_KEYS] } } }),
+
+    prisma.banner.findMany({
+      where: {
+        position: 'home-hero',
+        isActive: true,
+        OR: [{ startsAt: null }, { startsAt: { lte: now } }],
+        AND: [{ OR: [{ endsAt: null }, { endsAt: { gte: now } }] }],
+      },
+      orderBy: { sortOrder: 'asc' },
+      select: { id: true, title: true, imageUrl: true, linkUrl: true },
+    }),
   ])
+
+  const content: Record<string, string> = {}
+  for (const row of contentRows) content[row.key] = row.value
 
   return (
     <HomePageClient
@@ -84,6 +102,8 @@ export default async function HomePage() {
         minIncrement: Number(a.minIncrement),
         endsAt: a.endsAt.toISOString(),
       }))}
+      content={content}
+      heroBanners={heroBanners}
     />
   )
 }

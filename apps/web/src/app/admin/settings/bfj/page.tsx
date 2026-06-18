@@ -5,9 +5,9 @@ export const metadata = { title: 'Cài Đặt Mua Hộ — Admin' }
 export const dynamic = 'force-dynamic'
 
 export default async function BfjSettingsPage() {
-  const [setting, tiers, rateRecord, rateHistory] = await Promise.all([
+  const [setting, freightRates, rateRecord, rateHistory] = await Promise.all([
     prisma.bfjSetting.upsert({ where: { id: 'default' }, create: { id: 'default' }, update: {} }),
-    prisma.bfjShippingTier.findMany({ orderBy: { sortOrder: 'asc' } }),
+    prisma.bfjFreightRate.findMany({ orderBy: { sortOrder: 'asc' } }),
     prisma.exchangeRate.findFirst({
       where: { fromCurrency: 'JPY', toCurrency: 'VND', isActive: true },
       orderBy: { createdAt: 'desc' },
@@ -38,6 +38,7 @@ export default async function BfjSettingsPage() {
           domesticShippingJpy: Number(setting.domesticShippingJpy),
           surchargeRate: Number(setting.surchargeRate),
           depositRate: Number(setting.depositRate),
+          profitMarginRate: Number(setting.profitMarginRate ?? 0),
           translationProvider: setting.translationProvider,
           translationApiKeyMasked: setting.translationApiKey
             ? '•'.repeat(Math.max(0, setting.translationApiKey.length - 4)) + setting.translationApiKey.slice(-4)
@@ -51,13 +52,14 @@ export default async function BfjSettingsPage() {
           smtpFrom: setting.smtpFrom ?? '',
           smtpSecure: setting.smtpSecure,
         }}
-        tiers={tiers.map((t) => ({
-          id: t.id,
-          label: t.label,
-          maxWeightKg: t.maxWeightKg !== null ? Number(t.maxWeightKg) : null,
-          priceVnd: t.priceVnd,
-          actualCostVnd: t.actualCostVnd,
-          estimatedDays: t.estimatedDays,
+        freightRates={freightRates.map((r) => ({
+          id: r.id,
+          minWeightKg: Number(r.minWeightKg),
+          maxWeightKg: r.maxWeightKg !== null ? Number(r.maxWeightKg) : null,
+          regularPricePerKg: r.regularPricePerKg,
+          difficultPricePerKg: r.difficultPricePerKg,
+          estimatedDays: r.estimatedDays,
+          sortOrder: r.sortOrder,
         }))}
         currentRate={currentRate}
         rateHistory={rateHistory.map((r) => ({

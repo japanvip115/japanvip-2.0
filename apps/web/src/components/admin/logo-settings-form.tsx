@@ -75,7 +75,7 @@ export function LogoSettingsForm({ logoUrl: initLogoUrl, siteName: initSiteName,
         <div className="mb-4 flex items-center gap-4">
           <div className="flex h-20 w-40 items-center justify-center rounded-lg border-2 border-dashed border-gray-200 bg-gray-50 overflow-hidden">
             {logoUrl ? (
-              <Image src={logoUrl} alt="Logo" width={160} height={80} className="object-contain" unoptimized />
+              <Image src={logoUrl} alt="Logo" width={160} height={80} className="object-contain"  />
             ) : (
               <span className="text-xs text-gray-400">Chưa có logo</span>
             )}
@@ -154,7 +154,7 @@ export function LogoSettingsForm({ logoUrl: initLogoUrl, siteName: initSiteName,
         <h2 className="mb-3 font-semibold text-gray-900">Xem trước</h2>
         <div className="rounded-lg bg-white p-4 shadow-inner border flex items-center gap-3">
           {logoUrl ? (
-            <Image src={logoUrl} alt="Logo preview" width={120} height={48} className="object-contain" unoptimized />
+            <Image src={logoUrl} alt="Logo preview" width={120} height={48} className="object-contain"  />
           ) : (
             <div className="flex flex-col leading-tight">
               <span className="text-xl font-bold">

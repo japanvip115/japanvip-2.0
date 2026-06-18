@@ -1,12 +1,14 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
+import { signIn } from 'next-auth/react'
 import { useSearchParams } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
 import { formatVND } from '@japanvip/utils'
 import type { ParsedProduct } from '@/modules/bfj/url-parser/types'
 import type { CostEstimate } from '@/modules/bfj/services/cost-calculator.service'
+import { AddressPicker, type Address } from '@/components/address/address-picker'
 
 type Step = 'input' | 'loading' | 'preview' | 'error'
 type ParseResult = ParsedProduct & { estimate?: CostEstimate }
@@ -33,8 +35,47 @@ export function BfjUrlForm({ fees }: { fees: StaticFees }) {
 
   useEffect(() => {
     const u = searchParams.get('url')
-    if (u) setUrl(u)
-  }, [searchParams])
+    if (u && u.trim()) {
+      setUrl(u)
+      // Auto-trigger parse when URL comes from homepage redirect
+      const normalized = u.trim().startsWith('http') ? u.trim() : `https://${u.trim()}`
+      setStep('loading')
+      setErrorMsg('')
+      setActiveImg(0)
+      setShowOrderForm(false)
+      setOrderResult(null)
+      fetch('/api/v1/bfj/parse-url', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: normalized }),
+      })
+        .then((r) => r.json())
+        .then(async (parseData) => {
+          if (!parseData.success) throw new Error(parseData.error)
+          const product = parseData.data
+          let estimate
+          if (product.unitPriceJpy) {
+            const estRes = await fetch('/api/v1/bfj/estimate', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                unitPriceJpy: product.unitPriceJpy,
+                quantity: 1,
+                ...(product.weightKg != null ? { estimatedWeightKg: product.weightKg } : {}),
+              }),
+            })
+            const estData = await estRes.json()
+            if (estData.success) estimate = estData.data
+          }
+          setResult({ ...product, estimate })
+          setStep('preview')
+        })
+        .catch((err) => {
+          setErrorMsg(err instanceof Error ? err.message : 'Có lỗi xảy ra')
+          setStep('error')
+        })
+    }
+  }, [])
   const [quantity, setQuantity] = useState(1)
   const [step, setStep] = useState<Step>('input')
   const [result, setResult] = useState<ParseResult | null>(null)
@@ -50,7 +91,24 @@ export function BfjUrlForm({ fees }: { fees: StaticFees }) {
   const [orderNotes, setOrderNotes] = useState('')
   const [agreedTerms, setAgreedTerms] = useState(false)
   const [isOrdering, setIsOrdering] = useState(false)
-  const [orderResult, setOrderResult] = useState<{ orderNumber: string; orderId: string } | null>(null)
+  const [orderResult, setOrderResult] = useState<{ orderNumber: string; orderId: string; depositAmount?: number } | null>(null)
+  const [proofFile, setProofFile] = useState<File | null>(null)
+  const [proofUploading, setProofUploading] = useState(false)
+  const [proofSubmitted, setProofSubmitted] = useState(false)
+  const [proofError, setProofError] = useState('')
+  const [selectedAddress, setSelectedAddress] = useState<Address | null>(null)
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null) // null = loading
+
+  useEffect(() => {
+    fetch('/api/auth/session')
+      .then((r) => r.json())
+      .then((s) => setIsLoggedIn(!!s?.user))
+      .catch(() => setIsLoggedIn(false))
+  }, [])
+
+  // Manual price input (no-price path)
+  const [manualPriceJpy, setManualPriceJpy] = useState('')
+  const [isCalculatingManual, setIsCalculatingManual] = useState(false)
 
   // Quote request states (no-price path)
   const [quoteNotes, setQuoteNotes] = useState('')
@@ -144,6 +202,7 @@ export function BfjUrlForm({ fees }: { fees: StaticFees }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           notes: orderNotes || undefined,
+          addressId: selectedAddress?.id ?? undefined,
           items: [{
             sourceUrl: result.sourceUrl,
             productName: result.productNameVi ?? result.productName ?? undefined,
@@ -155,12 +214,61 @@ export function BfjUrlForm({ fees }: { fees: StaticFees }) {
       })
       const data = await res.json()
       if (!data.success) throw new Error(data.error)
-      setOrderResult({ orderNumber: data.data.orderNumber, orderId: data.data.id })
+      setOrderResult({ orderNumber: data.data.orderNumber, orderId: data.data.id, depositAmount: result?.estimate?.depositAmountVnd })
       setShowOrderForm(false)
     } catch (err) {
       alert(err instanceof Error ? err.message : 'Có lỗi xảy ra khi đặt đơn')
     } finally {
       setIsOrdering(false)
+    }
+  }
+
+  async function handleManualCalculate() {
+    const price = parseInt(manualPriceJpy.replace(/[^0-9]/g, ''), 10)
+    if (!price || price <= 0 || !result) return
+    setIsCalculatingManual(true)
+    try {
+      const estRes = await fetch('/api/v1/bfj/estimate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          unitPriceJpy: price,
+          quantity,
+          ...(result.weightKg != null ? { estimatedWeightKg: result.weightKg } : {}),
+        }),
+      })
+      const estData = await estRes.json()
+      if (estData.success) {
+        setResult((prev) => prev ? { ...prev, unitPriceJpy: price, estimate: estData.data } : prev)
+      }
+    } finally {
+      setIsCalculatingManual(false)
+    }
+  }
+
+  async function handleUploadProof() {
+    if (!proofFile || !orderResult) return
+    setProofUploading(true)
+    setProofError('')
+    try {
+      const fd = new FormData()
+      fd.append('file', proofFile)
+      const upRes = await fetch('/api/v1/bfj/upload-proof', { method: 'POST', body: fd })
+      const upData = await upRes.json()
+      if (!upData.success) throw new Error(upData.error)
+
+      const proofRes = await fetch(`/api/v1/bfj/orders/${orderResult.orderId}/deposit-proof`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ depositProofUrl: upData.data.url }),
+      })
+      const proofData = await proofRes.json()
+      if (!proofData.success) throw new Error(proofData.error)
+      setProofSubmitted(true)
+    } catch (err) {
+      setProofError(err instanceof Error ? err.message : 'Lỗi upload')
+    } finally {
+      setProofUploading(false)
     }
   }
 
@@ -418,24 +526,76 @@ export function BfjUrlForm({ fees }: { fees: StaticFees }) {
                   </div>
                 )}
                 <div className="p-4 space-y-3">
-                  <div className="rounded-xl bg-amber-50 border border-amber-200 p-4 text-center">
-                    <p className="text-sm font-semibold text-amber-700 mb-1">⚠ Không lấy được giá tự động</p>
-                    <p className="text-xs text-amber-600">
-                      Đăng nhập để gửi yêu cầu báo giá — tư vấn viên sẽ phản hồi qua email và Zalo.
-                    </p>
+                  {/* Manual price input */}
+                  <div className="rounded-xl bg-amber-50 border border-amber-200 p-4 space-y-3">
+                    <div className="text-center">
+                      <p className="text-sm font-semibold text-amber-700">⚠ Không lấy được giá tự động</p>
+                      <p className="text-xs text-amber-600 mt-0.5">Sản phẩm này ẩn giá — bạn có thể nhập thủ công</p>
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-amber-700 mb-1.5">Nhập giá từ Amazon JP (¥)</label>
+                      <div className="flex gap-2">
+                        <div className="flex flex-1 items-center gap-1.5 rounded-lg border border-amber-300 bg-white px-3 py-2 focus-within:border-amber-500">
+                          <span className="text-sm font-bold text-amber-600">¥</span>
+                          <input
+                            type="text"
+                            inputMode="numeric"
+                            value={manualPriceJpy ? parseInt(manualPriceJpy.replace(/\./g, ''), 10).toLocaleString('de-DE') : ''}
+                            onChange={(e) => {
+                              const raw = e.target.value.replace(/\./g, '').replace(/[^0-9]/g, '')
+                              setManualPriceJpy(raw)
+                            }}
+                            onKeyDown={(e) => e.key === 'Enter' && handleManualCalculate()}
+                            placeholder="vd: 15.800"
+                            className="flex-1 bg-transparent text-sm text-gray-800 outline-none tabular-nums placeholder:text-gray-400"
+                          />
+                        </div>
+                        <button
+                          type="button"
+                          onClick={handleManualCalculate}
+                          disabled={isCalculatingManual || !manualPriceJpy}
+                          className="rounded-lg bg-amber-500 px-3 py-2 text-xs font-bold text-white transition hover:bg-amber-600 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed whitespace-nowrap"
+                        >
+                          {isCalculatingManual ? '...' : 'Tính phí'}
+                        </button>
+                      </div>
+                      <p className="mt-1 text-[10px] text-amber-600">
+                        Mở <a href={result?.sourceUrl} target="_blank" rel="noopener noreferrer" className="underline font-medium">trang sản phẩm</a> → xem giá → nhập vào đây
+                      </p>
+                    </div>
                   </div>
 
                   {quoteSuccess ? (
                     <div className="rounded-xl bg-green-50 border border-green-200 p-4 text-center space-y-2">
                       <p className="text-green-700 font-bold text-sm">✅ Yêu cầu đã được gửi!</p>
                       <p className="text-xs text-green-600">Tư vấn viên sẽ liên hệ bạn sớm nhất. Kiểm tra email để xem xác nhận.</p>
-                      <a
-                        href="https://zalo.me/0988969896"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="block rounded-lg bg-brand-red py-2 text-xs font-bold text-white text-center"
-                      >
+                      <a href="https://zalo.me/0988969896" target="_blank" rel="noopener noreferrer" className="block rounded-lg bg-brand-red py-2 text-xs font-bold text-white text-center">
                         Chat ngay qua Zalo
+                      </a>
+                    </div>
+                  ) : !isLoggedIn ? (
+                    /* LOGIN GATE for no-price path */
+                    <div className="rounded-xl bg-gradient-to-br from-red-50 to-orange-50 border border-red-200 p-4 text-center space-y-3">
+                      <p className="text-sm font-bold text-gray-900">🔓 Hoặc đăng nhập để nhận báo giá</p>
+                      <p className="text-xs text-gray-500">Tư vấn viên phản hồi qua email trong 1–4 giờ làm việc</p>
+                      <button
+                        type="button"
+                        onClick={() => signIn('google', { callbackUrl: typeof window !== 'undefined' ? window.location.href : '/mua-ho' })}
+                        className="flex w-full items-center justify-center gap-2 rounded-xl bg-white border border-gray-200 py-2.5 text-sm font-semibold text-gray-800 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+                      >
+                        <svg className="h-4 w-4" viewBox="0 0 24 24">
+                          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
+                          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                        </svg>
+                        Đăng nhập với Google
+                      </button>
+                      <p className="text-[10px] text-gray-400">
+                        Hoặc <a href={`/register?callbackUrl=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '/mua-ho')}`} className="underline text-brand-red">tạo tài khoản miễn phí</a>
+                      </p>
+                      <a href="tel:0988969896" className="flex items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50">
+                        📞 Gọi 0988.969.896
                       </a>
                     </div>
                   ) : (
@@ -454,36 +614,21 @@ export function BfjUrlForm({ fees }: { fees: StaticFees }) {
                             />
                           </div>
                           <div className="flex gap-2">
-                            <button
-                              onClick={handleConfirmQuote}
-                              disabled={isQuoting}
-                              className="flex-1 cursor-pointer rounded-lg bg-brand-red py-2.5 text-sm font-bold text-white transition hover:bg-brand-red-dark disabled:opacity-50"
-                            >
+                            <button onClick={handleConfirmQuote} disabled={isQuoting} className="flex-1 cursor-pointer rounded-lg bg-brand-red py-2.5 text-sm font-bold text-white transition hover:bg-brand-red-dark disabled:opacity-50">
                               {isQuoting ? 'Đang gửi...' : 'Gửi Yêu Cầu'}
                             </button>
-                            <button
-                              onClick={() => setShowQuoteForm(false)}
-                              className="rounded-lg border border-gray-300 px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-100 cursor-pointer"
-                            >
+                            <button onClick={() => setShowQuoteForm(false)} className="rounded-lg border border-gray-300 px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-100 cursor-pointer">
                               Hủy
                             </button>
                           </div>
                         </div>
                       ) : (
                         <>
-                          <button
-                            onClick={handleQuoteClick}
-                            className="flex w-full items-center justify-center gap-2 rounded-xl bg-brand-red py-3 text-sm font-bold text-white transition hover:bg-brand-red-dark cursor-pointer"
-                          >
+                          <button onClick={handleQuoteClick} className="flex w-full items-center justify-center gap-2 rounded-xl bg-brand-red py-3 text-sm font-bold text-white transition hover:bg-brand-red-dark cursor-pointer">
                             💬 Yêu Cầu Báo Giá
                           </button>
-                          <p className="text-center text-[11px] text-gray-400">
-                            Cần đăng nhập • Nhận xác nhận qua email
-                          </p>
-                          <a
-                            href="tel:0988969896"
-                            className="flex items-center justify-center gap-2 rounded-xl border border-gray-300 py-2.5 text-sm font-semibold text-gray-700 transition hover:bg-gray-50"
-                          >
+                          <p className="text-center text-[11px] text-gray-400">Nhận xác nhận qua email</p>
+                          <a href="tel:0988969896" className="flex items-center justify-center gap-2 rounded-xl border border-gray-300 py-2.5 text-sm font-semibold text-gray-700 transition hover:bg-gray-50">
                             📞 Gọi 0988.969.896
                           </a>
                         </>
@@ -543,32 +688,77 @@ export function BfjUrlForm({ fees }: { fees: StaticFees }) {
                   </div>
                 )}
 
+                {/* LOGIN GATE — show when not logged in */}
+                {!isLoggedIn ? (
+                  <div className="p-5 space-y-4">
+                    <p className="text-[10px] font-semibold uppercase tracking-wider text-gray-400">Chi phí ước tính về VN</p>
+
+                    {/* Blurred price teaser */}
+                    <div className="relative space-y-2 text-sm select-none">
+                      {[
+                        { label: 'Giá sản phẩm (JPY)', w: 'w-20' },
+                        { label: 'Phí mua hộ (8%)', w: 'w-16' },
+                        { label: 'Ship JP → VN', w: 'w-24' },
+                      ].map((row, i) => (
+                        <div key={i} className="flex justify-between text-gray-400">
+                          <span>{row.label}</span>
+                          <span className={`${row.w} h-4 rounded bg-gray-200 blur-[3px]`} />
+                        </div>
+                      ))}
+                      <div className="border-t pt-3 flex justify-between">
+                        <span className="font-bold text-gray-700">Tổng về VN</span>
+                        <span className="w-28 h-6 rounded-lg bg-red-100 blur-[4px]" />
+                      </div>
+                    </div>
+
+                    {/* CTA */}
+                    <div className="rounded-xl bg-gradient-to-br from-red-50 to-orange-50 border border-red-200 p-4 text-center space-y-3">
+                      <p className="text-sm font-bold text-gray-900">🔓 Đăng nhập để xem giá</p>
+                      <p className="text-xs text-gray-500">Xem đầy đủ chi phí về Việt Nam, đặt cọc và theo dõi đơn hàng</p>
+                      <button
+                        type="button"
+                        onClick={() => signIn('google', { callbackUrl: typeof window !== 'undefined' ? window.location.href : '/mua-ho' })}
+                        className="flex w-full items-center justify-center gap-2 rounded-xl bg-white border border-gray-200 py-2.5 text-sm font-semibold text-gray-800 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+                      >
+                        <svg className="h-4 w-4" viewBox="0 0 24 24">
+                          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
+                          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                        </svg>
+                        Đăng nhập với Google
+                      </button>
+                      <p className="text-[10px] text-gray-400">Hoặc <a href={`/register?callbackUrl=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '/mua-ho')}`} className="underline text-brand-red">tạo tài khoản miễn phí</a></p>
+                    </div>
+                  </div>
+                ) : (
+                <>
                 {/* Cost breakdown */}
                 <div className="p-4 space-y-2 text-sm">
                   <p className="text-[10px] font-semibold uppercase tracking-wider text-gray-400 mb-3">Chi phí ước tính</p>
 
                   <div className="flex justify-between text-gray-500">
                     <span>Giá sản phẩm</span>
-                    <span className="font-medium text-gray-800">¥{result.unitPriceJpy?.toLocaleString('ja-JP')}</span>
+                    <span className="font-semibold text-gray-900">¥{result.unitPriceJpy?.toLocaleString('ja-JP')}</span>
                   </div>
                   <div className="flex justify-between text-gray-500">
                     <span>Tỷ giá ({result.estimate.exchangeRate.toLocaleString('vi-VN')} ₫/¥)</span>
-                    <span className="font-medium text-gray-800">{formatVND(result.estimate.productPriceVnd / quantity)}</span>
+                    <span className="font-semibold text-gray-900">{formatVND(result.estimate.productPriceVnd / quantity)}</span>
                   </div>
                   <div className="flex justify-between text-gray-500">
                     <span>Phí mua hộ ({(result.estimate.serviceFeeRate * 100).toFixed(0)}%)</span>
-                    <span className="font-medium text-gray-800">+{formatVND(result.estimate.serviceFeeVnd / quantity)}</span>
+                    <span className="font-semibold text-gray-900">+{formatVND(result.estimate.serviceFeeVnd / quantity)}</span>
                   </div>
                   {result.estimate.domesticShippingJpy > 0 && (
                     <div className="flex justify-between text-gray-500">
                       <span>Phí nội địa Nhật</span>
-                      <span className="font-medium text-gray-800">+{formatVND(result.estimate.domesticShippingVnd)}</span>
+                      <span className="font-semibold text-gray-900">+{formatVND(result.estimate.domesticShippingVnd)}</span>
                     </div>
                   )}
                   {result.estimate.surchargeRate > 0 && (
                     <div className="flex justify-between text-gray-500">
                       <span>Phụ thu ({(result.estimate.surchargeRate * 100).toFixed(0)}%)</span>
-                      <span className="font-medium text-gray-800">+{formatVND(result.estimate.surchargeVnd / quantity)}</span>
+                      <span className="font-semibold text-gray-900">+{formatVND(result.estimate.surchargeVnd / quantity)}</span>
                     </div>
                   )}
                   <div className="flex justify-between text-gray-500">
@@ -578,7 +768,7 @@ export function BfjUrlForm({ fees }: { fees: StaticFees }) {
                         <span className="ml-1 text-[10px] text-blue-500">({result.weightKg} kg)</span>
                       )}
                     </span>
-                    <span className="font-medium text-gray-800">+{formatVND(result.estimate.shippingEstimateVnd)}</span>
+                    <span className="font-semibold text-gray-900">+{formatVND(result.estimate.shippingEstimateVnd)}</span>
                   </div>
 
                   <div className="border-t pt-3 flex justify-between">
@@ -610,19 +800,94 @@ export function BfjUrlForm({ fees }: { fees: StaticFees }) {
                   </div>
 
                   {orderResult ? (
-                    <div className="rounded-xl bg-green-50 border border-green-200 p-4 text-center space-y-2">
-                      <p className="text-green-700 font-bold text-sm">✅ Đặt cọc thành công!</p>
-                      <p className="text-xs text-green-600">Đơn hàng <span className="font-mono font-bold">{orderResult.orderNumber}</span> đã được tạo.</p>
+                    <div className="space-y-3">
+                      {/* Order created banner */}
+                      <div className="rounded-xl bg-green-50 border border-green-200 p-3 text-center">
+                        <p className="text-green-700 font-bold text-sm">✅ Đơn hàng đã được tạo!</p>
+                        <p className="text-xs text-green-600 mt-0.5">Mã đơn: <span className="font-mono font-bold">{orderResult.orderNumber}</span></p>
+                      </div>
+
+                      {/* Bank transfer info + VietQR */}
+                      <div className="rounded-xl border border-blue-200 bg-blue-50 p-4 space-y-3">
+                        <p className="text-xs font-bold text-blue-800 uppercase tracking-wide">Chuyển khoản đặt cọc</p>
+                        <div className="flex justify-center">
+                          <img
+                            src={`https://img.vietqr.io/image/TPB-25040930477-compact2.png?amount=${orderResult.depositAmount ?? ''}&addInfo=${encodeURIComponent(orderResult.orderNumber)}&accountName=${encodeURIComponent('HKD DIEN LANH DIEN GIA DUNG TO NGOC ANH')}`}
+                            alt="QR chuyen khoan"
+                            className="w-48 h-48 rounded-lg border border-blue-200"
+                          />
+                        </div>
+                        <div className="space-y-1.5 text-xs">
+                          <div className="flex justify-between">
+                            <span className="text-blue-600">Ngan hang</span>
+                            <span className="font-semibold text-blue-900">TPBank</span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-blue-600">So tai khoan</span>
+                            <span className="font-mono font-bold text-blue-900 select-all">25040930477</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-blue-600">Chu tai khoan</span>
+                            <span className="font-semibold text-blue-900 text-right max-w-[60%]">HKD DIEN LANH DIEN GIA DUNG - TO NGOC ANH</span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-blue-600">Noi dung CK</span>
+                            <span className="font-mono font-bold text-blue-900 select-all">{orderResult.orderNumber}</span>
+                          </div>
+                          {orderResult.depositAmount && (
+                            <div className="flex justify-between border-t border-blue-200 pt-2 mt-1">
+                              <span className="font-bold text-blue-700">So tien coc</span>
+                              <span className="font-extrabold text-blue-900">{formatVND(orderResult.depositAmount)}</span>
+                            </div>
+                          )}
+                        </div>
+                        <p className="text-[10px] text-blue-500 text-center">Quet QR bang app ngan hang de chuyen khoan nhanh</p>
+                      </div>
+
+                      {/* Upload proof */}
+                      {proofSubmitted ? (
+                        <div className="rounded-xl bg-green-50 border border-green-200 p-3 text-center space-y-1">
+                          <p className="text-green-700 font-bold text-sm">✅ Đã gửi biên lai!</p>
+                          <p className="text-xs text-green-600">Nhân viên sẽ xác nhận và xử lý đơn hàng sớm nhất.</p>
+                        </div>
+                      ) : (
+                        <div className="rounded-xl border border-gray-200 bg-gray-50 p-4 space-y-2">
+                          <p className="text-xs font-bold text-gray-700">📎 Upload biên lai chuyển khoản</p>
+                          <label className="flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-gray-300 bg-white p-4 cursor-pointer hover:border-brand-red transition-colors">
+                            <span className="text-2xl">{proofFile ? '🖼' : '📤'}</span>
+                            <span className="text-xs text-gray-500">
+                              {proofFile ? proofFile.name : 'Chọn ảnh biên lai (JPG, PNG)'}
+                            </span>
+                            <input
+                              type="file"
+                              accept="image/jpeg,image/png,image/webp"
+                              className="hidden"
+                              onChange={(e) => { setProofFile(e.target.files?.[0] ?? null); setProofError('') }}
+                            />
+                          </label>
+                          {proofError && <p className="text-xs text-red-500">{proofError}</p>}
+                          <button
+                            type="button"
+                            onClick={handleUploadProof}
+                            disabled={!proofFile || proofUploading}
+                            className="w-full cursor-pointer rounded-lg bg-brand-red py-2.5 text-xs font-bold text-white transition hover:bg-brand-red-dark disabled:opacity-50 disabled:cursor-not-allowed"
+                          >
+                            {proofUploading ? 'Đang gửi...' : 'Gửi biên lai'}
+                          </button>
+                          <p className="text-[10px] text-gray-400 text-center">Hoặc gửi qua Zalo 0988.969.896</p>
+                        </div>
+                      )}
+
                       <div className="flex flex-col gap-1.5">
                         <Link
                           href={`/dashboard/orders/${orderResult.orderId}`}
-                          className="block rounded-lg bg-green-600 py-2 text-xs font-semibold text-white hover:bg-green-700 text-center"
+                          className="block rounded-lg border border-gray-300 py-2 text-xs text-gray-600 hover:bg-gray-50 text-center"
                         >
-                          Xem đơn hàng →
+                          Xem chi tiết đơn hàng →
                         </Link>
                         <button
-                          onClick={() => { setStep('input'); setUrl(''); setResult(null); setOrderResult(null) }}
-                          className="block w-full rounded-lg border border-gray-300 py-2 text-xs text-gray-600 hover:bg-gray-50 cursor-pointer text-center"
+                          onClick={() => { setStep('input'); setUrl(''); setResult(null); setOrderResult(null); setProofFile(null); setProofSubmitted(false) }}
+                          className="block w-full rounded-lg border border-gray-200 py-2 text-xs text-gray-500 hover:bg-gray-50 cursor-pointer text-center"
                         >
                           Tiếp tục mua hàng
                         </button>
@@ -648,10 +913,20 @@ export function BfjUrlForm({ fees }: { fees: StaticFees }) {
                   )}
                 </div>
 
+                </>
+                )} {/* end isLoggedIn cost panel */}
+
                 {/* Inline order form */}
-                {showOrderForm && !orderResult && (
+                {isLoggedIn && showOrderForm && !orderResult && (
                   <div className="border-t mx-0 p-4 bg-gray-50 space-y-3">
                     <p className="text-sm font-semibold text-gray-800">Xác Nhận Đặt Cọc</p>
+                    <div>
+                      <label className="block text-xs font-medium text-gray-500 mb-2">Địa chỉ nhận hàng</label>
+                      <AddressPicker
+                        selectedId={selectedAddress?.id}
+                        onSelect={setSelectedAddress}
+                      />
+                    </div>
                     <div>
                       <label className="block text-xs font-medium text-gray-500 mb-1">Ghi chú (tùy chọn)</label>
                       <textarea
