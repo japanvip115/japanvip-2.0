@@ -7,6 +7,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       { protocol: 'https', hostname: 'img.vietqr.io' },
       { protocol: 'https', hostname: '*.r2.cloudflarestorage.com' },
+      { protocol: 'https', hostname: '*.r2.dev' },
       { protocol: 'https', hostname: '*.cloudflare.com' },
       { protocol: 'https', hostname: 'media.japanvip.vn' },
       { protocol: 'https', hostname: 'm.media-amazon.com' },
