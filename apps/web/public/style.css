@@ -531,7 +531,7 @@ ul, ol { list-style: none; }
 .hero-content { flex: 1; max-width: 580px; }
 .hero-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(196,30,58,0.2); border: 1px solid rgba(196,30,58,0.4); color: #ff8098; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; padding: 6px 16px; border-radius: var(--radius-full); margin-bottom: 20px; }
 .hero-title { font-family: var(--font-serif); font-size: clamp(2.2rem, 5vw, 3.5rem); font-weight: 700; color: white; line-height: 1.2; margin-bottom: 16px; }
-.hero-accent { background: var(--gradient-red); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.hero-accent { color: var(--jp-red); }
 .hero-desc { color: rgba(255,255,255,0.75); font-size: 1.05rem; line-height: 1.7; margin-bottom: 32px; max-width: 500px; }
 .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 40px; }
 .hero-stats { display: flex; align-items: center; gap: 0; }
