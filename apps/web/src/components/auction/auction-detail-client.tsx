@@ -221,6 +221,9 @@ export function AuctionDetailClient({
     } finally { setBidding(false) }
   }
 
+  // Scroll to top on mount (fix Next.js scroll restoration issue)
+  useEffect(() => { window.scrollTo({ top: 0 }) }, [])
+
   // Collect device fingerprint on mount
   useEffect(() => {
     getDeviceFingerprint().then(setDeviceFp).catch(() => {})
@@ -291,7 +294,7 @@ export function AuctionDetailClient({
       </div>
 
       {/* ── Current Price ── */}
-      <div className={`rounded-2xl border p-4 transition-all duration-300 ${pricePulse ? 'border-red-300 bg-red-50 scale-[1.01]' : 'border-gray-100 bg-white'}`}>
+      <div className={`rounded-2xl border p-4 transition-all duration-300 ${pricePulse ? 'border-red-400 bg-red-50 scale-[1.01]' : 'border-red-200 bg-white'}`}>
         <div className="flex items-end justify-between">
           <div>
             <p className="text-xs font-medium text-gray-400">Giá đặt hiện tại</p>
@@ -309,7 +312,7 @@ export function AuctionDetailClient({
 
       {/* ── Live stats bar ── */}
       {isLive && !expired && (
-        <div className="flex items-center justify-around rounded-xl border border-gray-100 bg-white py-2.5 text-center">
+        <div className="flex items-center justify-around rounded-xl border border-red-200 bg-white py-2.5 text-center">
           <div className="flex items-center gap-1.5">
             <span className="text-base">👁</span>
             <div>
@@ -340,17 +343,11 @@ export function AuctionDetailClient({
       {isLive && !expired && (
         <div className={`rounded-2xl px-5 py-4 transition-colors duration-500 ${urgent ? 'bg-red-950' : 'bg-gray-900'}`}>
           <div className="flex items-center justify-between gap-4">
-            {/* Left: badges */}
-            <div className="flex flex-col items-start gap-2 shrink-0">
+            {/* Left: trạng thái */}
+            <div className="shrink-0">
               <span className={`rounded-full px-3 py-1 text-xs font-semibold ${AUCTION_STATUS_COLORS[status]}`}>
                 {AUCTION_STATUS_LABELS[status]}
               </span>
-              {sseConnected && (
-                <span className="flex items-center gap-1 rounded-full bg-green-500/20 px-2.5 py-1 text-xs font-semibold text-green-400 ring-1 ring-inset ring-green-500/30">
-                  <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-green-400" />
-                  Trực tiếp
-                </span>
-              )}
             </div>
 
             {/* Right: clock */}
@@ -383,15 +380,26 @@ export function AuctionDetailClient({
             </p>
           )}
             </div>{/* end clock col */}
+
+            {/* Right: trực tiếp */}
+            <div className="shrink-0">
+              {sseConnected && (
+                <span className="flex items-center gap-1 rounded-full bg-green-500/20 px-2.5 py-1 text-xs font-semibold text-green-400 ring-1 ring-inset ring-green-500/30">
+                  <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-green-400" />
+                  Trực tiếp
+                </span>
+              )}
+            </div>
           </div>{/* end flex row */}
         </div>
       )}
 
       {/* ── Expired pending ── */}
       {isLive && expired && (
-        <div className="flex items-center justify-center gap-2 rounded-2xl border border-gray-200 bg-gray-50 p-4">
-          <span className="h-3 w-3 animate-spin rounded-full border-2 border-gray-300 border-t-gray-600" />
-          <p className="text-sm font-medium text-gray-500">Phiên đã kết thúc · Đang xác nhận kết quả...</p>
+        <div className="rounded-2xl border border-gray-200 bg-gray-50 p-5 text-center">
+          <p className="text-2xl">🏁</p>
+          <p className="mt-1 text-sm font-semibold text-gray-700">Phiên đấu giá đã kết thúc</p>
+          <p className="mt-0.5 text-xs text-gray-400">Giá cuối: {formatVND(currentPrice)}</p>
         </div>
       )}
 
@@ -416,9 +424,9 @@ export function AuctionDetailClient({
 
       {/* ── Bid form ── */}
       {canBid && (
-        <div className="rounded-2xl border border-gray-200 bg-white overflow-hidden">
+        <div className="rounded-2xl border border-red-200 bg-white overflow-hidden">
           {/* Tab switcher */}
-          <div className="grid grid-cols-2 border-b border-gray-100">
+          <div className="grid grid-cols-2 border-b border-red-100">
             <button
               onClick={() => { setBidMode('manual'); setBidError('') }}
               className={`py-3 text-xs font-bold transition-colors cursor-pointer ${bidMode === 'manual' ? 'bg-white text-brand-red border-b-2 border-brand-red' : 'bg-gray-50 text-gray-400 hover:text-gray-600'}`}

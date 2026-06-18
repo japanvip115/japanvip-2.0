@@ -7,7 +7,7 @@ import {
   LayoutDashboard, Package, Gavel, Users, ShoppingBag,
   DollarSign, FileText, Settings, FolderOpen, Layers,
   ChevronRight, ShieldAlert, Ban, LogOut, ExternalLink,
-  Home,
+  Home, ClipboardList,
 } from 'lucide-react'
 
 const NAV_SECTIONS = [
@@ -21,6 +21,7 @@ const NAV_SECTIONS = [
     label: 'Kinh doanh',
     items: [
       { href: '/admin/orders', label: 'Đơn Mua Hộ', icon: ShoppingBag },
+      { href: '/admin/quick-orders', label: 'Đặt Hàng Nhanh', icon: ClipboardList },
       { href: '/admin/auctions', label: 'Đấu Giá', icon: Gavel },
       { href: '/admin/finance', label: 'Tài Chính', icon: DollarSign },
       { href: '/admin/users', label: 'Người Dùng', icon: Users },

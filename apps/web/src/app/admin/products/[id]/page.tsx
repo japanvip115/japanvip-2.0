@@ -115,6 +115,7 @@ export default async function AdminProductDetailPage({ params }: Props) {
           marketPrice: product.marketPrice ? Number(product.marketPrice) : null,
           metaTitle: product.metaTitle ?? '',
           metaDesc: product.metaDesc ?? '',
+          gifts: Array.isArray(product.gifts) ? (product.gifts as { name: string; price?: number; image?: string }[]) : [],
         }}
         imageSlot={
           <div className="rounded-xl border border-gray-700 bg-gray-800/60 p-5">

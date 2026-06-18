@@ -270,6 +270,24 @@ export default async function ProductDetailPage({ params }: Props) {
             </div>
           )}
 
+          {/* Quà tặng */}
+          {Array.isArray(product.gifts) && (product.gifts as {name:string;price?:number;image?:string}[]).length > 0 && (
+            <div className="inline-flex rounded-xl border border-orange-200 bg-gradient-to-r from-orange-50 to-red-50 px-4 py-3">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="flex items-center gap-1 rounded-full bg-brand-red px-2.5 py-1 text-[11px] font-bold text-white shrink-0">🎁 Quà tặng</span>
+                {(product.gifts as {name:string;price?:number;image?:string}[]).map((g, i) => (
+                  <div key={i} className="flex items-center gap-1.5 rounded-full border border-orange-200 bg-white px-2.5 py-1">
+                    <span className="text-sm leading-none">🎁</span>
+                    <span className="text-xs font-medium text-gray-700">{g.name}</span>
+                    {g.price && g.price > 0 && (
+                      <span className="text-[11px] font-semibold text-brand-red">({g.price.toLocaleString('vi-VN')}₫)</span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* CTA buttons */}
           {liveAuction ? (
             <Link

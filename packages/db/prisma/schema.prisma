@@ -267,6 +267,7 @@ model Product {
   marketPrice   Decimal?         @map("market_price") @db.Decimal(15, 2)
   status        ProductStatus    @default(DRAFT)
   badge         String?          @db.VarChar(20)
+  gifts         Json?
   rating        Decimal?         @db.Decimal(2, 1)
   reviewCount   Int              @default(0) @map("review_count")
   metaTitle     String?          @map("meta_title") @db.VarChar(255)
@@ -336,6 +337,39 @@ model ExchangeRate {
 
   @@index([fromCurrency, toCurrency, isActive])
   @@map("exchange_rates")
+}
+
+enum QuickOrderStatus {
+  PENDING
+  CONTACTED
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+}
+
+model QuickOrder {
+  id           String           @id @default(uuid()) @db.Uuid
+  orderRef     String           @unique @map("order_ref") @db.VarChar(50)
+  name         String           @db.VarChar(100)
+  email        String           @db.VarChar(255)
+  phone        String           @db.VarChar(20)
+  address      String?          @db.VarChar(300)
+  notes        String?
+  productId    String           @map("product_id") @db.Uuid
+  productName  String           @map("product_name") @db.VarChar(500)
+  productImage String?          @map("product_image")
+  productSlug  String?          @map("product_slug") @db.VarChar(255)
+  priceVnd     Decimal?         @map("price_vnd") @db.Decimal(20, 2)
+  quantity     Int              @default(1)
+  status       QuickOrderStatus @default(PENDING)
+  adminNotes   String?          @map("admin_notes")
+  createdAt    DateTime         @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt    DateTime         @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@index([status])
+  @@index([email])
+  @@index([createdAt])
+  @@map("quick_orders")
 }
 
 enum BfjOrderStatus {

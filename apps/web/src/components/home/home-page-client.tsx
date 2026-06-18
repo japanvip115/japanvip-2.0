@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Script from 'next/script'
+import { QuickOrderModal } from '@/components/product/quick-order-modal'
 
 function CountUp({ end, decimals = 0, suffix = '' }: { end: number; decimals?: number; suffix?: string }) {
   const [value, setValue] = useState(0)
@@ -139,6 +140,207 @@ function AuctionCountdown({ endsAt }: { endsAt: string }) {
       <div className="cd-sep">:</div>
       <div className="cd-unit"><span className={`cd-num${urgent ? ' urgent' : ''}`}>{s}</span><span className="cd-label">giây</span></div>
     </div>
+  )
+}
+
+type MixedItem =
+  | { kind: 'auction'; data: AuctionItem; idx: number }
+  | { kind: 'product'; data: ProductItem; idx: number }
+
+function MixedSlider({
+  auctions,
+  products,
+  router,
+}: {
+  auctions: AuctionItem[]
+  products: ProductItem[]
+  router: ReturnType<typeof useRouter>
+}) {
+  const PER_PAGE = 4
+  const [quickOrder, setQuickOrder] = useState<{ id: string; slug: string; name: string; image: string | null; priceVnd: number | null } | null>(null)
+
+  // auctions trước (trái) → products sau (phải)
+  const items: MixedItem[] = [
+    ...auctions.map((a, idx): MixedItem => ({ kind: 'auction', data: a, idx })),
+    ...products.map((p, idx): MixedItem => ({ kind: 'product', data: p, idx })),
+  ]
+
+  const totalPages = Math.ceil(items.length / PER_PAGE)
+  const [page, setPage] = useState(0)
+  const clipRef = useRef<HTMLDivElement>(null)
+
+  const go = (next: number) => {
+    next = Math.max(0, Math.min(totalPages - 1, next))
+    setPage(next)
+    if (clipRef.current) {
+      clipRef.current.scrollTo({ left: next * clipRef.current.offsetWidth, behavior: 'smooth' })
+    }
+  }
+
+  return (
+    <>
+    <div className="auction-slider-wrap">
+      <div className="auction-slider-clip" ref={clipRef}>
+        {items.map((item) => {
+          if (item.kind === 'auction') {
+            const auction = item.data
+            const secsLeft = Math.max(0, Math.floor((new Date(auction.endsAt).getTime() - Date.now()) / 1000))
+            const expired = secsLeft === 0
+            const endingSoon = !expired && secsLeft < 3600
+            return (
+              <div
+                key={`a-${auction.id}`}
+                className="auction-card auction-slider-card"
+                onClick={() => router.push(`/dau-gia/${auction.id}`)}
+              >
+                {expired
+                  ? <div className="auction-badge-end" style={{background:'#6b7280'}}>Đã Kết Thúc</div>
+                  : endingSoon
+                    ? <div className="auction-badge-end">Sắp Kết Thúc</div>
+                    : <div className="auction-badge-live"><span className="live-dot"></span> LIVE</div>
+                }
+                <div className="auction-img">
+                  {auction.product.images[0]
+                    ? <img src={auction.product.images[0].url} alt={auction.product.name} style={{width:'100%',height:'100%',objectFit:'cover'}} />
+                    : <div className="auction-img-placeholder" style={{background: CAT_GRADIENTS[item.idx % CAT_GRADIENTS.length]}}><span className="product-emoji">{getCatEmoji(auction.product.name)}</span></div>
+                  }
+                </div>
+                <div className="auction-body">
+                  {auction.product.brand && <div className="auction-brand">{auction.product.brand.name}</div>}
+                  <h3 className="auction-title" style={{overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{auction.product.name}</h3>
+                  <div className="auction-meta">
+                    <div className="auction-price-block">
+                      <span className="current-bid-label">Giá Hiện Tại</span>
+                      <div className="current-bid">{auction.currentPrice.toLocaleString('vi-VN')}₫</div>
+                      <div className="bid-count">{auction.bidCount} lượt đặt giá</div>
+                    </div>
+                    <div className="countdown-block">
+                      <span className="countdown-label">Kết Thúc Sau</span>
+                      <AuctionCountdown endsAt={auction.endsAt} />
+                    </div>
+                  </div>
+                  <button
+                    className={`btn-bid${endingSoon ? ' urgent-bid' : ''}`}
+                    style={{marginTop:'auto'}}
+                    onClick={(e) => { e.stopPropagation(); router.push(`/dau-gia/${auction.id}`) }}
+                  >
+                    Đặt Giá Ngay
+                  </button>
+                </div>
+              </div>
+            )
+          }
+
+          // product card
+          const p = item.data
+          const displayPrice = p.salePrice ?? p.originPrice ?? p.marketPrice
+          return (
+            <div
+              key={`p-${p.id}`}
+              className="auction-card auction-slider-card"
+              onClick={() => router.push(`/${p.slug}`)}
+            >
+              <div className="auction-badge-live" style={{fontSize:'0.55rem', padding:'2px 6px'}}>PRE ORDER</div>
+              <div className="auction-img">
+                {p.images[0]
+                  ? <img src={p.images[0].url} alt={p.name} style={{width:'100%',height:'100%',objectFit:'contain',padding:'10px',background:'#fff'}} />
+                  : <div className="auction-img-placeholder" style={{background: CAT_GRADIENTS[item.idx % CAT_GRADIENTS.length]}}><span className="product-emoji">{getCatEmoji(p.category?.name ?? p.name)}</span></div>
+                }
+              </div>
+              <div className="auction-body">
+                {p.brand && <div className="auction-brand">{p.brand.name}</div>}
+                <h3 className="auction-title" style={{overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{p.name}</h3>
+                <div className="auction-meta">
+                  <div className="auction-price-block">
+                    <span className="current-bid-label">Giá Bán</span>
+                    {displayPrice
+                      ? <div className="current-bid">{displayPrice.toLocaleString('vi-VN')}₫</div>
+                      : <div className="current-bid" style={{color:'#6b7280',fontSize:'0.9rem'}}>Liên hệ báo giá</div>
+                    }
+                    {p.marketPrice && displayPrice && displayPrice < p.marketPrice && (
+                      <div className="bid-count" style={{textDecoration:'line-through'}}>{p.marketPrice.toLocaleString('vi-VN')}₫</div>
+                    )}
+                  </div>
+                  <div className="countdown-block">
+                    <span className="countdown-label">Giao Hàng</span>
+                    <div style={{fontSize:'0.78rem',fontWeight:600,color:'#6b7280',lineHeight:1.3}}>
+                      🚚 7–10 ngày
+                    </div>
+                  </div>
+                </div>
+                <button
+                  className="btn-bid"
+                  style={{marginTop:'auto', background:'#e85d7a'}}
+                  onMouseEnter={e => (e.currentTarget.style.background = 'var(--gradient-red)')}
+                  onMouseLeave={e => (e.currentTarget.style.background = '#e85d7a')}
+                  onClick={(e) => { e.stopPropagation(); setQuickOrder({ id: p.id, slug: p.slug, name: p.name, image: p.images[0]?.url ?? null, priceVnd: p.salePrice ?? p.originPrice ?? p.marketPrice ?? null }) }}
+                >
+                  Đặt Hàng Ngay
+                </button>
+              </div>
+            </div>
+          )
+        })}
+      </div>
+
+      {totalPages > 1 && (
+        <>
+          <button
+            onClick={() => go(page - 1)}
+            disabled={page === 0}
+            aria-label="Trang trước"
+            style={{
+              position: 'absolute', top: '42%', left: -18, transform: 'translateY(-50%)',
+              width: 36, height: 36, borderRadius: '50%', border: '1px solid #e5e7eb',
+              background: '#fff', cursor: page === 0 ? 'default' : 'pointer',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              boxShadow: '0 2px 6px rgba(0,0,0,0.1)', opacity: page === 0 ? 0.35 : 1, zIndex: 2,
+              transition: 'opacity 0.2s',
+            }}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M15 18l-6-6 6-6"/></svg>
+          </button>
+          <button
+            onClick={() => go(page + 1)}
+            disabled={page === totalPages - 1}
+            aria-label="Trang sau"
+            style={{
+              position: 'absolute', top: '42%', right: -18, transform: 'translateY(-50%)',
+              width: 36, height: 36, borderRadius: '50%', border: '1px solid #e5e7eb',
+              background: '#fff', cursor: page === totalPages - 1 ? 'default' : 'pointer',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              boxShadow: '0 2px 6px rgba(0,0,0,0.1)', opacity: page === totalPages - 1 ? 0.35 : 1, zIndex: 2,
+              transition: 'opacity 0.2s',
+            }}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 18l6-6-6-6"/></svg>
+          </button>
+          <div style={{ display: 'flex', justifyContent: 'center', gap: 6, marginTop: 16 }}>
+            {Array.from({ length: totalPages }).map((_, i) => (
+              <button
+                key={i}
+                onClick={() => go(i)}
+                aria-label={`Trang ${i + 1}`}
+                style={{
+                  width: i === page ? 22 : 8, height: 8, borderRadius: 4, border: 'none', padding: 0,
+                  background: i === page ? '#dc2626' : '#d1d5db', cursor: 'pointer',
+                  transition: 'all 0.25s',
+                }}
+              />
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+
+    {quickOrder && (
+      <QuickOrderModal
+        open={true}
+        onClose={() => setQuickOrder(null)}
+        product={quickOrder}
+      />
+    )}
+    </>
   )
 }
 
@@ -513,18 +715,17 @@ export default function HomePageClient({
             <div className="container">
               <div className="section-header">
                 <div>
-                  <span className="section-label">Đấu Giá Trực Tiếp</span>
-                  <h2 style={{whiteSpace:'nowrap', fontSize:'1.5rem'}}>{t('home_auctions_title')}</h2>
+                  <span className="section-label">Nổi Bật</span>
+                  <h2 style={{whiteSpace:'nowrap', fontSize:'1.5rem'}}>Sản Phẩm &amp; Đấu Giá Nổi Bật</h2>
                 </div>
-                <button onClick={() => router.push('/dau-gia')} className="see-all-link">Xem Tất Cả <span>→</span></button>
+                <button onClick={() => router.push('/san-pham')} className="see-all-link">Xem Tất Cả <span>→</span></button>
               </div>
-              {auctions.length === 0 ? (
+              {auctions.length === 0 && products.length === 0 ? (
                 <div className="empty-state">
-                  <p>🔨 Chưa có phiên đấu giá nào đang diễn ra.</p>
-                  <button className="btn-outline" onClick={() => router.push('/dau-gia')}>Xem Lịch Đấu Giá</button>
+                  <p>📦 Chưa có sản phẩm hay phiên đấu giá nào.</p>
                 </div>
               ) : (
-                <AuctionSlider auctions={auctions} router={router} />
+                <MixedSlider auctions={auctions} products={products} router={router} />
               )}
             </div>
           </section>
@@ -618,7 +819,7 @@ export default function HomePageClient({
           <section className="testimonials-section">
             <div className="container">
               <div className="section-header centered">
-                <span className="section-label">Khách Hàng Nói Gì</span>
+                <span className="section-label" style={{fontSize:'1rem'}}>Khách Hàng Nói Gì</span>
                 <h2 style={{fontSize:'1.5rem'}}>Đánh Giá Từ Cộng Đồng</h2>
               </div>
               <div className="testimonials-grid">

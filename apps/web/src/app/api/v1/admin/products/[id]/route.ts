@@ -25,6 +25,7 @@ const patchSchema = z.object({
   metaTitle: z.string().max(255).nullable().optional(),
   metaDesc: z.string().nullable().optional(),
   specifications: z.array(z.object({ label: z.string(), value: z.string() })).max(100).optional(),
+  gifts: z.array(z.object({ name: z.string(), price: z.number().optional(), image: z.string().optional() })).max(20).optional(),
 })
 
 
@@ -86,6 +87,7 @@ export async function PATCH(req: NextRequest, { params }: Params) {
     if (body.reviewCount !== undefined) data.reviewCount = body.reviewCount
     if (body.metaTitle !== undefined) data.metaTitle = body.metaTitle
     if (body.metaDesc !== undefined) data.metaDesc = body.metaDesc
+    if (body.gifts !== undefined) data.gifts = body.gifts
     if (body.categoryId !== undefined) data.category = body.categoryId ? { connect: { id: body.categoryId } } : { disconnect: true }
     if (body.brandId !== undefined) data.brand = body.brandId ? { connect: { id: body.brandId } } : { disconnect: true }
 

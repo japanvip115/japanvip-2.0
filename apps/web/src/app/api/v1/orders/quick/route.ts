@@ -48,6 +48,24 @@ export async function POST(req: NextRequest) {
     const fmtVND = (n: number) => n.toLocaleString('vi-VN') + '₫'
     const orderRef = `DH${Date.now().toString(36).toUpperCase()}`
 
+    // Lưu đơn vào DB
+    await prisma.quickOrder.create({
+      data: {
+        orderRef,
+        name: body.name,
+        email: body.email,
+        phone: body.phone,
+        address: body.address ?? null,
+        notes: body.notes ?? null,
+        productId: body.productId,
+        productName: body.productName,
+        productImage: body.productImage ?? null,
+        productSlug: body.productSlug,
+        priceVnd: body.priceVnd ?? null,
+        quantity: body.quantity,
+      },
+    })
+
     const smtp = await getSmtp()
     if (smtp) {
       const transport = nodemailer.createTransport({ host: smtp.host, port: smtp.port, secure: smtp.secure, auth: { user: smtp.user, pass: smtp.pass } })

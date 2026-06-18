@@ -32,13 +32,14 @@ export function AddToCartButtons({ productId, slug, name, image, priceJpy, price
         {/* Add to cart — outlined dark */}
         <button
           onClick={handleAddToCart}
+          style={added ? {} : {border: '1px solid #fca5a5'}}
           className={`
             group relative flex flex-1 cursor-pointer items-center justify-center gap-2
-            overflow-hidden rounded-xl border-2 px-4 py-3.5 text-sm font-bold
+            overflow-hidden rounded-xl px-4 py-3.5 text-sm font-bold
             transition-all duration-200 active:scale-[.97]
             ${added
-              ? 'border-emerald-500 bg-emerald-50 text-emerald-600'
-              : 'border-slate-800 bg-white text-slate-800 hover:border-slate-700 hover:bg-slate-50'
+              ? 'border border-emerald-500 bg-emerald-50 text-emerald-600'
+              : 'bg-white text-slate-800 hover:bg-red-50'
             }
           `}
         >
@@ -67,7 +68,7 @@ export function AddToCartButtons({ productId, slug, name, image, priceJpy, price
         >
           <span aria-hidden className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-500 group-hover:translate-x-full" />
           <Zap className="relative h-4 w-4 shrink-0" />
-          <span className="relative">Mua ngay</span>
+          <span className="relative">Đặt Hàng Ngay</span>
         </button>
       </div>
 

@@ -78,7 +78,7 @@ export default async function AuctionDetailPage({ params }: Props) {
   const displayColor = effectiveExpired ? 'bg-gray-100 text-gray-500' : AUCTION_STATUS_COLORS[displayStatus]
 
   return (
-    <div className="container pt-8 pb-8 md:pt-12 md:pb-12">
+    <div className="container pt-6 pb-8 md:pt-8 md:pb-12">
 
       <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
         {/* Left: Product info */}

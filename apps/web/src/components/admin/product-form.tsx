@@ -9,6 +9,7 @@ import { SearchableSelect } from '@/components/admin/searchable-select'
 type Category = { id: string; name: string }
 type Brand = { id: string; name: string }
 type SpecRow = { label: string; value: string }
+type GiftRow = { name: string; price?: number; image?: string }
 
 type ScrapeResult = {
   name: string; sku: string; brand: string; price: number | null
@@ -35,6 +36,7 @@ type Props = {
     marketPrice?: number | null
     metaTitle?: string
     metaDesc?: string
+    gifts?: GiftRow[]
   }
   categories?: Category[]
   brands?: Brand[]
@@ -77,6 +79,7 @@ export function ProductForm({ mode, productId, initialData = {}, categories = []
   const [metaDesc, setMetaDesc] = useState(initialData.metaDesc ?? '')
 
   const [specifications, setSpecifications] = useState<SpecRow[]>([])
+  const [gifts, setGifts] = useState<GiftRow[]>(initialData.gifts ?? [])
 
   const [importUrl, setImportUrl] = useState('')
   const [importing, setImporting] = useState(false)
@@ -143,6 +146,7 @@ export function ProductForm({ mode, productId, initialData = {}, categories = []
       metaTitle: metaTitle || undefined,
       metaDesc: metaDesc || undefined,
       specifications: specifications.length > 0 ? specifications : undefined,
+      gifts: gifts.length > 0 ? gifts : [],
     }
     const url = mode === 'create' ? '/api/v1/admin/products' : `/api/v1/admin/products/${productId}`
     try {
@@ -280,6 +284,57 @@ export function ProductForm({ mode, productId, initialData = {}, categories = []
                   <p className="mt-0.5 line-clamp-2 text-gray-600">{metaDesc || 'Mô tả sản phẩm...'}</p>
                 </div>
               )}
+            </div>
+          </div>
+          {/* Quà tặng */}
+          <div className={CARD}>
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className={`${CARD_TITLE} mb-0`}>🎁 Quà tặng kèm</h2>
+              <button type="button"
+                onClick={() => setGifts(g => [...g, { name: '', price: undefined, image: '' }])}
+                className="flex items-center gap-1 rounded-lg border border-dashed border-gray-600 px-2.5 py-1 text-xs text-gray-400 hover:border-gray-400 hover:text-gray-200 transition-colors">
+                <X className="h-3 w-3 rotate-45" /> Thêm quà
+              </button>
+            </div>
+            {gifts.length === 0 && (
+              <p className="text-xs text-gray-600 italic">Chưa có quà tặng. Nhấn "Thêm quà" để thêm.</p>
+            )}
+            <div className="space-y-3">
+              {gifts.map((g, i) => (
+                <div key={i} className="flex gap-2 items-start">
+                  <div className="flex-1 space-y-1.5">
+                    <input
+                      value={g.name}
+                      onChange={e => setGifts(gs => gs.map((x, j) => j === i ? { ...x, name: e.target.value } : x))}
+                      placeholder="Tên quà tặng (VD: Nồi hấp thủy tinh)"
+                      className={INPUT}
+                    />
+                    <div className="flex gap-1.5">
+                      <div className="relative flex-1">
+                        <input
+                          type="text" inputMode="numeric"
+                          value={g.price ? Number(g.price).toLocaleString('vi-VN') : ''}
+                          onChange={e => setGifts(gs => gs.map((x, j) => j === i ? { ...x, price: Number(e.target.value.replace(/[^0-9]/g, '')) || undefined } : x))}
+                          placeholder="Trị giá (₫) — tuỳ chọn"
+                          className={`${INPUT} pr-6`}
+                        />
+                        <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-xs text-gray-600">₫</span>
+                      </div>
+                      <input
+                        value={g.image ?? ''}
+                        onChange={e => setGifts(gs => gs.map((x, j) => j === i ? { ...x, image: e.target.value } : x))}
+                        placeholder="URL ảnh — tuỳ chọn"
+                        className={`${INPUT} flex-1`}
+                      />
+                    </div>
+                  </div>
+                  <button type="button"
+                    onClick={() => setGifts(gs => gs.filter((_, j) => j !== i))}
+                    className="mt-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-gray-700 text-gray-500 hover:border-red-700 hover:text-red-400 transition-colors">
+                    <X className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+              ))}
             </div>
           </div>
         </div>
