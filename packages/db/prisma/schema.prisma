@@ -944,6 +944,7 @@ model BfjSetting {
   domesticShippingJpy Decimal  @default(0) @map("domestic_shipping_jpy") @db.Decimal(10, 2)
   surchargeRate       Decimal  @default(0) @map("surcharge_rate") @db.Decimal(5, 4)
   depositRate         Decimal  @default(0.30) @map("deposit_rate") @db.Decimal(5, 4)
+  profitMarginRate    Decimal  @default(0) @map("profit_margin_rate") @db.Decimal(5, 4)
   translationProvider String   @default("none") @map("translation_provider") @db.VarChar(20)
   translationApiKey   String?  @map("translation_api_key") @db.VarChar(500)
   smtpHost            String?  @map("smtp_host") @db.VarChar(255)
@@ -971,4 +972,20 @@ model BfjShippingTier {
 
   @@index([sortOrder])
   @@map("bfj_shipping_tiers")
+}
+
+// Bảng cước vận chuyển JP → VN (per kg, 2 loại hàng)
+model BfjFreightRate {
+  id                  String   @id @default(uuid()) @db.Uuid
+  minWeightKg         Decimal  @map("min_weight_kg") @db.Decimal(8, 2)
+  maxWeightKg         Decimal? @map("max_weight_kg") @db.Decimal(8, 2)
+  regularPricePerKg   Int      @map("regular_price_per_kg")
+  difficultPricePerKg Int      @map("difficult_price_per_kg")
+  estimatedDays       String   @default("2-5 ngày") @map("estimated_days") @db.VarChar(50)
+  sortOrder           Int      @default(0) @map("sort_order")
+  createdAt           DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt           DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@index([sortOrder])
+  @@map("bfj_freight_rates")
 }

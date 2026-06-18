@@ -116,34 +116,34 @@ export default async function AdminProductDetailPage({ params }: Props) {
           metaTitle: product.metaTitle ?? '',
           metaDesc: product.metaDesc ?? '',
         }}
+        imageSlot={
+          <div className="rounded-xl border border-gray-700 bg-gray-800/60 p-5">
+            <h3 className="mb-4 text-sm font-semibold text-gray-200">Hình Ảnh Sản Phẩm</h3>
+            <ProductImagesManager
+              productId={product.id}
+              initialImages={product.images.map((img) => ({
+                id: img.id,
+                url: img.url,
+                altText: img.altText ?? '',
+                isPrimary: img.isPrimary,
+                sortOrder: img.sortOrder,
+              }))}
+            />
+          </div>
+        }
       />
 
-      {/* ── Images + Attributes ── */}
-      <div className="grid grid-cols-1 gap-5 xl:grid-cols-2">
-        <div className="rounded-xl border border-gray-700 bg-gray-800/60 p-5">
-          <h3 className="mb-4 text-sm font-semibold text-gray-200">Hình Ảnh Sản Phẩm</h3>
-          <ProductImagesManager
-            productId={product.id}
-            initialImages={product.images.map((img) => ({
-              id: img.id,
-              url: img.url,
-              altText: img.altText ?? '',
-              isPrimary: img.isPrimary,
-              sortOrder: img.sortOrder,
-            }))}
-          />
-        </div>
-        <div className="rounded-xl border border-gray-700 bg-gray-800/60 p-5">
-          <h2 className="mb-4 text-sm font-semibold text-gray-200">Thông Số Kỹ Thuật</h2>
-          <ProductAttributesManager
-            productId={product.id}
-            initialAttributes={product.attributes.map((a) => ({
-              id: a.id,
-              name: a.name,
-              value: a.value,
-            }))}
-          />
-        </div>
+      {/* ── Attributes — full width ── */}
+      <div className="rounded-xl border border-gray-700 bg-gray-800/60 p-5">
+        <h2 className="mb-4 text-sm font-semibold text-gray-200">Thông Số Kỹ Thuật</h2>
+        <ProductAttributesManager
+          productId={product.id}
+          initialAttributes={product.attributes.map((a) => ({
+            id: a.id,
+            name: a.name,
+            value: a.value,
+          }))}
+        />
       </div>
 
       {/* ── Recent auctions ── */}

@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Link2, Loader2, CheckCircle2, AlertCircle, Plus, X } from 'lucide-react'
+import { Link2, Loader2, CheckCircle2, AlertCircle, X } from 'lucide-react'
 import { SearchableSelect } from '@/components/admin/searchable-select'
 
 type Category = { id: string; name: string }
@@ -38,6 +38,7 @@ type Props = {
   }
   categories?: Category[]
   brands?: Brand[]
+  imageSlot?: React.ReactNode
 }
 
 function slugify(str: string) {
@@ -52,7 +53,7 @@ const LABEL = 'mb-1 block text-xs font-semibold uppercase tracking-wide text-gra
 const CARD = 'rounded-xl border border-gray-700 bg-gray-800/60 p-5'
 const CARD_TITLE = 'mb-4 text-sm font-semibold text-gray-200'
 
-export function ProductForm({ mode, productId, initialData = {}, categories = [], brands: initialBrands = [] }: Props) {
+export function ProductForm({ mode, productId, initialData = {}, categories = [], brands: initialBrands = [], imageSlot }: Props) {
   const router = useRouter()
 
   const [name, setName] = useState(initialData.name ?? '')
@@ -249,35 +250,8 @@ export function ProductForm({ mode, productId, initialData = {}, categories = []
             </div>
           </div>
 
-          {/* Thông số kỹ thuật */}
-          <div className={CARD}>
-            <div className="mb-4 flex items-center justify-between">
-              <h2 className={`${CARD_TITLE} mb-0`}>Thông số kỹ thuật</h2>
-              <button type="button" onClick={() => setSpecifications(prev => [...prev, { label: '', value: '' }])}
-                className="flex items-center gap-1 rounded-lg border border-gray-600 px-2.5 py-1 text-xs text-gray-400 hover:border-gray-400 hover:text-white transition-colors">
-                <Plus className="h-3 w-3" /> Thêm dòng
-              </button>
-            </div>
-            {specifications.length === 0
-              ? <p className="py-6 text-center text-xs text-gray-600">Chưa có thông số. Nhấn "Thêm dòng" hoặc import từ URL để tự động điền.</p>
-              : <div className="space-y-2">
-                  {specifications.map((row, i) => (
-                    <div key={i} className="flex gap-2">
-                      <input value={row.label} placeholder="Tên thông số"
-                        onChange={e => setSpecifications(prev => prev.map((r, j) => j === i ? { ...r, label: e.target.value } : r))}
-                        className={`${INPUT} flex-1`} />
-                      <input value={row.value} placeholder="Giá trị"
-                        onChange={e => setSpecifications(prev => prev.map((r, j) => j === i ? { ...r, value: e.target.value } : r))}
-                        className={`${INPUT} flex-1`} />
-                      <button type="button" onClick={() => setSpecifications(prev => prev.filter((_, j) => j !== i))}
-                        className="text-gray-600 hover:text-red-400 transition-colors px-1">
-                        <X className="h-4 w-4" />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-            }
-          </div>
+          {/* Images slot — injected from parent page */}
+          {imageSlot && <div key="image-slot">{imageSlot}</div>}
 
           {/* SEO */}
           <div className={CARD}>
@@ -333,6 +307,17 @@ export function ProductForm({ mode, productId, initialData = {}, categories = []
                 {submitting && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
                 {submitting ? 'Đang lưu...' : mode === 'create' ? 'Tạo sản phẩm' : 'Lưu thay đổi'}
               </button>
+              {mode === 'edit' && slug && (
+                <a
+                  href={`/${slug}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex w-full items-center justify-center gap-1.5 rounded-lg border border-gray-600 py-2 text-xs font-medium text-gray-300 hover:border-gray-400 hover:text-white transition-colors"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                  Xem trên website
+                </a>
+              )}
               <Link href="/admin/products" className="block text-center text-xs text-gray-500 hover:text-gray-300 transition-colors">
                 Hủy bỏ
               </Link>

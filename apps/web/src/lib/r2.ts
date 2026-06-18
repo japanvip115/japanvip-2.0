@@ -2,10 +2,10 @@ import { S3Client, PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import { v4 as uuidv4 } from 'uuid'
 
-export type UploadFolder = 'products' | 'avatars' | 'banners' | 'blogs' | 'brands' | 'categories' | 'category-icons' | 'deposits' | 'settings'
+export type UploadFolder = 'products' | 'avatars' | 'banners' | 'blogs' | 'brands' | 'categories' | 'category-icons' | 'deposits' | 'settings' | 'logo-templates'
 
-export const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/avif']
-export const MAX_UPLOAD_BYTES = 10 * 1024 * 1024 // 10MB
+export const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/avif', 'video/mp4', 'video/webm', 'video/quicktime']
+export const MAX_UPLOAD_BYTES = 100 * 1024 * 1024 // 100MB (video)
 
 function isR2Configured(): boolean {
   return !!(
