@@ -391,7 +391,7 @@ export default function HomePageClient({
                 <div className="container">
                   <div className="hero-content">
                     <div className="hero-badge">✦ Nhật Bản Chính Hãng</div>
-                    <h1 className="hero-title">{t('home_hero_title')}<br /><span className="hero-accent" style={{display:'block', marginTop:'0.35em', marginLeft:'1.9em'}}>{t('home_hero_accent')}</span></h1>
+                    <h1 className="hero-title">{t('home_hero_title')}<br /><span className="hero-accent" style={{display:'block', marginTop:'0.35em', marginLeft:'1.1em'}}>{t('home_hero_accent')}</span></h1>
                     <p className="hero-desc">{t('home_hero_desc')}</p>
                     <div className="hero-actions">
                       <button className="btn-primary" onClick={() => router.push('/mua-ho')}>Mua Hàng Nhật Ngay</button>
