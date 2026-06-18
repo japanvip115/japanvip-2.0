@@ -663,7 +663,7 @@ ul, ol { list-style: none; }
 .live-dot { width: 6px; height: 6px; border-radius: 50%; background: white; display: inline-block; animation: livePulse 1.2s infinite; }
 @keyframes livePulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
-.auction-img { height: 180px; overflow: hidden; }
+.auction-img { position: relative; aspect-ratio: 1 / 1; overflow: hidden; }
 .auction-img-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
 .product-emoji { font-size: 4rem; }
 .auction-body { padding: 16px; }
@@ -1403,7 +1403,7 @@ ul, ol { list-style: none; }
   }
   /* Hide desktop prev/next arrows on mobile */
   .auction-slider-wrap > button { display: none !important; }
-  .auction-img { height: 140px; }
+  .auction-img { aspect-ratio: 1 / 1; height: auto; }
   .btn-bid { white-space: nowrap; font-size: 0.8rem; padding: 10px 8px; }
   .auction-title { font-size: 0.82rem; min-height: unset; }
   .current-bid { font-size: 1rem; }
@@ -1518,7 +1518,7 @@ ul, ol { list-style: none; }
 
   /* Auction slider */
   .auction-slider-card { flex: 0 0 calc(50% - 5px); min-width: calc(50% - 5px); }
-  .auction-img { height: 120px; }
+  .auction-img { aspect-ratio: 1 / 1; height: auto; }
   .auction-title { font-size: 0.78rem; }
   .current-bid { font-size: 0.9rem; }
 
