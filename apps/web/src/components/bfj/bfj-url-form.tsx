@@ -999,28 +999,25 @@ export function BfjUrlForm({ fees }: { fees: StaticFees }) {
                 <div className="space-y-3 text-sm">
                   <div className="flex items-center justify-between">
                     <span className="text-gray-500">Phí mua hộ</span>
-                    <span className="font-semibold text-gray-900">{(fees.serviceFeeRate * 100).toFixed(0)}%</span>
+                    <span className="font-semibold text-gray-400">—</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-gray-500">Phí kho Nhật</span>
-                    <span className="font-semibold text-gray-900">
-                      {fees.domesticShippingJpy > 0 ? `¥${fees.domesticShippingJpy.toLocaleString('ja-JP')}` : '0đ'}
-                    </span>
+                    <span className="font-semibold text-gray-400">—</span>
                   </div>
-                  {fees.surchargeRate > 0 && (
-                    <div className="flex items-center justify-between">
-                      <span className="text-gray-500">Phụ thu</span>
-                      <span className="font-semibold text-gray-900">{(fees.surchargeRate * 100).toFixed(0)}%</span>
-                    </div>
-                  )}
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-500">Phụ thu</span>
+                    <span className="font-semibold text-gray-400">—</span>
+                  </div>
                   <div className="flex items-center justify-between">
                     <span className="text-gray-500">Ship JP → VN</span>
-                    <span className="font-semibold text-gray-900">{fees.shippingLabel}</span>
+                    <span className="font-semibold text-gray-400">—</span>
                   </div>
-                  <div className="flex items-center justify-between border-t pt-3 text-brand-red">
+                  <div className="flex items-center justify-between border-t pt-3 text-gray-400">
                     <span className="font-semibold">Đặt cọc tối thiểu</span>
-                    <span className="font-bold">{(fees.depositRate * 100).toFixed(0)}%</span>
+                    <span className="font-bold">—</span>
                   </div>
+                  <p className="pt-1 text-center text-xs text-gray-400">Nhập URL sản phẩm để xem chi phí</p>
                 </div>
               </div>
 
