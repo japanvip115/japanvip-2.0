@@ -96,10 +96,41 @@ function cleanHtml(raw: string): string {
     $c(el).replaceWith($c(el).html() ?? '')
   })
 
+  // Strip backlinks — unwrap <a> to text/children only
+  root.find('a[href]').each((_, el) => {
+    $c(el).replaceWith($c(el).html() ?? $c(el).text())
+  })
+
   // Remove empty block elements
   root.find('div:empty, span:empty, p:empty, section:empty').remove()
 
   return root.html() ?? raw
+}
+
+// Download all <img> in HTML description to R2, replace src
+async function uploadDescriptionImages(html: string, referer: string, baseUrl: URL): Promise<string> {
+  const $ = cheerio.load(`<div id="__wrap">${html}</div>`, { xmlMode: false })
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const imgs: Array<{ el: any; src: string }> = []
+
+  $('#__wrap img').each((_, el) => {
+    const src = $(el).attr('data-src') || $(el).attr('src') || ''
+    const resolved = resolveUrl(src, baseUrl)
+    if (resolved.startsWith('http')) imgs.push({ el, src: resolved })
+  })
+
+  await Promise.all(
+    imgs.map(async ({ el, src }) => {
+      const r2url = await downloadAndUpload(src, referer)
+      if (r2url) {
+        $(el).attr('src', r2url)
+        $(el).removeAttr('data-src')
+        $(el).removeAttr('srcset')
+      }
+    }),
+  )
+
+  return $('#__wrap').html() ?? html
 }
 
 // Scrape thông tin sản phẩm từ WooCommerce / bất kỳ trang nào
@@ -216,6 +247,40 @@ async function scrapeProduct(url: string) {
   return { name: name.trim(), sku: sku.trim(), brand: brand.trim(), description: description.trim(), shortDescriptionHtml, descriptionHtml, images, metaTitle, metaDesc }
 }
 
+// Match brand name from scraped text against DB brands
+async function findBrandId(scrapedBrand: string, productName: string): Promise<string | null> {
+  const allBrands = await prisma.brand.findMany({ select: { id: true, name: true } })
+  const text = `${scrapedBrand} ${productName}`.toLowerCase()
+  for (const b of allBrands) {
+    if (text.includes(b.name.toLowerCase())) return b.id
+  }
+  return null
+}
+
+// Keyword map: product name keywords → category name keywords
+const CAT_KEYWORDS: Array<{ match: string[]; cat: string }> = [
+  { match: ['nồi cơm', 'noi com', 'rice cooker'], cat: 'nồi cơm' },
+  { match: ['quạt', 'quat', 'fan'], cat: 'quạt' },
+  { match: ['tủ lạnh', 'tu lanh', 'refrigerator', 'fridge'], cat: 'tủ lạnh' },
+  { match: ['máy giặt', 'may giat', 'washing'], cat: 'máy giặt' },
+  { match: ['máy lọc nước', 'may loc nuoc', 'water purifier', 'ion kiềm'], cat: 'máy lọc nước' },
+  { match: ['máy lọc không khí', 'air purifier', 'loc khong khi'], cat: 'máy lọc không khí' },
+  { match: ['vòi', 'bồn cầu', 'toilet', 'shower', 'sen tắm', 'vệ sinh'], cat: 'vệ sinh' },
+]
+
+async function findCategoryId(productName: string): Promise<string | null> {
+  const allCats = await prisma.category.findMany({ select: { id: true, name: true } })
+  const nameLower = productName.toLowerCase()
+
+  for (const rule of CAT_KEYWORDS) {
+    if (rule.match.some((kw) => nameLower.includes(kw))) {
+      const cat = allCats.find((c) => c.name.toLowerCase().includes(rule.cat))
+      if (cat) return cat.id
+    }
+  }
+  return null
+}
+
 export async function POST(req: NextRequest) {
   const session = await auth()
   if (!session) return apiError('Unauthorized', 401)
@@ -250,13 +315,25 @@ export async function POST(req: NextRequest) {
       slug = `${baseSlug}-${++idx}`
     }
 
-    // 4. Ghép mô tả
-    const description =
-      scraped.shortDescriptionHtml && scraped.descriptionHtml
-        ? scraped.shortDescriptionHtml + '\n\n' + scraped.descriptionHtml
-        : scraped.descriptionHtml || scraped.shortDescriptionHtml || scraped.description || null
+    // 4. Lookup brand + category
+    const [brandId, categoryId] = await Promise.all([
+      findBrandId(scraped.brand, scraped.name),
+      findCategoryId(scraped.name),
+    ])
 
-    // 5. Tạo sản phẩm
+    // 5. Upload ảnh trong nội dung mô tả lên R2, xong ghép mô tả
+    const baseUrl = new URL(url)
+    const [shortDescR2, descR2] = await Promise.all([
+      scraped.shortDescriptionHtml ? uploadDescriptionImages(scraped.shortDescriptionHtml, url, baseUrl) : Promise.resolve(''),
+      scraped.descriptionHtml ? uploadDescriptionImages(scraped.descriptionHtml, url, baseUrl) : Promise.resolve(''),
+    ])
+
+    const description =
+      shortDescR2 && descR2
+        ? shortDescR2 + '\n\n' + descR2
+        : descR2 || shortDescR2 || scraped.description || null
+
+    // 6. Tạo sản phẩm
     const product = await prisma.product.create({
       data: {
         name: scraped.name || slug,
@@ -268,6 +345,8 @@ export async function POST(req: NextRequest) {
         originUrl: url,
         metaTitle: scraped.metaTitle || null,
         metaDesc: scraped.metaDesc || null,
+        brandId: brandId ?? undefined,
+        categoryId: categoryId ?? undefined,
         images: savedImages.length > 0 ? { create: savedImages } : undefined,
       },
     })

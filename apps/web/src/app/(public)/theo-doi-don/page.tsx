@@ -87,10 +87,10 @@ export default function TheoDoidonPage() {
               })}
             </div>
 
-            <div className="mt-10 rounded-xl border border-gray-200 bg-white p-5">
+            <div className="mt-10 rounded-xl border border-gray-200 bg-white p-5 text-center">
               <p className="text-sm font-semibold text-gray-900">Cần hỗ trợ?</p>
               <p className="mt-1 text-sm text-gray-500">Liên hệ đội ngũ chúng tôi để tra cứu đơn hàng nhanh nhất.</p>
-              <div className="mt-4 flex flex-wrap gap-3">
+              <div className="mt-4 flex flex-wrap justify-center gap-3">
                 <a href="tel:0988969896" className="inline-flex items-center gap-2 rounded-lg bg-brand-red px-4 py-2 text-sm font-semibold text-white hover:bg-brand-red-dark transition-colors">
                   📞 0988.969.896
                 </a>

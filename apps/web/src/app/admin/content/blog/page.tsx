@@ -3,6 +3,7 @@ import { prisma } from '@japanvip/db'
 import Link from 'next/link'
 import type { BlogPostStatus } from '@japanvip/db'
 import { Plus, Pencil } from 'lucide-react'
+import { BlogBulkImport } from '@/components/admin/blog-bulk-import'
 
 export const metadata: Metadata = { title: 'Admin — Blog' }
 export const dynamic = 'force-dynamic'
@@ -84,6 +85,8 @@ export default async function AdminBlogPage({ searchParams }: { searchParams: Se
         </Link>
       </div>
 
+      <BlogBulkImport />
+
       {/* Filters */}
       <div className="mb-4 flex items-center gap-3">
         <div className="flex rounded-lg border border-gray-700 overflow-hidden">
@@ -131,9 +134,21 @@ export default async function AdminBlogPage({ searchParams }: { searchParams: Se
             )}
             {posts.map((post) => (
               <tr key={post.id} className="hover:bg-gray-700/30 transition-colors cursor-pointer">
-                <td className="px-4 py-3">
-                  <div className="font-medium text-gray-300 line-clamp-1">{post.title}</div>
-                  {post.excerpt && <div className="text-xs text-gray-500 line-clamp-1 mt-0.5">{post.excerpt}</div>}
+                <td className="px-4 py-3 max-w-xs">
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium text-gray-300 truncate">{post.title}</span>
+                    {post.status === 'PUBLISHED' && (
+                      <a
+                        href={`/blog/${post.slug}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="shrink-0 text-xs text-blue-400 hover:text-blue-300 transition-colors"
+                        title="Xem trang"
+                      >
+                        ↗
+                      </a>
+                    )}
+                  </div>
                 </td>
                 <td className="px-4 py-3 text-sm text-gray-300">{post.category?.name ?? '—'}</td>
                 <td className="px-4 py-3 text-sm text-gray-300">

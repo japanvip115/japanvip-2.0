@@ -334,18 +334,30 @@ export function BfjUrlForm({ fees }: { fees: StaticFees }) {
               placeholder="https://www.amazon.co.jp/dp/..."
               className="flex-1 bg-transparent text-sm text-gray-800 outline-none placeholder:text-gray-400"
             />
-            {url && (
+            {url ? (
               <button
                 onClick={() => { setUrl(''); setStep('input'); setResult(null); setOrderResult(null) }}
                 className="text-gray-400 hover:text-gray-600 cursor-pointer"
               >✕</button>
+            ) : (
+              <button
+                onClick={async () => {
+                  try {
+                    const text = await navigator.clipboard.readText()
+                    if (text.trim()) setUrl(text.trim())
+                  } catch {}
+                }}
+                className="flex items-center gap-1 rounded-lg bg-gray-200 px-2.5 py-1 text-xs font-medium text-gray-600 hover:bg-gray-300 cursor-pointer transition-colors whitespace-nowrap"
+              >
+                📋 Dán
+              </button>
             )}
           </div>
 
           <button
             onClick={handleParse}
             disabled={step === 'loading' || !url.trim()}
-            className="mt-3 flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-brand-red py-3 text-sm font-semibold text-white transition hover:bg-brand-red-dark disabled:opacity-60"
+            className="mt-3 mx-auto flex w-96 cursor-pointer items-center justify-center gap-2 rounded-xl bg-brand-red py-3 text-sm font-semibold text-white transition hover:bg-brand-red-dark disabled:opacity-60"
           >
             {step === 'loading' ? (
               <><div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />Đang lấy thông tin...</>
@@ -444,23 +456,36 @@ export function BfjUrlForm({ fees }: { fees: StaticFees }) {
               </div>
 
               {/* Description */}
-              {result.description && (
-                <div>
-                  <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-gray-400">Tính năng & Mô tả</p>
-                  <div
-                    className={`text-sm text-gray-700 leading-relaxed [&_ul]:list-disc [&_ul]:pl-5 [&_li]:mb-1.5 transition-all ${needsDescToggle && !descExpanded ? 'line-clamp-[12] overflow-hidden' : ''}`}
-                    dangerouslySetInnerHTML={{ __html: result.description }}
-                  />
-                  {needsDescToggle && (
-                    <button
-                      onClick={() => setDescExpanded(!descExpanded)}
-                      className="mt-2 text-xs font-medium text-brand-red hover:underline cursor-pointer"
-                    >
-                      {descExpanded ? '▲ Thu gọn' : '▼ Xem thêm'}
-                    </button>
-                  )}
-                </div>
-              )}
+              {result.description && (() => {
+                const hasJapanese = /[ぁ-んァ-ヶ一-鿿]/.test(result.description)
+                return hasJapanese ? (
+                  <div className="rounded-xl border border-amber-100 bg-amber-50 px-4 py-3 text-sm text-amber-700">
+                    <p className="font-medium mb-1">📋 Mô tả sản phẩm bằng tiếng Nhật</p>
+                    <p className="text-xs text-amber-600">
+                      Xem đầy đủ tính năng và mô tả trên trang gốc —{' '}
+                      <a href={result.sourceUrl} target="_blank" rel="noopener noreferrer" className="underline font-medium">
+                        Xem sản phẩm gốc trên {result.platform === 'AMAZON_JP' ? 'Amazon JP' : result.platform} →
+                      </a>
+                    </p>
+                  </div>
+                ) : (
+                  <div>
+                    <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-gray-400">Tính năng & Mô tả</p>
+                    <div
+                      className={`text-sm text-gray-700 leading-relaxed [&_ul]:list-disc [&_ul]:pl-5 [&_li]:mb-1.5 transition-all ${needsDescToggle && !descExpanded ? 'line-clamp-[12] overflow-hidden' : ''}`}
+                      dangerouslySetInnerHTML={{ __html: result.description }}
+                    />
+                    {needsDescToggle && (
+                      <button
+                        onClick={() => setDescExpanded(!descExpanded)}
+                        className="mt-2 text-xs font-medium text-brand-red hover:underline cursor-pointer"
+                      >
+                        {descExpanded ? '▲ Thu gọn' : '▼ Xem thêm'}
+                      </button>
+                    )}
+                  </div>
+                )
+              })()}
 
               {/* Specs table */}
               {specs.length > 0 && (
@@ -643,19 +668,19 @@ export function BfjUrlForm({ fees }: { fees: StaticFees }) {
                 <h4 className="mb-4 font-bold text-gray-900">💰 Bảng Phí Dịch Vụ</h4>
                 <div className="space-y-3 text-sm">
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-600">Phí mua hộ</span>
+                    <span className="text-gray-600">Phí dịch vụ Japan VIP</span>
                     <span className="font-bold text-brand-red">{(fees.serviceFeeRate * 100).toFixed(0)}%</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-600">Phụ phí thanh toán</span>
+                    <span className="text-gray-600">Phí kiểm tra & đóng gói</span>
                     <span className="font-bold text-brand-red">{(fees.surchargeRate * 100).toFixed(0)}%</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-600">Vận chuyển nội địa JP</span>
+                    <span className="text-gray-600">Ship nội địa Nhật</span>
                     <span className="font-bold text-gray-800">¥{fees.domesticShippingJpy.toLocaleString()}</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-600">Ship JP → VN</span>
+                    <span className="text-gray-600">Ship quốc tế JP → VN</span>
                     <span className="font-bold text-gray-800">{fees.shippingLabel}</span>
                   </div>
                   <div className="flex items-center justify-between border-t pt-3">
@@ -746,24 +771,24 @@ export function BfjUrlForm({ fees }: { fees: StaticFees }) {
                     <span className="font-semibold text-gray-900">{formatVND(result.estimate.productPriceVnd / quantity)}</span>
                   </div>
                   <div className="flex justify-between text-gray-500">
-                    <span>Phí mua hộ ({(result.estimate.serviceFeeRate * 100).toFixed(0)}%)</span>
+                    <span>Phí dịch vụ Japan VIP ({(result.estimate.serviceFeeRate * 100).toFixed(0)}%)</span>
                     <span className="font-semibold text-gray-900">+{formatVND(result.estimate.serviceFeeVnd / quantity)}</span>
                   </div>
                   {result.estimate.domesticShippingJpy > 0 && (
                     <div className="flex justify-between text-gray-500">
-                      <span>Phí nội địa Nhật</span>
+                      <span>Ship nội địa Nhật</span>
                       <span className="font-semibold text-gray-900">+{formatVND(result.estimate.domesticShippingVnd)}</span>
                     </div>
                   )}
                   {result.estimate.surchargeRate > 0 && (
                     <div className="flex justify-between text-gray-500">
-                      <span>Phụ thu ({(result.estimate.surchargeRate * 100).toFixed(0)}%)</span>
+                      <span>Phí kiểm tra & đóng gói ({(result.estimate.surchargeRate * 100).toFixed(0)}%)</span>
                       <span className="font-semibold text-gray-900">+{formatVND(result.estimate.surchargeVnd / quantity)}</span>
                     </div>
                   )}
                   <div className="flex justify-between text-gray-500">
                     <span>
-                      Ship JP → VN
+                      Ship quốc tế JP → VN
                       {result.weightKg != null && (
                         <span className="ml-1 text-[10px] text-blue-500">({result.weightKg} kg)</span>
                       )}
@@ -998,19 +1023,19 @@ export function BfjUrlForm({ fees }: { fees: StaticFees }) {
                 <h4 className="mb-4 font-bold text-gray-900">💰 Bảng Phí Dịch Vụ</h4>
                 <div className="space-y-3 text-sm">
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-500">Phí mua hộ</span>
+                    <span className="text-gray-500">Phí dịch vụ Japan VIP</span>
                     <span className="font-semibold text-gray-400">—</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-500">Phí kho Nhật</span>
+                    <span className="text-gray-500">Ship nội địa Nhật</span>
                     <span className="font-semibold text-gray-400">—</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-500">Phụ thu</span>
+                    <span className="text-gray-500">Phí kiểm tra & đóng gói</span>
                     <span className="font-semibold text-gray-400">—</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-500">Ship JP → VN</span>
+                    <span className="text-gray-500">Ship quốc tế JP → VN</span>
                     <span className="font-semibold text-gray-400">—</span>
                   </div>
                   <div className="flex items-center justify-between border-t pt-3 text-gray-400">

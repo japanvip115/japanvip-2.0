@@ -28,9 +28,9 @@ export async function POST(req: NextRequest) {
 
     const result = await parseProductUrl(body.url)
 
-    // Translate product name to Vietnamese (async, non-blocking fallback)
+    // Translate product name only — description kept in original JP (free translation quality too low)
     if (result.productName) {
-      result.productNameVi = await translateProductName(result.productName)
+      result.productNameVi = await translateProductName(result.productName, result.specifications ?? [])
     }
 
     return apiSuccess(result, undefined, 200)

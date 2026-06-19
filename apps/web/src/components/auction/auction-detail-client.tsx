@@ -31,6 +31,52 @@ type Props = {
   winnerId: string | null
   userId: string | null
   isLoggedIn: boolean
+  auctionFeeRate: number
+  shippingFee: number
+}
+
+function CostBreakdown({ price, feeRate, shippingFee }: { price: number; feeRate: number; shippingFee: number }) {
+  const auctionFee = Math.round(price * feeRate / 100)
+  const total = price + auctionFee + shippingFee
+
+  return (
+    <div className="rounded-2xl border border-gray-200 bg-white overflow-hidden">
+      <div className="flex items-center justify-between px-4 py-3">
+        <span className="flex items-center gap-2 text-sm font-semibold text-gray-700">
+          <span>🧾</span> Chi phí ước tính về tay
+        </span>
+        <span className="text-sm font-black text-brand-red">{formatVND(total)}</span>
+      </div>
+
+      <div className="border-t border-gray-100 px-4 py-3 space-y-2.5">
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-gray-500">Giá đấu hiện tại</span>
+            <span className="font-semibold text-gray-800">{formatVND(price)}</span>
+          </div>
+          <div className="flex items-center justify-between text-sm">
+            <span className="flex items-center gap-1 text-gray-500">
+              Phí dịch vụ đấu giá
+              <span className="rounded bg-gray-100 px-1 py-0.5 text-[10px] text-gray-400">{feeRate}%</span>
+            </span>
+            <span className="font-semibold text-gray-800">+{formatVND(auctionFee)}</span>
+          </div>
+          <div className="flex items-center justify-between text-sm">
+            <span className="flex items-center gap-1 text-gray-500">
+              Phí vận chuyển
+              <span className="rounded bg-gray-100 px-1 py-0.5 text-[10px] text-gray-400">ước tính</span>
+            </span>
+            <span className="font-semibold text-gray-800">+{formatVND(shippingFee)}</span>
+          </div>
+          <div className="mt-1 flex items-center justify-between rounded-xl bg-red-50 px-3 py-2.5">
+            <span className="text-sm font-bold text-gray-700">Tổng về đến tay</span>
+            <span className="text-base font-black text-brand-red">{formatVND(total)}</span>
+          </div>
+          <p className="text-[11px] text-gray-400 text-center">
+            * Phí vận chuyển thực tế có thể thay đổi theo khu vực giao hàng
+          </p>
+        </div>
+    </div>
+  )
 }
 
 function maskName(name: string): string {
@@ -69,6 +115,7 @@ export function AuctionDetailClient({
   initialBidCount, initialEndsAt, initialExtendedEnd,
   startPrice, minIncrement, buyNowPrice, initialBids,
   winnerId: initialWinnerId, userId, isLoggedIn,
+  auctionFeeRate, shippingFee,
 }: Props) {
   const [status, setStatus] = useState<AuctionStatus>(initialStatus)
   const [currentPrice, setCurrentPrice] = useState(initialCurrentPrice)
@@ -126,12 +173,22 @@ export function AuctionDetailClient({
     if (status !== 'LIVE') return
     const es = new EventSource(`/api/v1/auctions/events/${auctionId}`)
     esRef.current = es
-    es.onopen = () => setSseConnected(true)
-    es.onerror = () => setSseConnected(false)
+    let disconnectTimer: ReturnType<typeof setTimeout> | null = null
+    es.onopen = () => {
+      if (disconnectTimer) { clearTimeout(disconnectTimer); disconnectTimer = null }
+      setSseConnected(true)
+    }
+    es.onerror = () => {
+      disconnectTimer = setTimeout(() => setSseConnected(false), 3000)
+    }
     es.onmessage = (e) => {
       try { handleAuctionEvent(JSON.parse(e.data) as AuctionEvent) } catch {}
     }
-    return () => { es.close(); setSseConnected(false) }
+    return () => {
+      if (disconnectTimer) clearTimeout(disconnectTimer)
+      es.close()
+      setSseConnected(false)
+    }
   }, [auctionId, status])
 
   const handleAuctionEvent = useCallback((event: AuctionEvent) => {
@@ -342,9 +399,9 @@ export function AuctionDetailClient({
       {/* ── Countdown ── */}
       {isLive && !expired && (
         <div className={`rounded-2xl px-5 py-4 transition-colors duration-500 ${urgent ? 'bg-red-950' : 'bg-gray-900'}`}>
-          <div className="flex items-center justify-between gap-4">
+          <div className="flex items-start justify-between gap-4">
             {/* Left: trạng thái */}
-            <div className="shrink-0">
+            <div className="shrink-0 pt-0.5">
               <span className={`rounded-full px-3 py-1 text-xs font-semibold ${AUCTION_STATUS_COLORS[status]}`}>
                 {AUCTION_STATUS_LABELS[status]}
               </span>
@@ -382,13 +439,15 @@ export function AuctionDetailClient({
             </div>{/* end clock col */}
 
             {/* Right: trực tiếp */}
-            <div className="shrink-0">
-              {sseConnected && (
-                <span className="flex items-center gap-1 rounded-full bg-green-500/20 px-2.5 py-1 text-xs font-semibold text-green-400 ring-1 ring-inset ring-green-500/30">
-                  <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-green-400" />
-                  Trực tiếp
-                </span>
-              )}
+            <div className="shrink-0 pt-0.5">
+              <span className={`flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ring-inset transition-colors duration-1000 ${
+                sseConnected
+                  ? 'bg-green-500/20 text-green-400 ring-green-500/30'
+                  : 'bg-gray-500/20 text-gray-500 ring-gray-500/20'
+              }`}>
+                <span className={`h-1.5 w-1.5 rounded-full ${sseConnected ? 'bg-green-400 animate-pulse' : 'bg-gray-500'}`} />
+                Trực tiếp
+              </span>
             </div>
           </div>{/* end flex row */}
         </div>
@@ -448,6 +507,14 @@ export function AuctionDetailClient({
           <div className="p-4 space-y-3">
             {bidMode === 'manual' ? (
               <>
+                {/* Manual bid info */}
+                <div className="flex items-center gap-2.5 rounded-xl bg-orange-50 border border-orange-100 px-3 py-2.5 min-h-[48px]">
+                  <span className="text-base shrink-0">🔨</span>
+                  <div className="text-xs text-orange-700 leading-relaxed">
+                    <span className="font-bold">Đặt giá trực tiếp</span> — chọn mức giá bạn muốn và xác nhận ngay lập tức.
+                  </div>
+                </div>
+
                 {/* Quick bid buttons */}
                 <div className="grid grid-cols-3 gap-2">
                   {[suggestedBid, suggestedBid + minIncrement, suggestedBid + minIncrement * 2].map((q, i) => (
@@ -512,9 +579,11 @@ export function AuctionDetailClient({
             ) : (
               <>
                 {/* Max Bid explanation */}
-                <div className="rounded-xl bg-blue-50 border border-blue-100 px-3 py-2.5 text-xs text-blue-700 leading-relaxed">
-                  <p className="font-bold mb-0.5">Max Bid hoạt động như thế nào?</p>
-                  <p>Hệ thống tự động đặt giá thay bạn theo từng bước giá tối thiểu, cho đến khi đạt mức tối đa bạn đặt.</p>
+                <div className="flex items-center gap-2.5 rounded-xl bg-blue-50 border border-blue-100 px-3 py-2.5 min-h-[48px]">
+                  <span className="text-base shrink-0">🤖</span>
+                  <div className="text-xs text-blue-700 leading-relaxed">
+                    <span className="font-bold">Tự động đặt giá</span> theo từng bước tối thiểu, dừng khi đạt mức tối đa bạn chọn.
+                  </div>
                 </div>
 
                 {myMaxBid && (
@@ -559,10 +628,6 @@ export function AuctionDetailClient({
                   />
                   <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-base font-bold text-gray-300">₫</span>
                 </div>
-
-                <p className="text-[11px] text-gray-400 text-center">
-                  Tối thiểu bước giá: <span className="font-semibold text-gray-600">+{formatVND(minIncrement)}</span>
-                </p>
 
                 {bidError && (
                   <div className="flex items-center gap-2 rounded-xl bg-red-50 px-3 py-2.5 text-sm font-medium text-red-600">
@@ -610,6 +675,11 @@ export function AuctionDetailClient({
             )}
           </div>
         </div>
+      )}
+
+      {/* ── Cost breakdown ── */}
+      {isLive && (
+        <CostBreakdown price={currentPrice} feeRate={auctionFeeRate} shippingFee={shippingFee} />
       )}
 
       {/* ── Bid history ── */}

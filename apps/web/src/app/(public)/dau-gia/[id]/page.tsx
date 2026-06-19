@@ -2,6 +2,7 @@ import { getAuctionDetail } from '@/modules/auction/services/auction.service'
 import { endAuction } from '@/modules/auction/services/bid.service'
 import { notFound } from 'next/navigation'
 import { auth } from '@/lib/auth'
+import { prisma } from '@japanvip/db'
 import { AuctionDetailClient } from '@/components/auction/auction-detail-client'
 import { ProductGallery } from '@/components/auction/product-gallery'
 import { ProductTabs } from '@/components/auction/product-tabs'
@@ -45,7 +46,12 @@ export const revalidate = 5
 
 export default async function AuctionDetailPage({ params }: Props) {
   const { id } = await params
-  const [auction, session] = await Promise.all([getAuctionDetail(id), auth()])
+  const [auction, session, feeRateRow, shippingRow] = await Promise.all([
+    getAuctionDetail(id),
+    auth(),
+    prisma.siteSetting.findUnique({ where: { key: 'auction_fee_rate' } }),
+    prisma.siteSetting.findUnique({ where: { key: 'auction_shipping_fee' } }),
+  ])
   if (!auction) notFound()
 
   const images = auction.product.images
@@ -156,6 +162,8 @@ export default async function AuctionDetailPage({ params }: Props) {
             winnerId={auction.winnerId}
             userId={session?.user?.id ?? null}
             isLoggedIn={!!session}
+            auctionFeeRate={parseFloat(feeRateRow?.value ?? '2')}
+            shippingFee={parseInt(shippingRow?.value ?? '150000', 10)}
           />
         </div>
       </div>

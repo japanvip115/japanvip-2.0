@@ -11,7 +11,7 @@ type ProductWithRelations = Product & {
 
 const BADGE_CONFIG: Record<string, { label: string; cls: string }> = {
   NEW_ARRIVAL: { label: '🆕 Mới',        cls: 'bg-emerald-500 text-white' },
-  SOLD_OUT:    { label: '✅ Đã Bán',     cls: 'bg-blue-500 text-white' },
+  SOLD_OUT:    { label: 'Hết Hàng',      cls: 'bg-gray-600 text-white' },
   ORDER_ONLY:  { label: '📦 Hàng Order', cls: 'bg-amber-500 text-white' },
 }
 

@@ -1,6 +1,6 @@
 export function BfjHero() {
   return (
-    <section className="bg-gradient-to-br from-slate-800 to-gray-900 py-20 text-white">
+    <section className="bg-gray-900 py-20 text-white">
       <div className="container text-center">
         <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-sm font-medium">
           Hỗ trợ Amazon JP · Rakuten · Mercari · Yahoo Shopping

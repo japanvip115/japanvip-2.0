@@ -12,10 +12,12 @@ const nextConfig: NextConfig = {
       { protocol: 'https', hostname: 'media.japanvip.vn' },
       { protocol: 'https', hostname: 'm.media-amazon.com' },
       { protocol: 'https', hostname: 'thumbnail.image.rakuten.co.jp' },
-      // Scrape sources — ảnh lấy từ trang ngoài khi import sản phẩm
+      // Scrape sources — ảnh lấy từ trang ngoài khi import bài viết / sản phẩm
       { protocol: 'https', hostname: 'congnghenhat.com' },
       { protocol: 'https', hostname: '*.congnghenhat.com' },
       { protocol: 'http', hostname: 'congnghenhat.com' },
+      { protocol: 'https', hostname: 'phongcachnhat.vn' },
+      { protocol: 'https', hostname: '*.phongcachnhat.vn' },
     ],
   },
   async headers() {

@@ -3,7 +3,7 @@ import { prisma } from '@japanvip/db'
 import Link from 'next/link'
 import Image from 'next/image'
 import type { ProductStatus } from '@japanvip/db'
-import { Plus, ImageOff, Link2 } from 'lucide-react'
+import { Plus, ImageOff, Link2, Home } from 'lucide-react'
 import { ProductActions } from '@/components/admin/product-actions'
 
 export const metadata: Metadata = { title: 'Admin — Quản Lý Sản Phẩm' }
@@ -82,6 +82,12 @@ export default async function AdminProductsPage({ searchParams }: { searchParams
           <p className="mt-0.5 text-sm text-gray-500">{total} sản phẩm</p>
         </div>
         <div className="flex items-center gap-2">
+          <Link
+            href="/"
+            className="flex items-center gap-1.5 rounded-lg border border-gray-600 bg-gray-700/50 px-4 py-2 text-sm font-semibold text-gray-300 transition-colors hover:bg-gray-700 cursor-pointer"
+          >
+            <Home className="h-4 w-4" /> Về trang chủ
+          </Link>
           <Link
             href="/admin/products/import-url"
             className="flex items-center gap-1.5 rounded-lg border border-blue-500/40 bg-blue-500/10 px-4 py-2 text-sm font-semibold text-blue-400 transition-colors hover:bg-blue-500/20 cursor-pointer"

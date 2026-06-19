@@ -15,6 +15,8 @@ type SearchParams = Promise<{
   condition?: string
   sort?: string
   page?: string
+  minPrice?: string
+  maxPrice?: string
 }>
 
 export async function generateMetadata({ searchParams }: { searchParams: SearchParams }): Promise<Metadata> {
@@ -35,9 +37,18 @@ export async function generateMetadata({ searchParams }: { searchParams: SearchP
 }
 
 const SORT_OPTIONS = [
-  { value: 'newest',   label: 'Mới nhất' },
-  { value: 'name_asc', label: 'Tên A→Z' },
+  { value: 'newest',    label: 'Mới nhất' },
+  { value: 'name_asc',  label: 'Tên A→Z' },
   { value: 'name_desc', label: 'Tên Z→A' },
+  { value: 'price_asc', label: 'Giá thấp nhất' },
+  { value: 'price_desc', label: 'Giá cao nhất' },
+]
+
+const PRICE_RANGES = [
+  { label: 'Dưới 5tr',   min: '',        max: '5000000' },
+  { label: '5–10tr',     min: '5000000', max: '10000000' },
+  { label: '10–20tr',    min: '10000000', max: '20000000' },
+  { label: 'Trên 20tr',  min: '20000000', max: '' },
 ]
 
 const CONDITION_OPTIONS: { value: ProductCondition; label: string }[] = [
@@ -48,7 +59,7 @@ const CONDITION_OPTIONS: { value: ProductCondition; label: string }[] = [
 ]
 
 export default async function ProductsPage({ searchParams }: { searchParams: SearchParams }) {
-  const { q = '', categoryId = '', brandId = '', condition = '', sort = 'newest', page: pageStr = '1' } = await searchParams
+  const { q = '', categoryId = '', brandId = '', condition = '', sort = 'newest', page: pageStr = '1', minPrice = '', maxPrice = '' } = await searchParams
   const page = Math.max(1, parseInt(pageStr))
   const take = 24
   const skip = (page - 1) * take
@@ -57,6 +68,10 @@ export default async function ProductsPage({ searchParams }: { searchParams: Sea
     ? { name: 'asc' as const }
     : sort === 'name_desc'
     ? { name: 'desc' as const }
+    : sort === 'price_asc'
+    ? { salePrice: 'asc' as const }
+    : sort === 'price_desc'
+    ? { salePrice: 'desc' as const }
     : { createdAt: 'desc' as const }
 
   const where = {
@@ -64,6 +79,12 @@ export default async function ProductsPage({ searchParams }: { searchParams: Sea
     ...(categoryId ? { categoryId } : {}),
     ...(brandId ? { brandId } : {}),
     ...(condition ? { condition: condition as ProductCondition } : {}),
+    ...(minPrice || maxPrice ? {
+      salePrice: {
+        ...(minPrice ? { gte: parseInt(minPrice) } : {}),
+        ...(maxPrice ? { lte: parseInt(maxPrice) } : {}),
+      },
+    } : {}),
     ...(q ? {
       OR: [
         { name: { contains: q, mode: 'insensitive' as const } },
@@ -102,9 +123,8 @@ export default async function ProductsPage({ searchParams }: { searchParams: Sea
   const totalPages = Math.ceil(total / take)
 
   const buildUrl = (overrides: Record<string, string>) => {
-    const params = new URLSearchParams({ q, categoryId, brandId, condition, sort, page: pageStr, ...overrides })
-    // Remove empty values
-    ;['q', 'categoryId', 'brandId', 'condition'].forEach((k) => { if (!params.get(k)) params.delete(k) })
+    const params = new URLSearchParams({ q, categoryId, brandId, condition, sort, page: pageStr, minPrice, maxPrice, ...overrides })
+    ;['q', 'categoryId', 'brandId', 'condition', 'minPrice', 'maxPrice'].forEach((k) => { if (!params.get(k)) params.delete(k) })
     if (params.get('sort') === 'newest') params.delete('sort')
     if (params.get('page') === '1') params.delete('page')
     const s = params.toString()
@@ -235,10 +255,28 @@ export default async function ProductsPage({ searchParams }: { searchParams: Sea
               </h1>
               <p className="mt-0.5 text-sm text-gray-400">{total} sản phẩm</p>
             </div>
-            <div className="flex items-center gap-2">
-              {[q, categoryId, brandId, condition].some(Boolean) && (
+            <div className="flex items-center gap-2 flex-wrap justify-end">
+              {PRICE_RANGES.map((r) => {
+                const active = minPrice === r.min && maxPrice === r.max
+                return (
+                  <Link
+                    key={r.label}
+                    href={active
+                      ? buildUrl({ minPrice: '', maxPrice: '', page: '1' })
+                      : buildUrl({ minPrice: r.min, maxPrice: r.max, page: '1' })
+                    }
+                    className={`rounded-full border px-3 py-1 text-xs font-medium transition-all
+                      ${active
+                        ? 'border-brand-red bg-red-50 text-brand-red'
+                        : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300 hover:text-gray-900'}`}
+                  >
+                    {r.label}
+                  </Link>
+                )
+              })}
+              {[q, categoryId, brandId, condition, minPrice, maxPrice].some(Boolean) && (
                 <Link href="/san-pham" className="text-xs text-gray-400 hover:text-brand-red underline">
-                  Xoá bộ lọc
+                  Xoá lọc
                 </Link>
               )}
               <Suspense fallback={null}>

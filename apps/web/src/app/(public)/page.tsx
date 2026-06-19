@@ -1,14 +1,17 @@
 import { prisma } from '@japanvip/db'
 import dynamicImport from 'next/dynamic'
 import { HOME_CONTENT_KEYS } from '@/lib/home-content-keys'
+import { auth } from '@/lib/auth'
+import { hasRole } from '@/lib/auth-types'
 
 const HomePageClient = dynamicImport(() => import('@/components/home/home-page-client'))
 
 export const dynamic = 'force-dynamic'
 
 export default async function HomePage() {
+  const session = await auth()
   const now = new Date()
-  const [categories, products, liveAuctions, contentRows, heroBanners] = await Promise.all([
+  const [categories, products, liveAuctions, contentRows, brands, testimonials, heroBanners] = await Promise.all([
     prisma.category.findMany({
       where: { isActive: true, parentId: null },
       orderBy: { sortOrder: 'asc' },
@@ -72,6 +75,17 @@ export default async function HomePage() {
 
     prisma.siteSetting.findMany({ where: { key: { in: [...HOME_CONTENT_KEYS] } } }),
 
+    prisma.brand.findMany({
+      where: { isActive: true, logoUrl: { not: null }, AND: [{ logoUrl: { not: '' } }] },
+      orderBy: { name: 'asc' },
+      select: { id: true, name: true, slug: true, logoUrl: true },
+    }),
+
+    prisma.$queryRaw<Array<{ id: string; name: string; city: string; photoUrl: string | null; text: string; rating: number }>>`
+      SELECT id, name, city, photo_url as "photoUrl", text, rating
+      FROM testimonials WHERE is_active = true ORDER BY sort_order ASC, created_at ASC
+    `,
+
     prisma.banner.findMany({
       where: {
         position: 'home-hero',
@@ -104,6 +118,9 @@ export default async function HomePage() {
       }))}
       content={content}
       heroBanners={heroBanners}
+      brands={brands as Array<{ id: string; name: string; slug: string; logoUrl: string }>}
+      testimonials={testimonials}
+      isAdmin={hasRole((session?.user as any)?.role, 'ADMIN')}
     />
   )
 }

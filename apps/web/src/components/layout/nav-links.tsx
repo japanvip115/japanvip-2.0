@@ -5,7 +5,9 @@ import { usePathname } from 'next/navigation'
 import { ChevronDown, X, Menu } from 'lucide-react'
 import { useState } from 'react'
 
-const NAV_ITEMS = [
+type BlogCategory = { name: string; slug: string }
+
+const BASE_NAV = [
   { label: 'Trang Chủ', href: '/' },
   {
     label: 'Mua Hàng Nhật',
@@ -29,9 +31,24 @@ const NAV_ITEMS = [
     ],
   },
   { label: 'Theo Dõi Đơn', href: '/theo-doi-don' },
-  { label: 'Blog Nhật Bản', href: '/blog' },
   { label: 'Liên Hệ', href: '/lien-he' },
 ]
+
+function buildNav(blogCategories: BlogCategory[]) {
+  const blogItem = {
+    label: 'Bài Viết',
+    href: '/blog',
+    children: [
+      { label: 'Tất cả bài viết', href: '/blog' },
+      ...blogCategories.map((c) => ({ label: c.name, href: `/blog?cat=${c.slug}` })),
+    ],
+  }
+  // Insert before "Theo Dõi Đơn"
+  const nav = [...BASE_NAV]
+  const idx = nav.findIndex((i) => i.href === '/theo-doi-don')
+  nav.splice(idx, 0, blogItem)
+  return nav
+}
 
 function useNavState() {
   const pathname = usePathname()
@@ -43,8 +60,9 @@ function useNavState() {
 }
 
 /* ── Desktop horizontal nav (hidden on mobile) ── */
-export function NavLinks() {
+export function NavLinks({ blogCategories = [] }: { blogCategories?: BlogCategory[] }) {
   const { isActive } = useNavState()
+  const NAV_ITEMS = buildNav(blogCategories)
 
   return (
     <nav className="hidden md:flex h-10 items-center justify-center gap-0.5">
@@ -98,8 +116,9 @@ export function NavLinks() {
 }
 
 /* ── Mobile: hamburger button + slide-in drawer ── */
-export function MobileMenuButton() {
+export function MobileMenuButton({ blogCategories = [] }: { blogCategories?: BlogCategory[] }) {
   const { open, setOpen, expandedMobile, setExpandedMobile, isActive } = useNavState()
+  const NAV_ITEMS = buildNav(blogCategories)
 
   return (
     <>

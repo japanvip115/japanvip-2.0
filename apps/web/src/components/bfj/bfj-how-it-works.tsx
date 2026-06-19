@@ -23,9 +23,9 @@ const STEPS = [
 
 export function BfjHowItWorks() {
   return (
-    <section className="bg-gray-50 py-16">
+    <section className="bg-gray-50 py-10">
       <div className="container">
-        <h2 className="mb-12 text-center text-3xl font-bold text-gray-900">
+        <h2 className="mb-8 text-center text-3xl font-bold text-gray-900">
           Quy trình mua hộ
         </h2>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">

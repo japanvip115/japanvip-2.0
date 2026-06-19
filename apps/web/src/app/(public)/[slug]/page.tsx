@@ -2,6 +2,9 @@ import type { Metadata } from 'next'
 import { prisma } from '@japanvip/db'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
+import { auth } from '@/lib/auth'
+import { hasRole } from '@/lib/auth-types'
 import { ProductGallery } from '@/components/product/product-gallery'
 import { ProductTabs } from '@/components/product/product-tabs'
 import { RelatedProducts } from '@/components/product/related-products'
@@ -56,12 +59,14 @@ export const revalidate = 300
 
 export default async function ProductDetailPage({ params }: Props) {
   const { slug } = await params
+  const session = await auth()
+  const isAdmin = hasRole((session?.user as any)?.role, 'ADMIN')
 
   const product = await prisma.product.findUnique({
     where: { slug, status: 'ACTIVE' },
     include: {
       category: { select: { id: true, name: true, slug: true } },
-      brand: { select: { id: true, name: true } },
+      brand: { select: { id: true, name: true, logoUrl: true } },
       images: { orderBy: [{ isPrimary: 'desc' }, { sortOrder: 'asc' }] },
       attributes: { orderBy: { name: 'asc' } },
       auctions: {
@@ -125,6 +130,18 @@ export default async function ProductDetailPage({ params }: Props) {
   return (
     <div className="container pt-12 pb-8">
 
+      {isAdmin && (
+        <div className="mb-4 flex items-center gap-2">
+          <Link
+            href={`/admin/products/${product.id}`}
+            className="inline-flex items-center gap-1.5 rounded-lg bg-amber-400 px-3 py-1.5 text-sm font-bold text-gray-900 shadow hover:bg-amber-300 transition-colors"
+          >
+            ✏️ Sửa sản phẩm này
+          </Link>
+          <span className="text-xs text-gray-400">Chỉ admin thấy nút này</span>
+        </div>
+      )}
+
       <div className="grid grid-cols-1 gap-10 lg:grid-cols-2">
         {/* Gallery */}
         <div className="mt-6">
@@ -148,8 +165,19 @@ export default async function ProductDetailPage({ params }: Props) {
           {/* Brand + condition */}
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-gray-500">
             {product.brand && (
-              <Link href={`/san-pham?brandId=${product.brand.id}`} className="font-semibold text-gray-700 hover:text-brand-red">
-                Thương hiệu: <span className="text-brand-red">{product.brand.name}</span>
+              <Link href={`/san-pham?brandId=${product.brand.id}`} className="flex items-center gap-1.5 hover:opacity-80 transition-opacity">
+                <span className="text-sm font-semibold text-gray-700">Thương hiệu:</span>
+                {product.brand.logoUrl ? (
+                  <Image
+                    src={product.brand.logoUrl}
+                    alt={product.brand.name}
+                    width={64}
+                    height={24}
+                    className="h-6 w-auto object-contain"
+                  />
+                ) : (
+                  <span className="text-sm font-semibold text-brand-red">{product.brand.name}</span>
+                )}
               </Link>
             )}
             <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${CONDITION_COLORS[product.condition as ProductCondition]}`}>

@@ -13,7 +13,10 @@ export async function Header() {
   const session = await auth()
   const user = session?.user as SessionUser | undefined
 
-  const logoRow = await prisma.siteSetting.findUnique({ where: { key: 'site_logo_url' } })
+  const [logoRow, blogCategories] = await Promise.all([
+    prisma.siteSetting.findUnique({ where: { key: 'site_logo_url' } }),
+    prisma.blogCategory.findMany({ orderBy: { name: 'asc' }, select: { name: true, slug: true } }),
+  ])
   const logoUrl = logoRow?.value ?? ''
 
   return (
@@ -24,12 +27,11 @@ export async function Header() {
           <div className="hidden items-center gap-4 md:flex">
             <span className="flex items-center gap-1">🇯🇵 Cam kết hàng Nhật chính hãng</span>
             <span className="text-gray-600">|</span>
-            <span>Hotline: <a href="tel:0988969896" className="font-semibold text-brand-red hover:text-red-400">0988.969.896</a></span>
+            <span>Hotline: <a href="tel:0988969896" className="font-semibold text-white hover:text-gray-300">0988.969.896</a></span>
             <span className="text-gray-600">|</span>
             <span>Thứ 2 – Thứ 7: 8:00–18:30</span>
           </div>
           <div className="flex items-center gap-4 ml-auto">
-            <Link href="/blog" className="hover:text-white transition-colors">Blog</Link>
             <Link href="/lien-he" className="hover:text-white transition-colors">Liên hệ</Link>
             <span className="text-gray-600">|</span>
             <span>🇻🇳 VI</span>
@@ -82,7 +84,7 @@ export async function Header() {
               </>
             )}
             {/* Hamburger — mobile only */}
-            <MobileMenuButton />
+            <MobileMenuButton blogCategories={blogCategories} />
           </div>
         </div>
       </div>
@@ -90,7 +92,7 @@ export async function Header() {
       {/* ── Nav bar (desktop only) ── */}
       <div className="hidden md:block bg-gray-900 text-white">
         <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
-          <NavLinks />
+          <NavLinks blogCategories={blogCategories} />
         </div>
       </div>
 

@@ -51,7 +51,7 @@ function processDescription(html: string): { processed: string; toc: TocItem[] }
 const COLLAPSE_HEIGHT = 600
 
 export function ProductDescription({ description }: { description: string }) {
-  const [tocOpen, setTocOpen] = useState(true)
+  const [tocOpen, setTocOpen] = useState(false)
   const [collapsed, setCollapsed] = useState(true)
 
   const { processed, toc } = useMemo(() => processDescription(description), [description])

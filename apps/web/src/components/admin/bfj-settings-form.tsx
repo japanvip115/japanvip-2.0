@@ -204,7 +204,7 @@ export function BfjSettingsForm({ setting, freightRates: initialFreightRates, cu
       const res = await fetch('/api/v1/admin/bfj-settings/test-translation', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: 'YAMAZEN AMRC-5M(B) Single Person Rice Cooker 3 Cups Black' }),
+        body: JSON.stringify({ text: 'パナソニック NA-VX9900L ドラム式洗濯乾燥機 10kg ホワイト' }),
       })
       const data = await res.json()
       if (data.success) {

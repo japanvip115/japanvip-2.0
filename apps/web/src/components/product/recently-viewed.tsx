@@ -29,8 +29,8 @@ export function RecentlyViewed({ current }: { current: ViewedProduct }) {
     const next = [current, ...stored.filter((p) => p.id !== current.id)].slice(0, MAX)
     localStorage.setItem(KEY, JSON.stringify(next))
 
-    // Show all except current
-    setItems(next.filter((p) => p.id !== current.id))
+    // Show all except current, max 4
+    setItems(next.filter((p) => p.id !== current.id).slice(0, 4))
   }, [current.id])
 
   if (items.length === 0) return null
@@ -43,7 +43,7 @@ export function RecentlyViewed({ current }: { current: ViewedProduct }) {
         </h2>
       </div>
       <div className="border border-gray-200 rounded-lg p-4">
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           {items.map((p) => (
             <Link
               key={p.id}

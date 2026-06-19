@@ -42,17 +42,18 @@ export async function Footer() {
           <div>
             <FooterHeading>Hỗ Trợ</FooterHeading>
             <FooterLinks links={[
+              { href: '/blog', label: 'Bài Viết' },
               { href: '/lien-he', label: 'Liên Hệ' },
               { href: '/chinh-sach-doi-tra', label: 'Chính Sách Đổi Trả' },
               { href: '/chinh-sach-van-chuyen', label: 'Chính Sách Vận Chuyển' },
               { href: '/bao-mat', label: 'Bảo Mật Thông Tin' },
-              { href: '/blog', label: 'Blog Hướng Dẫn' },
             ]} />
           </div>
           <div>
             <FooterHeading>Liên Hệ</FooterHeading>
             <ul className="space-y-2.5 text-sm text-gray-400">
               <li><a href="tel:0988969896" className="hover:text-white transition-colors">📞 0988.969.896</a></li>
+              <li><a href="tel:0967868688" className="hover:text-white transition-colors">📞 09.678.68.688</a></li>
               <li><a href="mailto:info@japanvip.vn" className="hover:text-white transition-colors">✉️ info@japanvip.vn</a></li>
               <li className="whitespace-nowrap">📍 115 Đinh Tiên Hoàng, Hải Phòng</li>
             </ul>

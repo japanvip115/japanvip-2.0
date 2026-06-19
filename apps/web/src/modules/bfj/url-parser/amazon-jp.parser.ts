@@ -101,32 +101,101 @@ export async function parseAmazonJp(url: string): Promise<ParsedProduct> {
     null
 
   // ── Price ─────────────────────────────────────────────────────────────────
-  // Must target buybox/main price specifically — .a-price-whole is too broad
-  // and matches the first occurrence on page (could be accessories/recommendations)
+  // Strategy 1: JSON-LD structured data (works even when DOM price is hidden behind login)
+  const extractPriceFromJsonLd = (): number | null => {
+    let found: number | null = null
+    $('script[type="application/ld+json"]').each((_, el) => {
+      if (found) return
+      try {
+        const data = JSON.parse($(el).html() ?? '')
+        const offers = data?.offers ?? (Array.isArray(data) ? data.flatMap((d: Record<string, unknown>) => d?.offers ?? []) : [])
+        const offerList = Array.isArray(offers) ? offers : [offers]
+        for (const offer of offerList) {
+          const price = offer?.price ?? offer?.lowPrice
+          if (price && !isNaN(Number(price)) && Number(price) > 0) {
+            found = Math.round(Number(price))
+            break
+          }
+        }
+      } catch { /* malformed JSON-LD — skip */ }
+    })
+    return found
+  }
+
+  // Strategy 2: DOM selectors (buybox area only — avoid accessories section)
   const extractPrice = (sel: string) => $(sel).first().text().replace(/[^0-9]/g, '')
-  const priceText =
-    // Most specific: desktop buybox containers (ordered by reliability)
-    extractPrice('#corePriceDisplay_desktop_feature_div .a-price-whole') ||
-    extractPrice('#corePrice_desktop .a-price-whole') ||
-    extractPrice('#apex_desktop_qualifiedBuyBox .a-price-whole') ||
-    extractPrice('#apex_desktop .a-price-whole') ||
-    extractPrice('.priceToPay .a-price-whole') ||
-    extractPrice('#tp_price_block_total_price_ww .a-price-whole') ||
-    extractPrice('#price_inside_buybox') ||
-    extractPrice('#priceblock_ourprice') ||
-    extractPrice('#priceblock_dealprice') ||
-    extractPrice('#apex_offerDisplay_desktop .a-price-whole') ||
-    extractPrice('#buyNewSection .a-price-whole') ||
-    // Last resort: any buybox container
-    (() => {
-      let found = ''
-      $('#buybox .a-price-whole, #desktop_qualifiedBuyBox .a-price-whole').each((_, el) => {
-        const t = $(el).text().replace(/[^0-9]/g, '')
-        if (t && t.length >= 3 && !found) found = t
-      })
-      return found
-    })()
-  const unitPriceJpy = priceText ? parseInt(priceText, 10) : null
+  const extractPriceFromDom = (): number | null => {
+    const priceText =
+      extractPrice('#corePriceDisplay_desktop_feature_div .a-price-whole') ||
+      extractPrice('#corePrice_desktop .a-price-whole') ||
+      extractPrice('#apex_desktop_qualifiedBuyBox .a-price-whole') ||
+      extractPrice('#apex_desktop .a-price-whole') ||
+      extractPrice('.priceToPay .a-price-whole') ||
+      extractPrice('#tp_price_block_total_price_ww .a-price-whole') ||
+      extractPrice('#price_inside_buybox') ||
+      extractPrice('#priceblock_ourprice') ||
+      extractPrice('#priceblock_dealprice') ||
+      extractPrice('#apex_offerDisplay_desktop .a-price-whole') ||
+      extractPrice('#buyNewSection .a-price-whole') ||
+      (() => {
+        let found = ''
+        $('#buybox .a-price-whole, #desktop_qualifiedBuyBox .a-price-whole').each((_, el) => {
+          const t = $(el).text().replace(/[^0-9]/g, '')
+          if (t && t.length >= 3 && !found) found = t
+        })
+        return found
+      })()
+    if (priceText) return parseInt(priceText, 10)
+
+    // Variation/twister tiles: price lives in a JSON a-state script inside #twister_feature_div
+    // e.g. {"dimensionValueState":"SELECTED","slots":[{"displayData":{"priceWithoutCurrencySymbol":"39402"}}]}
+    try {
+      const twisterScript = $('#twister_feature_div script[type="a-state"]').filter((_, el) => {
+        const state = $(el).attr('data-a-state') ?? ''
+        return state.includes('desktop-twister-sort-filter-data')
+      }).first().html()
+      if (twisterScript) {
+        const twisterData = JSON.parse(twisterScript)
+        const allDims: unknown[][] = Object.values(twisterData?.sortedDimValuesForAllDims ?? {})
+        for (const dimValues of allDims) {
+          for (const variant of dimValues as Record<string, unknown>[]) {
+            if (variant.dimensionValueState !== 'SELECTED') continue
+            const slots = variant.slots as Record<string, unknown>[] | undefined
+            for (const slot of slots ?? []) {
+              const price = (slot.displayData as Record<string, unknown>)?.priceWithoutCurrencySymbol
+              if (price && !isNaN(Number(price)) && Number(price) > 0) {
+                return parseInt(String(price), 10)
+              }
+            }
+          }
+        }
+      }
+    } catch { /* malformed twister JSON — skip */ }
+
+    return null
+  }
+
+  // Strategy 3: Offer listing page (separate fetch — only used when both above fail)
+  const fetchOfferListingPrice = async (): Promise<number | null> => {
+    try {
+      const offerUrl = `https://www.amazon.co.jp/gp/offer-listing/${asin}/`
+      const offerHtml = await fetchAmazonPage(offerUrl)
+      // Bail out if we hit captcha/bot check on the offer page too
+      if (offerHtml.includes('validateCaptcha') || offerHtml.includes('Type the characters')) return null
+      const $o = cheerio.load(offerHtml)
+      const priceText = $o('.a-price .a-offscreen').first().text().replace(/[^0-9]/g, '')
+      return priceText && priceText.length >= 3 ? parseInt(priceText, 10) : null
+    } catch {
+      return null
+    }
+  }
+
+  const jsonLdPrice = extractPriceFromJsonLd()
+  const domPrice = extractPriceFromDom()
+  // Fetch offer listing only when both local strategies miss
+  const offerPrice = (!jsonLdPrice && !domPrice) ? await fetchOfferListingPrice() : null
+
+  const unitPriceJpy = jsonLdPrice ?? domPrice ?? offerPrice
 
   // ── Images — parse hiRes JSON from script ─────────────────────────────────
   const imgScript = $('script').filter((_, el) => {
@@ -165,19 +234,37 @@ export async function parseAmazonJp(url: string): Promise<ParsedProduct> {
 
   // ── Specifications ────────────────────────────────────────────────────────
   const specifications: { label: string; value: string }[] = []
-  $('#productDetails_techSpec_section_1 tr, #productDetails_detailBullets_sections1 tr, #detailBullets_feature_div li').each((_, el) => {
+  const seenSpecLabels = new Set<string>()
+
+  // Cover multiple Amazon JP spec table layouts
+  const specSelectors = [
+    '#productDetails_techSpec_section_1 tr',
+    '#productDetails_techSpec_section_2 tr',
+    '#productDetails_detailBullets_sections1 tr',
+    '#productDetails_db_sections tr',       // layout used by many JP listings
+    'table.prodDetTable tr',
+    '#detailBullets_feature_div li',
+  ].join(', ')
+
+  $(specSelectors).each((_, el) => {
     const $el = $(el)
     if ($el.is('tr')) {
       const label = $el.find('th').text().trim()
       const value = $el.find('td').text().trim().replace(/\s+/g, ' ')
-      if (label && value) specifications.push({ label, value })
+      if (label && value && !seenSpecLabels.has(label)) {
+        seenSpecLabels.add(label)
+        specifications.push({ label, value })
+      }
     } else {
       const text = $el.text().trim()
       const parts = text.split(/[:：]/)
       if (parts.length >= 2) {
         const label = (parts[0] ?? '').trim()
         const value = parts.slice(1).join(':').trim()
-        if (label && value && label.length < 60) specifications.push({ label, value })
+        if (label && value && label.length < 60 && !seenSpecLabels.has(label)) {
+          seenSpecLabels.add(label)
+          specifications.push({ label, value })
+        }
       }
     }
   })
@@ -200,10 +287,24 @@ export async function parseAmazonJp(url: string): Promise<ParsedProduct> {
   })
 
   // ── Availability ──────────────────────────────────────────────────────────
-  const outOfStock =
-    $('#outOfStock').length > 0 ||
-    $('#availability .a-color-price').text().toLowerCase().includes('unavailable')
-  const available = !outOfStock && !!productName
+  // #outOfStock is always in DOM (hidden via JS when in-stock) — can't trust it in static HTML
+  // Rely on explicit out-of-stock text signals instead
+  const availText = [
+    $('#availability span').text(),
+    $('#outOfStock').text(),
+    $('#add-to-cart-button').length > 0 ? 'in-stock' : '',
+  ].join(' ').toLowerCase()
+
+  const explicitlyUnavailable =
+    availText.includes('在庫切れ') ||
+    availText.includes('取り扱いなし') ||
+    availText.includes('currently unavailable') ||
+    availText.includes('out of stock')
+
+  // If add-to-cart button exists → definitely available
+  const hasAddToCart = $('#add-to-cart-button, #buy-now-button').length > 0
+
+  const available = !!productName && (hasAddToCart || !explicitlyUnavailable)
 
   return {
     platform: 'AMAZON_JP',

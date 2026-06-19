@@ -103,8 +103,8 @@ export function HeaderSearch() {
   const hasResults = products.length > 0 || categories.length > 0
 
   return (
-    <div ref={wrapRef} className="relative w-full max-w-sm">
-      <form onSubmit={handleSubmit} className="flex items-center overflow-hidden rounded-lg border border-gray-200 bg-gray-50 focus-within:border-red-500 focus-within:ring-1 focus-within:ring-red-500/30 transition-all h-9">
+    <div ref={wrapRef} className="relative w-full max-w-xl">
+      <form onSubmit={handleSubmit} className="flex items-center overflow-hidden rounded-lg border border-gray-200 bg-white focus-within:border-red-500 focus-within:ring-1 focus-within:ring-red-500/30 transition-all h-12">
         <input
           ref={inputRef}
           type="text"
@@ -123,7 +123,7 @@ export function HeaderSearch() {
         )}
         <button
           type="submit"
-          className="flex-shrink-0 flex h-9 w-9 items-center justify-center bg-red-600 text-white hover:bg-red-700 transition-colors cursor-pointer"
+          className="flex-shrink-0 flex h-12 w-12 items-center justify-center rounded-r-lg bg-red-600 text-white hover:bg-red-700 transition-colors cursor-pointer"
         >
           {loading
             ? <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-white/30 border-t-white" />

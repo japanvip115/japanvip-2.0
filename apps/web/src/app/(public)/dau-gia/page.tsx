@@ -27,10 +27,10 @@ export default async function AuctionsPage({ searchParams }: Props) {
   const { auctions, total, totalPages } = await listPublicAuctions({ page, limit: 12, status })
 
   return (
-    <div className="container py-10">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Đấu Giá Hàng Nhật</h1>
-        <p className="mt-2 text-gray-500">{total} phiên đấu giá</p>
+    <div className="container pb-6">
+      <div className="mb-5 mt-10">
+        <h1 className="text-xl font-bold text-gray-900">Đấu Giá Hàng Nhật</h1>
+        <p className="mt-1 text-sm text-gray-500">{total} phiên đấu giá</p>
       </div>
 
       {/* Status tabs */}

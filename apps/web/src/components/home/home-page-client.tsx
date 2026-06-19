@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Script from 'next/script'
+import Image from 'next/image'
 import { QuickOrderModal } from '@/components/product/quick-order-modal'
 
 function CountUp({ end, decimals = 0, suffix = '' }: { end: number; decimals?: number; suffix?: string }) {
@@ -147,14 +148,28 @@ type MixedItem =
   | { kind: 'auction'; data: AuctionItem; idx: number }
   | { kind: 'product'; data: ProductItem; idx: number }
 
+function AdminEditBtn({ href }: { href: string }) {
+  return (
+    <a
+      href={href}
+      onClick={(e) => e.stopPropagation()}
+      className="absolute top-2 left-2 z-20 flex items-center gap-1 rounded-md bg-amber-400 px-2 py-1 text-[10px] font-bold text-gray-900 shadow hover:bg-amber-300 transition-colors"
+    >
+      ✏️ Sửa
+    </a>
+  )
+}
+
 function MixedSlider({
   auctions,
   products,
   router,
+  isAdmin = false,
 }: {
   auctions: AuctionItem[]
   products: ProductItem[]
   router: ReturnType<typeof useRouter>
+  isAdmin?: boolean
 }) {
   const PER_PAGE = 4
   const [quickOrder, setQuickOrder] = useState<{ id: string; slug: string; name: string; image: string | null; priceVnd: number | null } | null>(null)
@@ -534,6 +549,63 @@ function HeroBannerSlider({ banners, router }: { banners: HeroBanner[]; router: 
   )
 }
 
+type TestimonialItem = { id: string; name: string; city: string; photoUrl: string | null; text: string; rating: number }
+
+const TESTIMONIAL_FALLBACK: TestimonialItem[] = [
+  { id: '1', name: 'Nguyễn Thị Lan',  city: 'TP. Hồ Chí Minh', photoUrl: 'https://randomuser.me/api/portraits/women/44.jpg', text: 'Mua nồi cơm Tiger từ JapanVip, hàng về đúng như mô tả, đóng gói cực kỹ. Giá rẻ hơn mua tại shop 30%.', rating: 5 },
+  { id: '2', name: 'Trần Văn Khoa',   city: 'Hà Nội',           photoUrl: 'https://randomuser.me/api/portraits/men/32.jpg',   text: 'Đấu giá được máy lọc không khí Daikin với giá cực tốt. Quy trình đấu giá rõ ràng, cập nhật real-time rất tiện.', rating: 5 },
+  { id: '3', name: 'Phạm Minh Hoàng', city: 'Đà Nẵng',          photoUrl: 'https://randomuser.me/api/portraits/men/67.jpg',   text: 'Dán link Amazon Nhật, trong 1 phút đã có báo giá đầy đủ. Cực kỳ tiện lợi và minh bạch.', rating: 5 },
+]
+
+function TestimonialSlider({ data }: { data: TestimonialItem[] }) {
+  const items = data.length > 0 ? data : TESTIMONIAL_FALLBACK
+  const [page, setPage] = useState(0)
+  const perPage = 3
+  const total = Math.ceil(items.length / perPage)
+
+  useEffect(() => {
+    const t = setInterval(() => setPage(p => (p + 1) % total), 4000)
+    return () => clearInterval(t)
+  }, [total])
+
+  const visible = items.slice(page * perPage, page * perPage + perPage)
+
+  return (
+    <section className="testimonials-section">
+      <div className="container">
+        <div className="section-header centered">
+          <span className="section-label" style={{ fontSize: '1rem' }}>Khách Hàng Nói Gì</span>
+          <h2 style={{ fontSize: '1.5rem' }}>Đánh Giá Từ Cộng Đồng</h2>
+        </div>
+
+        <div className="testimonials-grid" style={{ minHeight: 220 }}>
+          {visible.map((t, i) => (
+            <div key={page + '-' + i} className={`testimonial-card${i === 1 ? ' featured-test' : ''}`}
+              style={{ animation: 'fadeInUp 0.4s ease both', animationDelay: `${i * 0.08}s` }}>
+              <div className="test-stars">{'★'.repeat(t.rating ?? 5)}</div>
+              <p>&ldquo;{t.text}&rdquo;</p>
+              <div className="test-author">
+                <img src={t.photoUrl ?? ''} alt={t.name} className="test-avatar-img"
+                  onError={(e) => { e.currentTarget.style.display = 'none'; (e.currentTarget.nextElementSibling as HTMLElement).style.display = 'flex' }} />
+                <div className="test-avatar" style={{ display: 'none' }}>{t.name.split(' ').map(w => w[0]).slice(-2).join('')}</div>
+                <div><strong>{t.name}</strong><span>{t.city}</span></div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Dots */}
+        <div style={{ display: 'flex', justifyContent: 'center', gap: 8, marginTop: 24 }}>
+          {Array.from({ length: total }).map((_, i) => (
+            <button key={i} onClick={() => setPage(i)}
+              style={{ width: i === page ? 24 : 8, height: 8, borderRadius: 4, border: 'none', cursor: 'pointer', transition: 'all 0.3s', padding: 0, background: i === page ? '#c0392b' : '#e0e0e0' }} />
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
 const DEFAULTS: Record<string, string> = {
   home_hero_title: 'Gia Dụng Nhật Bản',
   home_hero_accent: 'Đẳng Cấp Vượt Trội',
@@ -560,18 +632,26 @@ const DEFAULTS: Record<string, string> = {
   home_stat4_num: '500', home_stat4_suffix: '+', home_stat4_label: 'Thương Hiệu Nhật',
 }
 
+type BrandItem = { id: string; name: string; slug: string; logoUrl: string }
+
 export default function HomePageClient({
   categories,
   products,
   auctions,
   content = {},
   heroBanners = [],
+  brands = [],
+  testimonials = [],
+  isAdmin = false,
 }: {
   categories: CategoryItem[]
   products: ProductItem[]
   auctions: AuctionItem[]
   content?: Record<string, string>
   heroBanners?: HeroBanner[]
+  brands?: BrandItem[]
+  testimonials?: TestimonialItem[]
+  isAdmin?: boolean
 }) {
   const router = useRouter()
   const nav = (page: string) => (window as any).navigate?.(page)
@@ -609,12 +689,12 @@ export default function HomePageClient({
                   </div>
                   <div className="hero-visual">
                     <div className="hero-card-float card-1">
-                      <div className="float-icon">🍚</div>
-                      <div><div className="float-title">Nồi Cơm Tiger</div><div className="float-price">2,850,000₫</div></div>
+                      <div className="float-icon">🏠</div>
+                      <div><div className="float-title">Tổ Ấm</div><div className="float-price">Viên Mãn</div></div>
                     </div>
                     <div className="hero-card-float card-2">
-                      <div className="float-icon">💨</div>
-                      <div><div className="float-title">Máy Lọc KK Daikin</div><div className="float-price">8,200,000₫</div></div>
+                      <div className="float-icon">💝</div>
+                      <div><div className="float-title">Hạnh Phúc</div><div className="float-price">Trọn Vẹn</div></div>
                     </div>
                     <div className="hero-circle">
                       <div className="hero-circle-inner"><span>日本</span><span>品質</span></div>
@@ -665,8 +745,22 @@ export default function HomePageClient({
                   <div className="url-import-box">
                     <div className="url-import-label">📎 Dán link sản phẩm Nhật Bản</div>
                     <div className="url-input-group">
-                      <input type="url" id="hero-url-input" placeholder="https://www.amazon.co.jp/..."
-                        onKeyDown={(e) => { if (e.key === 'Enter') { const v = (e.target as HTMLInputElement).value.trim(); if (v) router.push(`/mua-ho?url=${encodeURIComponent(v)}`)} }} />
+                      <div style={{position:'relative',flex:1}}>
+                        <input type="url" id="hero-url-input" placeholder="https://www.amazon.co.jp/..."
+                          style={{paddingRight:'36px',width:'100%',boxSizing:'border-box'}}
+                          onKeyDown={(e) => { if (e.key === 'Enter') { const v = (e.target as HTMLInputElement).value.trim(); if (v) router.push(`/mua-ho?url=${encodeURIComponent(v)}`)} }} />
+                        <button
+                          title="Dán từ clipboard"
+                          style={{position:'absolute',top:'6px',right:'6px',background:'none',border:'none',cursor:'pointer',fontSize:'14px',padding:'2px',lineHeight:1,opacity:0.5}}
+                          onClick={async () => {
+                            try {
+                              const text = await navigator.clipboard.readText()
+                              const input = document.getElementById('hero-url-input') as HTMLInputElement
+                              if (input && text.trim()) input.value = text.trim()
+                            } catch {}
+                          }}
+                        >📋</button>
+                      </div>
                       <button className="btn-primary" onClick={() => { const v = (document.getElementById('hero-url-input') as HTMLInputElement)?.value.trim(); router.push(v ? `/mua-ho?url=${encodeURIComponent(v)}` : '/mua-ho') }}>Kiểm Tra Ngay</button>
                     </div>
                     <div className="url-examples">
@@ -725,7 +819,7 @@ export default function HomePageClient({
                   <p>📦 Chưa có sản phẩm hay phiên đấu giá nào.</p>
                 </div>
               ) : (
-                <MixedSlider auctions={auctions} products={products} router={router} />
+                <MixedSlider auctions={auctions} products={products} router={router} isAdmin={isAdmin} />
               )}
             </div>
           </section>
@@ -816,31 +910,35 @@ export default function HomePageClient({
             </div>
           </section>
 
-          <section className="testimonials-section">
-            <div className="container">
-              <div className="section-header centered">
-                <span className="section-label" style={{fontSize:'1rem'}}>Khách Hàng Nói Gì</span>
-                <h2 style={{fontSize:'1.5rem'}}>Đánh Giá Từ Cộng Đồng</h2>
+          <TestimonialSlider data={testimonials} />
+
+          {brands.filter(b => b.logoUrl).length > 0 && (
+            <section className="py-5 bg-white border-y border-gray-100 overflow-hidden">
+              <p className="text-center text-sm font-bold uppercase tracking-widest text-gray-600 mb-4">
+                Thương Hiệu Đối Tác
+              </p>
+              <div className="relative">
+                <div className="flex gap-6 items-center animate-marquee whitespace-nowrap">
+                  {[...brands.filter(b => b.logoUrl), ...brands.filter(b => b.logoUrl)].map((b, i) => (
+                    <a
+                      key={b.id + '-' + i}
+                      href={`/san-pham?brandId=${b.id}`}
+                      title={b.name}
+                      className="inline-flex shrink-0 hover:scale-110 transition-transform duration-200"
+                    >
+                      <Image
+                        src={b.logoUrl}
+                        alt={b.name}
+                        width={140}
+                        height={56}
+                        className="h-10 w-auto object-contain"
+                      />
+                    </a>
+                  ))}
+                </div>
               </div>
-              <div className="testimonials-grid">
-                <div className="testimonial-card">
-                  <div className="test-stars">★★★★★</div>
-                  <p>&ldquo;Mua nồi cơm Tiger từ JapanVip, hàng về đúng như mô tả, đóng gói cực kỹ. Giá rẻ hơn mua tại shop 30%.&rdquo;</p>
-                  <div className="test-author"><div className="test-avatar">NT</div><div><strong>Nguyễn Thị Lan</strong><span>TP. Hồ Chí Minh</span></div></div>
-                </div>
-                <div className="testimonial-card featured-test">
-                  <div className="test-stars">★★★★★</div>
-                  <p>&ldquo;Đấu giá được máy lọc không khí Daikin với giá cực tốt. Quy trình đấu giá rõ ràng, cập nhật real-time rất tiện.&rdquo;</p>
-                  <div className="test-author"><div className="test-avatar">TK</div><div><strong>Trần Văn Khoa</strong><span>Hà Nội</span></div></div>
-                </div>
-                <div className="testimonial-card">
-                  <div className="test-stars">★★★★★</div>
-                  <p>&ldquo;Dán link Amazon Nhật, trong 1 phút đã có báo giá đầy đủ. Cực kỳ tiện lợi và minh bạch.&rdquo;</p>
-                  <div className="test-author"><div className="test-avatar">PH</div><div><strong>Phạm Minh Hoàng</strong><span>Đà Nẵng</span></div></div>
-                </div>
-              </div>
-            </div>
-          </section>
+            </section>
+          )}
 
           <section className="cta-section">
             <div className="container">

@@ -36,18 +36,11 @@ export function AuctionCard({ auction }: { auction: AuctionWithProduct }) {
           )}
           {/* Live badge */}
           {isLive && (
-            <span className="absolute left-2 top-2 flex items-center gap-1.5 rounded-full bg-red-600 px-2.5 py-1 text-xs font-bold text-white shadow">
-              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-white" />
+            <span className="absolute left-2 top-2 flex items-center gap-1 rounded-full bg-red-600 px-2 py-0.5 text-[10px] font-bold text-white shadow">
+              <span className="h-1 w-1 animate-pulse rounded-full bg-white" />
               LIVE
             </span>
           )}
-          <span
-            className={`absolute right-2 top-2 rounded-full px-2 py-0.5 text-xs font-medium ${
-              AUCTION_STATUS_COLORS[displayStatus]
-            }`}
-          >
-            {isExpired ? 'Đã kết thúc' : AUCTION_STATUS_LABELS[displayStatus]}
-          </span>
         </div>
 
         {/* Info */}

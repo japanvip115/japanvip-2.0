@@ -30,9 +30,9 @@ export function BfjFaq() {
   const [open, setOpen] = useState<number | null>(null)
 
   return (
-    <section className="py-16">
+    <section className="py-10">
       <div className="container">
-        <h2 className="mb-10 text-center text-3xl font-bold text-gray-900">
+        <h2 className="mb-6 text-center text-3xl font-bold text-gray-900">
           Câu hỏi thường gặp
         </h2>
         <div className="mx-auto max-w-2xl space-y-3">

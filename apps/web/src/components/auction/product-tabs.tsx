@@ -15,7 +15,7 @@ export function ProductTabs({
   const [expanded, setExpanded] = useState(false)
 
   return (
-    <div className="rounded-xl border border-gray-100 overflow-hidden">
+    <div className="rounded-xl border border-gray-100 overflow-hidden flex flex-col">
       {/* Tab header */}
       <div className="flex border-b border-gray-100">
         <button
@@ -42,10 +42,10 @@ export function ProductTabs({
 
       {/* Tab body */}
       {tab === 'desc' && (
-        <div className="p-4">
+        <div className="p-4 overflow-hidden">
           {description ? (
             <div className="relative">
-              <p className={`text-sm leading-relaxed text-gray-600 ${expanded ? '' : 'line-clamp-6'}`}>
+              <p className={`text-sm leading-relaxed text-gray-600 ${expanded ? '' : 'line-clamp-[12]'}`}>
                 {description}
               </p>
               {!expanded && (

@@ -54,6 +54,24 @@ const SETTING_ITEMS = [
     title: 'Nội Dung Trang Chủ',
     desc: 'Chỉnh sửa tiêu đề, mô tả, nút CTA và các đoạn văn bản trên trang chủ',
   },
+  {
+    href: '/admin/settings/auction-fees',
+    icon: '🔨',
+    title: 'Phí Đấu Giá',
+    desc: 'Cài đặt phí dịch vụ (%) và phí vận chuyển ước tính hiển thị cho người mua',
+  },
+  {
+    href: '/admin/settings/blog-scrape',
+    icon: '🧹',
+    title: 'Lọc Nội Dung Blog',
+    desc: 'Tự động xóa backlink, số điện thoại, đoạn văn không mong muốn khi nhập bài từ URL',
+  },
+  {
+    href: '/admin/settings/testimonials',
+    icon: '⭐',
+    title: 'Đánh Giá Khách Hàng',
+    desc: 'Quản lý các đánh giá hiển thị trên trang chủ — thêm, sửa, ẩn/hiện, sắp xếp thứ tự',
+  },
 ]
 
 export default async function AdminSettingsPage() {

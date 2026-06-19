@@ -1,0 +1,233 @@
+import { notFound } from 'next/navigation'
+import type { Metadata } from 'next'
+import Link from 'next/link'
+import Image from 'next/image'
+import { prisma } from '@japanvip/db'
+
+type Props = { params: Promise<{ slug: string }> }
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params
+  const post = await prisma.blogPost.findUnique({ where: { slug }, select: { title: true, metaTitle: true, metaDesc: true, thumbnailUrl: true } })
+  if (!post) return {}
+  return {
+    title: post.metaTitle ?? post.title,
+    description: post.metaDesc ?? undefined,
+    openGraph: { images: post.thumbnailUrl ? [post.thumbnailUrl] : [] },
+  }
+}
+
+export default async function BlogPostPage({ params }: Props) {
+  const { slug } = await params
+
+  const [post, categories, recentPosts, randomProducts] = await Promise.all([
+    prisma.blogPost.findUnique({
+      where: { slug, status: 'PUBLISHED' },
+      include: {
+        category: { select: { name: true, slug: true } },
+        author: { select: { email: true, profile: { select: { fullName: true } } } },
+      },
+    }),
+    prisma.blogCategory.findMany({ orderBy: { name: 'asc' } }),
+    prisma.blogPost.findMany({
+      where: { status: 'PUBLISHED' },
+      orderBy: { publishedAt: 'desc' },
+      take: 5,
+      select: { slug: true, title: true, publishedAt: true },
+    }),
+    prisma.product.findMany({
+      where: { status: 'ACTIVE' },
+      orderBy: { createdAt: 'desc' },
+      take: 20,
+      select: {
+        id: true, name: true, slug: true, salePrice: true, marketPrice: true,
+        brand: { select: { name: true } },
+        images: { where: { isPrimary: true }, take: 1, select: { url: true } },
+      },
+    }),
+  ])
+
+  if (!post) notFound()
+
+  const sidebarProducts = [...randomProducts].sort(() => Math.random() - 0.5).slice(0, 5)
+
+  // Markdown → HTML with cleanup
+  const html = post.content
+    // Remove blog metadata lines (applies to old content already in DB)
+    .replace(/^Tác [Gg]iả\s*:.+$/gm, '')
+    .replace(/^Danh [Mm]ục\s*:.+$/gm, '')
+    .replace(/^Chuyên [Mm]ục\s*:.+$/gm, '')
+    .replace(/^Thẻ\s*:.+$/gm, '')
+    .replace(/^Tags?\s*:.+$/gim, '')
+    .replace(/^Chia [Ss]ẻ\s*:?.*/gm, '')
+    .replace(/^Lượt [Xx]em\s*:.+$/gm, '')
+    .replace(/^Ngày [Đđ]ăng\s*:.+$/gm, '')
+    .replace(/^Cập [Nn]hật\s*:.+$/gm, '')
+    // Remove toggle prefix from headings (scraped table of contents buttons)
+    .replace(/^Toggle(#{1,4} )/gm, '$1')
+    // Remove standalone TOC labels and separator asterisks
+    .replace(/^NỘI DUNG\s*$/gm, '')
+    .replace(/^\*{1,3}\s*$/gm, '')
+    // Headings
+    .replace(/^#### (.+)$/gm, '<h4>$1</h4>')
+    .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+    .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+    .replace(/^# (.+)$/gm, '<h1>$1</h1>')
+    // Inline
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    // Images & links
+    .replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" class="rounded-xl my-4 max-w-full" />')
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>')
+    // Lists — group consecutive - lines
+    .replace(/(^- .+$(\n^- .+$)*)/gm, (block) => {
+      const items = block.split('\n').map(l => `<li>${l.replace(/^- /, '')}</li>`).join('')
+      return `<ul>${items}</ul>`
+    })
+    // Paragraphs
+    .split(/\n\n+/)
+    .map(chunk => {
+      chunk = chunk.trim()
+      if (!chunk) return ''
+      if (/^<(h[1-6]|ul|ol|img|blockquote)/.test(chunk)) return chunk
+      return `<p>${chunk.replace(/\n/g, '<br />')}</p>`
+    })
+    .join('\n')
+
+  return (
+    <div className="bg-gray-50 min-h-screen">
+      <div className="mx-auto max-w-7xl px-4 py-8">
+        {/* Breadcrumb */}
+        <nav className="mb-5 flex items-center gap-1.5 text-sm text-gray-500">
+          <Link href="/" className="hover:text-brand-red">Trang chủ</Link>
+          <span>/</span>
+          <Link href="/blog" className="hover:text-brand-red">Blog</Link>
+          {post.category && (
+            <>
+              <span>/</span>
+              <Link href={`/blog?cat=${post.category.slug}`} className="hover:text-brand-red">{post.category.name}</Link>
+            </>
+          )}
+        </nav>
+
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_300px]">
+          {/* Article */}
+          <article className="rounded-2xl border border-gray-200 bg-white shadow-sm overflow-hidden">
+            {post.thumbnailUrl && (
+              <div className="relative aspect-video">
+                <Image src={post.thumbnailUrl} alt={post.title} fill className="object-cover" priority />
+              </div>
+            )}
+            <div className="p-6 md:p-8">
+              {post.category && (
+                <span className="inline-block rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-semibold text-blue-700 mb-3">
+                  {post.category.name}
+                </span>
+              )}
+              <h1 className="text-xl md:text-3xl font-bold text-gray-900 leading-snug">{post.title}</h1>
+              <div className="mt-2 flex items-center gap-3 text-xs text-gray-400">
+                {post.publishedAt && <span>{new Date(post.publishedAt).toLocaleDateString('vi-VN')}</span>}
+              </div>
+              {post.excerpt && (
+                <p className="mt-4 text-base text-gray-600 leading-relaxed border-l-4 border-brand-red pl-4 italic">{post.excerpt}</p>
+              )}
+              <div
+                className="mt-6 max-w-none text-gray-800 leading-relaxed
+                  [&_h1]:text-2xl [&_h1]:font-bold [&_h1]:mt-8 [&_h1]:mb-3 [&_h1]:text-gray-900
+                  [&_h2]:text-xl [&_h2]:font-bold [&_h2]:mt-7 [&_h2]:mb-2 [&_h2]:text-gray-900
+                  [&_h3]:text-lg [&_h3]:font-semibold [&_h3]:mt-6 [&_h3]:mb-2 [&_h3]:text-gray-900
+                  [&_h4]:text-base [&_h4]:font-semibold [&_h4]:mt-4 [&_h4]:mb-1 [&_h4]:text-gray-900
+                  [&_p]:mb-4 [&_p]:text-[15px]
+                  [&_ul]:my-3 [&_ul]:pl-5 [&_ul]:list-disc [&_ul]:space-y-1
+                  [&_ol]:my-3 [&_ol]:pl-5 [&_ol]:list-decimal [&_ol]:space-y-1
+                  [&_li]:text-[15px]
+                  [&_strong]:font-semibold [&_strong]:text-gray-900
+                  [&_img]:rounded-xl [&_img]:my-4 [&_img]:max-w-full
+                  [&_a]:text-brand-red [&_a]:underline-offset-2 [&_a]:hover:underline"
+                dangerouslySetInnerHTML={{ __html: html }}
+              />
+            </div>
+          </article>
+
+          {/* Sidebar */}
+          <aside className="space-y-6">
+            {/* Categories */}
+            {categories.length > 0 && (
+              <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+                <h3 className="mb-3 text-sm font-bold uppercase tracking-wide text-gray-700">Danh mục bài viết</h3>
+                <ul className="space-y-1.5">
+                  {categories.map((c) => (
+                    <li key={c.id}>
+                      <Link href={`/blog?cat=${c.slug}`}
+                        className={`block text-sm py-0.5 transition-colors ${post.category?.slug === c.slug ? 'text-brand-red font-semibold' : 'text-gray-600 hover:text-brand-red'}`}>
+                        {c.name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {/* Recent posts */}
+            <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+              <h3 className="mb-3 text-sm font-bold uppercase tracking-wide text-gray-700">Bài viết mới</h3>
+              <ul className="space-y-3">
+                {recentPosts.map((p) => (
+                  <li key={p.slug}>
+                    <Link href={`/blog/${p.slug}`}
+                      className={`text-sm leading-snug line-clamp-2 transition-colors ${p.slug === slug ? 'font-semibold text-brand-red' : 'text-gray-600 hover:text-brand-red'}`}>
+                      {p.title}
+                    </Link>
+                    {p.publishedAt && (
+                      <p className="mt-0.5 text-xs text-gray-400">{new Date(p.publishedAt).toLocaleDateString('vi-VN')}</p>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Random products */}
+            <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+              <h3 className="mb-4 text-sm font-bold uppercase tracking-wide text-gray-700">Hàng Mới Về</h3>
+              <div className="space-y-4">
+                {sidebarProducts.map((p) => {
+                  const img = p.images[0]?.url
+                  const price = p.salePrice ? Number(p.salePrice) : null
+                  const market = p.marketPrice ? Number(p.marketPrice) : null
+                  return (
+                    <Link key={p.id} href={`/${p.slug}`} className="group block">
+                      <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-gray-100 mb-2">
+                        {img ? (
+                          <Image src={img} alt={p.name} fill className="object-cover group-hover:scale-105 transition-transform duration-300" sizes="300px" />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-4xl text-gray-200">📦</div>
+                        )}
+                      </div>
+                      {p.brand && <p className="text-xs text-gray-400 mb-0.5">{p.brand.name}</p>}
+                      <p className="text-sm font-semibold text-gray-800 group-hover:text-brand-red transition-colors line-clamp-2 leading-snug">{p.name}</p>
+                      {price ? (
+                        <div className="mt-1 flex items-center gap-2 flex-wrap">
+                          <span className="text-base font-bold text-brand-red">{price.toLocaleString('vi-VN')}₫</span>
+                          {market && market > price && (
+                            <span className="text-sm text-gray-400 line-through">{market.toLocaleString('vi-VN')}₫</span>
+                          )}
+                        </div>
+                      ) : (
+                        <p className="mt-1 text-sm font-bold text-brand-red">Liên hệ</p>
+                      )}
+                    </Link>
+                  )
+                })}
+              </div>
+            </div>
+
+            {/* Back to blog */}
+            <Link href="/blog" className="flex items-center justify-center gap-1.5 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-600 hover:border-brand-red hover:text-brand-red transition-colors shadow-sm">
+              ← Quay lại Blog
+            </Link>
+          </aside>
+        </div>
+      </div>
+    </div>
+  )
+}
