@@ -503,7 +503,7 @@ function HeroBannerSlider({ banners, router }: { banners: HeroBanner[]; router: 
   const video = isVideo(banner.imageUrl)
 
   return (
-    <section style={{ position: 'relative', overflow: 'hidden', height: 480, cursor: banner.linkUrl ? 'pointer' : 'default' }}
+    <section style={{ position: 'relative', overflow: 'hidden', height: 625, minHeight: 400, maxHeight: 625, cursor: banner.linkUrl ? 'pointer' : 'default' }}
       onClick={() => { if (banner.linkUrl) router.push(banner.linkUrl) }}
     >
       {video ? (
