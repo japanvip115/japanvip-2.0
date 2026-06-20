@@ -8,7 +8,7 @@ export function generateOtpCode(): string {
   return String(Math.floor(100000 + Math.random() * 900000))
 }
 
-export async function createAndSendOtp(email: string, purpose: 'verify_email' | 'reset_password' | 'quick_order', fullName?: string) {
+export async function createAndSendOtp(email: string, purpose: 'verify_email' | 'reset_password' | 'quick_order' | 'affiliate_register', fullName?: string) {
   // Invalidate recent unused OTPs for same email + purpose to avoid spam
   const recent = await prisma.emailOtp.count({
     where: {
@@ -29,7 +29,7 @@ export async function createAndSendOtp(email: string, purpose: 'verify_email' | 
   await sendOtpEmail(email, code, fullName)
 }
 
-export async function verifyOtp(email: string, code: string, purpose: 'verify_email' | 'reset_password' | 'quick_order'): Promise<boolean> {
+export async function verifyOtp(email: string, code: string, purpose: 'verify_email' | 'reset_password' | 'quick_order' | 'affiliate_register'): Promise<boolean> {
   const otp = await prisma.emailOtp.findFirst({
     where: {
       email,

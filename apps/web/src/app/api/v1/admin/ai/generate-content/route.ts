@@ -160,58 +160,207 @@ export async function POST(req: Request) {
 }
 
 function buildPrompt(type: string, productName: string, specs: string, keywords: string, extra: string, customInstruction?: string, maxWords?: number): string {
-  const base = `Sản phẩm: ${productName}\n${specs ? `Thông số kỹ thuật:\n${specs}\n` : ''}${keywords ? `Từ khóa SEO: ${keywords}\n` : ''}${extra ? `Thông tin thêm: ${extra}\n` : ''}⚠️ QUAN TRỌNG:\n- Toàn bộ nội dung viết bằng TIẾNG VIỆT. Dịch tên sản phẩm, thông số, tính năng sang tiếng Việt tự nhiên.\n- Trả về HTML thuần túy, KHÔNG bọc trong \`\`\`html hay bất kỳ markdown code fence nào.\n`
+  const base = `Sản phẩm: ${productName}\n${specs ? `Thông số kỹ thuật:\n${specs}\n` : ''}${keywords ? `Từ khóa SEO: ${keywords}\n` : ''}${extra ? `Thông tin thêm: ${extra}\n` : ''}`
   const instruction = customInstruction?.trim() ? `\n\n📌 Yêu cầu bổ sung:\n${customInstruction.trim()}` : ''
 
   switch (type) {
     case 'description': {
       const range = maxWords
-        ? { min: Math.round(maxWords * 0.85), max: maxWords, label: 'Tùy chỉnh' }
+        ? { min: Math.round(maxWords * 0.85), max: maxWords }
         : detectWordRange(productName, specs)
       const targetWords = range.max
 
-      // Với maxWords thấp → viết ngắn gọn, ưu tiên section quan trọng
+      // Chế độ ngắn gọn khi giới hạn từ thấp
       if (targetWords <= 2000) {
-        const wordTarget = `\n\n📏 GIỚI HẠN CỨNG: Tối đa ${targetWords.toLocaleString()} từ. PHẢI hoàn thành trong giới hạn này, không được cắt giữa chừng.`
         return `${base}
-Hãy viết MÔ TẢ SẢN PHẨM ngắn gọn dưới dạng HTML, đủ các phần sau (rút gọn mỗi phần):
+Chế độ: product_html — RÚT GỌN (tối đa ${targetWords.toLocaleString()} từ)
 
+Viết mô tả sản phẩm HTML gồm các phần rút gọn:
 1. Giới thiệu tổng quan (100–150 từ)
-2. Công nghệ & tính năng nổi bật (400–600 từ) — mỗi công nghệ 1 thẻ <h2>, 80–120 từ/mục
-3. Ưu điểm nổi bật — danh sách ✔
-4. Bảng thông số kỹ thuật — table HTML
-5. Cam kết Japan VIP + CTA — Hotline 09.2729.8888${wordTarget}${instruction}`
+2. Công nghệ & tính năng nổi bật — mỗi công nghệ 1 thẻ <h3>, 80–120 từ/mục
+3. Ưu điểm nổi bật — bullet ✔
+4. Bảng thông số kỹ thuật — <table> HTML (chỉ điền trường có dữ liệu)
+5. Cam kết Japan VIP + CTA — Hotline 09.2729.8888
+
+⚠️ Chỉ dùng số liệu từ dữ liệu đầu vào. Thiếu thông số ghi [CẦN JAPAN VIP XÁC NHẬN].
+PHẢI hoàn thành trong giới hạn từ, không cắt giữa chừng.${instruction}`
       }
 
-      // Với maxWords cao → viết đầy đủ 13 section
-      const wordTarget = `\n\n📏 Độ dài mục tiêu: ${range.min.toLocaleString()}–${targetWords.toLocaleString()} từ. Viết đủ chiều sâu, PHẢI hoàn thành tất cả 13 section.`
+      // Chế độ đầy đủ 14 section
+      const mode = targetWords >= 4000 ? 'PREMIUM FLAGSHIP' : 'STANDARD'
       return `${base}
-Hãy viết MÔ TẢ SẢN PHẨM hoàn chỉnh dưới dạng HTML theo SEO Framework 3.0, đầy đủ 13 section theo thứ tự:
+Chế độ: product_html — ${mode} (${range.min.toLocaleString()}–${targetWords.toLocaleString()} từ)
 
-1. Giới thiệu tổng quan (200–300 từ) — chèn từ khóa chính 2–3 lần
-2. Tại sao nên chọn? (300–400 từ) — dùng ✔ liệt kê đối tượng phù hợp
-3. Thiết kế sang trọng chuẩn Nhật Bản (300–500 từ)
-4. Công nghệ nổi bật (800–1200 từ) — mỗi công nghệ 1 thẻ <h2>, 150–250 từ/mục
-5. Trải nghiệm sử dụng thực tế (300–500 từ) — độ ồn, điện năng, bảo quản
-6. So sánh với các model khác (300–500 từ) — bảng compare-grid hoặc table
-7. Ưu điểm và nhược điểm (200–300 từ) — thành thật để tăng trust
-8. Bảng thông số kỹ thuật chi tiết — dạng table HTML
-9. Hướng dẫn sử dụng tại Việt Nam (300–500 từ) — điện áp 100V, lắp đặt, bảo trì
-10. Câu hỏi thường gặp (10–15 câu) — <h3>Câu hỏi?</h3><p>Trả lời...</p>
-11. Chính sách bảo hành tại Japan VIP
-12. Cam kết từ Japan VIP — 5 bullet ✔
-13. Kêu gọi hành động (CTA) — Hotline 09.2729.8888, japanvip.vn${wordTarget}${instruction}`
+Viết đầy đủ 14 section theo SEO Framework Japan VIP đã được định nghĩa trong system prompt. Tuân thủ đúng:
+- Cấu trúc heading: <h2> cho section, <h3> cho công nghệ và câu hỏi bên trong
+- Quy tắc dữ liệu: KHÔNG tự tạo số liệu dB, kWh, °C, % nếu không có trong dữ liệu đầu vào
+- Bảo hành: dùng "Bảo hành theo chính sách Japan VIP", KHÔNG dùng "bảo hành chính hãng"
+- So sánh model (Section 6): nếu thiếu dữ liệu ghi [CHƯA CÓ DỮ LIỆU SO SÁNH]
+- Thông số (Section 8): trường thiếu ghi "Đang cập nhật theo model thực tế"
+- Phải hoàn thành đủ 14 section, không cắt giữa chừng${instruction}`
     }
+
     case 'faq':
-      return `${base}\nHãy tạo 10–15 câu HỎI & ĐÁP (FAQ) thực tế nhất mà khách hàng hay hỏi về sản phẩm này. Ưu tiên: điện áp 100V, biến áp, bảo hành, vận chuyển, lắp đặt, so sánh model. Trả lời chi tiết, có số liệu cụ thể. Xuất ra dạng JSON array: [{"name": "Câu hỏi?", "value": "Trả lời..."}]${instruction}`
+      return `${base}
+Chế độ: faq_json
+
+Tạo 10–15 câu HỎI & ĐÁP thực tế nhất khách hàng hay hỏi về sản phẩm này.
+Ưu tiên: điện áp 100V, biến áp, bảo hành tại Japan VIP, vận chuyển, lắp đặt, so sánh model, chi phí điện, vệ sinh bảo trì.
+Trả lời chi tiết, thực tế. Chỉ đưa số liệu khi có dữ liệu xác thực.
+Xuất JSON array duy nhất: [{"name": "Câu hỏi?", "value": "Trả lời..."}]${instruction}`
+
     case 'attributes':
-      return `${base}\nHãy tạo đầy đủ ATTRIBUTES cho sản phẩm này theo JSON format đã quy định. Bao gồm: quick (6-8 thông số nhanh), promo (5-7 tính năng nổi bật), warranty (thông tin bảo hành), specs (toàn bộ thông số kỹ thuật theo nhóm).${instruction}`
+      return `${base}
+Chế độ: attributes_json
+
+Tạo đầy đủ attributes sản phẩm theo JSON format trong system prompt:
+- quick: 6–8 thông số nhanh (chỉ điền trường có dữ liệu xác thực)
+- promo: 5–7 tính năng nổi bật
+- warranty: thông tin bảo hành (dùng "Bảo hành theo chính sách Japan VIP" nếu không có dữ liệu cụ thể)
+- specs: toàn bộ thông số kỹ thuật theo nhóm (trường thiếu ghi "Đang cập nhật")
+- faq: 5 câu hỏi thường gặp nhất
+Xuất JSON duy nhất, đúng format.${instruction}`
+
     case 'seo':
-      return `${base}\nHãy tạo:\n1. SEO Title (60 ký tự, chứa từ khóa chính)\n2. Meta Description (150-160 ký tự, hấp dẫn, có CTA)\n3. 5 biến thể từ khóa SEO liên quan\n4. Slug URL tối ưu\n\nXuất ra dạng JSON: {"title": "...", "description": "...", "keywords": [...], "slug": "..."}${instruction}`
+      return `${base}
+Tạo SEO metadata cho sản phẩm. Xuất JSON:
+{"title": "...(60 ký tự, chứa từ khóa chính)","description": "...(150-160 ký tự, hấp dẫn, có CTA)","keywords": ["kw1","kw2","kw3","kw4","kw5"],"slug": "..."}${instruction}`
+
     case 'blog': {
       const blogWords = maxWords ?? 1500
-      return `${base}\nHãy viết BÀI VIẾT BLOG đầy đủ dạng HTML. Cấu trúc: intro hook → các section h2 → kết luận + CTA Japan VIP. Mục tiêu ${blogWords.toLocaleString()} từ. SEO-friendly, natural keyword integration.${instruction}`
+      return `${base}
+Viết bài blog HTML hoàn chỉnh. Cấu trúc: intro hook → các section <h2> → kết luận + CTA Japan VIP (Hotline: 09.2729.8888).
+Mục tiêu ${blogWords.toLocaleString()} từ. SEO-friendly, tích hợp từ khóa tự nhiên.
+Chỉ đưa số liệu kỹ thuật khi có dữ liệu xác thực. KHÔNG dùng "bảo hành chính hãng".${instruction}`
     }
+
+    case 'social':
+      return `${base}
+Hãy tạo BỘ NỘI DUNG SOCIAL MEDIA cho sản phẩm này, dạng HTML. Bao gồm:
+
+**1. Facebook Post (dài — trang thương mại)**
+- Hook đầu tiên gây chú ý (1–2 câu)
+- Giới thiệu sản phẩm + 3–4 tính năng nổi bật dạng emoji bullet (✅ 🔥 💎)
+- Thông tin giá, ưu đãi hoặc lợi ích đặc biệt
+- CTA rõ ràng: link, hotline 09.2729.8888, địa chỉ showroom
+- 5–8 hashtag liên quan (#hàngNhật #japanvip #nộiđịaNhật ...)
+- Độ dài: 200–300 từ
+
+**2. Facebook Post (ngắn — quảng cáo/boost)**
+- 2–3 dòng hook mạnh
+- 1–2 tính năng chính + giá
+- CTA + hashtag chính
+- Độ dài: 50–80 từ
+
+**3. Zalo Post**
+- Tone thân thiện, gần gũi hơn Facebook
+- Nhấn mạnh uy tín Japan VIP, hàng chính hãng mới 100%
+- Có SĐT Zalo: 0988.969.896
+- Độ dài: 100–150 từ
+
+**4. Caption Instagram/TikTok**
+- Hook ấn tượng đầu tiên
+- 3–5 dòng ngắn, mỗi dòng 1 ý
+- Hashtag trend + branded (10–15 hashtag)
+- Độ dài: 80–120 từ
+
+Dùng thẻ <h3> cho từng loại post. Giữ giọng văn nhiệt tình, tin cậy, phù hợp thương hiệu hàng Nhật cao cấp.${instruction}`
+
+    case 'email':
+      return `${base}
+Hãy tạo BỘ EMAIL MARKETING dạng HTML cho sản phẩm này. Bao gồm:
+
+**1. Email Giới thiệu sản phẩm mới (Product Launch)**
+- Subject line hấp dẫn (A/B test — 2 phiên bản)
+- Preheader text (90 ký tự)
+- Header: tên sản phẩm + tagline
+- Body: hook → tính năng nổi bật (3–4 bullet) → lợi ích khách hàng → social proof
+- CTA button text + mô tả link
+- Footer: thông tin Japan VIP, hotline, unsubscribe
+- Độ dài body: 200–300 từ
+
+**2. Email Khuyến mãi / Flash Sale**
+- Subject urgency (deadline, % giảm)
+- Countdown vibe (dù không có đồng hồ thật)
+- Giá gốc / giá sale rõ ràng
+- 3 lý do mua ngay
+- CTA mạnh: "Mua Ngay — Chỉ Còn X Ngày"
+- Độ dài: 150–200 từ
+
+**3. Email Chăm sóc sau mua (Follow-up)**
+- Cảm ơn khách đã quan tâm/mua sản phẩm
+- Hướng dẫn sử dụng cơ bản (3–5 tip)
+- Thông tin bảo hành, liên hệ hỗ trợ
+- Upsell nhẹ: phụ kiện hoặc sản phẩm liên quan
+- Độ dài: 150–200 từ
+
+Dùng thẻ <h2> phân cách 3 email. Viết bằng tiếng Việt, tone chuyên nghiệp nhưng thân thiện.${instruction}`
+
+    case 'video_script':
+      return `${base}
+Hãy viết KỊCH BẢN VIDEO đầy đủ dạng HTML cho sản phẩm này. Bao gồm:
+
+**1. Kịch bản YouTube Review (7–10 phút)**
+Cấu trúc:
+- [00:00–00:30] Hook: câu hỏi/vấn đề khách hàng, preview video
+- [00:30–01:30] Giới thiệu Japan VIP + sản phẩm (unboxing brief)
+- [01:30–03:00] Thiết kế & Đóng gói — mô tả chi tiết
+- [03:00–05:30] Tính năng & Công nghệ nổi bật — giải thích từng chức năng
+- [05:30–07:00] Trải nghiệm thực tế — demo, tiếng ồn, hiệu suất
+- [07:00–08:30] So sánh với hàng Việt Nam / hàng Tàu
+- [08:30–09:30] Giá cả, mua ở đâu — Japan VIP, hotline, website
+- [09:30–10:00] Kết luận + CTA subscribe, like, comment
+
+Mỗi mục: [timestamp] **Tiêu đề** — lời thoại/hướng dẫn quay phim (2–4 câu)
+
+**2. Script TikTok/Reels (60 giây)**
+- [0–3s] Hook cực mạnh: câu hỏi hoặc claim gây tò mò
+- [3–15s] Problem: vấn đề khách hàng đang gặp
+- [15–45s] Solution: 3 tính năng WOW của sản phẩm (mỗi tính năng 10s)
+- [45–55s] Social proof + giá
+- [55–60s] CTA: "Link bio", "Comment 'GIÁ' để nhận báo giá"
+Ghi rõ: cảnh quay gợi ý, text overlay, nhạc nền
+
+**3. Mô tả Video YouTube (SEO)**
+- Title chính (60 ký tự, có từ khóa)
+- 3 title A/B test
+- Description đầy đủ: intro → timestamp → thông tin Japan VIP → hashtag
+- Tags (20 tags)
+
+Dùng thẻ <h2> phân cách 3 phần. Lời thoại tự nhiên, tiếng Việt gần gũi.${instruction}`
+
+    case 'comparison':
+      return `${base}
+Hãy viết BÀI SO SÁNH SẢN PHẨM hoàn chỉnh dạng HTML. Cấu trúc:
+
+**1. Giới thiệu (100–150 từ)**
+- Tại sao cần so sánh? Đối tượng bài viết phù hợp ai?
+
+**2. Bảng so sánh tổng quan**
+Tạo bảng HTML 4–5 cột:
+- Cột 1: Tiêu chí (Thương hiệu, Xuất xứ, Công nghệ chính, Hiệu suất, Tiết kiệm điện, Độ ồn, Bảo hành, Giá tham khảo)
+- Cột 2: Sản phẩm này (Japan VIP) — highlight màu xanh
+- Cột 3–5: 3 đối thủ phổ biến cùng phân khúc (hàng Việt Nam hoặc hàng nội địa cùng loại khác hãng)
+- Dùng ✅ / ❌ / ⚡ để trực quan hóa
+
+**3. Phân tích chi tiết từng tiêu chí (600–800 từ)**
+- Công nghệ & hiệu suất
+- Tiết kiệm điện & chi phí vận hành
+- Độ bền & chất lượng linh kiện Nhật
+- Thiết kế & trải nghiệm người dùng
+- Giá trị đồng tiền (value for money)
+
+**4. Đối tượng phù hợp (200 từ)**
+- Nên chọn sản phẩm này nếu bạn là...
+- Không phù hợp nếu...
+
+**5. Kết luận & Khuyến nghị (150 từ)**
+- Tổng kết ưu thế vượt trội
+- Lý do chọn Japan VIP
+- CTA: Hotline 09.2729.8888, website japanvip.vn
+
+Viết thành thật, khách quan — thừa nhận điểm yếu nếu có để tăng độ tin cậy.${instruction}`
+
     default:
       return `${base}${instruction}`
   }
@@ -228,6 +377,14 @@ function buildTestPrompt(type: string, productName: string, specs: string): stri
       return `${base}Tạo attributes test tối giản (JSON): {"quick":[{"name":"...","value":"..."}x3],"specs":[{"group":"Chung","name":"...","value":"..."}x3],"promo":[],"warranty":[]}`
     case 'seo':
       return `${base}Tạo SEO test (JSON): {"title":"[tên sản phẩm ngắn]","description":"[1 câu mô tả]","keywords":["kw1","kw2"],"slug":"[slug]"}`
+    case 'social':
+      return `${base}Viết 1 Facebook post test (~80 từ) về sản phẩm này. Dùng emoji, hashtag, CTA Japan VIP.`
+    case 'email':
+      return `${base}Viết email giới thiệu sản phẩm test (~100 từ). Subject + body ngắn + CTA.`
+    case 'video_script':
+      return `${base}Viết TikTok script test 30 giây (~100 từ). Hook + 2 tính năng + CTA.`
+    case 'comparison':
+      return `${base}Viết bảng so sánh test: HTML table 3 cột (sản phẩm này vs 2 đối thủ), 5 tiêu chí.`
     default:
       return `${base}Viết nội dung test ngắn ~200 từ cho: ${type}`
   }

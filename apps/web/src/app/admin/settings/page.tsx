@@ -34,6 +34,7 @@ const GROUPS: { title: string; icon: string; items: SettingItem[] }[] = [
       { href: '/admin/settings/exchange-rate',    icon: '💱', title: 'Tỷ Giá JPY/VND',           desc: 'Cập nhật tỷ giá yên Nhật' },
       { href: '/admin/settings/bfj',              icon: '🛒', title: 'Cài Đặt Mua Hộ',            desc: 'Phí dịch vụ, vận chuyển, SMTP' },
       { href: '/admin/settings/auction-fees',     icon: '🔨', title: 'Phí Đấu Giá',               desc: 'Phí dịch vụ và vận chuyển đấu giá' },
+      { href: '/admin/affiliates',               icon: '🤝', title: 'Hoa Hồng CTV',               desc: 'Duyệt, quản lý và thanh toán hoa hồng cộng tác viên' },
       {
         href: '/admin/settings/payment',
         icon: '💳',

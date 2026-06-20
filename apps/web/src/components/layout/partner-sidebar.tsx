@@ -2,12 +2,13 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, Package, Gavel, DollarSign } from 'lucide-react'
+import { LayoutDashboard, Package, Gavel, DollarSign, Gift, Link2 } from 'lucide-react'
 
 const NAV_ITEMS = [
   { href: '/partner', label: 'Tổng Quan', icon: LayoutDashboard, exact: true },
   { href: '/partner/products', label: 'Sản Phẩm', icon: Package },
   { href: '/partner/auctions', label: 'Phiên Đấu Giá', icon: Gavel },
+  { href: '/partner/commissions', label: 'Hoa Hồng', icon: Gift },
   { href: '/partner/revenue', label: 'Doanh Thu', icon: DollarSign },
 ]
 

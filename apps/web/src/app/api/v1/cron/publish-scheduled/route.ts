@@ -4,6 +4,7 @@ import { getContentStyle } from '@/lib/ai-style'
 import { getAiApiKey } from '@/lib/ai-keys'
 import { sendContentDoneEmail } from '@/lib/email.service'
 import Anthropic from '@anthropic-ai/sdk'
+import { streamWithClaudeCode, findRelevantKnowledge } from '@/lib/claude-code-stream'
 
 // Vercel Cron gọi route này mỗi giờ
 // vercel.json: { "crons": [{ "path": "/api/v1/cron/publish-scheduled", "schedule": "0 * * * *" }] }
@@ -98,8 +99,6 @@ async function generateContent(task: {
   provider: string
 }): Promise<string> {
   const systemPrompt = await getContentStyle()
-  const apiKey = await getAiApiKey('anthropic')
-  if (!apiKey) throw new Error('Chưa cấu hình Anthropic API Key')
 
   let userPrompt = ''
 
@@ -132,6 +131,26 @@ Xuất ra JSON array: [{"name": "Câu hỏi?", "value": "Trả lời..."}]`
     userPrompt = `Tạo SEO meta tiếng Việt cho: "${task.title}"
 Xuất ra JSON: {"title": "...", "description": "...", "keywords": [...], "slug": "..."}`
   }
+
+  // ── Claude Code (miễn phí — dùng subscription) ──────────────────────────
+  if (task.provider === 'claude-code') {
+    const kb = findRelevantKnowledge(task.title)
+    const fullPrompt = `${userPrompt}${kb}`
+    const stream = streamWithClaudeCode(fullPrompt, systemPrompt)
+    const reader = stream.getReader()
+    const decoder = new TextDecoder()
+    let result = ''
+    while (true) {
+      const { done, value } = await reader.read()
+      if (done) break
+      result += decoder.decode(value, { stream: true })
+    }
+    return result
+  }
+
+  // ── Anthropic / OpenAI API ───────────────────────────────────────────────
+  const apiKey = await getAiApiKey(task.provider === 'openai' ? 'openai' : 'anthropic')
+  if (!apiKey) throw new Error(`Chưa cấu hình API Key cho provider: ${task.provider}`)
 
   const client = new Anthropic({ apiKey })
   const msg = await client.messages.create({

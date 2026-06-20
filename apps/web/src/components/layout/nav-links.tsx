@@ -35,6 +35,7 @@ const BASE_NAV: NavItem[] = [
     ],
   },
   { label: 'Theo Dõi Đơn', href: '/theo-doi-don' },
+  { label: 'CTV', href: '/cong-tac-vien' },
   { label: 'Liên Hệ', href: '/lien-he' },
 ]
 

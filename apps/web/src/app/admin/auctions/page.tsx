@@ -65,12 +65,20 @@ export default async function AdminAuctionsPage({ searchParams }: { searchParams
           <h1 className="text-xl font-bold text-white">Quản Lý Đấu Giá</h1>
           <p className="mt-0.5 text-sm text-gray-500">{total} phiên tổng cộng</p>
         </div>
-        <Link
-          href="/admin/auctions/new"
-          className="flex items-center gap-1.5 rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-red-500 cursor-pointer"
-        >
-          <Plus className="h-4 w-4" /> Tạo phiên mới
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link
+            href="/admin/auctions/batch"
+            className="flex items-center gap-1.5 rounded-lg border border-gray-600 px-4 py-2 text-sm font-semibold text-gray-300 transition-colors hover:border-gray-400 hover:text-white cursor-pointer"
+          >
+            📦 Nhập lô
+          </Link>
+          <Link
+            href="/admin/auctions/new"
+            className="flex items-center gap-1.5 rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-red-500 cursor-pointer"
+          >
+            <Plus className="h-4 w-4" /> Tạo phiên mới
+          </Link>
+        </div>
       </div>
 
       {/* Search + Status tabs */}

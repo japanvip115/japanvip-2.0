@@ -16,11 +16,15 @@ const OUTPUT_PRICE_PER_TOKEN = 15 / 1_000_000   // $15 / MTok
 const USD_TO_VND = 25_500
 
 const EXPECTED_OUTPUT_TOKENS: Record<string, number> = {
-  description: 3000,
-  faq:         700,
-  attributes:  900,
-  seo:         300,
-  blog:        4500,
+  description:  3000,
+  faq:           700,
+  attributes:    900,
+  seo:           300,
+  blog:         4500,
+  social:        600,
+  email:        1200,
+  video_script: 2000,
+  comparison:   1500,
 }
 
 function estimateCost(types: string[], specsText: string): { usd: number; vnd: number } {
@@ -81,11 +85,15 @@ type ContentType = {
 }
 
 const CONTENT_TYPES: ContentType[] = [
-  { key: 'description', label: 'Mô tả sản phẩm',  icon: '📝', outputType: 'html' },
-  { key: 'faq',         label: 'Hỏi & Đáp (FAQ)', icon: '❓', outputType: 'json' },
-  { key: 'attributes',  label: 'Thông số & Attr.', icon: '⚙️', outputType: 'json' },
-  { key: 'seo',         label: 'SEO Title & Meta', icon: '🔍', outputType: 'json' },
-  { key: 'blog',        label: 'Bài viết Blog',    icon: '✍️', outputType: 'html' },
+  { key: 'description',  label: 'Mô tả sản phẩm',      icon: '📝', outputType: 'html' },
+  { key: 'faq',          label: 'Hỏi & Đáp (FAQ)',      icon: '❓', outputType: 'json' },
+  { key: 'attributes',   label: 'Thông số & Attr.',      icon: '⚙️', outputType: 'json' },
+  { key: 'seo',          label: 'SEO Title & Meta',      icon: '🔍', outputType: 'json' },
+  { key: 'blog',         label: 'Bài viết Blog',         icon: '✍️', outputType: 'html' },
+  { key: 'social',       label: 'Social Media Post',     icon: '📱', outputType: 'html' },
+  { key: 'email',        label: 'Email Marketing',       icon: '📧', outputType: 'html' },
+  { key: 'video_script', label: 'Kịch bản Video',        icon: '🎬', outputType: 'html' },
+  { key: 'comparison',   label: 'So sánh sản phẩm',     icon: '⚖️', outputType: 'html' },
 ]
 
 // ── Source mode toggle ─────────────────────────────────────────────────────────

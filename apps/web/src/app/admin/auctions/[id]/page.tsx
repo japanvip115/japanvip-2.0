@@ -121,6 +121,25 @@ export default async function AdminAuctionDetailPage({ params }: Props) {
             </div>
           </div>
 
+          {/* Unit condition */}
+          {(auction.unitCondition || (auction as any).unitImages?.length > 0) && (
+            <div className="rounded-xl border border-yellow-500/20 bg-yellow-500/5 p-5">
+              <h2 className="mb-3 text-sm font-semibold text-yellow-300">Tình Trạng Đơn Vị Hàng</h2>
+              {auction.unitCondition && (
+                <p className="text-sm text-gray-200 mb-3">📋 {auction.unitCondition}</p>
+              )}
+              {(auction as any).unitImages?.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {((auction as any).unitImages as string[]).map((url: string, i: number) => (
+                    <div key={i} className="relative h-20 w-20 overflow-hidden rounded-lg border border-gray-700">
+                      <img src={url} alt={`Ảnh ${i + 1}`} className="h-full w-full object-cover" />
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Pricing info */}
           <div className="rounded-xl border border-gray-700 bg-gray-800/60 p-5">
             <h2 className="mb-4 text-sm font-semibold text-gray-200">Thông Số Đấu Giá</h2>

@@ -47,6 +47,7 @@ export async function Footer() {
               { href: '/chinh-sach-doi-tra', label: 'Chính Sách Đổi Trả' },
               { href: '/chinh-sach-van-chuyen', label: 'Chính Sách Vận Chuyển' },
               { href: '/bao-mat', label: 'Bảo Mật Thông Tin' },
+              { href: '/cong-tac-vien', label: '🤝 Cộng Tác Viên' },
             ]} />
           </div>
           <div>
@@ -92,6 +93,7 @@ export async function Footer() {
             <Link href="/lien-he" className="py-1 hover:text-white transition-colors">Liên Hệ</Link>
             <Link href="/chinh-sach-doi-tra" className="py-1 hover:text-white transition-colors">Đổi Trả</Link>
             <Link href="/chinh-sach-van-chuyen" className="py-1 hover:text-white transition-colors">Vận Chuyển</Link>
+            <Link href="/cong-tac-vien" className="py-1 hover:text-white transition-colors">🤝 Cộng Tác Viên</Link>
           </div>
 
           {/* Payment + contact badges */}

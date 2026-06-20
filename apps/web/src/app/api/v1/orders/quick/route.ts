@@ -17,6 +17,7 @@ const schema = z.object({
   quantity: z.number().int().min(1).max(99).default(1),
   notes: z.string().max(500).optional(),
   productId: z.string().uuid('Sản phẩm không hợp lệ'),
+  refCode: z.string().max(20).regex(/^[A-Z0-9_-]+$/i).optional(),
 })
 
 async function getSmtp() {
@@ -84,6 +85,23 @@ export async function POST(req: NextRequest) {
     const fmtVND = (n: number) => n.toLocaleString('vi-VN') + '₫'
     const orderRef = `DH${Date.now().toString(36).toUpperCase()}`
 
+    // Resolve refCode → partner
+    let affiliateId: string | null = null
+    let resolvedRefCode: string | null = null
+    // Also check cookie if no refCode in body
+    const cookieRefCode = req.cookies.get('ref')?.value
+    const refCode = body.refCode ?? (cookieRefCode && /^[A-Z0-9_-]{3,20}$/i.test(cookieRefCode) ? cookieRefCode : undefined)
+    if (refCode) {
+      const partner = await prisma.partnerProfile.findUnique({
+        where: { refCode: refCode.toUpperCase(), status: 'APPROVED' },
+        select: { id: true, refCode: true },
+      })
+      if (partner) {
+        affiliateId = partner.id
+        resolvedRefCode = partner.refCode
+      }
+    }
+
     // Lưu đơn vào DB — giá & tên sản phẩm lấy từ DB
     await prisma.quickOrder.create({
       data: {
@@ -99,8 +117,33 @@ export async function POST(req: NextRequest) {
         productSlug: product.slug,
         priceVnd,
         quantity: body.quantity,
+        refCode: resolvedRefCode,
+        affiliateId,
       },
     })
+
+    // Tạo hoa hồng nếu có affiliate và đơn có giá
+    if (affiliateId && priceVnd && priceVnd > 0) {
+      const partnerProfile = await prisma.partnerProfile.findUnique({
+        where: { id: affiliateId },
+        select: { defaultCommissionRate: true },
+      })
+      if (partnerProfile) {
+        const rate = Number(partnerProfile.defaultCommissionRate)
+        const commissionAmount = Math.round(priceVnd * body.quantity * rate)
+        await prisma.affiliateCommission.create({
+          data: {
+            partnerId: affiliateId,
+            orderRef,
+            productName: product.name,
+            orderAmount: priceVnd * body.quantity,
+            commissionRate: rate,
+            commissionAmount,
+            status: 'PENDING',
+          },
+        })
+      }
+    }
 
     const smtp = await getSmtp()
     if (smtp) {

@@ -18,7 +18,7 @@ function loadKnowledgeBase(): KBArticle[] {
   if (_kbCache) return _kbCache
   const base = join(process.cwd(), '..', '..', 'knowledge-base')
   const articles: KBArticle[] = []
-  for (const file of ['congnghenhat.json', 'phongcachnhat.json']) {
+  for (const file of ['congnghenhat.json', 'phongcachnhat.json', 'hiephongjapan.json']) {
     try {
       const data = JSON.parse(readFileSync(join(base, file), 'utf-8'))
       for (const a of (data.articles ?? [])) {

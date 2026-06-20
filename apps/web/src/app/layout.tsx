@@ -3,6 +3,7 @@ import './globals.css'
 import { getAllFontVariableClasses, getFontCssVar } from '@/lib/fonts'
 import { getActiveFont } from '@/lib/font-settings'
 import { ContentProtection } from '@/components/content-protection'
+import { Providers } from '@/components/providers'
 import { prisma } from '@japanvip/db'
 
 export const metadata: Metadata = {
@@ -55,7 +56,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       </head>
       <body>
         <ContentProtection enabled={contentProtectionEnabled} />
-        {children}
+        <Providers>{children}</Providers>
       </body>
     </html>
   )

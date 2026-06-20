@@ -366,12 +366,15 @@ model QuickOrder {
   quantity     Int              @default(1)
   status       QuickOrderStatus @default(PENDING)
   adminNotes   String?          @map("admin_notes")
+  refCode      String?          @map("ref_code") @db.VarChar(20)
+  affiliateId  String?          @map("affiliate_id") @db.Uuid
   createdAt    DateTime         @default(now()) @map("created_at") @db.Timestamptz
   updatedAt    DateTime         @updatedAt @map("updated_at") @db.Timestamptz
 
   @@index([status])
   @@index([email])
   @@index([createdAt])
+  @@index([refCode])
   @@map("quick_orders")
 }
 
@@ -520,6 +523,8 @@ model Auction {
   commissionRate  Decimal       @default(0.10) @map("commission_rate") @db.Decimal(5, 4)
   buyerPremium    Decimal       @default(0.03) @map("buyer_premium") @db.Decimal(5, 4)
   settlementDue   DateTime?     @map("settlement_due") @db.Timestamptz
+  unitCondition   String?       @map("unit_condition") @db.VarChar(500)
+  unitImages      String[]      @map("unit_images") @db.Text
   createdBy       String        @map("created_by") @db.Uuid
   createdAt       DateTime      @default(now()) @map("created_at") @db.Timestamptz
   updatedAt       DateTime      @updatedAt @map("updated_at") @db.Timestamptz
@@ -770,18 +775,55 @@ model PartnerProfile {
   bankAccount           String?       @map("bank_account") @db.VarChar(100)
   bankHolder            String?       @map("bank_holder") @db.VarChar(255)
   commissionTier        String        @default("DEFAULT") @map("commission_tier") @db.VarChar(50)
-  defaultCommissionRate Decimal       @default(0.10) @map("default_commission_rate") @db.Decimal(5, 4)
+  defaultCommissionRate Decimal       @default(0.05) @map("default_commission_rate") @db.Decimal(5, 4)
+  refCode               String        @unique @map("ref_code") @db.VarChar(20)
+  totalEarned           Decimal       @default(0) @map("total_earned") @db.Decimal(20, 2)
+  totalPaid             Decimal       @default(0) @map("total_paid") @db.Decimal(20, 2)
   status                PartnerStatus @default(PENDING)
   approvedAt            DateTime?     @map("approved_at") @db.Timestamptz
   approvedBy            String?       @map("approved_by") @db.Uuid
   createdAt             DateTime      @default(now()) @map("created_at") @db.Timestamptz
   updatedAt             DateTime      @updatedAt @map("updated_at") @db.Timestamptz
 
-  user     User  @relation(fields: [userId], references: [id])
-  approver User? @relation("PartnerApprovedBy", fields: [approvedBy], references: [id])
+  user        User                 @relation(fields: [userId], references: [id])
+  approver    User?                @relation("PartnerApprovedBy", fields: [approvedBy], references: [id])
+  commissions AffiliateCommission[]
 
   @@index([status])
+  @@index([refCode])
   @@map("partner_profiles")
+}
+
+enum CommissionStatus {
+  PENDING
+  APPROVED
+  PAID
+  REJECTED
+}
+
+model AffiliateCommission {
+  id            String           @id @default(uuid()) @db.Uuid
+  partnerId     String           @map("partner_id") @db.Uuid
+  quickOrderId  String?          @map("quick_order_id") @db.Uuid
+  orderRef      String           @map("order_ref") @db.VarChar(50)
+  productName   String           @map("product_name") @db.VarChar(500)
+  orderAmount   Decimal          @map("order_amount") @db.Decimal(20, 2)
+  commissionRate Decimal         @map("commission_rate") @db.Decimal(5, 4)
+  commissionAmount Decimal       @map("commission_amount") @db.Decimal(20, 2)
+  status        CommissionStatus @default(PENDING)
+  note          String?          @db.VarChar(500)
+  approvedAt    DateTime?        @map("approved_at") @db.Timestamptz
+  approvedBy    String?          @map("approved_by") @db.Uuid
+  paidAt        DateTime?        @map("paid_at") @db.Timestamptz
+  createdAt     DateTime         @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt     DateTime         @updatedAt @map("updated_at") @db.Timestamptz
+
+  partner    PartnerProfile @relation(fields: [partnerId], references: [id])
+
+  @@index([partnerId, status])
+  @@index([status])
+  @@index([orderRef])
+  @@map("affiliate_commissions")
 }
 
 // ─────────────────────────────────────────

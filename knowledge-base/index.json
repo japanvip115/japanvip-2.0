@@ -1,0 +1,2081 @@
+{
+  "total_articles": 129,
+  "sources": {
+    "congnghenhat.com": {
+      "danh-gia": 10,
+      "huong-dan-su-dung": 10,
+      "kinh-nghiem": 10,
+      "cong-nghe": 10
+    },
+    "phongcachnhat.vn": {
+      "tin-tuc": 10,
+      "hoi-dap": 21,
+      "huong-dan": 20,
+      "review-video": 20,
+      "kinh-nghiem": 10
+    },
+    "hiephongjapan.vn": {
+      "kinh-nghiem": 8,
+      "san-pham": 10,
+      "tin-tuc": 4,
+      "huong-dan": 2
+    }
+  },
+  "products_mentioned": [
+    "Bếp từ nội địa Nhật (general category — no specific brand/model numbers mentioned in the article)",
+    "Bồn cầu hai khối TOTO",
+    "Bồn cầu một khối TOTO",
+    "Bồn cầu thông minh ToTo",
+    "Bồn cầu treo tường TOTO",
+    "Cera",
+    "Chế phẩm canxi glycerophosphate P-A5101",
+    "Cnet CKAJ403WH",
+    "Cnet CKDF308WH",
+    "Cuckoo",
+    "Daikin (điều hòa)",
+    "Daikin MCK55TVM6",
+    "Daikin MCK705A-W",
+    "Daikin MCK70Z",
+    "Dung dịch thử pH TK-HS9103",
+    "Fujikima",
+    "Grohe",
+    "HEF-RM10 (remote điều khiển)",
+    "HEF-RM10 (điều khiển từ xa)",
+    "Hansgrohe",
+    "Hitachi",
+    "Hitachi BD-STX130ML",
+    "Hitachi BD-SX110F",
+    "Hitachi BD-SX110FL-N",
+    "Hitachi BD-SX130KL",
+    "Hitachi BD-SX130KL màu trắng",
+    "Hitachi BD-SX130ML",
+    "Hitachi BD-SX130ML màu trắng (W)",
+    "Hitachi BD-SX130ML màu xám đậm (H)",
+    "Hitachi BD-SX130MR",
+    "Hitachi HEF-AL300A",
+    "Hitachi HEF-AL300C",
+    "Hitachi HEF-AL300D",
+    "Hitachi HEF-AL300E",
+    "Hitachi HEF-AL300F",
+    "Hitachi HEF-AL300G",
+    "Hitachi HEF-AL300H",
+    "Hitachi MRO-S8C",
+    "Hitachi MRO-S8C-K",
+    "Hitachi MRO-S8C-W",
+    "Hitachi R-HW540RV",
+    "Hitachi R-HXC54X",
+    "Hitachi R-WX74K (X) – màu Đen gương, dung tích 735L, năm 2020",
+    "Hitachi R-WXC62S",
+    "Hitachi R-WXC74S",
+    "Hitachi R-WXC74S (X)",
+    "Hitachi R-WXC74T (X) 735L",
+    "Hitachi R-WXC74T-X",
+    "Hitachi R-WXC74X-X",
+    "Hitachi R-ZX740KV",
+    "Hitachi bếp từ",
+    "Kangen Leveluk SD501",
+    "Kohler",
+    "Lõi làm sạch thân máy PRA-B8641S",
+    "Lõi lọc Micro Carbon BMα",
+    "Lõi lọc TK-AS30C1",
+    "MO-F104 (nắp giặt chăn)",
+    "Mitsubishi CS-T322BFR",
+    "Mitsubishi MR-WXD70M",
+    "Mitsubishi MR-WXD70M-H (Xám hổ phách)",
+    "Mitsubishi MR-WXD70M-W (Trắng vải lanh)",
+    "Mitsubishi R12A-DA",
+    "Mitsubishi R30J-DMB",
+    "Mitsubishi bếp từ",
+    "Máy giặt Panasonic",
+    "Máy giặt Panasonic NA-LX125AL",
+    "Máy giặt Panasonic nội địa Nhật",
+    "Máy giặt Toshiba nội địa Nhật",
+    "Máy giặt nội địa Nhật (6-9kg)",
+    "Máy hút ẩm Daikin",
+    "Máy hút ẩm Hitachi",
+    "Máy hút ẩm Mitsubishi",
+    "Máy hút ẩm Mitsubishi MJ-E14CG-S1-SWE",
+    "Máy hút ẩm Mitsubishi MJ-M100TX",
+    "Máy hút ẩm Mitsubishi MJ-P180PX",
+    "Máy hút ẩm Mitsubishi MJ-P180RX",
+    "Máy hút ẩm Mitsubishi MJ-P180SX",
+    "Máy hút ẩm Mitsubishi MJ-P180TX",
+    "Máy hút ẩm Mitsubishi MJ-P180VX",
+    "Máy hút ẩm Mitsubishi MJ-P180WX",
+    "Máy hút ẩm Panasonic",
+    "Máy hút ẩm Sharp",
+    "Máy hút ẩm Toshiba",
+    "Máy lọc không khí Hitachi",
+    "Máy lọc nước ion kiềm Panasonic TK-AS31",
+    "Máy ép chậm Panasonic MJ-L500SRA",
+    "NA-LX113EL",
+    "National",
+    "Nihon Trim",
+    "Nồi cao tần Nhật có sẵn đổi nguồn trong",
+    "Nồi cơm cao tần Nhật Bản (nội địa 100V/110V)",
+    "Nồi cơm điện Panasonic",
+    "Nồi cơm điện Toshiba",
+    "Nồi cơm điện Zojirushi NP-VI10-TA",
+    "Nồi cơm điện Zojirushi NP-VI18-TA",
+    "Panasonic",
+    "Panasonic (điều hòa)",
+    "Panasonic F-C324C",
+    "Panasonic F-C339C",
+    "Panasonic F-CW324-W",
+    "Panasonic F-VXW70-TM",
+    "Panasonic FD-S35T3",
+    "Panasonic FD-S35T3-X",
+    "Panasonic FD-ST35T3",
+    "Panasonic KZ-L32AK",
+    "Panasonic NA-LX113EL-W",
+    "Panasonic NA-LX125AL",
+    "Panasonic NP-TH4",
+    "Panasonic NR-FVF45S2",
+    "Panasonic NR-FVF45S2-W",
+    "Panasonic SR-FE101",
+    "Panasonic SR-VSX189",
+    "Panasonic TK-CJ300",
+    "Panasonic TK-CJ300-WVN",
+    "Panasonic bếp từ",
+    "Premium Micro Carbon CM2α (bộ lọc thay thế)",
+    "Quạt Hitachi HEF-AL300G",
+    "Quạt Mitsubishi R30J-DMB",
+    "Quạt Sharp PJ-S3DS",
+    "Quạt Toshiba TF-30AL27",
+    "Quạt Toyotomi FS-D30NHR-W",
+    "Quạt Toyotomi FS-FD3524-W",
+    "Quạt điện Hitachi HEF-AL300D",
+    "Seiko RE576A",
+    "Seiko RE580B",
+    "Sen tắm cảm biến nhiệt độ thông minh",
+    "Sen tắm hiển thị nhiệt độ LED đổi màu",
+    "Sen tắm điều chỉnh nhiệt độ tự động",
+    "Sharp",
+    "Sharp DW-J20FV-W",
+    "Sharp DW-J27FV-S",
+    "Sharp IG-NX15-B Ion Next",
+    "Sharp KC-F70 2021",
+    "Sharp KC-H50",
+    "Sharp KC-L50-W",
+    "Sharp KC-S50-W",
+    "Sharp KI-HS70",
+    "Sharp KI-JS70",
+    "Sharp KI-LS70",
+    "Sharp KI-NP100-W",
+    "Sharp KI-PX100-W",
+    "Sharp KI-RS50-W",
+    "Sharp KI-TX100",
+    "Sharp PJ-CD433V-H",
+    "Sharp PJ-R2DS",
+    "Sharp PJ-S3DS",
+    "Sunhouse",
+    "TCF2223E",
+    "TCF8GK35",
+    "TCF8GM24",
+    "TCF8GM44",
+    "TOSHIBA Kanazawa KEL-B090D35",
+    "TOTO Washlet",
+    "TOYOTOMI FS-DH30P",
+    "TOYOTOMI FS-FD3524",
+    "Thanko LCARBRCK",
+    "Thiết bị chống cắm nhầm",
+    "Thiết bị đổi nguồn Lioa",
+    "Thuốc làm sạch đường nước TKAS31L7267",
+    "Tiger JPI-A100-KO",
+    "Tiger JPI-A100-KO 1L",
+    "Tiger JPW-G10W",
+    "Tiger JPW-G18W",
+    "Toshiba",
+    "Toshiba DW-15F7(G)-VN",
+    "Toshiba RC-10HGW",
+    "Toshiba RC-10HGX",
+    "Toshiba RC-10HGX-K (Gran Black)",
+    "Toshiba RC-10HGX-W (Gran White)",
+    "Toshiba RC-10VSP",
+    "Toshiba RC-10VSV (K) 2023",
+    "Toshiba RC-18VXR",
+    "Toshiba RC-18VXR (K) 2021",
+    "Toshiba RC-DW10GW",
+    "Toshiba TF-30AL27",
+    "Toshiba TF-30RK28",
+    "Toshiba TFC-23Y28",
+    "Toshiba bếp từ",
+    "Toto",
+    "Toto TBV03404J",
+    "Toto TMC95ECR",
+    "Toto TMN40STY4",
+    "Toyotomi FS-30LR-W",
+    "Toyotomi FS-D30NHR-W",
+    "Toyotomi FS-DHT30R",
+    "Toyotomi FS-DS30LHR(W)",
+    "Toyotomi FS-FD3524(W)",
+    "Toyotomi FS-FD3524-W",
+    "Trim Ion HYPER",
+    "Trim Ion TI-5HX",
+    "Tủ bát Takara Standard",
+    "Zojirushi NP-VI18-TA",
+    "Zojirushi NP-ZU18-TD",
+    "Zojirushi NW-JU18-BA",
+    "Zojirushi NW-LB18",
+    "Zojirushi NW-LB18-WZ",
+    "Zojirushi NW-VA10-TA",
+    "Zojirushi NW-VA18-TA",
+    "bếp từ Mitsubishi CS-T322BFR",
+    "bếp từ chất lượng tốt",
+    "bếp từ có Inverter",
+    "bếp từ giá rẻ",
+    "bếp từ nội địa Nhật Bản",
+    "bồn cầu thông minh nội địa Nhật Bản",
+    "bộ lọc HEPA",
+    "bộ lọc sơ cấp (pre-filter)",
+    "bộ lọc than hoạt tính (carbon filter)",
+    "lõi lọc MicroClear4000",
+    "máy giặt",
+    "máy lọc không khí bù ẩm Sharp KC-H50",
+    "nồi chảo có đáy nhiễm từ",
+    "nồi cơm IH",
+    "nồi cơm cao tần",
+    "nồi cơm cao tần áp suất",
+    "nồi cơm điện cao tần",
+    "nồi cơm điện thông thường",
+    "nồi áp suất nội địa Nhật",
+    "nồi áp suất điện",
+    "tủ lạnh",
+    "tủ lạnh Nhật Bản",
+    "Ứng dụng HappinessUp",
+    "ứng dụng HappinessUp (ハピネスアップ)",
+    "ứng dụng 洗濯コンシェルジュ (Sentaku Concierge)"
+  ],
+  "articles": [
+    {
+      "source": "congnghenhat.com",
+      "category": "Đánh giá sản phẩm",
+      "title": "So sánh tủ lạnh Hitachi R-HW540RV và R-HXC54X",
+      "url": "https://congnghenhat.com/tin-tuc/danh-gia/so-sanh-tu-lanh-hitachi-r-hw540rv-va-r-hxc54x.html",
+      "keywords": [
+        "tủ lạnh Hitachi",
+        "French door",
+        "Vacuum Compartment",
+        "VIP tấm cách nhiệt chân không",
+        "Aero-care Vege Compartment"
+      ],
+      "products": [
+        "Hitachi R-HW540RV",
+        "Hitachi R-HXC54X"
+      ]
+    },
+    {
+      "source": "congnghenhat.com",
+      "category": "Đánh giá sản phẩm",
+      "title": "So sánh quạt TOYOTOMI FS-DH30P và FS-FD3524 – hai dòng quạt DC điều khiển từ xa khác nhau ở điểm gì?",
+      "url": "https://congnghenhat.com/tin-tuc/danh-gia/so-sanh-quat-toyotomi-fs-dh30p-va-fs-fd3524.html",
+      "keywords": [
+        "động cơ DC",
+        "quạt sàn",
+        "điều khiển từ xa",
+        "remote control",
+        "cảm biến chạm"
+      ],
+      "products": [
+        "TOYOTOMI FS-DH30P",
+        "TOYOTOMI FS-FD3524"
+      ]
+    },
+    {
+      "source": "congnghenhat.com",
+      "category": "Đánh giá sản phẩm",
+      "title": "Đánh giá tổng quan máy giặt Hitachi BD-SX130ML nội địa Nhật",
+      "url": "https://congnghenhat.com/tin-tuc/danh-gia/danh-gia-tong-quan-may-giat-hitachi-bd-sx130ml-noi-dia-nhat.html",
+      "keywords": [
+        "máy giặt nội địa Nhật",
+        "Hitachi BD-SX130ML",
+        "AI Washing System",
+        "bơm nhiệt heat pump",
+        "lồng ngang"
+      ],
+      "products": [
+        "Hitachi BD-SX130ML",
+        "Hitachi BD-SX130MR",
+        "Hitachi BD-STX130ML",
+        "MO-F104 (nắp giặt chăn)",
+        "Ứng dụng HappinessUp"
+      ]
+    },
+    {
+      "source": "congnghenhat.com",
+      "category": "Đánh giá sản phẩm",
+      "title": "So sánh máy giặt Hitachi BD-SX130KL và BD-SX130ML",
+      "url": "https://congnghenhat.com/tin-tuc/danh-gia/so-sanh-may-giat-hitachi-bd-sx130kl-va-bd-sx130ml.html",
+      "keywords": [
+        "máy giặt sấy lồng ngang",
+        "BIG DRUM",
+        "dung tích giặt 13kg",
+        "dung tích sấy 7kg",
+        "AI giặt"
+      ],
+      "products": [
+        "Hitachi BD-SX130KL",
+        "Hitachi BD-SX130ML",
+        "Hitachi BD-SX130KL màu trắng",
+        "Hitachi BD-SX130ML màu trắng (W)",
+        "Hitachi BD-SX130ML màu xám đậm (H)",
+        "ứng dụng 洗濯コンシェルジュ (Sentaku Concierge)",
+        "ứng dụng HappinessUp (ハピネスアップ)"
+      ]
+    },
+    {
+      "source": "congnghenhat.com",
+      "category": "Đánh giá sản phẩm",
+      "title": "Đánh giá tổng quan quạt điện Hitachi HEF-AL300G nội địa Nhật",
+      "url": "https://congnghenhat.com/tin-tuc/danh-gia/danh-gia-tong-quan-quat-dien-hitachi-hef-al300g-noi-dia-nhat.html",
+      "keywords": [
+        "quạt điện nội địa Nhật",
+        "Hitachi HEF-AL300G",
+        "AC 100V",
+        "8 cánh quạt",
+        "xoay đầu tự động 75°"
+      ],
+      "products": [
+        "Hitachi HEF-AL300G",
+        "HEF-RM10 (remote điều khiển)"
+      ]
+    },
+    {
+      "source": "congnghenhat.com",
+      "category": "Đánh giá sản phẩm",
+      "title": "Đánh giá chi tiết máy lọc nước ion kiềm Panasonic TK-AS31",
+      "url": "https://congnghenhat.com/tin-tuc/danh-gia/danh-gia-chi-tiet-may-loc-nuoc-ion-kiem-panasonic-tk-as31.html",
+      "keywords": [
+        "máy lọc nước ion kiềm",
+        "Panasonic TK-AS31",
+        "điện phân",
+        "nước kiềm",
+        "nước tinh khiết"
+      ],
+      "products": [
+        "Máy lọc nước ion kiềm Panasonic TK-AS31",
+        "Lõi lọc TK-AS30C1",
+        "Dung dịch thử pH TK-HS9103",
+        "Chế phẩm canxi glycerophosphate P-A5101",
+        "Thuốc làm sạch đường nước TKAS31L7267",
+        "Lõi làm sạch thân máy PRA-B8641S"
+      ]
+    },
+    {
+      "source": "congnghenhat.com",
+      "category": "Đánh giá sản phẩm",
+      "title": "Đánh giá thực tế máy lọc nước tạo kiềm Trim ion Hyper",
+      "url": "https://congnghenhat.com/tin-tuc/danh-gia/danh-gia-thuc-te-may-loc-nuoc-tao-kiem-trim-ion-hyper.html",
+      "keywords": [
+        "máy lọc nước ion kiềm",
+        "nước điện giải hydro",
+        "Nihon Trim",
+        "điện cực phủ bạch kim",
+        "Double Auto-Change Cross-Line"
+      ],
+      "products": [
+        "Trim Ion HYPER",
+        "Premium Micro Carbon CM2α (bộ lọc thay thế)"
+      ]
+    },
+    {
+      "source": "congnghenhat.com",
+      "category": "Đánh giá sản phẩm",
+      "title": "Đánh giá tổng quan máy lọc nước ion kiềm Trim ion TI-5HX",
+      "url": "https://congnghenhat.com/tin-tuc/danh-gia/danh-gia-tong-quan-may-loc-nuoc-ion-kiem-trim-ion-ti-5hx.html",
+      "keywords": [
+        "máy lọc nước ion kiềm",
+        "nước kiềm hydrogen",
+        "điện phân",
+        "điện cực phủ bạch kim",
+        "Micro Carbon BMα"
+      ],
+      "products": [
+        "Trim Ion TI-5HX",
+        "Lõi lọc Micro Carbon BMα",
+        "Nihon Trim"
+      ]
+    },
+    {
+      "source": "congnghenhat.com",
+      "category": "Đánh giá sản phẩm",
+      "title": "Đánh giá tổng thể tủ lạnh Hitachi R-ZX740KV từ A-Z",
+      "url": "https://congnghenhat.com/tin-tuc/danh-gia/danh-gia-tong-the-tu-lanh-hitachi-r-zx740kv-tu-a-z.html",
+      "keywords": [
+        "tủ lạnh Hitachi",
+        "ngăn chân không",
+        "Vacuum Compartment",
+        "Delicious Freezing",
+        "Aero-Care"
+      ],
+      "products": [
+        "Hitachi R-ZX740KV",
+        "Hitachi R-WXC74T-X",
+        "Hitachi R-WXC74X-X"
+      ]
+    },
+    {
+      "source": "congnghenhat.com",
+      "category": "Đánh giá sản phẩm",
+      "title": "Đánh giá ưu và nhược điểm máy rửa chén bát Toshiba DW-15F7(G)-VN",
+      "url": "https://congnghenhat.com/tin-tuc/danh-gia/danh-gia-uu-va-nhuoc-diem-may-rua-chen-toshiba-dw-15f7g-vn.html",
+      "keywords": [
+        "máy rửa chén",
+        "Cross Wash",
+        "HyperDry",
+        "UV Sterilization",
+        "Knock to Open"
+      ],
+      "products": [
+        "Toshiba DW-15F7(G)-VN"
+      ]
+    },
+    {
+      "source": "congnghenhat.com",
+      "category": "Hướng dẫn sử dụng",
+      "title": "Hướng dẫn sử dụng máy giặt Panasonic NA-LX113EL-W",
+      "url": "https://congnghenhat.com/tin-tuc/huong-dan-su-dung/huong-dan-su-dung-may-giat-panasonic-na-lx113el-w.html",
+      "keywords": [
+        "máy giặt sấy cửa trước",
+        "heat pump",
+        "Eco Navi",
+        "Jet Dry",
+        "Jet Fluff"
+      ],
+      "products": [
+        "Panasonic NA-LX113EL-W",
+        "NA-LX113EL"
+      ]
+    },
+    {
+      "source": "congnghenhat.com",
+      "category": "Hướng dẫn sử dụng",
+      "title": "Hướng dẫn sử dụng lò vi sóng Hitachi MRO-S8C nội địa Nhật",
+      "url": "https://congnghenhat.com/tin-tuc/huong-dan-su-dung/huong-dan-su-dung-lo-vi-song-hitachi-mro-s8c-noi-dia-nhat.html",
+      "keywords": [
+        "lò vi sóng",
+        "vi sóng",
+        "lò nướng đối lưu",
+        "grill",
+        "hơi nước"
+      ],
+      "products": [
+        "Hitachi MRO-S8C",
+        "Hitachi MRO-S8C-W",
+        "Hitachi MRO-S8C-K"
+      ]
+    },
+    {
+      "source": "congnghenhat.com",
+      "category": "Hướng dẫn sử dụng",
+      "title": "Hướng dẫn cách sử dụng nồi cơm cao tần Toshiba RC-10HGX",
+      "url": "https://congnghenhat.com/tin-tuc/huong-dan-su-dung/huong-dan-cach-su-dung-noi-com-cao-tan-toshiba-rc-10hgx.html",
+      "keywords": [
+        "nồi cơm IH áp suất chân không",
+        "Toshiba RC-10HGX",
+        "IH heating",
+        "chân không Shinkuu",
+        "Oi-Shinkuu"
+      ],
+      "products": [
+        "Toshiba RC-10HGX",
+        "Toshiba RC-10HGX-W (Gran White)",
+        "Toshiba RC-10HGX-K (Gran Black)",
+        "Toshiba RC-10HGW"
+      ]
+    },
+    {
+      "source": "congnghenhat.com",
+      "category": "Hướng dẫn sử dụng",
+      "title": "Hướng dẫn sử dụng nồi cơm điện cao tần Tiger JPW-G10W và JPW-G18W",
+      "url": "https://congnghenhat.com/tin-tuc/huong-dan-su-dung/huong-dan-su-dung-noi-com-dien-cao-tan-tiger-jpw-g10w-va-jpw-g18w.html",
+      "keywords": [
+        "nồi cơm điện cao tần",
+        "IH",
+        "induction heating",
+        "Tiger JPW-G10W",
+        "Tiger JPW-G18W"
+      ],
+      "products": [
+        "Tiger JPW-G10W",
+        "Tiger JPW-G18W"
+      ]
+    },
+    {
+      "source": "congnghenhat.com",
+      "category": "Hướng dẫn sử dụng",
+      "title": "Hướng dẫn sử dụng quạt điện Toyotomi FS-DHT30R",
+      "url": "https://congnghenhat.com/tin-tuc/huong-dan-su-dung/huong-dan-su-dung-quat-dien-toyotomi-fs-dht30r.html",
+      "keywords": [
+        "quạt DC",
+        "động cơ DC",
+        "chế độ Eco",
+        "chế độ Rhythm",
+        "chế độ Night"
+      ],
+      "products": [
+        "Toyotomi FS-DHT30R"
+      ]
+    },
+    {
+      "source": "congnghenhat.com",
+      "category": "Hướng dẫn sử dụng",
+      "title": "Hướng dẫn cách sử dụng quạt điện tuần hoàn Sharp PJ-CD433V-H",
+      "url": "https://congnghenhat.com/tin-tuc/huong-dan-su-dung/huong-dan-cach-su-dung-quat-dien-tuan-hoan-sharp-pj-cd433v-h.html",
+      "keywords": [
+        "quạt điện tuần hoàn",
+        "điều khiển giọng nói",
+        "tự làm sạch",
+        "ion",
+        "dao động ngang"
+      ],
+      "products": [
+        "Sharp PJ-CD433V-H"
+      ]
+    },
+    {
+      "source": "congnghenhat.com",
+      "category": "Hướng dẫn sử dụng",
+      "title": "Hướng dẫn sử dụng quạt điện Hitachi HEF-AL300H nội địa Nhật",
+      "url": "https://congnghenhat.com/tin-tuc/huong-dan-su-dung/huong-dan-su-dung-quat-dien-hitachi-hef-al300h-noi-dia-nhat.html",
+      "keywords": [
+        "quạt điện nội địa Nhật",
+        "Hitachi HEF-AL300H",
+        "cánh quạt 8 cánh",
+        "điều khiển từ xa",
+        "pin CR2025"
+      ],
+      "products": [
+        "Hitachi HEF-AL300H",
+        "Hitachi HEF-AL300A",
+        "HEF-RM10 (điều khiển từ xa)"
+      ]
+    },
+    {
+      "source": "congnghenhat.com",
+      "category": "Hướng dẫn sử dụng",
+      "title": "Hướng dẫn sử dụng máy hút ẩm Sharp DW-J20FV-W và DW-J27FV-S",
+      "url": "https://congnghenhat.com/tin-tuc/huong-dan-su-dung/huong-dan-su-dung-may-hut-am-sharp-dw-j20fv-w-va-dw-j27fv-s.html",
+      "keywords": [
+        "Plasmacluster ion",
+        "lọc HEPA",
+        "lọc than hoạt tính",
+        "hút ẩm",
+        "kiểm soát độ ẩm"
+      ],
+      "products": [
+        "Sharp DW-J20FV-W",
+        "Sharp DW-J27FV-S"
+      ]
+    },
+    {
+      "source": "congnghenhat.com",
+      "category": "Hướng dẫn sử dụng",
+      "title": "Hướng dẫn sử dụng quạt điện Toshiba TFC-23Y28",
+      "url": "https://congnghenhat.com/tin-tuc/huong-dan-su-dung/hdsd-toshiba-tfc-23y28.html",
+      "keywords": [
+        "quạt đối lưu",
+        "lưu thông không khí",
+        "điều khiển cảm ứng",
+        "khử khuẩn Ion",
+        "xoay 3D"
+      ],
+      "products": [
+        "Toshiba TFC-23Y28"
+      ]
+    },
+    {
+      "source": "congnghenhat.com",
+      "category": "Hướng dẫn sử dụng",
+      "title": "Hướng dẫn cách sử dụng Panasonic NR-FVF45S2-W nội địa Nhật",
+      "url": "https://congnghenhat.com/tin-tuc/huong-dan-su-dung/huong-dan-cach-su-dung-panasonic-nr-fvf45s2-w-noi-dia-nhat.html",
+      "keywords": [
+        "Panasonic NR-FVF45S2-W",
+        "ECONAVI",
+        "tủ lạnh nội địa Nhật",
+        "cấp đông nhanh",
+        "急凍"
+      ],
+      "products": [
+        "Panasonic NR-FVF45S2-W",
+        "Panasonic NR-FVF45S2"
+      ]
+    },
+    {
+      "source": "congnghenhat.com",
+      "category": "Kinh nghiệm",
+      "title": "Kinh doanh nước ép có nên dùng máy ép chậm Panasonic không?",
+      "url": "https://congnghenhat.com/tin-tuc/kinh-nghiem/kinh-doanh-nuoc-ep.html",
+      "keywords": [
+        "máy ép chậm",
+        "Panasonic",
+        "kinh doanh nước ép",
+        "dinh dưỡng",
+        "enzym"
+      ],
+      "products": [
+        "Máy ép chậm Panasonic MJ-L500SRA"
+      ]
+    },
+    {
+      "source": "congnghenhat.com",
+      "category": "Kinh nghiệm",
+      "title": "3 Bí quyết sử dụng tủ lạnh bảo quản rau mùa mưa",
+      "url": "https://congnghenhat.com/tin-tuc/su-dung-tu-lanh-bao-quan-rau.html",
+      "keywords": [
+        "bảo quản rau",
+        "tủ lạnh",
+        "độ ẩm",
+        "phơi khô",
+        "hộp kín"
+      ],
+      "products": [
+        "tủ lạnh"
+      ]
+    },
+    {
+      "source": "congnghenhat.com",
+      "category": "Kinh nghiệm",
+      "title": "Nồi cơm cao tần: bí mật nấu cháo ngon của mẹ",
+      "url": "https://congnghenhat.com/tin-tuc/kinh-nghiem/noi-com-cao-tan-nau-chao.html",
+      "keywords": [
+        "nồi cơm cao tần",
+        "nồi cơm điện cao tần",
+        "giữ nhiệt",
+        "ninh nhừ",
+        "gạo lứt"
+      ],
+      "products": [
+        "nồi cơm điện cao tần",
+        "nồi cơm cao tần"
+      ]
+    },
+    {
+      "source": "congnghenhat.com",
+      "category": "Kinh nghiệm",
+      "title": "Dùng máy giặt có nên sử dụng nước xả vải?",
+      "url": "https://congnghenhat.com/tin-tuc/kinh-nghiem/su-dung-nuoc-xa-vai.html",
+      "keywords": [
+        "nước xả vải",
+        "máy giặt",
+        "bột giặt",
+        "nước giặt",
+        "làm mềm vải"
+      ],
+      "products": [
+        "máy giặt"
+      ]
+    },
+    {
+      "source": "congnghenhat.com",
+      "category": "Kinh nghiệm",
+      "title": "Tại sao không nên mua bếp từ giá rẻ?",
+      "url": "https://congnghenhat.com/tin-tuc/kinh-nghiem/khong-mua-bep-tu-gia-re.html",
+      "keywords": [
+        "bếp từ giá rẻ",
+        "chỉ số an toàn",
+        "cảnh báo nhiệt dư",
+        "tự động ngắt",
+        "khóa an toàn"
+      ],
+      "products": [
+        "bếp từ giá rẻ",
+        "bếp từ chất lượng tốt",
+        "bếp từ có Inverter"
+      ]
+    },
+    {
+      "source": "congnghenhat.com",
+      "category": "Kinh nghiệm",
+      "title": "Mùa thu có nên bật điều hòa không?",
+      "url": "https://congnghenhat.com/tin-tuc/kinh-nghiem/mua-thu-co-nen-bat-dieu-hoa.html",
+      "keywords": [
+        "điều hòa một chiều",
+        "điều hòa hai chiều",
+        "chế độ Dry",
+        "chế độ Cool",
+        "chế độ Auto"
+      ],
+      "products": [
+        "Daikin (điều hòa)",
+        "Panasonic (điều hòa)"
+      ]
+    },
+    {
+      "source": "congnghenhat.com",
+      "category": "Kinh nghiệm",
+      "title": "5 lưu ý khi sử dụng chế độ vắt của máy giặt Panasonic",
+      "url": "https://congnghenhat.com/tin-tuc/kinh-nghiem/luu-y-su-dung-che-do-vat.html",
+      "keywords": [
+        "chế độ vắt",
+        "máy giặt",
+        "bảo dưỡng máy giặt",
+        "chất liệu quần áo",
+        "khối lượng giặt"
+      ],
+      "products": [
+        "Máy giặt Panasonic"
+      ]
+    },
+    {
+      "source": "congnghenhat.com",
+      "category": "Kinh nghiệm",
+      "title": "Sự tiện lợi của Máy sấy bát Panasonic FD-S35T3 trong việc tiết kiệm thời gian và công sức",
+      "url": "https://congnghenhat.com/tin-tuc/may-say-bat-panasonic-fd-s35t3.html",
+      "keywords": [
+        "máy sấy bát",
+        "Panasonic FD-S35T3",
+        "công nghệ Inverter",
+        "công nghệ khử khuẩn Ag+",
+        "khay thép không gỉ"
+      ],
+      "products": [
+        "Panasonic FD-S35T3",
+        "Panasonic FD-S35T3-X",
+        "Panasonic FD-ST35T3"
+      ]
+    },
+    {
+      "source": "congnghenhat.com",
+      "category": "Kinh nghiệm",
+      "title": "Nấu cơm chuyên nghiệp tại nhà với Nồi cơm điện cao tần Tiger JPI-A100-KO",
+      "url": "https://congnghenhat.com/tin-tuc/kinh-nghiem/noi-com-dien-cao-tan-tiger-jpi-a100-ko.html",
+      "keywords": [
+        "nồi cơm điện cao tần",
+        "công nghệ cao tần",
+        "áp suất 2 bi",
+        "lòng nồi 9 lớp đất nung",
+        "phủ chống dính"
+      ],
+      "products": [
+        "Tiger JPI-A100-KO",
+        "Tiger JPI-A100-KO 1L"
+      ]
+    },
+    {
+      "source": "congnghenhat.com",
+      "category": "Kinh nghiệm",
+      "title": "Đánh bay nóng bức với Quạt điện Hitachi HEF-AL300D",
+      "url": "https://congnghenhat.com/tin-tuc/kinh-nghiem/quat-hitachi-hef-al300d.html",
+      "keywords": [
+        "quạt điện",
+        "động cơ AC",
+        "gió tự nhiên",
+        "tiết kiệm điện",
+        "Nhật Bản"
+      ],
+      "products": [
+        "Quạt điện Hitachi HEF-AL300D"
+      ]
+    },
+    {
+      "source": "congnghenhat.com",
+      "category": "Công nghệ",
+      "title": "Tủ lạnh Mitsubishi MR-WXD70M cao cấp, thông minh và tối ưu cho gia đình hiện đại",
+      "url": "https://congnghenhat.com/tin-tuc/cong-nghe/tu-lanh-mitsubishi-mr-wxd70m-cao-cap-thong-minh-va-toi-uu-cho-gia-dinh-hien-dai.html",
+      "keywords": [
+        "tủ lạnh nội địa Nhật",
+        "Mitsubishi MR-WXD70M",
+        "công nghệ A.I.",
+        "16 cảm biến",
+        "ngăn đông mềm -7°C"
+      ],
+      "products": [
+        "Mitsubishi MR-WXD70M",
+        "Mitsubishi MR-WXD70M-H (Xám hổ phách)",
+        "Mitsubishi MR-WXD70M-W (Trắng vải lanh)"
+      ]
+    },
+    {
+      "source": "congnghenhat.com",
+      "category": "Công nghệ",
+      "title": "Công nghệ làm lạnh cấp tốc Extra Cool – duy nhất trên tủ lạnh Nhật",
+      "url": "https://congnghenhat.com/tin-tuc/cong-nghe/lam-lanh-cap-toc-extra-cool.html",
+      "keywords": [
+        "Extra Cool",
+        "làm lạnh cấp tốc",
+        "tủ lạnh Nhật Bản",
+        "máy nén",
+        "luồng khí lạnh"
+      ],
+      "products": [
+        "tủ lạnh Nhật Bản"
+      ]
+    },
+    {
+      "source": "congnghenhat.com",
+      "category": "Công nghệ",
+      "title": "Dùng nồi cơm cao tần Nhật có bắt buộc đổi nguồn không?",
+      "url": "https://congnghenhat.com/tin-tuc/noi-com-cao-tan-nhat-doi-nguon.html",
+      "keywords": [
+        "nồi cơm cao tần",
+        "đổi nguồn",
+        "điện nguồn 110V",
+        "điện áp 220V",
+        "nội địa Nhật"
+      ],
+      "products": [
+        "Nồi cơm cao tần Nhật Bản (nội địa 100V/110V)",
+        "Nồi cao tần Nhật có sẵn đổi nguồn trong"
+      ]
+    },
+    {
+      "source": "congnghenhat.com",
+      "category": "Công nghệ",
+      "title": "Công nghệ nấu của nồi cơm cao tần áp suất có gì đặc biệt?",
+      "url": "https://congnghenhat.com/tin-tuc/cong-nghe/cong-nghe-noi-com-cao-tan.html",
+      "keywords": [
+        "công nghệ IH",
+        "Induction Heating",
+        "gia nhiệt cảm ứng cao tần",
+        "cảm ứng điện từ",
+        "nồi cơm cao tần áp suất"
+      ],
+      "products": [
+        "nồi cơm cao tần áp suất",
+        "nồi cơm IH",
+        "nồi cơm điện thông thường"
+      ]
+    },
+    {
+      "source": "congnghenhat.com",
+      "category": "Công nghệ",
+      "title": "Máy lọc nước tại vòi Panasonic TK-CJ300-WVN có gì đặc biệt",
+      "url": "https://congnghenhat.com/tin-tuc/panasonic-tk-cj300-wvn.html",
+      "keywords": [
+        "máy lọc nước tại vòi",
+        "lõi lọc MicroClear4000",
+        "nhựa ABS cao cấp",
+        "quy trình lọc 4 giai đoạn",
+        "17 tạp chất có hại"
+      ],
+      "products": [
+        "Panasonic TK-CJ300-WVN",
+        "Panasonic TK-CJ300",
+        "lõi lọc MicroClear4000"
+      ]
+    },
+    {
+      "source": "congnghenhat.com",
+      "category": "Công nghệ",
+      "title": "Đánh giá Nồi cơm điện cao tần Zojirushi NW-LB18-WZ 1.8L: Tiện lợi và nhanh chóng!",
+      "url": "https://congnghenhat.com/tin-tuc/zojirushi-nw-lb18-wz-1-8l.html",
+      "keywords": [
+        "nồi cơm điện cao tần",
+        "Zojirushi",
+        "IH (Induction Heating)",
+        "lòng nồi phủ Platinum",
+        "lớp Florin chống dính"
+      ],
+      "products": [
+        "Zojirushi NW-LB18-WZ",
+        "Zojirushi NW-LB18"
+      ]
+    },
+    {
+      "source": "congnghenhat.com",
+      "category": "Công nghệ",
+      "title": "Quạt điện Hitachi HEF-AL300E – Bí quyết duy trì không gian mát mẻ và thoải mái",
+      "url": "https://congnghenhat.com/tin-tuc/hitachi-hef-al300e.html",
+      "keywords": [
+        "quạt điện",
+        "quạt cây",
+        "Hitachi",
+        "HEF-AL300E",
+        "8 cánh quạt"
+      ],
+      "products": [
+        "Hitachi HEF-AL300E"
+      ]
+    },
+    {
+      "source": "congnghenhat.com",
+      "category": "Công nghệ",
+      "title": "Quạt điện Mitsubishi R12A-DA: Giải pháp tối ưu cho sự thoải mái trong nhà",
+      "url": "https://congnghenhat.com/tin-tuc/quat-dien-mitsubishi-r12a-da.html",
+      "keywords": [
+        "quạt điện",
+        "Mitsubishi Electric",
+        "động cơ DC",
+        "tiết kiệm điện",
+        "cánh quạt 7 cánh"
+      ],
+      "products": [
+        "Mitsubishi R12A-DA"
+      ]
+    },
+    {
+      "source": "congnghenhat.com",
+      "category": "Công nghệ",
+      "title": "Nét đặc trưng của bếp từ Nhật Bản: Tinh tế, tiện nghi và an toàn",
+      "url": "https://congnghenhat.com/tin-tuc/bep-tu-nhat-ban.html",
+      "keywords": [
+        "bếp từ",
+        "bếp từ Nhật Bản",
+        "induction cooktop",
+        "tiết kiệm năng lượng",
+        "khóa trẻ em"
+      ],
+      "products": [
+        "Hitachi bếp từ",
+        "Panasonic bếp từ",
+        "Mitsubishi bếp từ",
+        "Toshiba bếp từ"
+      ]
+    },
+    {
+      "source": "congnghenhat.com",
+      "category": "Công nghệ",
+      "title": "Máy lọc không khí tạo ẩm Daikin MCK55TVM6 – Tận hưởng không gian trong lành và da mềm mịn",
+      "url": "https://congnghenhat.com/tin-tuc/daikin-mck55tvm6.html",
+      "keywords": [
+        "máy lọc không khí tạo ẩm",
+        "phin lọc tĩnh điện HEPA",
+        "bụi mịn PM2.5",
+        "công nghệ Streamer",
+        "Ion Plasma"
+      ],
+      "products": [
+        "Daikin MCK55TVM6"
+      ]
+    },
+    {
+      "source": "phongcachnhat.vn",
+      "category": "Tin tức",
+      "title": "TOP 6 mẫu quạt Nhật đáng mua nhất năm 2025",
+      "url": "https://phongcachnhat.vn/top-6-mau-quat-nhat-dang-mua-nhat-nam-2025.html",
+      "keywords": [
+        "quạt Nhật",
+        "quạt nội địa Nhật Bản",
+        "động cơ DC",
+        "động cơ AC",
+        "DC Inverter"
+      ],
+      "products": [
+        "Hitachi HEF-AL300G",
+        "Sharp PJ-S3DS",
+        "Toyotomi FS-FD3524-W",
+        "Mitsubishi R30J-DMB",
+        "Toyotomi FS-D30NHR-W",
+        "Toshiba TF-30AL27"
+      ]
+    },
+    {
+      "source": "phongcachnhat.vn",
+      "category": "Tin tức",
+      "title": "Động cơ DC là gì? 3 Sự khác biệt giữa quạt động cơ DC và động cơ AC?",
+      "url": "https://phongcachnhat.vn/dong-co-dc.html",
+      "keywords": [
+        "động cơ DC",
+        "động cơ AC",
+        "brushless DC",
+        "không chổi than",
+        "có chổi than"
+      ],
+      "products": [
+        "Panasonic F-C339C",
+        "Panasonic F-C324C",
+        "Panasonic F-CW324-W",
+        "Toyotomi FS-FD3524(W)",
+        "Toyotomi FS-D30NHR-W",
+        "Toyotomi FS-DS30LHR(W)",
+        "Toyotomi FS-30LR-W",
+        "Cnet CKDF308WH",
+        "Cnet CKAJ403WH",
+        "Sharp PJ-S3DS",
+        "Sharp PJ-R2DS",
+        "Mitsubishi R30J-DMB",
+        "Toshiba TFC-23Y28",
+        "Toshiba TF-30AL27",
+        "Toshiba TF-30RK28",
+        "Hitachi HEF-AL300F",
+        "Hitachi HEF-AL300G"
+      ]
+    },
+    {
+      "source": "phongcachnhat.vn",
+      "category": "Tin tức",
+      "title": "Nên Mua Nồi Cơm Điện Hãng Nào? Top 5 Nồi Cơm Điện Tốt Nhất 2025",
+      "url": "https://phongcachnhat.vn/nen-mua-noi-com-dien-hang-nao.html",
+      "keywords": [
+        "nồi cơm điện",
+        "công nghệ IH",
+        "Induction Heating",
+        "đốt nóng trong",
+        "Fuzzy Logic"
+      ],
+      "products": [
+        "Cuckoo",
+        "Sunhouse",
+        "Toshiba RC-10VSV (K) 2023",
+        "Panasonic SR-FE101",
+        "Sharp"
+      ]
+    },
+    {
+      "source": "phongcachnhat.vn",
+      "category": "Tin tức",
+      "title": "Top 5 nồi cơm điện nội địa Nhật đáng đồng tiền bát gạo",
+      "url": "https://phongcachnhat.vn/top-5-noi-com-dien-noi-dia-nhat-dang-dong-tien-bat-gao.html",
+      "keywords": [
+        "nồi cơm điện",
+        "IH",
+        "áp suất",
+        "nội địa Nhật",
+        "lõi nồi"
+      ],
+      "products": [
+        "Toshiba RC-DW10GW",
+        "Toshiba RC-10VSP",
+        "Panasonic SR-VSX189",
+        "Thanko LCARBRCK",
+        "Zojirushi NW-JU18-BA"
+      ]
+    },
+    {
+      "source": "phongcachnhat.vn",
+      "category": "Tin tức",
+      "title": "Tủ lạnh kêu to ở ngăn đá: Nguyên nhân và cách khắc phục triệt để",
+      "url": "https://phongcachnhat.vn/tu-lanh-keu-to-o-ngan-da.html",
+      "keywords": [
+        "tủ lạnh kêu to",
+        "ngăn đá",
+        "quạt gió",
+        "dàn lạnh",
+        "block tủ lạnh"
+      ],
+      "products": []
+    },
+    {
+      "source": "phongcachnhat.vn",
+      "category": "Tin tức",
+      "title": "Cách chỉnh giờ nồi cơm điện Toshiba để cơm luôn được thơm ngon",
+      "url": "https://phongcachnhat.vn/cach-chinh-gio-noi-com-dien-toshiba.html",
+      "keywords": [
+        "chỉnh giờ nồi cơm điện",
+        "hẹn giờ nấu",
+        "đồng hồ nồi cơm",
+        "nút Hr",
+        "nút Min"
+      ],
+      "products": [
+        "Nồi cơm điện Toshiba"
+      ]
+    },
+    {
+      "source": "phongcachnhat.vn",
+      "category": "Tin tức",
+      "title": "Hướng Dẫn Cách Mở Nồi Áp Suất Điện Bị Kẹt Chi Tiết Nhất",
+      "url": "https://phongcachnhat.vn/cach-mo-noi-ap-suat-dien-bi-ket.html",
+      "keywords": [
+        "nồi áp suất điện",
+        "van xả áp suất",
+        "gioăng cao su",
+        "khóa an toàn",
+        "kim chỉ báo áp suất"
+      ],
+      "products": [
+        "nồi áp suất điện",
+        "nồi áp suất nội địa Nhật"
+      ]
+    },
+    {
+      "source": "phongcachnhat.vn",
+      "category": "Tin tức",
+      "title": "Tìm Hiểu Ưu Điểm Nổi Bật Của Sen Tắm Hiển Thị Nhiệt Độ - Phong Cách Nhật",
+      "url": "https://phongcachnhat.vn/uu-diem-noi-bat-cua-sen-tam-hien-thi-nhiet-do.html",
+      "keywords": [
+        "sen tắm hiển thị nhiệt độ",
+        "màn hình LED",
+        "cảm biến nhiệt độ",
+        "điều chỉnh nhiệt độ tự động",
+        "tiết kiệm năng lượng"
+      ],
+      "products": [
+        "Sen tắm hiển thị nhiệt độ LED đổi màu",
+        "Sen tắm cảm biến nhiệt độ thông minh",
+        "Sen tắm điều chỉnh nhiệt độ tự động"
+      ]
+    },
+    {
+      "source": "phongcachnhat.vn",
+      "category": "Tin tức",
+      "title": "Sen Tắm Cao Cấp: Lựa Chọn Hoàn Hảo Cho Phòng Tắm Sang Trọng",
+      "url": "https://phongcachnhat.vn/sen-tam-cao-cap-lua-chon-hoan-hao.html",
+      "keywords": [
+        "sen tắm cao cấp",
+        "thép không gỉ",
+        "mạ crom",
+        "đồng thau",
+        "chế độ phun nước"
+      ],
+      "products": [
+        "Toto TMN40STY4",
+        "Toto TMC95ECR"
+      ]
+    },
+    {
+      "source": "phongcachnhat.vn",
+      "category": "Tin tức",
+      "title": "Những Lưu Ý Khi Mua Vòi Sen Tắm Mà Bạn Nên Biết",
+      "url": "https://phongcachnhat.vn/nhung-luu-y-khi-mua-voi-sen-tam.html",
+      "keywords": [
+        "vòi sen tắm",
+        "chất liệu inox",
+        "nhựa ABS",
+        "đồng mạ chrome",
+        "tiết kiệm nước"
+      ],
+      "products": [
+        "Toto",
+        "Kohler",
+        "Grohe",
+        "Hansgrohe",
+        "Cera"
+      ]
+    },
+    {
+      "source": "phongcachnhat.vn",
+      "category": "Hỏi đáp & Tư vấn",
+      "title": "TOP 6 mẫu quạt Nhật đáng mua nhất năm 2025",
+      "url": "https://phongcachnhat.vn/top-6-mau-quat-nhat-dang-mua-nhat-nam-2025.html",
+      "keywords": [
+        "quạt nội địa Nhật",
+        "động cơ AC",
+        "động cơ DC",
+        "DC Inverter",
+        "cấp độ gió"
+      ],
+      "products": [
+        "Quạt Hitachi HEF-AL300G",
+        "Quạt Sharp PJ-S3DS",
+        "Quạt Toyotomi FS-FD3524-W",
+        "Quạt Mitsubishi R30J-DMB",
+        "Quạt Toyotomi FS-D30NHR-W",
+        "Quạt Toshiba TF-30AL27"
+      ]
+    },
+    {
+      "source": "phongcachnhat.vn",
+      "category": "Hỏi đáp & Tư vấn",
+      "title": "TOP 5 mẫu máy lọc không khí đáng mua nhất 2025",
+      "url": "https://phongcachnhat.vn/top-5-may-loc-khong-khi-dang-mua-nhat-2025.html",
+      "keywords": [
+        "máy lọc không khí",
+        "Plasmacluster Ion",
+        "HEPA",
+        "bụi PM2.5",
+        "lọc không khí Nhật"
+      ],
+      "products": [
+        "Sharp KC-S50-W",
+        "Sharp KI-RS50-W",
+        "Daikin MCK705A-W",
+        "Panasonic F-VXW70-TM",
+        "Sharp KI-TX100"
+      ]
+    },
+    {
+      "source": "phongcachnhat.vn",
+      "category": "Hỏi đáp & Tư vấn",
+      "title": "Top 5 nồi cơm điện nội địa Nhật đáng đồng tiền bát gạo",
+      "url": "https://phongcachnhat.vn/top-5-noi-com-dien-noi-dia-nhat-dang-dong-tien-bat-gao.html",
+      "keywords": [
+        "nồi cơm điện",
+        "nội địa Nhật",
+        "công nghệ IH",
+        "IH áp suất",
+        "chân không"
+      ],
+      "products": [
+        "Toshiba RC-DW10GW",
+        "Toshiba RC-10VSP",
+        "Panasonic SR-VSX189",
+        "Thanko LCARBRCK",
+        "Zojirushi NW-JU18-BA"
+      ]
+    },
+    {
+      "source": "phongcachnhat.vn",
+      "category": "Hỏi đáp & Tư vấn",
+      "title": "Bảng Mã Lỗi Máy Giặt Toshiba Nội Địa Nhật Mới Nhất",
+      "url": "https://phongcachnhat.vn/ma-loi-may-giat-toshiba-noi-dia-nhat.html",
+      "keywords": [
+        "mã lỗi máy giặt",
+        "Toshiba nội địa Nhật",
+        "cảm biến nhiệt độ",
+        "thermistor",
+        "áp suất cấp nước"
+      ],
+      "products": [
+        "Máy giặt Toshiba nội địa Nhật"
+      ]
+    },
+    {
+      "source": "phongcachnhat.vn",
+      "category": "Hỏi đáp & Tư vấn",
+      "title": "Mã Lỗi Máy Hút Ẩm Mitsubishi Thông Dụng Và Cách Khắc Phục",
+      "url": "https://phongcachnhat.vn/ma-loi-may-hut-am-mitsubishi.html",
+      "keywords": [
+        "mã lỗi máy hút ẩm",
+        "cảm biến nhiệt độ",
+        "cảm biến độ ẩm",
+        "quạt gió",
+        "máy nén compressor"
+      ],
+      "products": [
+        "Máy hút ẩm Mitsubishi"
+      ]
+    },
+    {
+      "source": "phongcachnhat.vn",
+      "category": "Hỏi đáp & Tư vấn",
+      "title": "Các loại bệt tự rửa ToTo phổ biến nhất năm 2024",
+      "url": "https://phongcachnhat.vn/cac-loai-bet-tu-rua-toto.html",
+      "keywords": [
+        "bồn cầu thông minh",
+        "bệt tự rửa",
+        "ToTo",
+        "Washlet",
+        "CefiOntect"
+      ],
+      "products": [
+        "TOTO Washlet",
+        "Bồn cầu treo tường TOTO",
+        "Bồn cầu một khối TOTO",
+        "Bồn cầu hai khối TOTO",
+        "TCF8GK35",
+        "TCF8GM44",
+        "TCF8GM24",
+        "TCF2223E"
+      ]
+    },
+    {
+      "source": "phongcachnhat.vn",
+      "category": "Hỏi đáp & Tư vấn",
+      "title": "Top 4 chỉ số đánh giá nước ion kiềm và cách kiểm tra",
+      "url": "https://phongcachnhat.vn/chi-so-danh-gia-nuoc-ion-kiem.html",
+      "keywords": [
+        "nước ion kiềm",
+        "hydrogen",
+        "pH",
+        "ORP",
+        "điện phân"
+      ],
+      "products": []
+    },
+    {
+      "source": "phongcachnhat.vn",
+      "category": "Hỏi đáp & Tư vấn",
+      "title": "Có nên mua bếp từ Nhật nội địa hay không? Vì sao?",
+      "url": "https://phongcachnhat.vn/co-nen-mua-bep-tu-nhat-noi-dia-hay-khong.html",
+      "keywords": [
+        "bếp từ nội địa Nhật",
+        "bếp từ Nhật",
+        "hàng nội địa Nhật",
+        "điện áp 110V",
+        "điện áp 220V"
+      ],
+      "products": [
+        "Bếp từ nội địa Nhật (general category — no specific brand/model numbers mentioned in the article)"
+      ]
+    },
+    {
+      "source": "phongcachnhat.vn",
+      "category": "Hỏi đáp & Tư vấn",
+      "title": "Có nên mua máy hút ẩm nội địa Nhật để sử dụng không?",
+      "url": "https://phongcachnhat.vn/co-nen-mua-may-hut-am-noi-dia-nhat.html",
+      "keywords": [
+        "máy hút ẩm",
+        "nội địa Nhật",
+        "công nghệ Inverter",
+        "tiết kiệm điện",
+        "lọc không khí"
+      ],
+      "products": [
+        "Máy hút ẩm Hitachi",
+        "Máy hút ẩm Panasonic",
+        "Máy hút ẩm Toshiba",
+        "Máy hút ẩm Mitsubishi",
+        "Máy hút ẩm Sharp",
+        "Máy hút ẩm Daikin"
+      ]
+    },
+    {
+      "source": "phongcachnhat.vn",
+      "category": "Hỏi đáp & Tư vấn",
+      "title": "Có nên mua ghế massage Nhật nội địa không? Các tiêu chí lựa chọn ghế massage Nhật",
+      "url": "https://phongcachnhat.vn/co-nen-mua-ghe-massage-nhat-noi-dia-khong.html",
+      "keywords": [
+        "ghế massage nội địa Nhật Bản",
+        "ghế massage Nhật",
+        "massage không trọng lực",
+        "con lăn 4D",
+        "túi khí"
+      ],
+      "products": [
+        "Fujikima",
+        "Panasonic",
+        "Hitachi"
+      ]
+    },
+    {
+      "source": "phongcachnhat.vn",
+      "category": "Hỏi đáp & Tư vấn",
+      "title": "Đánh giá chi tiết tủ lạnh Hitachi R-WXC74T (X) 735L – Mẫu mới nhất 2023 cảm nhận từ khách hàng trải nghiệm",
+      "url": "https://phongcachnhat.vn/danh-gia-chi-tiet-tu-lanh-hitachi-r-wxc74t-x-735l-mau-moi-nhat-2023-cam-nhan-tu-khach-hang-trai-nghiem.html",
+      "keywords": [
+        "tủ lạnh Hitachi",
+        "hút chân không",
+        "vacuum sealing",
+        "làm lạnh nhanh",
+        "xúc tác bạch kim"
+      ],
+      "products": [
+        "Hitachi R-WXC74T (X) 735L",
+        "Hitachi R-WXC74S",
+        "Hitachi R-WXC62S"
+      ]
+    },
+    {
+      "source": "phongcachnhat.vn",
+      "category": "Hỏi đáp & Tư vấn",
+      "title": "Toshiba RC-18VXR - Một sản phẩm chất lượng của Nhật Bản cho món cơm ngon miệng và đáng tin cậy",
+      "url": "https://phongcachnhat.vn/toshiba-rc-18vxr-mot-san-pham-chat-luong-cua-nhat-ban-cho-mon-com-ngon-mieng-va-dang-tin-cay.html",
+      "keywords": [
+        "nồi cơm điện nhật bản",
+        "Toshiba RC-18VXR",
+        "công nghệ nấu cơm cao tần",
+        "áp suất và chân không",
+        "vi xử lý"
+      ],
+      "products": [
+        "Toshiba RC-18VXR",
+        "Toshiba RC-18VXR (K) 2021"
+      ]
+    },
+    {
+      "source": "phongcachnhat.vn",
+      "category": "Hỏi đáp & Tư vấn",
+      "title": "Nồi cơm điện Zojirushi NW-LB18-WZ – Một sản phẩm tiên tiến với công nghệ cao của Nhật Bản",
+      "url": "https://phongcachnhat.vn/noi-com-dien-zojirushi-nw-lb18-wz-mot-san-pham-tien-tien-voi-cong-nghe-cao-cua-nhat-ban.html",
+      "keywords": [
+        "nồi cơm điện",
+        "Zojirushi",
+        "công nghệ cao tần",
+        "áp suất",
+        "chân không"
+      ],
+      "products": [
+        "Zojirushi NW-LB18-WZ"
+      ]
+    },
+    {
+      "source": "phongcachnhat.vn",
+      "category": "Hỏi đáp & Tư vấn",
+      "title": "Máy lọc không khí nội địa nhật, bù ẩm Sharp KI-NP100-W: Người bạn đồng hành với sức khoẻ gia đình bạn",
+      "url": "https://phongcachnhat.vn/may-loc-khong-khi-noi-dia-nhat-bu-am-sharp-ki-np100-w-nguoi-ban-dong-hanh-voi-suc-khoe-gia-dinh-ban.html",
+      "keywords": [
+        "máy lọc không khí",
+        "bù ẩm",
+        "nội địa Nhật",
+        "Sharp KI-NP100-W",
+        "bộ lọc HEPA"
+      ],
+      "products": [
+        "Sharp KI-NP100-W",
+        "Sharp KI-PX100-W"
+      ]
+    },
+    {
+      "source": "phongcachnhat.vn",
+      "category": "Hỏi đáp & Tư vấn",
+      "title": "Đánh giá Tủ lạnh nội địa Nhật, hút chân không Hitachi R-WXC74S (X) Đen gương 2022 735L",
+      "url": "https://phongcachnhat.vn/danh-gia-tu-lanh-noi-dia-nhat-hut-chan-khong-hitachi-r-wxc74s-x-den-guong-2022-735l.html",
+      "keywords": [
+        "tủ lạnh nội địa Nhật",
+        "hút chân không",
+        "công nghệ hút chân không",
+        "inverter",
+        "làm lạnh đa chiều"
+      ],
+      "products": [
+        "Hitachi R-WXC74S",
+        "Hitachi R-WXC74S (X)"
+      ]
+    },
+    {
+      "source": "phongcachnhat.vn",
+      "category": "Hướng dẫn sử dụng",
+      "title": "Cách chỉnh giờ nồi cơm điện Toshiba để cơm luôn được thơm ngon",
+      "url": "https://phongcachnhat.vn/cach-chinh-gio-noi-com-dien-toshiba.html",
+      "keywords": [
+        "chỉnh giờ nồi cơm điện",
+        "hẹn giờ nấu cơm",
+        "nút Hr",
+        "nút Min",
+        "nút Timer"
+      ],
+      "products": [
+        "Nồi cơm điện Toshiba"
+      ]
+    },
+    {
+      "source": "phongcachnhat.vn",
+      "category": "Hướng dẫn sử dụng",
+      "title": "Hướng Dẫn Sử Dụng Máy Hút Ẩm Mitsubishi Từ A Đến Z",
+      "url": "https://phongcachnhat.vn/huong-dan-su-dung-may-hut-am-mitsubishi.html",
+      "keywords": [
+        "máy hút ẩm",
+        "Mitsubishi",
+        "độ ẩm",
+        "bộ lọc ion bạc",
+        "cảm biến nhiệt độ"
+      ],
+      "products": [
+        "Máy hút ẩm Mitsubishi MJ-P180WX",
+        "Máy hút ẩm Mitsubishi MJ-P180TX",
+        "Máy hút ẩm Mitsubishi MJ-P180SX",
+        "Máy hút ẩm Mitsubishi MJ-P180PX",
+        "Máy hút ẩm Mitsubishi MJ-P180RX",
+        "Máy hút ẩm Mitsubishi MJ-P180VX",
+        "Máy hút ẩm Mitsubishi MJ-M100TX",
+        "Máy hút ẩm Mitsubishi MJ-E14CG-S1-SWE"
+      ]
+    },
+    {
+      "source": "phongcachnhat.vn",
+      "category": "Hướng dẫn sử dụng",
+      "title": "Hướng Dẫn Vệ Sinh Máy Lọc Không Khí Daikin MCK70Z Đơn Giản Và Hiệu Quả",
+      "url": "https://phongcachnhat.vn/ve-sinh-may-loc-khong-khi-daikin-mck70z.html",
+      "keywords": [
+        "máy lọc không khí",
+        "bộ lọc HEPA",
+        "bộ lọc than hoạt tính",
+        "bộ lọc sơ cấp",
+        "pre-filter"
+      ],
+      "products": [
+        "Daikin MCK70Z",
+        "bộ lọc HEPA",
+        "bộ lọc than hoạt tính (carbon filter)",
+        "bộ lọc sơ cấp (pre-filter)"
+      ]
+    },
+    {
+      "source": "phongcachnhat.vn",
+      "category": "Hướng dẫn sử dụng",
+      "title": "Hướng dẫn cách tẩy nắp bồn cầu bị ố vàng đơn giản",
+      "url": "https://phongcachnhat.vn/cach-tay-nap-bon-cau-bi-o-vang.html",
+      "keywords": [
+        "ố vàng",
+        "nắp bồn cầu",
+        "tẩy ố vàng",
+        "baking soda",
+        "giấm trắng"
+      ],
+      "products": []
+    },
+    {
+      "source": "phongcachnhat.vn",
+      "category": "Hướng dẫn sử dụng",
+      "title": "Dây vòi xịt vệ sinh bị rỉ nước: Nguyên nhân & cách xử lý hiệu quả",
+      "url": "https://phongcachnhat.vn/day-voi-xit-ve-sinh-bi-ri-nuoc.html",
+      "keywords": [
+        "rỉ nước",
+        "rò rỉ",
+        "gioăng cao su",
+        "silicon chống nước",
+        "keo chuyên dụng"
+      ],
+      "products": [
+        "bồn cầu thông minh nội địa Nhật Bản"
+      ]
+    },
+    {
+      "source": "phongcachnhat.vn",
+      "category": "Hướng dẫn sử dụng",
+      "title": "Top 3 cách thông bồn cầu bị tắc giấy vệ sinh đơn giản nhất",
+      "url": "https://phongcachnhat.vn/cach-thong-bon-cau-bi-tac-giay-ve-sinh.html",
+      "keywords": [
+        "bồn cầu",
+        "giấy vệ sinh",
+        "tắc nghẽn",
+        "đường ống thoát nước",
+        "áp lực nước"
+      ],
+      "products": []
+    },
+    {
+      "source": "phongcachnhat.vn",
+      "category": "Hướng dẫn sử dụng",
+      "title": "Hướng dẫn sử dụng nồi cơm Zojirushi NP-ZU18-TD | Bảng điều khiển tiếng Nhật chi tiết",
+      "url": "https://phongcachnhat.vn/huong-dan-su-dung-noi-com-dien-zojirushi-np-zu18-td.html",
+      "keywords": [
+        "nồi cơm cao tần",
+        "Zojirushi",
+        "NP-ZU18-TD",
+        "bảng điều khiển tiếng Nhật",
+        "hẹn giờ nấu"
+      ],
+      "products": [
+        "Zojirushi NP-ZU18-TD"
+      ]
+    },
+    {
+      "source": "phongcachnhat.vn",
+      "category": "Hướng dẫn sử dụng",
+      "title": "Hướng dẫn sử dụng máy rửa bát Panasonic NP-TH4",
+      "url": "https://phongcachnhat.vn/huong-dan-su-dung-may-rua-bat-panasonic-np-th4.html",
+      "keywords": [
+        "máy rửa bát",
+        "Panasonic NP-TH4",
+        "công nghệ Econavi",
+        "ECONAVI sensor",
+        "Inverter motor"
+      ],
+      "products": [
+        "Panasonic NP-TH4"
+      ]
+    },
+    {
+      "source": "phongcachnhat.vn",
+      "category": "Hướng dẫn sử dụng",
+      "title": "Hướng dẫn sử dụng máy lọc nước Kangen Leveluk SD501",
+      "url": "https://phongcachnhat.vn/huong-dan-su-dung-may-loc-nuoc-kangen-leveluk-sd501.html",
+      "keywords": [
+        "máy lọc nước điện giải",
+        "điện cực titan",
+        "bạch kim platinum",
+        "pH",
+        "chống oxy hóa"
+      ],
+      "products": [
+        "Kangen Leveluk SD501"
+      ]
+    },
+    {
+      "source": "phongcachnhat.vn",
+      "category": "Hướng dẫn sử dụng",
+      "title": "Hướng dẫn sử dụng bếp từ Panasonic KZ-L32AK",
+      "url": "https://phongcachnhat.vn/huong-dan-su-dung-bep-tu-panasonic-kz-l32ak.html",
+      "keywords": [
+        "bếp từ",
+        "Panasonic",
+        "KZ-L32AK",
+        "công nghệ Inverter",
+        "mặt kính Ceramic"
+      ],
+      "products": [
+        "Panasonic KZ-L32AK"
+      ]
+    },
+    {
+      "source": "phongcachnhat.vn",
+      "category": "Hướng dẫn sử dụng",
+      "title": "Hướng dẫn sử dụng bếp từ Mitsubishi CS-T322BFR",
+      "url": "https://phongcachnhat.vn/huong-dan-su-dung-bep-tu-mitsubishi-cs-t322bfr.html",
+      "keywords": [
+        "bếp từ",
+        "Mitsubishi",
+        "CS-T322BFR",
+        "điện áp 220V",
+        "mặt kính Eurokera"
+      ],
+      "products": [
+        "Mitsubishi CS-T322BFR",
+        "bếp từ Mitsubishi CS-T322BFR"
+      ]
+    },
+    {
+      "source": "phongcachnhat.vn",
+      "category": "Hướng dẫn sử dụng",
+      "title": "Hướng dẫn sử dụng máy lọc không khí ô tô Sharp IG-NX15-B Ion Next",
+      "url": "https://phongcachnhat.vn/huong-dan-su-dung-may-loc-khong-khi-o-to-sharp-ig-nx15-b-ion-next.html",
+      "keywords": [
+        "Plasmacluster NEXT",
+        "Ion Next",
+        "mật độ ion",
+        "Turbo Mode",
+        "bộ lọc HEPA"
+      ],
+      "products": [
+        "Sharp IG-NX15-B Ion Next"
+      ]
+    },
+    {
+      "source": "phongcachnhat.vn",
+      "category": "Hướng dẫn sử dụng",
+      "title": "Cách tháo vệ sinh máy giặt cửa trên theo hướng dẫn của NSX",
+      "url": "https://phongcachnhat.vn/cach-thao-ve-sinh-may-giat-cua-tren.html",
+      "keywords": [
+        "máy giặt cửa trên",
+        "vệ sinh máy giặt",
+        "tháo lồng giặt",
+        "mâm giặt",
+        "lưới lọc sơ vải"
+      ],
+      "products": []
+    },
+    {
+      "source": "phongcachnhat.vn",
+      "category": "Hướng dẫn sử dụng",
+      "title": "Máy giặt sấy khô không cần phơi có thực sự tốt? Ưu nhược điểm?",
+      "url": "https://phongcachnhat.vn/may-giat-say-kho-khong-can-phoi.html",
+      "keywords": [
+        "máy giặt sấy",
+        "sấy khô không cần phơi",
+        "chế độ sấy",
+        "tiêu thụ điện năng",
+        "tiết kiệm thời gian"
+      ],
+      "products": [
+        "Máy giặt Panasonic NA-LX125AL"
+      ]
+    },
+    {
+      "source": "phongcachnhat.vn",
+      "category": "Hướng dẫn sử dụng",
+      "title": "Cách sử dụng bồn cầu thông minh ToTo từ A đến Z | Hướng dẫn chi tiết",
+      "url": "https://phongcachnhat.vn/huong-dan-su-dung-bon-cau-thong-minh-toto.html",
+      "keywords": [
+        "bồn cầu thông minh",
+        "ToTo",
+        "rửa tự động",
+        "sấy khô",
+        "khử mùi"
+      ],
+      "products": [
+        "Bồn cầu thông minh ToTo"
+      ]
+    },
+    {
+      "source": "phongcachnhat.vn",
+      "category": "Review Video",
+      "title": "Đánh giá chi tiết tủ lạnh Hitachi R-WXC74T (X) 735L – Mẫu mới nhất 2023 cảm nhận từ khách hàng trải nghiệm",
+      "url": "https://phongcachnhat.vn/danh-gia-chi-tiet-tu-lanh-hitachi-r-wxc74t-x-735l-mau-moi-nhat-2023-cam-nhan-tu-khach-hang-trai-nghiem.html",
+      "keywords": [
+        "tủ lạnh nội địa Nhật",
+        "ngăn hút chân không",
+        "chất xúc tác bạch kim",
+        "ruthenium",
+        "khí ethylene"
+      ],
+      "products": [
+        "Hitachi R-WXC74T (X) 735L"
+      ]
+    },
+    {
+      "source": "phongcachnhat.vn",
+      "category": "Review Video",
+      "title": "Với Phong Cách Nhật uy tín luôn đặt lên Hàng Đầu",
+      "url": "https://phongcachnhat.vn/voi-phong-cach-nhat-uy-tin-luon-dat-len-hang-dau.html",
+      "keywords": [
+        "uy tín",
+        "hàng mới 100%",
+        "nhập khẩu chính ngạch",
+        "hóa đơn",
+        "kiểm tra hàng"
+      ],
+      "products": []
+    },
+    {
+      "source": "phongcachnhat.vn",
+      "category": "Review Video",
+      "title": "Video: Trên tay mẫu đồng hồ khảm gỗ mới ra nhất của Seiko RE580B – Tuyệt tác chinh phục thời gian",
+      "url": "https://phongcachnhat.vn/video-tren-tay-mau-dong-ho-kham-go-moi-ra-nhat-cua-seiko-re580b-tuyet-tac-chinh-phuc-thoi-gian.html",
+      "keywords": [
+        "đồng hồ treo tường",
+        "khảm gỗ tự nhiên",
+        "nội địa Nhật",
+        "Swarovski",
+        "cảm biến ánh sáng"
+      ],
+      "products": [
+        "Seiko RE580B"
+      ]
+    },
+    {
+      "source": "phongcachnhat.vn",
+      "category": "Review Video",
+      "title": "Video: Review và HDSD Quạt cây Hitachi HEF-AL300D 2022 | 8 cánh",
+      "url": "https://phongcachnhat.vn/video-review-va-hdsd-quat-cay-hitachi-hef-al300d-2022-8-canh.html",
+      "keywords": [
+        "quạt cây Hitachi",
+        "HEF-AL300D",
+        "quạt điện Nhật Bản",
+        "quạt 8 cánh",
+        "tốc độ gió"
+      ],
+      "products": [
+        "Hitachi HEF-AL300D",
+        "Hitachi HEF-AL300C"
+      ]
+    },
+    {
+      "source": "phongcachnhat.vn",
+      "category": "Review Video",
+      "title": "Review và Hướng dẫn sử dụng lọc không khí Sharp KC-H50",
+      "url": "https://phongcachnhat.vn/review-va-huong-dan-su-dung-loc-khong-khi-sharp-kc-h50.html",
+      "keywords": [
+        "máy lọc không khí",
+        "bù ẩm",
+        "lọc không khí Sharp",
+        "KC-H50",
+        "hàng nội địa Nhật"
+      ],
+      "products": [
+        "Sharp KC-H50",
+        "máy lọc không khí bù ẩm Sharp KC-H50"
+      ]
+    },
+    {
+      "source": "phongcachnhat.vn",
+      "category": "Review Video",
+      "title": "Review và Hướng dẫn sử dụng lọc không khí Sharp KI-HS70",
+      "url": "https://phongcachnhat.vn/review-va-huong-dan-su-dung-loc-khong-khi-sharp-ki-hs70.html",
+      "keywords": [
+        "máy lọc không khí",
+        "lọc không khí bù ẩm",
+        "hàng nội địa Nhật",
+        "Sharp KI-HS70",
+        "humidifying air purifier"
+      ],
+      "products": [
+        "Sharp KI-HS70"
+      ]
+    },
+    {
+      "source": "phongcachnhat.vn",
+      "category": "Review Video",
+      "title": "Test độ bền lọc không khí Hitachi",
+      "url": "https://phongcachnhat.vn/test-do-ben-loc-khong-khi-hitachi.html",
+      "keywords": [
+        "độ bền",
+        "lọc không khí",
+        "máy lọc không khí",
+        "mặt ngoài",
+        "test"
+      ],
+      "products": [
+        "Máy lọc không khí Hitachi"
+      ]
+    },
+    {
+      "source": "phongcachnhat.vn",
+      "category": "Review Video",
+      "title": "Review tủ lạnh hút chân không Hitachi R-WX74K (X) Đen gương 2020 735L – điện máy nội địa Nhật",
+      "url": "https://phongcachnhat.vn/review-tu-lanh-hut-chan-khong-hitachi-r-wx74k-x-den-guong-2020-735l-dien-may-noi-dia-nhat.html",
+      "keywords": [
+        "tủ lạnh hút chân không",
+        "Hitachi R-WX74K",
+        "khoang chân không",
+        "cảm biến nhiệt độ",
+        "khoang mát"
+      ],
+      "products": [
+        "Hitachi R-WX74K (X) – màu Đen gương, dung tích 735L, năm 2020"
+      ]
+    },
+    {
+      "source": "phongcachnhat.vn",
+      "category": "Review Video",
+      "title": "[Review]: và Hướng dẫn sử dụng nồi cơm điện Zojirushi NW-VA18-TA & NW-VA10-TA – Cao Tần nội địa Nhật",
+      "url": "https://phongcachnhat.vn/review-va-huong-dan-su-dung-noi-com-dien-zojirushi-nw-va18-ta-nw-va10-ta-cao-tan-noi-dia-nhat.html",
+      "keywords": [
+        "nồi cơm điện Zojirushi",
+        "cao tần IH",
+        "nội địa Nhật",
+        "gia nhiệt 3 mặt",
+        "tráng men kim cương"
+      ],
+      "products": [
+        "Zojirushi NW-VA18-TA",
+        "Zojirushi NW-VA10-TA",
+        "Zojirushi NP-VI18-TA"
+      ]
+    },
+    {
+      "source": "phongcachnhat.vn",
+      "category": "Review Video",
+      "title": "Bạn đã sử dụng nồi cơm điện đúng cách? Video Review và Hướng dẫn sử dụng Nồi cơm điện Zojirushi NP-VI18-TA & NP-VI10-TA Cao Tần nội địa Nhật",
+      "url": "https://phongcachnhat.vn/ban-da-su-dung-noi-com-dien-dung-cach-video-review-va-huong-dan-su-dung-noi-com-dien-zojirushi-np-vi18-ta-np-vi10-ta-cao-tan-noi-dia-nhat.html",
+      "keywords": [
+        "nồi cơm điện",
+        "Zojirushi",
+        "IH cao tần",
+        "gia nhiệt 3 mặt",
+        "nội địa Nhật"
+      ],
+      "products": [
+        "Nồi cơm điện Zojirushi NP-VI18-TA",
+        "Nồi cơm điện Zojirushi NP-VI10-TA",
+        "Thiết bị đổi nguồn Lioa",
+        "Thiết bị chống cắm nhầm"
+      ]
+    },
+    {
+      "source": "phongcachnhat.vn",
+      "category": "Review Video",
+      "title": "Video review & hướng dẫn sử dụng máy Lọc không khí Sharp KI-LS70, hàng Nhật nội địa mới fullbox",
+      "url": "https://phongcachnhat.vn/video-review-huong-dan-su-dung-may-loc-khong-khi-sharp-ki-ls70-hang-nhat-noi-dia-moi-fullbox.html",
+      "keywords": [
+        "máy lọc không khí",
+        "Plasmacluster",
+        "Plashma ion",
+        "COCORO AIR",
+        "PM2.5"
+      ],
+      "products": [
+        "Sharp KI-LS70",
+        "Sharp KI-JS70"
+      ]
+    },
+    {
+      "source": "phongcachnhat.vn",
+      "category": "Review Video",
+      "title": "So sánh Máy lọc không khí Sharp KC-F70 (Bù ẩm | ion Plashma 7000) và KC-L50 (ion Plashma 7000)",
+      "url": "https://phongcachnhat.vn/so-sanh-may-loc-khong-khi-sharp-kc-f70-bu-am-ion-plashma-7000-va-kc-l50-ion-plashma-7000.html",
+      "keywords": [
+        "máy lọc không khí",
+        "ion Plashma 7000",
+        "bù ẩm",
+        "Sharp",
+        "mật độ Plashma 7.000/cm²"
+      ],
+      "products": [
+        "Sharp KC-F70 2021",
+        "Sharp KC-L50-W"
+      ]
+    },
+    {
+      "source": "phongcachnhat.vn",
+      "category": "Review Video",
+      "title": "Review chi tiết máy giặt tích hợp sấy 2 trong 1 Nhật Bản Hitachi BD-SX110F, hàng nội địa Nhật",
+      "url": "https://phongcachnhat.vn/review-chi-tiet-may-giat-tich-hop-say-2-trong-1-nhat-ban-hitachi-bd-sx110f-hang-noi-dia-nhat.html",
+      "keywords": [
+        "máy giặt tích hợp sấy",
+        "máy giặt 2 trong 1",
+        "Hitachi BD-SX110F",
+        "hàng nội địa Nhật",
+        "WIN IRON"
+      ],
+      "products": [
+        "Hitachi BD-SX110F",
+        "Hitachi BD-SX110FL-N"
+      ]
+    },
+    {
+      "source": "phongcachnhat.vn",
+      "category": "Review Video",
+      "title": "Trải nghiệm kiệt tác của khoang bếp – Chạn bát nâng hạ điện kèm sấy Nhật Bản TOSHIBA Kanazawa KEL-B090D35",
+      "url": "https://phongcachnhat.vn/trai-nghiem-kiet-tac-cua-khoang-bep-chan-bat-nang-ha-dien-kem-say-nhat-ban-toshiba-kanazawa-kel-b090d35.html",
+      "keywords": [
+        "chạn bát nâng hạ điện",
+        "chạn bát sấy",
+        "kính cường lực",
+        "nâng hạ điện",
+        "sấy khô bát đĩa"
+      ],
+      "products": [
+        "TOSHIBA Kanazawa KEL-B090D35",
+        "Tủ bát Takara Standard"
+      ]
+    },
+    {
+      "source": "phongcachnhat.vn",
+      "category": "Review Video",
+      "title": "Trải nghiệm đồng hồ treo tường Seiko RE576A. Sang trọng, quý phái theo phong cách châu Âu.",
+      "url": "https://phongcachnhat.vn/trai-nghiem-dong-ho-treo-tuong-seiko-re576a-sang-trong-quy-phai-theo-phong-cach-chau-au.html",
+      "keywords": [
+        "đồng hồ treo tường",
+        "Seiko",
+        "hàng nội địa Nhật",
+        "cảm biến ánh sáng",
+        "39 giai điệu"
+      ],
+      "products": [
+        "Seiko RE576A"
+      ]
+    },
+    {
+      "source": "phongcachnhat.vn",
+      "category": "Kinh nghiệm",
+      "title": "Động cơ DC là gì? 3 Sự khác biệt giữa quạt động cơ DC và động cơ AC?",
+      "url": "https://phongcachnhat.vn/dong-co-dc.html",
+      "keywords": [
+        "động cơ DC",
+        "Direct Current Motor",
+        "động cơ AC",
+        "Brushless DC Motor",
+        "BLDC"
+      ],
+      "products": [
+        "Panasonic F-C339C",
+        "Panasonic F-C324C",
+        "Panasonic F-CW324-W",
+        "Toyotomi FS-FD3524(W)",
+        "Toyotomi FS-D30NHR-W",
+        "Toyotomi FS-DS30LHR(W)",
+        "Toyotomi FS-30LR-W",
+        "Sharp PJ-S3DS",
+        "Sharp PJ-R2DS",
+        "Mitsubishi R30J-DMB",
+        "Toshiba TFC-23Y28",
+        "Toshiba TF-30AL27",
+        "Toshiba TF-30RK28",
+        "Hitachi HEF-AL300F",
+        "Hitachi HEF-AL300G",
+        "Cnet CKDF308WH",
+        "Cnet CKAJ403WH"
+      ]
+    },
+    {
+      "source": "phongcachnhat.vn",
+      "category": "Kinh nghiệm",
+      "title": "Cách Nấu Cơm Nếp Bằng Nồi Cơm Điện Ngon, Dẻo Và Đơn Giản",
+      "url": "https://phongcachnhat.vn/cach-nau-com-nep-bang-noi-com-dien.html",
+      "keywords": [
+        "cơm nếp",
+        "nồi cơm điện",
+        "ngâm gạo",
+        "tỷ lệ nước",
+        "chế độ nếp/xôi"
+      ],
+      "products": [
+        "Nồi cơm điện Toshiba",
+        "Nồi cơm điện Panasonic"
+      ]
+    },
+    {
+      "source": "phongcachnhat.vn",
+      "category": "Kinh nghiệm",
+      "title": "Dây vòi xịt vệ sinh bị rỉ nước: Nguyên nhân & cách xử lý hiệu quả",
+      "url": "https://phongcachnhat.vn/day-voi-xit-ve-sinh-bi-ri-nuoc.html",
+      "keywords": [
+        "dây vòi xịt vệ sinh",
+        "rỉ nước",
+        "gioăng cao su",
+        "keo silicon",
+        "khớp nối"
+      ],
+      "products": []
+    },
+    {
+      "source": "phongcachnhat.vn",
+      "category": "Kinh nghiệm",
+      "title": "Cách tháo vệ sinh máy giặt cửa trên theo hướng dẫn của NSX",
+      "url": "https://phongcachnhat.vn/cach-thao-ve-sinh-may-giat-cua-tren.html",
+      "keywords": [
+        "máy giặt cửa trên",
+        "vệ sinh máy giặt",
+        "lồng giặt",
+        "mâm giặt",
+        "áp lực nước"
+      ],
+      "products": []
+    },
+    {
+      "source": "phongcachnhat.vn",
+      "category": "Kinh nghiệm",
+      "title": "Máy giặt sấy khô không cần phơi có thực sự tốt? Ưu nhược điểm?",
+      "url": "https://phongcachnhat.vn/may-giat-say-kho-khong-can-phoi.html",
+      "keywords": [
+        "máy giặt sấy",
+        "máy giặt sấy khô",
+        "không cần phơi",
+        "sấy quần áo",
+        "chế độ sấy"
+      ],
+      "products": [
+        "Panasonic NA-LX125AL"
+      ]
+    },
+    {
+      "source": "phongcachnhat.vn",
+      "category": "Kinh nghiệm",
+      "title": "Có nên mua bếp từ Nhật nội địa hay không? Vì sao?",
+      "url": "https://phongcachnhat.vn/co-nen-mua-bep-tu-nhat-noi-dia-hay-khong.html",
+      "keywords": [
+        "bếp từ nội địa Nhật",
+        "bếp từ Nhật",
+        "hàng nội địa Nhật",
+        "điện áp 110V",
+        "điện áp 220V"
+      ],
+      "products": [
+        "bếp từ nội địa Nhật Bản",
+        "nồi chảo có đáy nhiễm từ"
+      ]
+    },
+    {
+      "source": "phongcachnhat.vn",
+      "category": "Kinh nghiệm",
+      "title": "Chế độ vệ sinh máy giặt Panasonic nội địa Nhật chi tiết",
+      "url": "https://phongcachnhat.vn/che-do-ve-sinh-may-giat-panasonic-noi-dia-nhat.html",
+      "keywords": [
+        "vệ sinh máy giặt",
+        "chế độ giặt",
+        "lồng giặt",
+        "nước xả tự động",
+        "chất tẩy"
+      ],
+      "products": [
+        "Máy giặt Panasonic nội địa Nhật"
+      ]
+    },
+    {
+      "source": "phongcachnhat.vn",
+      "category": "Kinh nghiệm",
+      "title": "Có nên mua máy rửa bát nội địa Nhật không? Vì sao?",
+      "url": "https://phongcachnhat.vn/co-nen-mua-may-rua-bat-noi-dia-nhat-khong.html",
+      "keywords": [
+        "máy rửa bát nội địa Nhật",
+        "máy rửa chén nội địa Nhật",
+        "Econavi",
+        "tiết kiệm điện",
+        "tiết kiệm nước"
+      ],
+      "products": [
+        "Panasonic",
+        "Toshiba",
+        "Hitachi",
+        "National"
+      ]
+    },
+    {
+      "source": "phongcachnhat.vn",
+      "category": "Kinh nghiệm",
+      "title": "Kinh nghiệm mua máy giặt nội địa Nhật đảm bảo chất lượng",
+      "url": "https://phongcachnhat.vn/kinh-nghiem-mua-may-giat-noi-dia-nhat.html",
+      "keywords": [
+        "máy giặt nội địa Nhật",
+        "hàng nội địa Nhật",
+        "máy giặt sấy",
+        "kinh nghiệm mua hàng",
+        "khối lượng giặt"
+      ],
+      "products": [
+        "Máy giặt nội địa Nhật (6-9kg)"
+      ]
+    },
+    {
+      "source": "phongcachnhat.vn",
+      "category": "Kinh nghiệm",
+      "title": "Đánh giá chi tiết tủ lạnh Hitachi R-WXC74T (X) 735L – Mẫu mới nhất 2023 cảm nhận từ khách hàng trải nghiệm",
+      "url": "https://phongcachnhat.vn/danh-gia-chi-tiet-tu-lanh-hitachi-r-wxc74t-x-735l-mau-moi-nhat-2023-cam-nhan-tu-khach-hang-trai-nghiem.html",
+      "keywords": [
+        "tủ lạnh nội địa Nhật",
+        "ngăn hút chân không",
+        "vacuum storage",
+        "làm lạnh nhanh",
+        "chất xúc tác bạch kim"
+      ],
+      "products": [
+        "Hitachi R-WXC74T (X) 735L",
+        "Hitachi R-WXC62S",
+        "Toto TBV03404J"
+      ]
+    }
+  ]
+}

@@ -363,7 +363,8 @@ export function CalendarClient() {
                     onChange={e => setForm(f => ({ ...f, provider: e.target.value }))}
                     className="mt-1.5 w-full rounded-lg border border-gray-600 bg-gray-800 px-3 py-2 text-sm text-white outline-none focus:border-purple-500"
                   >
-                    <option value="anthropic">Claude (Anthropic)</option>
+                    <option value="claude-code">⚡ Claude Code (Miễn phí)</option>
+                    <option value="anthropic">Claude (Anthropic API)</option>
                     <option value="openai">GPT-4 (OpenAI)</option>
                   </select>
                 </div>

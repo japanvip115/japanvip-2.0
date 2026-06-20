@@ -566,7 +566,7 @@ function TestimonialSlider({ data }: { data: TestimonialItem[] }) {
     return () => clearInterval(t)
   }, [total])
 
-  const visible = items.slice(page * perPage, page * perPage + perPage)
+  const visible = Array.from({ length: perPage }, (_, i) => items[(page * perPage + i) % items.length]!)
 
   return (
     <section className="testimonials-section">

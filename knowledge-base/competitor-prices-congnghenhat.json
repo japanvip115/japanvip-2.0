@@ -1,0 +1,222 @@
+{
+  "source": "congnghenhat.com",
+  "collected": "2026-06-22",
+  "note": "Giá bán lẻ tại Công Nghệ Nhật (Hà Nội: 1191 Giải Phóng – TP.HCM: Thủ Đức & Tân Phú). Bảo hành 12–24 tháng tại nhà. Dùng để tham khảo định vị giá Japan VIP.",
+  "categories": {
+    "tu-lanh": {
+      "label": "Tủ lạnh",
+      "products": [
+        { "brand": "Mitsubishi", "model": "MF-U14D-B", "capacity": "144L", "type": "Tủ cấp đông", "price": 11000000, "list_price": null },
+        { "brand": "Mitsubishi", "model": "MF-U14G-B", "capacity": "144L", "type": "Tủ cấp đông không đóng tuyết", "price": 12900000, "list_price": null },
+        { "brand": "Mitsubishi", "model": "MR-P15H-H", "capacity": "146L", "price": 14900000, "list_price": null },
+        { "brand": "Mitsubishi", "model": "MR-P15J-H", "capacity": "146L", "price": 15400000, "list_price": null },
+        { "brand": "Mitsubishi", "model": "MR-P15J-W", "capacity": "146L", "price": 15500000, "list_price": null },
+        { "brand": "Panasonic", "model": "NR-FVF45S1-W", "capacity": "451L", "price": 41900000, "list_price": null },
+        { "brand": "Panasonic", "model": "NR-FVF45S2-W", "capacity": "451L", "price": 42000000, "list_price": null },
+        { "brand": "Hitachi", "model": "R-HWC54T", "capacity": "540L", "price": 50900000, "list_price": null },
+        { "brand": "Hitachi", "model": "R-HW540RV-XK", "capacity": "540L", "price": 51900000, "list_price": 56000000, "note": "Màu gương đen" },
+        { "brand": "Hitachi", "model": "R-HW540RV-X", "capacity": "540L", "price": 53900000, "list_price": 59000000, "note": "Màu gương pha lê" },
+        { "brand": "Hitachi", "model": "R-HXCC54V-X", "capacity": "540L", "price": 56900000, "list_price": null, "note": "Màu gương pha lê, model mới 2025" },
+        { "brand": "Hitachi", "model": "R-HXC54X-X", "capacity": "540L", "price": 62000000, "list_price": null },
+        { "brand": "Mitsubishi", "model": "MR-WX52D-BR", "capacity": "506L", "price": 64900000, "list_price": null, "note": "Cấp đông mềm" },
+        { "brand": "Hitachi", "model": "R-HXCC62T-XN", "capacity": "617L", "price": 63000000, "list_price": null, "note": "Màu Champagne" },
+        { "brand": "Hitachi", "model": "R-HXCC62T-X", "capacity": "617L", "price": 63900000, "list_price": null, "note": "Màu gương pha lê" },
+        { "brand": "Hitachi", "model": "R-HXCC62V-X", "capacity": "617L", "price": 63000000, "list_price": null },
+        { "brand": "Hitachi", "model": "R-HXC62X-X", "capacity": "617L", "price": 66900000, "list_price": null },
+        { "brand": "Mitsubishi", "model": "MR-WXD70K-XT", "capacity": "700L", "price": 69900000, "list_price": null, "note": "Cấp đông mềm" },
+        { "brand": "Mitsubishi", "model": "MR-WXD70M-H", "capacity": "700L", "price": 72500000, "list_price": null, "note": "Xám; bản -W (trắng) cùng giá" },
+        { "brand": "Hitachi", "model": "R-WX74K-X", "capacity": "735L", "price": 69000000, "list_price": null, "note": "Model cũ hơn" },
+        { "brand": "Hitachi", "model": "R-WX620KV-XK", "capacity": "615L", "price": 74900000, "list_price": 77900000 },
+        { "brand": "Hitachi", "model": "R-GXCC67V-H", "capacity": "670L", "price": 72900000, "list_price": null },
+        { "brand": "Hitachi", "model": "R-GXCC67X-H", "capacity": "670L", "price": 75000000, "list_price": null, "note": "Màu xám hoa cà" },
+        { "brand": "Hitachi", "model": "R-WXC74W-X", "capacity": "735L", "price": 81900000, "list_price": null, "note": "Model 2024, Frost Recycling, IoT" },
+        { "brand": "Hitachi", "model": "R-WXC74X-X", "capacity": "735L", "price": 83900000, "list_price": null },
+        { "brand": "Mitsubishi", "model": "MR-WX70C-BR-V", "capacity": "694L", "price": 86500000, "list_price": null, "note": "Cấp đông mềm" },
+        { "brand": "Hitachi", "model": "R-ZX740KV-X", "capacity": "735L", "price": 97900000, "list_price": null, "note": "Cửa điện cảm ứng" }
+      ]
+    },
+    "may-giat": {
+      "label": "Máy giặt sấy",
+      "products": [
+        { "brand": "Hitachi", "model": "BD-SV120HL-W", "spec": "Giặt 12kg – Sấy 6kg", "price": 41900000, "list_price": null, "note": "Bán chạy #1" },
+        { "brand": "Panasonic", "model": "NA-LX113CL-W", "spec": "Giặt 11kg – Sấy 6kg", "price": 49500000, "list_price": null },
+        { "brand": "Panasonic", "model": "NA-LX113DL-W", "spec": "Giặt 11kg – Sấy 6kg", "price": 51000000, "list_price": null },
+        { "brand": "Panasonic", "model": "NA-LX125AL-W", "spec": "Giặt 12kg – Sấy 6kg", "price": 53900000, "list_price": null, "note": "ECONAVI, UV, AI" },
+        { "brand": "Hitachi", "model": "BD-SX130KL-W", "spec": "Giặt 13kg – Sấy 7kg", "price": 54000000, "list_price": null },
+        { "brand": "Toshiba", "model": "TW-127XP3L-W", "spec": "Giặt 12kg – Sấy 7kg", "price": 55200000, "list_price": null, "note": "Trắng 55.2tr, Nâu 55.6tr" },
+        { "brand": "Panasonic", "model": "NA-LX125CL-W", "spec": "Giặt 12kg – Sấy 6kg", "price": 57500000, "list_price": null, "note": "Model mới nhất" },
+        { "brand": "Panasonic", "model": "NA-VX300BL", "spec": "Giặt 10kg – Sấy 6kg", "price": 59500000, "list_price": null },
+        { "brand": "Hitachi", "model": "TD-100XFVEM", "spec": "Máy sấy bơm nhiệt 10kg", "price": 16390000, "list_price": null },
+        { "brand": "Toshiba", "model": "TD-T37BS90HWV(WT)", "spec": "Máy sấy 8kg", "price": 14390000, "list_price": null },
+        { "brand": "Panasonic", "model": "NA-LX129DL", "spec": "Giặt 12kg – Sấy 6kg", "price": 94000000, "list_price": null, "note": "Cao cấp nhất dòng LX" },
+        { "brand": "LG Styler", "model": "S3GW", "spec": "Tủ chăm sóc quần áo", "price": 28900000, "list_price": null },
+        { "brand": "LG Styler", "model": "S5GOC", "spec": "Tủ chăm sóc quần áo", "price": 36000000, "list_price": null },
+        { "brand": "LG Styler", "model": "SC5MBR80H", "spec": "Tủ chăm sóc quần áo", "price": 42900000, "list_price": null },
+        { "brand": "LG Styler", "model": "SC5GMR80H", "spec": "Tủ chăm sóc quần áo", "price": 45900000, "list_price": null },
+        { "brand": "LG Styler", "model": "S5MB", "spec": "Tủ chăm sóc quần áo", "price": 51900000, "list_price": null }
+      ]
+    },
+    "dieu-hoa": {
+      "label": "Điều hòa",
+      "products": [
+        { "brand": "Panasonic", "model": "CS-225DFL", "btu": 9000, "price": 12600000, "list_price": null, "note": "2 chiều, 9-13m², 100V" },
+        { "brand": "Daikin", "model": "9000 BTU", "btu": 9000, "price": 15000000, "list_price": null, "note": "2 chiều, 100V, tặng đổi nguồn" },
+        { "brand": "Mitsubishi", "model": "MSZ-GV2223-W / MUCZ-G2223", "btu": 9000, "price": 15800000, "list_price": null, "note": "2 chiều, 100V, made in Japan" },
+        { "brand": "Panasonic", "model": "CS-285DFL", "btu": 12000, "price": 16200000, "list_price": null },
+        { "brand": "Panasonic", "model": "CS-284DFL", "btu": 12000, "price": 16000000, "list_price": null, "note": "Model cũ hơn, 100V" },
+        { "brand": "Daikin", "model": "F28XTES", "btu": 12000, "price": 17900000, "list_price": null, "note": "2 chiều, 200V, Inverter" },
+        { "brand": "Mitsubishi", "model": "MSZ-GV2824-W / MUCZ-G2824", "btu": 12000, "price": 18500000, "list_price": null, "note": "2 chiều, bán chạy #1" },
+        { "brand": "Panasonic", "model": "CS-404DFL2", "btu": 16000, "price": 23000000, "list_price": null, "note": "2 chiều, 200V, 20-26m²" },
+        { "brand": "Daikin", "model": "F40XTES / 16000 BTU", "btu": 16000, "price": 24000000, "list_price": null, "note": "2 chiều, 200V" },
+        { "brand": "Mitsubishi", "model": "MSZ-GV4024S-W / MUCZ-G4024S", "btu": 16000, "price": 25000000, "list_price": null },
+        { "brand": "Daikin", "model": "F56VEP / 22000 BTU", "btu": 22000, "price": 30000000, "list_price": null, "note": "2 chiều, 200V" },
+        { "brand": "Mitsubishi", "model": "MSZ-GE5622S-W / MUCZ-G5622S", "btu": 22000, "price": 31000000, "list_price": null },
+        { "brand": "Mitsubishi", "model": "MSZ-JXV7123S-W / MUZ-JXV7123S", "btu": 28000, "price": 65000000, "list_price": null, "note": "Cao cấp, NaN100V" }
+      ]
+    },
+    "may-loc-khong-khi": {
+      "label": "Máy lọc không khí & Hút ẩm",
+      "products": [
+        { "brand": "Sharp", "model": "IG-NX2E-A", "type": "Lọc ô tô", "price": 2390000, "list_price": 2690000 },
+        { "brand": "Sharp", "model": "IG-NX2E-B", "type": "Lọc ô tô", "price": 2490000, "list_price": 2790000 },
+        { "brand": "Sharp", "model": "FP-JM30V-B", "type": "Lọc + bắt muỗi", "price": 3750000, "list_price": null },
+        { "brand": "Sharp", "model": "KC-G50", "area": "20-25m²", "type": "Lọc tạo ẩm Ion Plasma 7000", "price": 3900000, "list_price": null },
+        { "brand": "Daikin", "model": "MC30YVM7", "area": null, "type": "Lọc không khí", "price": 3500000, "list_price": null },
+        { "brand": "Sharp", "model": "KC-J50-H", "area": "~38m²", "type": "Lọc tạo ẩm Ion Plasma 7000", "price": 4100000, "list_price": null, "note": "Đen; trắng 4.000.000₫" },
+        { "brand": "Daikin", "model": "MC40UVM6-7", "type": "Lọc không khí", "price": 4950000, "list_price": null },
+        { "brand": "Hitachi", "model": "EP-TZ30J-WH", "area": "25m²", "type": "Lọc không khí 220V", "price": 4980000, "list_price": null },
+        { "brand": "Sharp", "model": "KC-F70-W", "area": "~45m²", "type": "Lọc tạo ẩm HEPA", "price": 5300000, "list_price": 5900000 },
+        { "brand": "Sharp", "model": "KC-S50-W", "type": "Lọc tạo ẩm", "price": 5190000, "list_price": null },
+        { "brand": "Sharp", "model": "KC-T50-W", "type": "Lọc tạo ẩm", "price": 5200000, "list_price": null },
+        { "brand": "Daikin", "model": "MC55UVM6-7", "type": "Lọc không khí", "price": 5950000, "list_price": null },
+        { "brand": "Sharp", "model": "FP-J60E-W", "type": "Lọc không khí", "price": 6200000, "list_price": null },
+        { "brand": "Sharp", "model": "FP-J80EV-H", "type": "Lọc không khí", "price": 6600000, "list_price": null },
+        { "brand": "Sharp", "model": "KI-N40V-W", "type": "Lọc tạo ẩm", "price": 7050000, "list_price": null },
+        { "brand": "Sharp", "model": "KI-N40V-H", "type": "Lọc tạo ẩm", "price": 7100000, "list_price": null },
+        { "brand": "Sharp", "model": "DW-E16FA-W", "type": "Lọc + Hút ẩm 16L/ngày", "price": 7500000, "list_price": null },
+        { "brand": "Daikin", "model": "MCK55TVM6", "type": "Lọc tạo ẩm", "price": 7490000, "list_price": null },
+        { "brand": "Panasonic", "model": "F-YCT10V", "type": "Máy hút ẩm 10L/ngày", "price": 4990000, "list_price": null },
+        { "brand": "Sharp", "model": "DW-J20FV-W", "type": "Lọc + Hút ẩm 20L/ngày", "price": 7790000, "list_price": null },
+        { "brand": "Sharp", "model": "DW-J27FV-S", "type": "Lọc + Hút ẩm 27L/ngày", "price": 7990000, "list_price": null },
+        { "brand": "Daikin", "model": "MCK555AVMV-T/W", "type": "Lọc tạo ẩm Streamer", "price": 7990000, "list_price": null },
+        { "brand": "Sharp", "model": "KI-N50V-W", "type": "Lọc tạo ẩm", "price": 7900000, "list_price": null },
+        { "brand": "Panasonic", "model": "F-YCT14V", "type": "Máy hút ẩm 14L/ngày", "price": 6590000, "list_price": null },
+        { "brand": "Daikin", "model": "MC80ZVM7", "type": "Lọc không khí", "price": 8300000, "list_price": null },
+        { "brand": "Sharp", "model": "KI-LX75-W", "area": "56m²", "type": "Lọc tạo ẩm Ion Plasma 25000", "price": 8500000, "list_price": null },
+        { "brand": "Panasonic", "model": "F-PX60C-W", "type": "Lọc không khí NanoeX", "price": 8500000, "list_price": null },
+        { "brand": "Daikin", "model": "JPF12AV2", "type": "Lọc + Hút ẩm 23L/ngày", "price": 8690000, "list_price": null },
+        { "brand": "Daikin", "model": "MCK70ZVM7-W/T", "type": "Lọc tạo ẩm Streamer ~51m²", "price": 9290000, "list_price": null },
+        { "brand": "Sharp", "model": "KC-HD70-W", "type": "Lọc + Hút ẩm + Tạo ẩm 3in1", "price": 9700000, "list_price": null },
+        { "brand": "Sharp", "model": "DW-T30FV-H/W", "type": "Lọc + Hút ẩm 30L/ngày", "price": 9990000, "list_price": null },
+        { "brand": "Daikin", "model": "ACK70Z", "type": "Lọc tạo ẩm", "price": 9100000, "list_price": null },
+        { "brand": "Daikin", "model": "ACK705A", "type": "Lọc tạo ẩm HEPA ~51m²", "price": 10500000, "list_price": null },
+        { "brand": "Panasonic", "model": "F-VC70XV", "type": "Lọc tạo ẩm NanoeX ~51m²", "price": 11190000, "list_price": null },
+        { "brand": "LG", "model": "PuriCare AeroTower FS15GPBK0", "type": "Lọc không khí + quạt", "price": 12190000, "list_price": null },
+        { "brand": "LG", "model": "AeroTower PuriCare FS15GPCJ0", "type": "Lọc không khí + quạt + sưởi", "price": 12900000, "list_price": null },
+        { "brand": "Panasonic", "model": "F-YCT17V", "type": "Máy hút ẩm 17L/ngày", "price": 7490000, "list_price": null }
+      ]
+    },
+    "may-loc-nuoc": {
+      "label": "Máy lọc nước ion kiềm",
+      "products": [
+        { "brand": "Panasonic", "model": "TK-AS31-W", "type": "Ion kiềm 3 cực", "price": 7190000, "list_price": null },
+        { "brand": "Panasonic", "model": "TK-AS46-P", "type": "Ion kiềm 3 cực LCD", "price": 12400000, "list_price": 13500000 },
+        { "brand": "Panasonic", "model": "TK-AS47-H", "type": "Ion kiềm 3 cực", "price": 12390000, "list_price": null },
+        { "brand": "Panasonic", "model": "TK-AS48-S", "type": "Ion kiềm cao cấp", "price": 14500000, "list_price": null },
+        { "brand": "Panasonic", "model": "TK-HB41-SSK", "type": "Ion kiềm 5 cực", "price": 20200000, "list_price": null },
+        { "brand": "Panasonic", "model": "TK-HB50-S", "type": "Ion kiềm 5 cực", "price": 21390000, "list_price": null },
+        { "brand": "Panasonic", "model": "TK-HS71", "type": "Ion kiềm cao cấp", "price": 26000000, "list_price": null },
+        { "brand": "Panasonic", "model": "TK-HS92-S", "type": "Ion kiềm 7 cực Made in Japan", "price": 29900000, "list_price": null },
+        { "brand": "Panasonic", "model": "TK-HS92-K", "type": "Ion kiềm 7 cực Made in Japan", "price": 30100000, "list_price": null },
+        { "brand": "Trim Ion", "model": "Hyper", "type": "Điện giải giàu Hydro", "price": 22500000, "list_price": null }
+      ]
+    },
+    "bep-tu": {
+      "label": "Bếp từ",
+      "products": [
+        { "brand": "Panasonic", "model": "KY-R72AELYUE", "spec": "Bếp từ đơn", "price": 6500000, "list_price": null },
+        { "brand": "Hitachi", "model": "HT-M6K", "spec": "2 bếp từ + hồng ngoại + lò, 60cm", "price": 9800000, "list_price": null },
+        { "brand": "Panasonic", "model": "KZ-G32AST", "spec": "2 bếp từ + hồng ngoại + lò, 60cm, 200V", "price": 9600000, "list_price": null },
+        { "brand": "Hitachi", "model": "HT-M6S", "spec": "2 bếp từ + hồng ngoại + lò, 60cm", "price": 10300000, "list_price": null },
+        { "brand": "Panasonic", "model": "KZ-L32AK", "spec": "2 bếp từ + hồng ngoại + lò, 60cm, 200V", "price": 10300000, "list_price": null },
+        { "brand": "Hitachi", "model": "HT-M60S", "spec": "2 bếp từ + hồng ngoại + lò, 60cm", "price": 10390000, "list_price": null },
+        { "brand": "Panasonic", "model": "KZ-L32AS", "spec": "2 bếp từ + hồng ngoại + lò", "price": 10050000, "list_price": null },
+        { "brand": "Mitsubishi", "model": "CS-G321MS", "spec": "1 bếp từ, 60cm, mặt kính Ceramic", "price": 9900000, "list_price": null },
+        { "brand": "Mitsubishi", "model": "CS-G321M", "spec": "1 bếp từ, 60cm, mặt kính Ceramic", "price": 10505000, "list_price": null },
+        { "brand": "Panasonic", "model": "KY-A227EKRA", "spec": "3 bếp từ, 75cm", "price": 16090000, "list_price": null },
+        { "brand": "Panasonic", "model": "KY-C227EHRA", "spec": "3 bếp từ, 75cm, cao cấp", "price": 16900000, "list_price": null },
+        { "brand": "Hitachi", "model": "HT-M8STWF", "spec": "3 bếp từ + lò nướng, 75cm, cảm biến hút mùi", "price": 18900000, "list_price": null },
+        { "brand": "Hitachi", "model": "HT-M8AKTWF", "spec": "3 bếp từ + lò nướng, 75cm, cao cấp", "price": 20500000, "list_price": null },
+        { "brand": "Hitachi", "model": "HT-N8STWF", "spec": "3 bếp từ + lò nướng, 90cm", "price": 22190000, "list_price": null },
+        { "brand": "Hitachi", "model": "HT-N8KTWF", "spec": "3 bếp từ + lò nướng, 90cm, cao cấp", "price": 23400000, "list_price": null },
+        { "brand": "Mitsubishi", "model": "CS-T322BFR", "spec": "3 bếp từ, 75cm, mặt kính Eurokera, không lò nướng", "price": 27500000, "list_price": null },
+        { "brand": "Panasonic", "model": "KZ-C37S", "spec": "3 bếp từ, 90cm, cao cấp", "price": 36000000, "list_price": null },
+        { "brand": "Hitachi", "model": "HT-M300XTWF", "spec": "3 bếp từ + lò nướng, cao cấp nhất", "price": 44990000, "list_price": null }
+      ]
+    },
+    "hut-mui": {
+      "label": "Máy hút mùi",
+      "products": [
+        { "brand": "Panasonic", "model": "FY-6HZC5-S", "spec": "60cm, quạt Sirocco", "price": 7790000, "list_price": null },
+        { "brand": "Panasonic", "model": "FY-6HZC5-K", "spec": "60cm, màu đen", "price": 7890000, "list_price": null },
+        { "brand": "Panasonic", "model": "FY-7HZC5-S", "spec": "75cm, quạt Sirocco", "price": 8900000, "list_price": null },
+        { "brand": "Panasonic", "model": "FY-7HZC5-K", "spec": "75cm, màu đen", "price": 9100000, "list_price": null },
+        { "brand": "Panasonic", "model": "FY-7HGC5-S", "spec": "75cm, cảm biến hồng ngoại đồng bộ bếp từ", "price": 9900000, "list_price": null },
+        { "brand": "Panasonic", "model": "FY-7HGC5-K", "spec": "75cm, cảm biến hồng ngoại, màu đen", "price": 10050000, "list_price": null },
+        { "brand": "Panasonic", "model": "FY-7HTC5-S", "spec": "75cm, Inverter, cảm biến bật/tắt bếp từ", "price": 10800000, "list_price": null, "note": "Đen 10.700.000₫" },
+        { "brand": "Panasonic", "model": "FY-9HTC5-S", "spec": "90cm, đồng bộ bếp từ", "price": 11500000, "list_price": null },
+        { "brand": "Panasonic", "model": "FY-9HGC4", "spec": "90cm, đồng bộ bếp từ", "price": 11890000, "list_price": null }
+      ]
+    },
+    "noi-com-dien": {
+      "label": "Nồi cơm điện cao tần",
+      "products": [
+        { "brand": "Toshiba", "model": "RC-10IP1PV", "spec": "Cao tần 1L, 220V", "price": 3335000, "list_price": null },
+        { "brand": "Toshiba", "model": "RC-18IP1PV", "spec": "Cao tần 1.8L, 220V", "price": 3680000, "list_price": null },
+        { "brand": "Zojirushi", "model": "NP-VI10", "spec": "Cao tần 1L, 220V", "price": 4100000, "list_price": 4500000 },
+        { "brand": "Zojirushi", "model": "NP-VI18", "spec": "Cao tần 1.8L, 220V", "price": 4800000, "list_price": null },
+        { "brand": "Panasonic", "model": "SR-HN151KRA", "spec": "Cao tần 220V", "price": 4500000, "list_price": null },
+        { "brand": "Panasonic", "model": "SR-HNS151WRA", "spec": "Cao tần 220V", "price": 5500000, "list_price": null },
+        { "brand": "Zojirushi", "model": "NP-ZU18-TD", "spec": "Áp suất 1.8L 220V", "price": 5190000, "list_price": null },
+        { "brand": "Zojirushi", "model": "NP-NY18", "spec": "Cao tần 1.8L", "price": 5900000, "list_price": 6500000 },
+        { "brand": "Toshiba", "model": "RC-10VSV-K", "spec": "Cao tần áp suất hút chân không 1L, 100V", "price": 6900000, "list_price": null },
+        { "brand": "Panasonic", "model": "SR-PB184", "spec": "Cao tần 1.8L 100V", "price": 7000000, "list_price": 8000000 },
+        { "brand": "Tiger", "model": "JPV-C180 KG", "spec": "Áp suất 1.8L", "price": 7590000, "list_price": null },
+        { "brand": "Tiger", "model": "JKT-D18V", "spec": "Cao tần 1.8L", "price": 9490000, "list_price": null },
+        { "brand": "Zojirushi", "model": "NW-QAQ10", "spec": "Cao tần 1L 220V, có xửng hấp", "price": 7900000, "list_price": null },
+        { "brand": "Zojirushi", "model": "NW-QAQ18", "spec": "Cao tần 1.8L 220V, có xửng hấp", "price": 8900000, "list_price": null },
+        { "brand": "Toshiba", "model": "RC-18KGW-K/W", "spec": "Cao tần 1.8L", "price": 8290000, "list_price": null },
+        { "brand": "Toshiba", "model": "RC-18RH(CG)VN", "spec": "Cao tần 1.8L", "price": 4950000, "list_price": null },
+        { "brand": "Toshiba", "model": "RC-10VXM-RS", "spec": "Cao tần áp suất 1L, 100V", "price": 8800000, "list_price": null, "note": "1.8L: 13.000.000₫" },
+        { "brand": "Tiger", "model": "JPI-A100-WO", "spec": "Áp suất 1L 2 bi", "price": 8900000, "list_price": null },
+        { "brand": "Tiger", "model": "JPI-A100-KO", "spec": "Áp suất 1L 2 bi", "price": 9000000, "list_price": null },
+        { "brand": "Tiger", "model": "JKT-S10W", "spec": "Cao tần 1L 220V, Tacook", "price": 9600000, "list_price": null },
+        { "brand": "Tiger", "model": "JKT-S18W", "spec": "Cao tần 1.8L 220V", "price": 10300000, "list_price": null },
+        { "brand": "Tiger", "model": "JPM-H18V", "spec": "Áp suất 1.8L", "price": 10900000, "list_price": null },
+        { "brand": "Tiger", "model": "JPK-W10W", "spec": "Áp suất 1L", "price": 10990000, "list_price": null },
+        { "brand": "Tiger", "model": "JPI-X180-KX", "spec": "Áp suất 1.8L 2 bi cao cấp", "price": 14200000, "list_price": null },
+        { "brand": "Toshiba", "model": "RC-10ZWT-K", "spec": "Áp suất hút chân không 1L 100V", "price": 16500000, "list_price": null },
+        { "brand": "Souyi", "model": "SY-138", "spec": "Nồi tách đường 0.8L 100V", "price": 5590000, "list_price": null },
+        { "brand": "Zojirushi", "model": "NW-NA18-BZ", "spec": "Cao tần AI 1.8L", "price": 21500000, "list_price": null },
+        { "brand": "Zojirushi", "model": "NP-BSQ18V-TA", "spec": "Cao tần AI 1.8L", "price": 22900000, "list_price": null }
+      ]
+    },
+    "may-suoi": {
+      "label": "Máy sưởi & Sưởi phòng tắm",
+      "products": [
+        { "brand": "Panasonic", "model": "FV-30BY1", "spec": "Quạt hút sưởi thông gió phòng tắm", "price": 4690000, "list_price": null },
+        { "brand": "Sharp", "model": "HX-SK12-W", "spec": "Sưởi gốm tạo ẩm 100V", "price": 5500000, "list_price": null },
+        { "brand": "Panasonic", "model": "DS-FKS1206-C", "spec": "Sưởi gốm bù ẩm 100V", "price": 6100000, "list_price": null },
+        { "brand": "Panasonic", "model": "FV-30BG3", "spec": "Quạt hút sưởi thông gió phòng tắm", "price": 7500000, "list_price": null },
+        { "brand": "Takasu", "model": "BF-231SJA", "spec": "Sưởi gốm thông gió phòng tắm", "price": 7900000, "list_price": null },
+        { "brand": "Mitsubishi", "model": "WD-240DK2", "spec": "Sưởi gốm + thông gió phòng tắm", "price": 9500000, "list_price": null }
+      ]
+    },
+    "lo-vi-song": {
+      "label": "Lò vi sóng",
+      "products": [
+        { "brand": "Hitachi", "model": "MRO-S8B", "spec": "Lò vi sóng + nướng 31L 3D", "price": 9200000, "list_price": null }
+      ]
+    }
+  }
+}
