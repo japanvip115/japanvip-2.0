@@ -63,7 +63,7 @@ export const openSans = Open_Sans({
 
 // ─── Font Registry ────────────────────────────────────────────────────────────
 
-export type FontKey = 'be-vietnam-pro' | 'inter' | 'noto-sans' | 'roboto' | 'open-sans'
+export type FontKey = 'be-vietnam-pro' | 'inter' | 'noto-sans' | 'roboto' | 'open-sans' | 'myriad-pro'
 
 export const DEFAULT_FONT: FontKey = 'be-vietnam-pro'
 
@@ -110,6 +110,13 @@ export const FONT_REGISTRY: Record<FontKey, FontMeta> = {
     cssVar: '--font-open-sans',
     specimen: 'Tiếng Việt: Thưở ấy, đất nước tươi đẹp. 0123 ABCDE',
     description: 'Tỉ lệ x-height cao, dễ đọc ở cỡ nhỏ. Trung tính và chuyên nghiệp.',
+  },
+  'myriad-pro': {
+    key: 'myriad-pro',
+    label: 'Myriad Pro',
+    cssVar: '--font-myriad-pro',
+    specimen: 'Tiếng Việt: Thưở ấy, đất nước tươi đẹp. 0123 ABCDE',
+    description: 'Font cao cấp của Adobe — sang trọng, hiện đại. Cùng font Toshiba Lifestyle dùng.',
   },
 }
 
