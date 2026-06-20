@@ -160,7 +160,7 @@ export async function POST(req: Request) {
 }
 
 function buildPrompt(type: string, productName: string, specs: string, keywords: string, extra: string, customInstruction?: string, maxWords?: number): string {
-  const base = `Sản phẩm: ${productName}\n${specs ? `Thông số kỹ thuật:\n${specs}\n` : ''}${keywords ? `Từ khóa SEO: ${keywords}\n` : ''}${extra ? `Thông tin thêm: ${extra}\n` : ''}⚠️ QUAN TRỌNG: Trả về HTML thuần túy, KHÔNG bọc trong \`\`\`html hay bất kỳ markdown code fence nào.\n`
+  const base = `Sản phẩm: ${productName}\n${specs ? `Thông số kỹ thuật:\n${specs}\n` : ''}${keywords ? `Từ khóa SEO: ${keywords}\n` : ''}${extra ? `Thông tin thêm: ${extra}\n` : ''}⚠️ QUAN TRỌNG:\n- Toàn bộ nội dung viết bằng TIẾNG VIỆT. Dịch tên sản phẩm, thông số, tính năng sang tiếng Việt tự nhiên.\n- Trả về HTML thuần túy, KHÔNG bọc trong \`\`\`html hay bất kỳ markdown code fence nào.\n`
   const instruction = customInstruction?.trim() ? `\n\n📌 Yêu cầu bổ sung:\n${customInstruction.trim()}` : ''
 
   switch (type) {

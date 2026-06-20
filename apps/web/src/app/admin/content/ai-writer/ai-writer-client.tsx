@@ -864,8 +864,12 @@ export function AiWriterClient({ products }: { products: ProductSummary[] }) {
                     />
                     <button
                       onClick={async () => {
-                        const text = await navigator.clipboard.readText()
-                        if (text.startsWith('http')) setJapanUrl(text.trim())
+                        try {
+                          const text = await navigator.clipboard.readText()
+                          if (text.startsWith('http')) setJapanUrl(text.trim())
+                        } catch {
+                          // browser blocked clipboard access — user can paste manually
+                        }
                       }}
                       title="Paste từ clipboard"
                       className="absolute right-1.5 top-1/2 -translate-y-1/2 flex items-center gap-1 rounded-md bg-gray-700 hover:bg-gray-600 px-2 py-1 text-[10px] font-semibold text-gray-300 transition"
@@ -998,8 +1002,12 @@ export function AiWriterClient({ products }: { products: ProductSummary[] }) {
                     />
                     <button
                       onClick={async () => {
-                        const text = await navigator.clipboard.readText()
-                        if (text.startsWith('http')) setCompetitorUrl(text.trim())
+                        try {
+                          const text = await navigator.clipboard.readText()
+                          if (text.startsWith('http')) setCompetitorUrl(text.trim())
+                        } catch {
+                          // browser blocked clipboard access — user can paste manually
+                        }
                       }}
                       className="absolute right-1.5 top-1/2 -translate-y-1/2 flex items-center gap-1 rounded-md bg-gray-700 hover:bg-gray-600 px-2 py-1 text-[10px] font-semibold text-gray-300 transition"
                     >
