@@ -31,7 +31,7 @@ function clamp(v: number) { return Math.max(0, Math.min(100, v)) }
 function posToXY(pos: string): [number, number] {
   const parts = (pos ?? '50% 50%').trim().split(/\s+/)
   const parse = (s: string) => parseInt(s) || 50
-  return [parse(parts[0]), parse(parts[1] ?? '50%')]
+  return [parse(parts[0] ?? '50%'), parse(parts[1] ?? '50%')]
 }
 
 function toSlug(str: string) {
