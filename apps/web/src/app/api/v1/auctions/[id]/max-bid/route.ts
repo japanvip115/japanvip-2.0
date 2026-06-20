@@ -5,6 +5,7 @@ import { prisma } from '@japanvip/db'
 import { rateLimit } from '@/lib/rate-limit'
 import { apiSuccess, apiError, handleApiError } from '@/lib/api-response'
 import { placeBid } from '@/modules/auction/services/bid.service'
+import { checkBidLiability } from '@/modules/auction/services/liability.service'
 import { validateFingerprintServer } from '@/lib/device-fingerprint'
 import { getClientIp } from '@/lib/get-client-ip'
 
@@ -66,10 +67,15 @@ export async function POST(req: NextRequest, { params }: Params) {
     // Fetch auction to validate
     const auction = await prisma.auction.findUnique({
       where: { id: auctionId },
-      select: { status: true, currentPrice: true, minIncrement: true, endsAt: true, extendedEnd: true, winnerId: true },
+      select: { status: true, currentPrice: true, minIncrement: true, endsAt: true, extendedEnd: true, winnerId: true, createdBy: true, partnerId: true },
     })
     if (!auction) return apiError('Phiên đấu giá không tồn tại', 404)
     if (auction.status !== 'LIVE') return apiError('Phiên đấu giá không còn hoạt động', 400)
+
+    // Chống shill-bid: người tạo / chủ phiên không được đặt max-bid
+    if (auction.createdBy === session.user.id || auction.partnerId === session.user.id) {
+      return apiError('Người tạo hoặc chủ phiên đấu giá không thể tham gia đặt giá.', 403)
+    }
 
     const now = new Date()
     const effectiveEnd = auction.extendedEnd ?? auction.endsAt
@@ -87,6 +93,17 @@ export async function POST(req: NextRequest, { params }: Params) {
     const maxValidBid = minRequired + minIncrement * 200
     if (body.maxAmount > maxValidBid) {
       return apiError(`Max Bid tối đa ${maxValidBid.toLocaleString('vi-VN')}₫ cho phiên này`, 400)
+    }
+
+    // Deposit liability — auto-bid không được vượt trần bảo lãnh theo cọc
+    const liabilityError = await checkBidLiability(session.user.id, auctionId, body.maxAmount)
+    if (liabilityError) {
+      return NextResponse.json({
+        success: false,
+        error: liabilityError.code,
+        message: liabilityError.message,
+        code: liabilityError.code,
+      }, { status: 403 })
     }
 
     const fp = validateFingerprintServer(body.deviceFingerprint) ? body.deviceFingerprint! : null

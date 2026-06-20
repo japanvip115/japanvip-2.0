@@ -203,8 +203,8 @@ export function AuctionDetailClient({
         setBids((prev) => [{
           id: Date.now().toString(),
           amount: event.data.amount,
-          bidderId: event.data.bidderId,
-          bidderName: event.data.bidderId === userId ? 'Bạn' : 'Ẩn danh',
+          bidderId: event.data.bidderId ?? '',
+          bidderName: event.data.bidderId && event.data.bidderId === userId ? 'Bạn' : 'Ẩn danh',
           createdAt: new Date().toISOString(),
         }, ...prev.slice(0, 19)])
         break

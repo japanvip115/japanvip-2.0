@@ -6,6 +6,7 @@ import { AUCTION_STATUS_LABELS, AUCTION_STATUS_COLORS } from '@/lib/auction-stat
 import { getWalletBalance } from '@/modules/payment/wallet.service'
 import Link from 'next/link'
 import Image from 'next/image'
+import { PayWithVnpayButton } from '@/components/payment/pay-with-vnpay-button'
 
 export const metadata: Metadata = { title: 'Đấu Giá Của Tôi' }
 export const dynamic = 'force-dynamic'
@@ -54,6 +55,16 @@ export default async function DashboardAuctionsPage() {
     select: { auctionId: true },
   })
   const winningSet = new Set(winningBids.map((b) => b.auctionId))
+
+  // Settlement chờ thanh toán (người thắng phải trả)
+  const pendingSettlements = await prisma.auctionSettlement.findMany({
+    where: { winnerId: userId, status: 'PENDING' },
+    select: {
+      id: true,
+      totalPayable: true,
+      auction: { select: { product: { select: { name: true } } } },
+    },
+  })
 
   const hasBalance = wallet.available > 0
 
@@ -122,6 +133,25 @@ export default async function DashboardAuctionsPage() {
       </div>
 
       {/* My bids */}
+      {pendingSettlements.length > 0 && (
+        <div>
+          <h2 className="mb-3 text-base font-bold text-gray-800">🏆 Cần thanh toán</h2>
+          <div className="space-y-3">
+            {pendingSettlements.map((s) => (
+              <div key={s.id} className="rounded-xl border border-yellow-300 bg-yellow-50 p-4">
+                <p className="font-medium text-gray-900">{s.auction.product.name}</p>
+                <p className="mt-0.5 text-sm text-gray-600">
+                  Tổng phải trả: <strong className="text-brand-red">{formatVND(Number(s.totalPayable))}</strong> · thanh toán trong 3 ngày
+                </p>
+                <div className="mt-3 max-w-xs">
+                  <PayWithVnpayButton purpose="AUCTION_SETTLEMENT" referenceId={s.id} amount={Number(s.totalPayable)} />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {bids.length > 0 && (
         <div>
           <h2 className="mb-3 text-base font-bold text-gray-800">Phiên đã tham gia</h2>

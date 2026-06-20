@@ -29,7 +29,7 @@ export type ApiResponse<T> = ApiSuccessResponse<T> | ApiErrorResponse
 
 // Auction event types for SSE
 export type AuctionEvent =
-  | { type: 'bid_placed'; data: { bidderId: string; amount: number; newCurrentPrice: number; bidCount: number; newEndTime?: string } }
+  | { type: 'bid_placed'; data: { bidderId?: string; amount: number; newCurrentPrice: number; bidCount: number; newEndTime?: string } }
   | { type: 'auction_ended'; data: { winnerId: string | null; winnerAmount: number | null } }
   | { type: 'auction_extended'; data: { newEndTime: string } }
   | { type: 'countdown_sync'; data: { serverTime: string; endsAt: string } }

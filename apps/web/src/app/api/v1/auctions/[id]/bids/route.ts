@@ -10,6 +10,7 @@ import { apiSuccess, apiError, handleApiError } from '@/lib/api-response'
 import { isFraudRuleEnabled, getFraudSetting, writeAuditLog } from '@/lib/fraud-settings'
 import { validateFingerprintServer } from '@/lib/device-fingerprint'
 import { getClientIp } from '@/lib/get-client-ip'
+import { checkBidLiability } from '@/modules/auction/services/liability.service'
 
 type Params = { params: Promise<{ id: string }> }
 
@@ -111,46 +112,15 @@ export async function POST(req: NextRequest, { params }: Params) {
 
   const deviceFingerprint = validateFingerprintServer(body.deviceFingerprint) ? body.deviceFingerprint! : null
 
-  // Deposit liability ratio — bid không được vượt 20× tổng tiền cọc đã duyệt
-  const totalDeposit = await prisma.transaction.aggregate({
-    where: { userId, type: 'DEPOSIT', status: 'COMPLETED' },
-    _sum: { amount: true },
-  })
-  const depositSum = Number(totalDeposit._sum.amount ?? 0)
-  if (depositSum > 0 && body.amount > depositSum * 20) {
+  // Deposit liability — bid ≤ 20× cọc, và tổng liability across phiên ≤ 10× cọc
+  const liabilityError = await checkBidLiability(userId, auctionId, body.amount)
+  if (liabilityError) {
     return NextResponse.json({
       success: false,
-      error: 'DEPOSIT_LIMIT',
-      message: `Giá đặt vượt quá giới hạn bảo lãnh. Tổng cọc ${depositSum.toLocaleString('vi-VN')}₫ cho phép tối đa ${(depositSum * 20).toLocaleString('vi-VN')}₫.`,
-      code: 'DEPOSIT_LIMIT',
+      error: liabilityError.code,
+      message: liabilityError.message,
+      code: liabilityError.code,
     }, { status: 403 })
-  }
-
-  // Cross-auction liability — tổng bid cao nhất của user trong các phiên LIVE + bid mới ≤ 10× tiền cọc
-  if (depositSum > 0) {
-    const topBids = await prisma.$queryRaw<{ auction_id: string; max_amount: bigint }[]>`
-      SELECT DISTINCT ON (auction_id) auction_id, amount as max_amount
-      FROM bids b
-      WHERE bidder_id = ${userId}::uuid
-        AND auction_id != ${auctionId}::uuid
-        AND EXISTS (
-          SELECT 1 FROM auctions a WHERE a.id = b.auction_id AND a.status = 'LIVE'
-        )
-      ORDER BY auction_id, amount DESC
-    `
-    const existingLiability = topBids.reduce((sum, r) => sum + Number(r.max_amount), 0)
-    if (existingLiability + body.amount > depositSum * 10) {
-      const maxAllowed = depositSum * 10 - existingLiability
-      const message = existingLiability === 0
-        ? `Giá đặt (${body.amount.toLocaleString('vi-VN')}₫) vượt quá 10× tiền cọc của bạn (${depositSum.toLocaleString('vi-VN')}₫). Vui lòng nạp thêm tiền đặt cọc để tham gia.`
-        : `Bạn đang tham gia ${topBids.length} phiên khác (tổng ${existingLiability.toLocaleString('vi-VN')}₫). Mức giá tối đa bạn có thể đặt thêm là ${maxAllowed > 0 ? maxAllowed.toLocaleString('vi-VN') : 0}₫.`
-      return NextResponse.json({
-        success: false,
-        error: 'CROSS_AUCTION_LIMIT',
-        message,
-        code: 'CROSS_AUCTION_LIMIT',
-      }, { status: 403 })
-    }
   }
 
   // Cooling-off — nếu bật, check user có thắng phiên cùng category trong N ngày không
@@ -184,10 +154,19 @@ export async function POST(req: NextRequest, { params }: Params) {
   // Fetch auction
   const auction = await prisma.auction.findUnique({
     where: { id: auctionId },
-    select: { status: true, currentPrice: true, minIncrement: true, startPrice: true, endsAt: true, extendedEnd: true },
+    select: { status: true, currentPrice: true, minIncrement: true, startPrice: true, endsAt: true, extendedEnd: true, createdBy: true, partnerId: true },
   })
   if (!auction) return apiError('Phiên đấu giá không tồn tại', 404)
   if (auction.status !== 'LIVE') return apiError('Phiên đấu giá không còn hoạt động', 400)
+
+  // Chống shill-bid: người tạo phiên / chủ ký gửi không được tự đặt giá
+  if (auction.createdBy === userId || auction.partnerId === userId) {
+    return NextResponse.json({
+      success: false,
+      error: 'Người tạo hoặc chủ phiên đấu giá không thể tham gia đặt giá.',
+      code: 'SELF_BID_FORBIDDEN',
+    }, { status: 403 })
+  }
 
   const currentPrice = Number(auction.currentPrice)
   const minIncrement = Number(auction.minIncrement)
@@ -278,7 +257,14 @@ export async function POST(req: NextRequest, { params }: Params) {
       if (otpRecord.amount && Number(otpRecord.amount) !== body.amount) {
         return apiError('Mã OTP này không hợp lệ cho số tiền bid hiện tại.', 400)
       }
-      await prisma.bidConfirmOtp.update({ where: { id: otpRecord.id }, data: { used: true } })
+      // Atomic claim — chỉ 1 request đồng thời chiếm được OTP (chống reuse)
+      const otpClaim = await prisma.bidConfirmOtp.updateMany({
+        where: { id: otpRecord.id, used: false },
+        data: { used: true },
+      })
+      if (otpClaim.count !== 1) {
+        return apiError('Mã OTP đã được sử dụng. Vui lòng yêu cầu mã mới.', 400)
+      }
     }
   }
 

@@ -14,6 +14,8 @@ const CONFIGS: Record<string, RateLimitConfig> = {
   'auction:watch':   { limit: 20, windowSeconds: 60 },
   'bid:otp':         { limit: 3,  windowSeconds: 60 },
   'admin:upload':    { limit: 30, windowSeconds: 60 },
+  'quick-order':     { limit: 5,  windowSeconds: 3600 },
+  'quick-order-otp': { limit: 3,  windowSeconds: 3600 },
   'default':         { limit: 60, windowSeconds: 60 },
 }
 

@@ -36,6 +36,7 @@ export function QuickOrderModal({ open, onClose, product }: Props) {
   const overlayRef = useRef<HTMLDivElement>(null)
   const nameRef = useRef<HTMLInputElement>(null)
   const otpRef = useRef<HTMLInputElement>(null)
+  const idempotencyRef = useRef<string>('')
 
   useEffect(() => {
     if (open) {
@@ -52,6 +53,7 @@ export function QuickOrderModal({ open, onClose, product }: Props) {
       setTimeout(() => {
         setStep('form'); setError(''); setName(''); setEmail(''); setPhone('')
         setAddress(''); setNotes(''); setQuantity(1); setOtpCode(''); setCountdown(0)
+        idempotencyRef.current = ''
       }, 300)
     }
   }, [open])
@@ -96,10 +98,14 @@ export function QuickOrderModal({ open, onClose, product }: Props) {
 
     setLoading(true)
     setError('')
+    if (!idempotencyRef.current) idempotencyRef.current = crypto.randomUUID()
     try {
       const res = await fetch('/api/v1/orders/quick', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'x-idempotency-key': idempotencyRef.current,
+        },
         body: JSON.stringify({
           name: name.trim(),
           email: email.trim(),
@@ -109,10 +115,6 @@ export function QuickOrderModal({ open, onClose, product }: Props) {
           notes: notes.trim() || undefined,
           quantity,
           productId: product.id,
-          productName: product.name,
-          productImage: product.image,
-          priceVnd: product.priceVnd,
-          productSlug: product.slug,
         }),
       })
       const data = await res.json()

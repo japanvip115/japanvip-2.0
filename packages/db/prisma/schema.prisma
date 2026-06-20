@@ -513,6 +513,8 @@ model Auction {
   autoExtend      Boolean       @default(true) @map("auto_extend")
   extendMinutes   Int           @default(5) @map("extend_minutes")
   extendTrigger   Int           @default(3) @map("extend_trigger")
+  extensionCount  Int           @default(0) @map("extension_count")
+  maxExtensions   Int           @default(20) @map("max_extensions")
   winnerId        String?       @map("winner_id") @db.Uuid
   winningBidId    String?       @map("winning_bid_id") @db.Uuid
   commissionRate  Decimal       @default(0.10) @map("commission_rate") @db.Decimal(5, 4)
@@ -533,6 +535,8 @@ model Auction {
 
   @@index([status])
   @@index([startsAt, endsAt])
+  @@index([status, endsAt])
+  @@index([status, extendedEnd])
   @@index([partnerId])
   @@index([winnerId])
   @@map("auctions")
@@ -631,6 +635,45 @@ model AuctionSettlement {
   @@index([winnerId])
   @@index([status])
   @@map("auction_settlements")
+}
+
+enum PaymentProvider {
+  VNPAY
+  MOMO
+}
+
+enum PaymentPurpose {
+  AUCTION_SETTLEMENT
+  BFJ_DEPOSIT
+}
+
+enum PaymentIntentStatus {
+  PENDING
+  PAID
+  FAILED
+  EXPIRED
+}
+
+model PaymentIntent {
+  id            String              @id @default(uuid()) @db.Uuid
+  code          String              @unique @db.VarChar(64)
+  provider      PaymentProvider
+  purpose       PaymentPurpose
+  userId        String              @map("user_id") @db.Uuid
+  amount        Decimal             @db.Decimal(20, 2)
+  status        PaymentIntentStatus @default(PENDING)
+  referenceType String              @map("reference_type") @db.VarChar(40)
+  referenceId   String              @map("reference_id") @db.Uuid
+  providerRef   String?             @map("provider_ref") @db.VarChar(100)
+  providerData  Json?               @map("provider_data")
+  paidAt        DateTime?           @map("paid_at") @db.Timestamptz
+  createdAt     DateTime            @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt     DateTime            @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@index([userId])
+  @@index([status])
+  @@index([referenceType, referenceId])
+  @@map("payment_intents")
 }
 
 // ─────────────────────────────────────────

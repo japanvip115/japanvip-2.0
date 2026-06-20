@@ -70,12 +70,14 @@ export async function placeBid(input: PlaceBidInput): Promise<BidResult> {
             auto_extend: boolean
             extend_minutes: number
             extend_trigger: number
+            extension_count: number
+            max_extensions: number
             winner_id: string | null
             buy_now_price: string | null
           }>
         >`SELECT id, status, current_price, min_increment, bid_count, ends_at,
                  extended_end, auto_extend, extend_minutes, extend_trigger,
-                 winner_id, buy_now_price
+                 extension_count, max_extensions, winner_id, buy_now_price
           FROM auctions WHERE id = ${input.auctionId}::uuid FOR UPDATE`
 
         const auc = auction[0]
@@ -136,7 +138,7 @@ export async function placeBid(input: PlaceBidInput): Promise<BidResult> {
 
         let newEndTime = effectiveEnd
         let extended = false
-        if (auc.auto_extend) {
+        if (auc.auto_extend && auc.extension_count < auc.max_extensions) {
           const minutesLeft = (effectiveEnd.getTime() - now.getTime()) / 60000
           if (minutesLeft <= auc.extend_trigger) {
             newEndTime = new Date(effectiveEnd.getTime() + auc.extend_minutes * 60000)
@@ -151,7 +153,7 @@ export async function placeBid(input: PlaceBidInput): Promise<BidResult> {
             bidCount: { increment: 1 },
             winnerId: input.bidderId,
             winningBidId: newBid.id,
-            ...(extended ? { extendedEnd: newEndTime } : {}),
+            ...(extended ? { extendedEnd: newEndTime, extensionCount: { increment: 1 } } : {}),
           },
         })
 
@@ -301,39 +303,54 @@ export async function endAuction(auctionId: string): Promise<void> {
   const effectiveEnd = auction.extendedEnd ?? auction.endsAt
   if (now < effectiveEnd) return
 
-  await prisma.auction.update({
-    where: { id: auctionId },
-    data: { status: 'ENDED' },
+  // Atomic guard + settlement trong cùng transaction — chống race condition khi
+  // nhiều cron instance chạy song song (chỉ instance đầu tiên đoạt được status).
+  const claimed = await prisma.$transaction(async (tx) => {
+    const claim = await tx.auction.updateMany({
+      where: { id: auctionId, status: 'LIVE' },
+      data: { status: 'ENDED' },
+    })
+    if (claim.count === 0) return false // instance khác đã xử lý
+
+    if (auction.winnerId && auction.currentPrice) {
+      const hammerPrice = Number(auction.currentPrice)
+      const buyerPremiumAmount = Math.round(hammerPrice * Number(auction.buyerPremium))
+      const totalPayable = hammerPrice + buyerPremiumAmount
+      const commissionAmount = auction.partnerId
+        ? Math.round(hammerPrice * Number(auction.commissionRate))
+        : null
+      const partnerPayout = commissionAmount ? hammerPrice - commissionAmount : null
+
+      await tx.auctionSettlement.create({
+        data: {
+          auctionId,
+          winnerId: auction.winnerId,
+          hammerPrice,
+          buyerPremiumAmount,
+          totalPayable,
+          partnerId: auction.partnerId,
+          commissionAmount,
+          partnerPayout,
+          status: 'PENDING',
+        },
+      })
+
+      const settlementDue = new Date(now.getTime() + 3 * 24 * 60 * 60 * 1000)
+      await tx.auction.update({
+        where: { id: auctionId },
+        data: { status: 'SETTLED', settlementDue },
+      })
+    }
+    return true
   })
 
+  if (!claimed) return
+
+  // Phần thông báo/email đặt ngoài transaction để không giữ lock DB lâu.
   if (auction.winnerId && auction.currentPrice) {
     const hammerPrice = Number(auction.currentPrice)
     const buyerPremiumAmount = Math.round(hammerPrice * Number(auction.buyerPremium))
     const totalPayable = hammerPrice + buyerPremiumAmount
-    const commissionAmount = auction.partnerId
-      ? Math.round(hammerPrice * Number(auction.commissionRate))
-      : null
-    const partnerPayout = commissionAmount ? hammerPrice - commissionAmount : null
-
-    await prisma.auctionSettlement.create({
-      data: {
-        auctionId,
-        winnerId: auction.winnerId,
-        hammerPrice,
-        buyerPremiumAmount,
-        totalPayable,
-        partnerId: auction.partnerId,
-        commissionAmount,
-        partnerPayout,
-        status: 'PENDING',
-      },
-    })
-
-    const settlementDue = new Date(now.getTime() + 3 * 24 * 60 * 60 * 1000)
-    await prisma.auction.update({
-      where: { id: auctionId },
-      data: { status: 'SETTLED', settlementDue },
-    })
 
     notifyUser({
       userId: auction.winnerId,

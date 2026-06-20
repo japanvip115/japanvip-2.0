@@ -63,7 +63,6 @@ export async function GET(req: NextRequest, { params }: Params) {
               data: {
                 newCurrentPrice: current.currentPrice,
                 bidCount: current.bidCount,
-                bidderId: '',
                 amount: current.currentPrice,
               },
             })

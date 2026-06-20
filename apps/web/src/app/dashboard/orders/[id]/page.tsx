@@ -6,6 +6,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { DepositProofForm } from '@/components/order/deposit-proof-form'
+import { PayWithVnpayButton } from '@/components/payment/pay-with-vnpay-button'
 
 type Props = { params: Promise<{ id: string }> }
 
@@ -191,6 +192,12 @@ export default async function OrderDetailPage({ params }: Props) {
       {order.status === 'AWAITING_DEPOSIT' && effectiveDeposit && (
         <div className="mb-6 rounded-xl border bg-white p-6">
           <h2 className="mb-4 font-bold text-gray-900">Đặt Cọc</h2>
+          {!order.depositPaid && (
+            <div className="mb-4">
+              <PayWithVnpayButton purpose="BFJ_DEPOSIT" referenceId={order.id} amount={effectiveDeposit} />
+              <p className="mt-2 text-center text-xs text-gray-400">Hoặc chuyển khoản thủ công bên dưới</p>
+            </div>
+          )}
           <DepositProofForm
             orderId={order.id}
             depositAmount={effectiveDeposit}

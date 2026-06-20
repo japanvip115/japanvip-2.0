@@ -1,18 +1,26 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useCartStore } from '@/store/cart'
 import { formatVND } from '@japanvip/utils'
 
-const JPY_RATE = 175
+const FALLBACK_JPY_RATE = 175
 
 export function CartPageClient() {
   const router = useRouter()
   const { items, removeItem, updateQuantity, clear } = useCartStore()
+  const [JPY_RATE, setJpyRate] = useState(FALLBACK_JPY_RATE)
   const [notes, setNotes] = useState('')
+
+  useEffect(() => {
+    fetch('/api/v1/exchange-rate?from=JPY&to=VND')
+      .then((r) => r.json())
+      .then((d) => { if (d?.data?.rate) setJpyRate(d.data.rate) })
+      .catch(() => {})
+  }, [])
   const [isOrdering, setIsOrdering] = useState(false)
   const [orderSuccess, setOrderSuccess] = useState<{ orderNumber: string; orderId: string } | null>(null)
   const [error, setError] = useState('')

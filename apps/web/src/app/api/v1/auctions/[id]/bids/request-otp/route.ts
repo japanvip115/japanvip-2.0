@@ -67,15 +67,15 @@ export async function POST(req: NextRequest, { params }: Params) {
         { status: 429 }
       )
     }
-    // Giới hạn 5 lần request
-    if (existing.requestCount >= 5) {
-      await prisma.bidConfirmOtp.update({ where: { id: existing.id }, data: { used: true } })
-      return NextResponse.json({ success: false, error: 'Đã yêu cầu OTP quá nhiều lần. Vui lòng bắt đầu lại.' }, { status: 429 })
-    }
-    await prisma.bidConfirmOtp.update({
-      where: { id: existing.id },
+    // Giới hạn 5 lần request — atomic để chống race condition
+    const bumped = await prisma.bidConfirmOtp.updateMany({
+      where: { id: existing.id, requestCount: { lt: 5 } },
       data: { requestCount: { increment: 1 }, lastRequestedAt: new Date() },
     })
+    if (bumped.count === 0) {
+      await prisma.bidConfirmOtp.updateMany({ where: { id: existing.id, used: false }, data: { used: true } })
+      return NextResponse.json({ success: false, error: 'Đã yêu cầu OTP quá nhiều lần. Vui lòng bắt đầu lại.' }, { status: 429 })
+    }
   } else {
     const otp = String(Math.floor(100000 + Math.random() * 900000))
     await prisma.bidConfirmOtp.create({

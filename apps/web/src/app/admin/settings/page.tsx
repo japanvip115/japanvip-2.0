@@ -24,6 +24,7 @@ const GROUPS = [
       { href: '/admin/settings/exchange-rate', icon: '💱', title: 'Tỷ Giá JPY/VND',     desc: 'Cập nhật tỷ giá yên Nhật' },
       { href: '/admin/settings/bfj',           icon: '🛒', title: 'Cài Đặt Mua Hộ',     desc: 'Phí dịch vụ, vận chuyển, SMTP' },
       { href: '/admin/settings/auction-fees',  icon: '🔨', title: 'Phí Đấu Giá',         desc: 'Phí dịch vụ và vận chuyển đấu giá' },
+      { href: '/admin/settings/payment',       icon: '🏦', title: 'Cổng Thanh Toán',     desc: 'VNPay — TmnCode, HashSecret, IPN' },
     ],
   },
   {
