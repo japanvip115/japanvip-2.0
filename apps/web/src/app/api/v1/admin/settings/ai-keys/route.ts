@@ -2,30 +2,7 @@ import { auth } from '@/lib/auth'
 import { hasRole } from '@/lib/auth-types'
 import { prisma } from '@japanvip/db'
 import { encrypt, decrypt } from '@/lib/encrypt'
-
-export type AiProvider = {
-  id: string
-  label: string
-  prefix: string       // key phải bắt đầu bằng prefix này
-  dbKey: string        // key trong SiteSetting
-}
-
-export const AI_PROVIDERS: AiProvider[] = [
-  // ── Text / Chat ────────────────────────────────
-  { id: 'anthropic',  label: 'Anthropic Claude',   prefix: 'sk-ant-',   dbKey: 'ai.anthropic_api_key' },
-  { id: 'openai',     label: 'OpenAI GPT',          prefix: 'sk-',       dbKey: 'ai.openai_api_key' },
-  { id: 'gemini',     label: 'Google Gemini',       prefix: 'AIza',      dbKey: 'ai.gemini_api_key' },
-  // ── Image ─────────────────────────────────────
-  { id: 'stability',  label: 'Stability AI (Image)',prefix: 'sk-',       dbKey: 'ai.stability_api_key' },
-  { id: 'ideogram',   label: 'Ideogram (Image)',    prefix: '',          dbKey: 'ai.ideogram_api_key' },
-  { id: 'replicate',  label: 'Replicate (Image/Video)', prefix: 'r8_',  dbKey: 'ai.replicate_api_key' },
-  // ── Video ─────────────────────────────────────
-  { id: 'runway',      label: 'RunwayML (Video)',       prefix: '',          dbKey: 'ai.runway_api_key' },
-  { id: 'kling',       label: 'Kling AI (Video)',       prefix: '',          dbKey: 'ai.kling_api_key' },
-  // ── Social & Automation ───────────────────────
-  { id: 'postbridge',  label: 'PostBridge',             prefix: '',          dbKey: 'ai.postbridge_api_key' },
-  { id: 'fal',         label: 'fal.ai',                 prefix: '',          dbKey: 'ai.fal_api_key' },
-]
+import { AI_PROVIDERS } from '@/lib/ai-keys'
 
 export async function GET() {
   const session = await auth()
@@ -48,7 +25,6 @@ export async function GET() {
     }
   })
 
-  // Custom providers: key = ai.custom.{id}, meta stored in ai.custom.{id}.meta
   const customRows = allSettings.filter(s => s.key.startsWith('ai.custom.') && !s.key.endsWith('.meta'))
   const custom = customRows.map(row => {
     const id = row.key.replace('ai.custom.', '')
@@ -74,7 +50,6 @@ export async function POST(req: Request) {
 
   const { providerId, apiKey, custom } = await req.json()
 
-  // Custom provider
   if (custom) {
     const { id, label, docsUrl, apiKey: customKey } = custom
     if (!id || !customKey?.trim()) return Response.json({ error: 'Thiếu thông tin' }, { status: 400 })
@@ -133,31 +108,4 @@ export async function DELETE(req: Request) {
 
   await prisma.siteSetting.deleteMany({ where: { key: provider.dbKey } })
   return Response.json({ success: true })
-}
-
-// ── Helper: lấy key đã decrypt theo provider ──────────────────────────────────
-export async function getAiApiKey(providerId: string): Promise<string | null> {
-  const provider = AI_PROVIDERS.find(p => p.id === providerId)
-  if (!provider) return null
-  const row = await prisma.siteSetting.findUnique({ where: { key: provider.dbKey } })
-  if (!row) {
-    // Fallback về env var
-    const envMap: Record<string, string> = {
-      anthropic: 'ANTHROPIC_API_KEY',
-      openai:    'OPENAI_API_KEY',
-      gemini:    'GEMINI_API_KEY',
-      stability: 'STABILITY_API_KEY',
-      replicate: 'REPLICATE_API_KEY',
-      runway:    'RUNWAY_API_KEY',
-      kling:     'KLING_API_KEY',
-      ideogram:  'IDEOGRAM_API_KEY',
-    }
-    return process.env[envMap[providerId] ?? ''] ?? null
-  }
-  try { return decrypt(row.value) } catch { return null }
-}
-
-// Backward compat cho generate-content route
-export async function getAnthropicApiKey(): Promise<string | null> {
-  return getAiApiKey('anthropic')
 }

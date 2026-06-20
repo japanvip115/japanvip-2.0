@@ -1,8 +1,8 @@
 import Anthropic from '@anthropic-ai/sdk'
 import { auth } from '@/lib/auth'
 import { hasRole } from '@/lib/auth-types'
-import { getAiApiKey } from '@/app/api/v1/admin/settings/ai-keys/route'
-import { getContentStyle } from '@/app/api/v1/admin/settings/ai-style/route'
+import { getAiApiKey } from '@/lib/ai-keys'
+import { getContentStyle } from '@/lib/ai-style'
 import { streamWithClaudeCode, findRelevantKnowledge } from '@/lib/claude-code-stream'
 import { prisma } from '@japanvip/db'
 

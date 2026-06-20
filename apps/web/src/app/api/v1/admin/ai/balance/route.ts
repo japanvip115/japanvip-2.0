@@ -1,6 +1,6 @@
 import { auth } from '@/lib/auth'
 import { hasRole } from '@/lib/auth-types'
-import { getAiApiKey } from '@/app/api/v1/admin/settings/ai-keys/route'
+import { getAiApiKey } from '@/lib/ai-keys'
 
 export async function GET() {
   const session = await auth()
