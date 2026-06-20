@@ -1,8 +1,16 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { formatVND } from '@japanvip/utils'
+import { VietQRCode } from '@/components/payment/viet-qr-code'
+
+type VietQRInfo = {
+  enabled: boolean
+  bankId?: string
+  accountNo?: string
+  accountName?: string
+}
 
 type Props = {
   orderId: string
@@ -20,6 +28,16 @@ export function DepositProofForm({ orderId, depositAmount, alreadySubmitted, dep
   const [uploading, setUploading] = useState(false)
   const [success, setSuccess] = useState(alreadySubmitted)
   const [error, setError] = useState('')
+  const [vietqr, setVietqr] = useState<VietQRInfo | null>(null)
+
+  const addInfo = `DAT COC ${orderId.slice(-8).toUpperCase()}`
+
+  useEffect(() => {
+    fetch('/api/v1/payments/vietqr-config')
+      .then((r) => r.json())
+      .then((d: VietQRInfo) => setVietqr(d))
+      .catch(() => setVietqr({ enabled: false }))
+  }, [])
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const f = e.target.files?.[0]
@@ -35,14 +53,12 @@ export function DepositProofForm({ orderId, depositAmount, alreadySubmitted, dep
     setError('')
 
     try {
-      // Step 1: upload image
       const fd = new FormData()
       fd.append('file', file)
       const upRes = await fetch('/api/v1/bfj/upload-proof', { method: 'POST', body: fd })
       const upData = await upRes.json()
       if (!upData.success) throw new Error(upData.error ?? 'Upload thất bại')
 
-      // Step 2: submit proof URL to order
       const res = await fetch(`/api/v1/bfj/orders/${orderId}/deposit-proof`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -83,32 +99,42 @@ export function DepositProofForm({ orderId, depositAmount, alreadySubmitted, dep
 
   return (
     <div className="space-y-5">
-      {/* Bank info */}
-      <div className="rounded-xl border-2 border-brand-red bg-red-50 p-5">
-        <p className="mb-3 text-sm font-bold text-gray-900">Chuyển khoản đặt cọc</p>
-        <div className="space-y-2 text-sm">
-          <div className="flex justify-between">
-            <span className="text-gray-500">Ngân hàng</span>
-            <span className="font-semibold text-gray-900">MB Bank (MBBank)</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-gray-500">Số tài khoản</span>
-            <span className="font-mono font-bold text-gray-900 select-all">0988969896</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-gray-500">Chủ tài khoản</span>
-            <span className="font-semibold text-gray-900">NGUYEN THI GIANG</span>
-          </div>
-          <div className="flex justify-between border-t border-red-200 pt-2 mt-2">
-            <span className="text-gray-500">Nội dung CK</span>
-            <span className="font-mono text-xs font-bold text-brand-red select-all">DAT COC {orderId.slice(-8).toUpperCase()}</span>
-          </div>
-          <div className="flex justify-between rounded-lg bg-white px-3 py-2 border border-red-200">
-            <span className="font-semibold text-gray-700">Số tiền cọc</span>
-            <span className="text-xl font-bold text-brand-red">{formatVND(depositAmount)}</span>
+      {/* VietQR hoặc fallback thông tin thủ công */}
+      {vietqr?.enabled && vietqr.bankId && vietqr.accountNo ? (
+        <VietQRCode
+          bankId={vietqr.bankId}
+          accountNo={vietqr.accountNo}
+          accountName={vietqr.accountName ?? ''}
+          amount={depositAmount}
+          addInfo={addInfo}
+        />
+      ) : (
+        <div className="rounded-xl border-2 border-brand-red bg-red-50 p-5">
+          <p className="mb-3 text-sm font-bold text-gray-900">Chuyển khoản đặt cọc</p>
+          <div className="space-y-2 text-sm">
+            <div className="flex justify-between">
+              <span className="text-gray-500">Ngân hàng</span>
+              <span className="font-semibold text-gray-900">MB Bank (MBBank)</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-500">Số tài khoản</span>
+              <span className="font-mono font-bold text-gray-900 select-all">0988969896</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-500">Chủ tài khoản</span>
+              <span className="font-semibold text-gray-900">NGUYEN THI GIANG</span>
+            </div>
+            <div className="flex justify-between border-t border-red-200 pt-2 mt-2">
+              <span className="text-gray-500">Nội dung CK</span>
+              <span className="font-mono text-xs font-bold text-brand-red select-all">{addInfo}</span>
+            </div>
+            <div className="flex justify-between rounded-lg bg-white px-3 py-2 border border-red-200">
+              <span className="font-semibold text-gray-700">Số tiền cọc</span>
+              <span className="text-xl font-bold text-brand-red">{formatVND(depositAmount)}</span>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Upload receipt */}
       <div>
