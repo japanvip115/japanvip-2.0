@@ -13,9 +13,10 @@ export async function Header() {
   const session = await auth()
   const user = session?.user as SessionUser | undefined
 
-  const [logoRow, blogCategories] = await Promise.all([
+  const [logoRow, blogCategories, productCategories] = await Promise.all([
     prisma.siteSetting.findUnique({ where: { key: 'site_logo_url' } }),
     prisma.blogCategory.findMany({ orderBy: { name: 'asc' }, select: { name: true, slug: true } }),
+    prisma.category.findMany({ where: { isActive: true, parentId: null }, orderBy: { sortOrder: 'asc' }, select: { name: true, slug: true, children: { where: { isActive: true }, orderBy: { sortOrder: 'asc' }, select: { name: true, slug: true } } } }),
   ])
   const logoUrl = logoRow?.value ?? ''
 
@@ -84,7 +85,7 @@ export async function Header() {
               </>
             )}
             {/* Hamburger — mobile only */}
-            <MobileMenuButton blogCategories={blogCategories} />
+            <MobileMenuButton blogCategories={blogCategories} productCategories={productCategories} />
           </div>
         </div>
       </div>
@@ -92,7 +93,7 @@ export async function Header() {
       {/* ── Nav bar (desktop only) ── */}
       <div className="hidden md:block bg-gray-900 text-white">
         <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
-          <NavLinks blogCategories={blogCategories} />
+          <NavLinks blogCategories={blogCategories} productCategories={productCategories} />
         </div>
       </div>
 

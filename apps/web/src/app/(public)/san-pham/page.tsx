@@ -11,6 +11,7 @@ export const revalidate = 60
 type SearchParams = Promise<{
   q?: string
   categoryId?: string
+  categorySlug?: string
   brandId?: string
   condition?: string
   sort?: string
@@ -59,10 +60,30 @@ const CONDITION_OPTIONS: { value: ProductCondition; label: string }[] = [
 ]
 
 export default async function ProductsPage({ searchParams }: { searchParams: SearchParams }) {
-  const { q = '', categoryId = '', brandId = '', condition = '', sort = 'newest', page: pageStr = '1', minPrice = '', maxPrice = '' } = await searchParams
+  const { q = '', categoryId = '', categorySlug = '', brandId = '', condition = '', sort = 'newest', page: pageStr = '1', minPrice = '', maxPrice = '' } = await searchParams
   const page = Math.max(1, parseInt(pageStr))
   const take = 24
   const skip = (page - 1) * take
+
+  // Resolve categorySlug → categoryId(s) bao gồm cả con
+  let resolvedCategoryIds: string[] = []
+  let effectiveCategoryId = categoryId
+  if (categorySlug && !categoryId) {
+    const cat = await prisma.category.findUnique({
+      where: { slug: categorySlug },
+      select: { id: true, children: { select: { id: true } } },
+    })
+    if (cat) {
+      effectiveCategoryId = cat.id
+      resolvedCategoryIds = [cat.id, ...cat.children.map((c) => c.id)]
+    }
+  } else if (categoryId) {
+    const cat = await prisma.category.findUnique({
+      where: { id: categoryId },
+      select: { id: true, children: { select: { id: true } } },
+    })
+    if (cat) resolvedCategoryIds = [cat.id, ...cat.children.map((c) => c.id)]
+  }
 
   const orderBy = sort === 'name_asc'
     ? { name: 'asc' as const }
@@ -76,7 +97,7 @@ export default async function ProductsPage({ searchParams }: { searchParams: Sea
 
   const where = {
     status: 'ACTIVE' as const,
-    ...(categoryId ? { categoryId } : {}),
+    ...(resolvedCategoryIds.length > 0 ? { categoryId: { in: resolvedCategoryIds } } : {}),
     ...(brandId ? { brandId } : {}),
     ...(condition ? { condition: condition as ProductCondition } : {}),
     ...(minPrice || maxPrice ? {
@@ -117,8 +138,8 @@ export default async function ProductsPage({ searchParams }: { searchParams: Sea
       orderBy: { name: 'asc' },
       select: { id: true, name: true },
     }),
-    categoryId ? prisma.category.findUnique({ where: { id: categoryId }, select: { name: true, imageUrl: true, imagePosition: true, description: true } }) : null,
-    !categoryId ? prisma.siteSetting.findMany({ where: { key: { in: ['products_banner_url', 'products_banner_position'] } } }) : null,
+    effectiveCategoryId ? prisma.category.findUnique({ where: { id: effectiveCategoryId }, select: { name: true, imageUrl: true, imagePosition: true, description: true } }) : null,
+    !effectiveCategoryId ? prisma.siteSetting.findMany({ where: { key: { in: ['products_banner_url', 'products_banner_position'] } } }) : null,
   ])
 
   const productsBannerUrl = productsBannerSetting?.find?.((r) => r.key === 'products_banner_url')?.value ?? ''

@@ -21,7 +21,28 @@ function slugify(text: string): string {
     .toLowerCase()
 }
 
+function stripMarkdownFence(html: string): string {
+  // Strip ```html ... ``` or ``` ... ``` wrappers that AI sometimes outputs
+  let s = html
+    .replace(/^```(?:html)?\s*/i, '')
+    .replace(/\s*```\s*$/, '')
+    .trim()
+
+  // Strip leading plain-text lines before the first HTML tag
+  const firstTag = s.indexOf('<')
+  if (firstTag > 0) {
+    const leading = s.slice(0, firstTag).trim()
+    if (leading && !leading.includes('>')) s = s.slice(firstTag).trim()
+  }
+
+  // Remove <h1> tags — product title is already shown in the page header
+  s = s.replace(/<h1[^>]*>[\s\S]*?<\/h1>/gi, '').trim()
+
+  return s
+}
+
 function processDescription(html: string): { processed: string; toc: TocItem[] } {
+  html = stripMarkdownFence(html)
   const toc: TocItem[] = []
   const usedIds = new Map<string, number>()
 
@@ -114,16 +135,23 @@ export function ProductDescription({ description }: { description: string }) {
         <div
           className="prose prose-sm max-w-none text-gray-700 leading-7
             [&_p]:mb-4 [&_p]:leading-7
-            [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:mb-4 [&_ul_li]:mb-1.5
+            [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:mb-4 [&_ul_li]:mb-2
             [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:mb-4
             [&_strong]:font-semibold [&_strong]:text-gray-900
-            [&_h2]:text-lg [&_h2]:font-bold [&_h2]:text-gray-900 [&_h2]:mt-8 [&_h2]:mb-3 [&_h2]:border-l-4 [&_h2]:border-brand-red [&_h2]:pl-3
-            [&_h3]:text-base [&_h3]:font-semibold [&_h3]:text-gray-900 [&_h3]:mt-5 [&_h3]:mb-2
+            [&_h2]:text-xl [&_h2]:font-bold [&_h2]:text-gray-900 [&_h2]:mt-10 [&_h2]:mb-3 [&_h2]:border-l-4 [&_h2]:border-brand-red [&_h2]:pl-4 [&_h2]:leading-snug
+            [&_h3]:text-base [&_h3]:font-bold [&_h3]:text-gray-900 [&_h3]:mt-7 [&_h3]:mb-2.5 [&_h3]:border-l-4 [&_h3]:border-blue-400 [&_h3]:pl-3
             [&_h4]:font-semibold [&_h4]:text-gray-800 [&_h4]:mt-4 [&_h4]:mb-1.5
-            [&_table]:w-full [&_table]:border-collapse [&_table]:mb-6 [&_table]:text-sm [&_table]:rounded-xl [&_table]:overflow-hidden
-            [&_td]:border [&_td]:border-gray-100 [&_td]:px-4 [&_td]:py-2.5
-            [&_th]:border [&_th]:border-gray-100 [&_th]:px-4 [&_th]:py-2.5 [&_th]:bg-gray-50 [&_th]:font-semibold [&_th]:text-left
-            [&_img]:max-w-full [&_img]:rounded-xl [&_img]:my-4 [&_img]:shadow-sm
+            [&_blockquote]:not-italic [&_blockquote]:border-l-4 [&_blockquote]:border-amber-400 [&_blockquote]:bg-amber-50 [&_blockquote]:px-5 [&_blockquote]:py-3 [&_blockquote]:rounded-r-lg [&_blockquote]:text-amber-900 [&_blockquote]:my-5 [&_blockquote]:text-sm
+            [&_table]:w-full [&_table]:border-collapse [&_table]:mb-8 [&_table]:text-sm [&_table]:rounded-xl [&_table]:overflow-hidden [&_table]:shadow-sm [&_table]:border [&_table]:border-gray-200
+            [&_thead]:bg-gray-800 [&_thead_th]:text-white [&_thead_th]:font-semibold [&_thead_th]:text-left [&_thead_th]:px-4 [&_thead_th]:py-3 [&_thead_th]:text-[13px]
+            [&_tbody_tr:nth-child(even)]:bg-gray-50 [&_tbody_tr:nth-child(odd)]:bg-white [&_tbody_tr]:border-b [&_tbody_tr]:border-gray-100 [&_tbody_tr:last-child]:border-0
+            [&_td]:px-4 [&_td]:py-2.5 [&_td]:text-gray-700 [&_td:first-child]:font-medium [&_td:first-child]:text-gray-900 [&_td:first-child]:w-2/5
+            [&_th]:px-4 [&_th]:py-2.5 [&_th]:bg-gray-50 [&_th]:font-semibold [&_th]:text-gray-700 [&_th]:text-left [&_th]:border-b [&_th]:border-gray-200
+            [&_.callout]:rounded-xl [&_.callout]:border [&_.callout]:border-blue-100 [&_.callout]:bg-blue-50 [&_.callout]:px-5 [&_.callout]:py-4 [&_.callout]:my-5 [&_.callout]:text-sm [&_.callout]:text-blue-900
+            [&_.compare-grid]:grid [&_.compare-grid]:grid-cols-3 [&_.compare-grid]:gap-3 [&_.compare-grid]:my-5 [&_.compare-grid]:text-center [&_.compare-grid]:text-sm
+            [&_.compare-box]:rounded-xl [&_.compare-box]:border [&_.compare-box]:px-3 [&_.compare-box]:py-4
+            [&_.compare-val]:block [&_.compare-val]:text-2xl [&_.compare-val]:font-extrabold [&_.compare-val]:mb-1
+            [&_img]:max-w-full [&_img]:rounded-xl [&_img]:my-6 [&_img]:shadow-sm
             [&_a]:text-brand-red [&_a]:underline
             scroll-mt-20"
           dangerouslySetInnerHTML={{ __html: processed }}

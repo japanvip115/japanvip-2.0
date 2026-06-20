@@ -123,9 +123,35 @@ export default async function ProductDetailPage({ params }: Props) {
   const warrantyItems = product.attributes
     .filter((a) => a.name.startsWith('[warranty]'))
     .map((a) => ({ ...a, name: a.name.replace('[warranty]', '').trim() }))
-  const specAttributes = product.attributes.filter(
-    (a) => !a.name.startsWith('[promo]') && !a.name.startsWith('[warranty]'),
-  )
+  const quickItems = product.attributes
+    .filter((a) => a.name.startsWith('[quick]'))
+    .map((a) => ({ ...a, name: a.name.replace('[quick]', '').trim() }))
+  const faqItems = product.attributes
+    .filter((a) => a.name.startsWith('[faq]'))
+    .map((a) => ({ ...a, name: a.name.replace('[faq]', '').trim() }))
+  const videoItems = product.attributes
+    .filter((a) => a.name.startsWith('[video]'))
+    .map((a) => ({ ...a, name: a.name.replace('[video]', '').trim() }))
+
+  // Grouped vs ungrouped tech specs
+  const SPECIAL = ['[promo]', '[warranty]', '[quick]', '[faq]', '[video]']
+  const rawSpecs = product.attributes.filter((a) => !SPECIAL.some((p) => a.name.startsWith(p)))
+
+  type SpecGroup = { group: string; items: typeof rawSpecs }
+  const specGroups: SpecGroup[] = []
+  const specAttributes: typeof rawSpecs = []
+  for (const attr of rawSpecs) {
+    const m = attr.name.match(/^\[group:([^\]]+)\](.*)$/)
+    if (m) {
+      const group = m[1]!.trim()
+      const name = m[2]!.trim()
+      const existing = specGroups.find((g) => g.group === group)
+      if (existing) existing.items.push({ ...attr, name })
+      else specGroups.push({ group, items: [{ ...attr, name }] })
+    } else {
+      specAttributes.push(attr)
+    }
+  }
 
   return (
     <div className="container pt-12 pb-8">
@@ -247,6 +273,18 @@ export default async function ProductDetailPage({ params }: Props) {
             </div>
           )}
 
+          {/* Quick specs strip */}
+          {quickItems.length > 0 && (
+            <div className="flex flex-wrap gap-x-5 gap-y-2 rounded-xl bg-gray-50 border border-gray-100 px-4 py-3 text-sm">
+              {quickItems.map((item) => (
+                <div key={item.id} className="flex items-center gap-1.5">
+                  <span className="text-gray-500">{item.name}:</span>
+                  <span className="font-bold text-gray-900">{item.value}</span>
+                </div>
+              ))}
+            </div>
+          )}
+
           {/* Short bullets */}
           <ul className="space-y-1.5 text-sm font-semibold text-gray-700">
             <li className="flex items-start gap-2">
@@ -263,58 +301,83 @@ export default async function ProductDetailPage({ params }: Props) {
             </li>
           </ul>
 
-          {/* Promo & Warranty box — editable via product attributes with [promo] / [warranty] prefix */}
-          {(promoItems.length > 0 || warrantyItems.length > 0) && (
-            <div className="rounded-xl border border-red-200 bg-red-50/50 p-4 space-y-3">
-              <p className="flex items-center gap-2 font-semibold text-gray-800">
-                🎁 Khuyến Mãi &amp; Bảo Hành
-              </p>
-              {promoItems.length > 0 && (
-                <div className="space-y-1.5 text-sm text-gray-700">
-                  <p className="font-medium text-gray-800">Khuyến mãi:</p>
-                  <ul className="space-y-1 pl-1">
-                    {promoItems.map((item) => (
-                      <li key={item.id} className="flex items-start gap-2">
-                        <span className="text-green-500 mt-0.5 shrink-0">✓</span>
-                        {item.value || item.name}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-              {warrantyItems.length > 0 && (
-                <div className="space-y-1.5 text-sm text-gray-700 pt-2 border-t border-red-100">
-                  <p className="font-medium text-gray-800">Bảo hành:</p>
-                  <ul className="space-y-1 pl-1">
-                    {warrantyItems.map((item) => (
-                      <li key={item.id} className="flex items-start gap-2">
-                        <span className="text-green-500 mt-0.5 shrink-0">✓</span>
-                        {item.value || item.name}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Quà tặng */}
+          {/* Quà tặng box */}
           {Array.isArray(product.gifts) && (product.gifts as {name:string;price?:number;image?:string}[]).length > 0 && (
-            <div className="inline-flex rounded-xl border border-orange-200 bg-gradient-to-r from-orange-50 to-red-50 px-4 py-3">
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="flex items-center gap-1 rounded-full bg-brand-red px-2.5 py-1 text-[11px] font-bold text-white shrink-0">🎁 Quà tặng</span>
+            <div className="rounded-xl border border-orange-200 bg-orange-50/60 p-4">
+              <p className="mb-3 flex items-center gap-2 text-sm font-bold text-gray-800">
+                🎁 Quà tặng kèm theo
+              </p>
+              <div className="space-y-2">
                 {(product.gifts as {name:string;price?:number;image?:string}[]).map((g, i) => (
-                  <div key={i} className="flex items-center gap-1.5 rounded-full border border-orange-200 bg-white px-2.5 py-1">
-                    <span className="text-sm leading-none">🎁</span>
-                    <span className="text-xs font-medium text-gray-700">{g.name}</span>
-                    {g.price && g.price > 0 && (
-                      <span className="text-[11px] font-semibold text-brand-red">({g.price.toLocaleString('vi-VN')}₫)</span>
+                  <div key={i} className="flex items-center gap-3 rounded-lg bg-white border border-orange-100 px-3 py-2">
+                    {g.image ? (
+                      <Image src={g.image} alt={g.name} width={40} height={40} className="h-10 w-10 rounded object-contain shrink-0" />
+                    ) : (
+                      <span className="text-xl shrink-0">🎁</span>
                     )}
+                    <div className="min-w-0">
+                      <p className="text-sm font-semibold text-gray-800 leading-snug">{g.name}</p>
+                      {g.price && g.price > 0 && (
+                        <p className="text-xs text-orange-600 font-bold">{g.price.toLocaleString('vi-VN')}₫</p>
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>
             </div>
           )}
+
+          {/* Product info summary */}
+          <div className="rounded-xl border border-gray-100 bg-gray-50 divide-y divide-gray-100 text-sm">
+            <div className="flex gap-2 px-4 py-2.5">
+              <span className="w-28 shrink-0 font-semibold text-gray-600">Xuất xứ:</span>
+              <span className="text-gray-800">Nhật Bản</span>
+            </div>
+            <div className="flex gap-2 px-4 py-2.5">
+              <span className="w-28 shrink-0 font-semibold text-gray-600">Tình trạng:</span>
+              <span className="text-gray-800">{CONDITION_LABELS[product.condition as ProductCondition]}</span>
+            </div>
+            {quickItems.filter(q => q.name.toLowerCase().includes('điện áp') || q.name.toLowerCase().includes('dien ap')).map(q => (
+              <div key={q.id} className="flex gap-2 px-4 py-2.5">
+                <span className="w-28 shrink-0 font-semibold text-gray-600">Điện áp:</span>
+                <span className="text-gray-800">{q.value}</span>
+              </div>
+            ))}
+            {promoItems.length > 0 && (
+              <div className="px-4 py-2.5">
+                <p className="font-semibold text-gray-600 mb-1.5">Tính năng nổi bật:</p>
+                <ul className="space-y-1">
+                  {promoItems.map(item => (
+                    <li key={item.id} className="flex items-start gap-1.5">
+                      <span className="text-blue-500 shrink-0 font-bold">✔</span>
+                      <span className="text-gray-700">{item.value || item.name}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {warrantyItems.map(item => (
+              <div key={item.id} className="flex gap-2 px-4 py-2.5">
+                <span className="w-28 shrink-0 font-semibold text-brand-red">Bảo hành điện tử:</span>
+                <span className="font-bold text-brand-red">{item.value || item.name}</span>
+              </div>
+            ))}
+            {warrantyItems.length > 0 && (
+              <div className="px-4 py-2 text-xs italic text-gray-400">
+                * Bảo hành trực tiếp tại nhà – khu vực Hà Nội và TP. Hồ Chí Minh
+              </div>
+            )}
+          </div>
+
+          {/* Giao hàng */}
+          <div className="flex items-start gap-3 rounded-xl border border-gray-100 bg-gray-50 px-4 py-3">
+            <span className="text-3xl shrink-0">🚚</span>
+            <ul className="space-y-1 text-sm text-gray-700">
+              <li className="flex items-center gap-1.5"><span className="text-blue-400">✔</span> Giao hàng trong 2 giờ (HN &amp; TP. HCM)</li>
+              <li className="flex items-center gap-1.5"><span className="text-blue-400">✔</span> Miễn phí ship toàn quốc</li>
+              <li className="flex items-center gap-1.5"><span className="text-blue-400">✔</span> Hướng dẫn sử dụng sản phẩm tại nhà</li>
+            </ul>
+          </div>
 
           {/* CTA buttons */}
           {liveAuction ? (
@@ -380,13 +443,124 @@ export default async function ProductDetailPage({ params }: Props) {
         </div>
       </div>
 
-      {/* Tabs: Mô tả + Thông số kỹ thuật + Đánh giá */}
-      <ProductTabs
-        description={product.description}
-        attributes={specAttributes}
-        productId={product.id}
-        productName={product.name}
-      />
+      {/* Content + Sidebar layout */}
+      <div className="mt-12 grid grid-cols-1 gap-8 lg:grid-cols-[1fr_300px] lg:items-start">
+
+        {/* Main content: Tabs */}
+        <div className="min-w-0">
+          <ProductTabs
+            description={product.description}
+            attributes={specAttributes}
+            specGroups={specGroups}
+            faqItems={faqItems}
+            videoItems={videoItems}
+            productId={product.id}
+            productName={product.name}
+          />
+        </div>
+
+        {/* Sidebar */}
+        <aside className="space-y-4 lg:sticky lg:top-24">
+
+          {/* Liên hệ */}
+          <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm space-y-3">
+            <p className="text-xs font-bold uppercase tracking-widest text-gray-400">Liên hệ tư vấn</p>
+            <a href="tel:09272988888" className="flex items-center gap-3 group">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-50 text-brand-red">
+                <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M2 6.5C2 14.508 9.492 22 17.5 22c.98 0 1.863-.14 2.668-.386a1 1 0 00.63-.593l1.5-4a1 1 0 00-.298-1.1l-2.5-2a1 1 0 00-1.173-.044l-1.5 1A9.956 9.956 0 0111.12 9.12l1-1.5a1 1 0 00-.044-1.173l-2-2.5a1 1 0 00-1.1-.298l-4 1.5a1 1 0 00-.593.63C2.14 6.637 2 7.52 2 6.5z"/></svg>
+              </span>
+              <div>
+                <p className="text-xs text-gray-400">Hotline</p>
+                <p className="text-base font-bold text-gray-900 group-hover:text-brand-red transition">09.2729.8888</p>
+              </div>
+            </a>
+            <a href="tel:0988969896" className="flex items-center gap-3 group">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-50 text-brand-red">
+                <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M2 6.5C2 14.508 9.492 22 17.5 22c.98 0 1.863-.14 2.668-.386a1 1 0 00.63-.593l1.5-4a1 1 0 00-.298-1.1l-2.5-2a1 1 0 00-1.173-.044l-1.5 1A9.956 9.956 0 0111.12 9.12l1-1.5a1 1 0 00-.044-1.173l-2-2.5a1 1 0 00-1.1-.298l-4 1.5a1 1 0 00-.593.63C2.14 6.637 2 7.52 2 6.5z"/></svg>
+              </span>
+              <div>
+                <p className="text-xs text-gray-400">Di động</p>
+                <p className="text-base font-bold text-gray-900 group-hover:text-brand-red transition">0988.969.896</p>
+              </div>
+            </a>
+            <div className="flex gap-2 pt-1">
+              <a href="https://zalo.me/0988969896" target="_blank" rel="noopener noreferrer"
+                className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-[#0068FF] py-2.5 text-sm font-bold text-white hover:opacity-90 transition">
+                Zalo
+              </a>
+              <a href="https://www.facebook.com/japanvip" target="_blank" rel="noopener noreferrer"
+                className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-[#1877F2] py-2.5 text-sm font-bold text-white hover:opacity-90 transition">
+                Facebook
+              </a>
+            </div>
+          </div>
+
+          {/* Chính sách bán hàng */}
+          <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
+            <p className="mb-4 text-xs font-bold uppercase tracking-widest text-gray-400">Chính sách bán hàng</p>
+            <div className="space-y-3">
+              {[
+                { icon: '🚚', title: 'Miễn phí giao hàng', sub: 'Tất cả các đơn hàng toàn quốc' },
+                { icon: '⚡', title: 'Giao nhanh 2H', sub: 'Hà Nội & Hồ Chí Minh' },
+                { icon: '🔧', title: 'Miễn phí lắp đặt', sub: 'Hà Nội, Hồ Chí Minh' },
+                { icon: '🔄', title: 'Đổi mới 7 ngày', sub: 'Nếu lỗi do nhà sản xuất' },
+                { icon: '🛡️', title: 'Bảo hành điện tử', sub: 'Kích hoạt tại nhà phân phối' },
+              ].map((item) => (
+                <div key={item.title} className="flex items-start gap-3">
+                  <span className="text-2xl leading-none">{item.icon}</span>
+                  <div>
+                    <p className="text-sm font-semibold text-gray-800">{item.title}</p>
+                    <p className="text-xs text-gray-400">{item.sub}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Địa chỉ showroom */}
+          <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm text-sm space-y-3">
+            <p className="text-xs font-bold uppercase tracking-widest text-gray-400">Showroom</p>
+            <div className="space-y-2 text-gray-600">
+              <div>
+                <p className="font-semibold text-gray-800 text-xs">TP. HÀ NỘI</p>
+                <p className="text-xs">21 Lê Văn Lương, Thanh Xuân</p>
+                <a href="tel:0988969896" className="text-xs text-brand-red font-semibold">0988.969.896</a>
+              </div>
+              <div>
+                <p className="font-semibold text-gray-800 text-xs">HẢI PHÒNG (Trụ sở)</p>
+                <p className="text-xs">115 Đinh Tiên Hoàng, Hồng Bàng</p>
+                <a href="tel:02253822526" className="text-xs text-brand-red font-semibold">0225.3822526</a>
+              </div>
+            </div>
+          </div>
+
+          {/* Placeholder sản phẩm — sẽ thêm sau */}
+          {relatedProducts.length > 0 && (
+            <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
+              <p className="mb-3 text-xs font-bold uppercase tracking-widest text-gray-400">Sản phẩm liên quan</p>
+              <div className="space-y-3">
+                {relatedProducts.slice(0, 5).map((p) => (
+                  <Link key={p.id} href={`/${p.slug}`} className="flex items-center gap-3 group">
+                    {p.images[0]?.url ? (
+                      <Image src={p.images[0].url} alt={p.name} width={56} height={56}
+                        className="h-14 w-14 shrink-0 rounded-lg object-cover border border-gray-100" />
+                    ) : (
+                      <div className="h-14 w-14 shrink-0 rounded-lg bg-gray-100" />
+                    )}
+                    <div className="min-w-0">
+                      <p className="line-clamp-2 text-xs font-medium text-gray-700 group-hover:text-brand-red transition leading-snug">{p.name}</p>
+                      {p.originPrice && (
+                        <p className="mt-0.5 text-xs font-bold text-brand-red">{formatVND(Number(p.originPrice))}</p>
+                      )}
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
+
+        </aside>
+      </div>
 
       {/* Related auctions */}
       {product.auctions.length > 0 && (

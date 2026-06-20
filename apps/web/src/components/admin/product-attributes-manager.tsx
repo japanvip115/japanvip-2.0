@@ -140,6 +140,26 @@ export function ProductAttributesManager({
         </div>
       )}
 
+      {/* Prefix guide */}
+      <div className="rounded-lg border border-gray-700/50 bg-gray-800/40 px-4 py-3">
+        <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">Prefix đặc biệt (nhập vào cột Tên)</p>
+        <div className="grid grid-cols-1 gap-1 sm:grid-cols-2 text-[11px] text-gray-500">
+          {[
+            { prefix: '[quick] Xuất xứ', desc: '→ Hiện ngay dưới giá' },
+            { prefix: '[group:Tên nhóm] Dung tích', desc: '→ Nhóm thông số' },
+            { prefix: '[faq] Câu hỏi?', desc: '→ Tab Hỏi & Đáp (value = trả lời)' },
+            { prefix: '[video] Tên video', desc: '→ Tab Video (value = URL YouTube)' },
+            { prefix: '[promo] Tên KM', desc: '→ Box khuyến mãi' },
+            { prefix: '[warranty] Bảo hành', desc: '→ Box bảo hành' },
+          ].map(({ prefix, desc }) => (
+            <div key={prefix} className="flex items-start gap-1.5">
+              <code className="shrink-0 rounded bg-gray-700 px-1 py-0.5 font-mono text-[10px] text-yellow-300">{prefix}</code>
+              <span>{desc}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* Add new rows */}
       <div className="space-y-2">
         <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">Thêm thông số mới</p>

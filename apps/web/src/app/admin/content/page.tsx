@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { prisma } from '@japanvip/db'
 import Link from 'next/link'
-import { FileText, ImageOff, Globe, ChevronRight } from 'lucide-react'
+import { FileText, ImageOff, Globe, ChevronRight, Sparkles } from 'lucide-react'
 
 export const metadata: Metadata = { title: 'Admin — Nội Dung' }
 export const dynamic = 'force-dynamic'
@@ -41,6 +41,15 @@ export default async function AdminContentPage() {
       desc: 'Tùy chỉnh meta title, description, schema cho từng trang',
       stats: [
         { label: 'Trang đã cấu hình', value: seoCount, color: 'text-blue-400' },
+      ],
+    },
+    {
+      href: '/admin/content/ai-writer',
+      icon: Sparkles,
+      title: '✨ AI Content Writer',
+      desc: 'Tạo mô tả sản phẩm, FAQ, SEO, bài blog với Claude AI',
+      stats: [
+        { label: 'Powered by', value: 'Claude', color: 'text-purple-400' },
       ],
     },
   ]

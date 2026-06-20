@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Link2, Loader2, CheckCircle2, AlertCircle, X } from 'lucide-react'
 import { SearchableSelect } from '@/components/admin/searchable-select'
+import { RichTextEditor } from '@/components/admin/rich-text-editor'
+import { TemplatePicker } from '@/components/admin/template-picker'
 
 type Category = { id: string; name: string }
 type Brand = { id: string; name: string }
@@ -63,7 +65,7 @@ export function ProductForm({ mode, productId, initialData = {}, categories = []
   const [name, setName] = useState(initialData.name ?? '')
   const [slug, setSlug] = useState(initialData.slug ?? '')
   const [description, setDescription] = useState(initialData.description ?? '')
-  const [descTab, setDescTab] = useState<'html' | 'preview'>('html')
+  const [descTab, setDescTab] = useState<'wysiwyg' | 'html' | 'preview'>('wysiwyg')
 
   const [categoryId, setCategoryId] = useState(initialData.categoryId ?? '')
   const [brandId, setBrandId] = useState(initialData.brandId ?? '')
@@ -237,23 +239,40 @@ export function ProductForm({ mode, productId, initialData = {}, categories = []
                 </div>
               </div>
               <div>
-                <div className="mb-1 flex items-center justify-between">
-                  <label className={LABEL}>Mô tả</label>
+                <div className="mb-1 flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    <label className={LABEL}>Mô tả</label>
+                    <TemplatePicker onSelect={(html) => { setDescription(html); setDescTab('wysiwyg') }} />
+                  </div>
                   <div className="flex gap-0.5 rounded-lg border border-gray-700 bg-gray-900 p-0.5 text-xs">
-                    {(['html', 'preview'] as const).map(tab => (
-                      <button key={tab} type="button" onClick={() => setDescTab(tab)}
-                        className={`rounded-md px-2.5 py-1 font-medium transition-colors ${descTab === tab ? 'bg-gray-700 text-white' : 'text-gray-500 hover:text-gray-300'}`}>
-                        {tab === 'html' ? 'HTML' : 'Xem trước'}
+                    {([
+                      { key: 'wysiwyg', label: '✏️ Soạn thảo' },
+                      { key: 'html',    label: 'HTML' },
+                      { key: 'preview', label: '👁 Xem trước' },
+                    ] as const).map(tab => (
+                      <button key={tab.key} type="button" onClick={() => setDescTab(tab.key)}
+                        className={`rounded-md px-2.5 py-1 font-medium transition-colors ${descTab === tab.key ? 'bg-gray-700 text-white' : 'text-gray-500 hover:text-gray-300'}`}>
+                        {tab.label}
                       </button>
                     ))}
                   </div>
                 </div>
-                {descTab === 'html'
-                  ? <textarea value={description} onChange={e => setDescription(e.target.value)} rows={10}
-                      placeholder="Mô tả chi tiết sản phẩm (HTML)..." className={`${INPUT} font-mono text-xs leading-relaxed`} />
-                  : <div className="prose prose-sm prose-invert min-h-[160px] max-h-[400px] overflow-y-auto rounded-lg border border-gray-700 bg-gray-900 px-4 py-3 text-sm"
-                      dangerouslySetInnerHTML={{ __html: description || '<p class="text-gray-600 italic">Chưa có nội dung.</p>' }} />
-                }
+                {descTab === 'wysiwyg' && (
+                  <RichTextEditor
+                    value={description}
+                    onChange={setDescription}
+                    placeholder="Nhập mô tả sản phẩm — hỗ trợ H2, H3, danh sách, bảng, in đậm..."
+                    minHeight={320}
+                  />
+                )}
+                {descTab === 'html' && (
+                  <textarea value={description} onChange={e => setDescription(e.target.value)} rows={14}
+                    placeholder="Mô tả chi tiết sản phẩm (HTML)..." className={`${INPUT} font-mono text-xs leading-relaxed`} />
+                )}
+                {descTab === 'preview' && (
+                  <div className="prose prose-sm prose-invert min-h-[160px] max-h-[500px] overflow-y-auto rounded-lg border border-gray-700 bg-gray-900 px-4 py-3 text-sm"
+                    dangerouslySetInnerHTML={{ __html: description || '<p class="text-gray-600 italic">Chưa có nội dung.</p>' }} />
+                )}
               </div>
             </div>
           </div>
