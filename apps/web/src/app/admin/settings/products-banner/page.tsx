@@ -83,7 +83,6 @@ export default function ProductsBannerSettingsPage() {
             value={url}
             onChange={setUrl}
             folder="banners"
-            accept="image/jpeg,image/png,image/webp,image/avif"
           />
         </div>
 
