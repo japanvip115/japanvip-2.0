@@ -31,6 +31,7 @@ type Props = {
     ownerType?: 'JAPANVIP' | 'PARTNER'
     status?: 'DRAFT' | 'ACTIVE'
     badge?: 'NEW_ARRIVAL' | 'SOLD_OUT' | 'ORDER_ONLY' | null
+    showOnHome?: boolean
     originUrl?: string
     salePrice?: number | null
     marketPrice?: number | null
@@ -41,6 +42,7 @@ type Props = {
   categories?: Category[]
   brands?: Brand[]
   imageSlot?: React.ReactNode
+  returnTo?: string
 }
 
 function slugify(str: string) {
@@ -55,7 +57,7 @@ const LABEL = 'mb-1 block text-xs font-semibold uppercase tracking-wide text-gra
 const CARD = 'rounded-xl border border-gray-700 bg-gray-800/60 p-5'
 const CARD_TITLE = 'mb-4 text-sm font-semibold text-gray-200'
 
-export function ProductForm({ mode, productId, initialData = {}, categories = [], brands: initialBrands = [], imageSlot }: Props) {
+export function ProductForm({ mode, productId, initialData = {}, categories = [], brands: initialBrands = [], imageSlot, returnTo }: Props) {
   const router = useRouter()
 
   const [name, setName] = useState(initialData.name ?? '')
@@ -70,6 +72,7 @@ export function ProductForm({ mode, productId, initialData = {}, categories = []
   const [ownerType, setOwnerType] = useState<'JAPANVIP' | 'PARTNER'>(initialData.ownerType ?? 'JAPANVIP')
   const [status, setStatus] = useState<'DRAFT' | 'ACTIVE'>(initialData.status ?? 'DRAFT')
   const [badge, setBadge] = useState<'NEW_ARRIVAL' | 'SOLD_OUT' | 'ORDER_ONLY' | null>(initialData.badge ?? null)
+  const [showOnHome, setShowOnHome] = useState(initialData.showOnHome ?? false)
   const [originUrl, setOriginUrl] = useState(initialData.originUrl ?? '')
 
   const [salePrice, setSalePrice] = useState(initialData.salePrice ? String(initialData.salePrice) : '')
@@ -140,6 +143,7 @@ export function ProductForm({ mode, productId, initialData = {}, categories = []
       brandId: brandId || undefined,
       condition, ownerType, status,
       badge: badge || undefined,
+      showOnHome,
       originUrl: originUrl || undefined,
       salePrice: salePrice ? Number(salePrice) : undefined,
       marketPrice: marketPrice ? Number(marketPrice) : undefined,
@@ -152,7 +156,7 @@ export function ProductForm({ mode, productId, initialData = {}, categories = []
     try {
       const res = await fetch(url, { method: mode === 'create' ? 'POST' : 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
       const data = await res.json()
-      if (data.success) router.push(mode === 'create' ? `/admin/products/${data.data.id}` : '/admin/products')
+      if (data.success) router.push(mode === 'create' ? `/admin/products/${data.data.id}` : (returnTo ?? '/admin/products'))
       else setError(data.error ?? 'Có lỗi xảy ra')
     } catch { setError('Không thể kết nối. Vui lòng thử lại.')
     } finally { setSubmitting(false) }
@@ -373,7 +377,7 @@ export function ProductForm({ mode, productId, initialData = {}, categories = []
                   Xem trên website
                 </a>
               )}
-              <Link href="/admin/products" className="block text-center text-xs text-gray-500 hover:text-gray-300 transition-colors">
+              <Link href={returnTo ?? '/admin/products'} className="block text-center text-xs text-gray-500 hover:text-gray-300 transition-colors">
                 Hủy bỏ
               </Link>
             </div>
@@ -410,20 +414,30 @@ export function ProductForm({ mode, productId, initialData = {}, categories = []
                   <option value="FAIR">Khá</option>
                 </select>
               </div>
-              <div>
-                <label className={LABEL}>Nhãn Badge</label>
-                <div className="flex flex-wrap gap-1.5 pt-0.5">
+              <div className="sm:col-span-2">
+                <label className={LABEL}>Nhãn Badge &amp; Trang chủ</label>
+                <div className="grid grid-cols-4 gap-1.5">
                   {([
-                    { value: 'NEW_ARRIVAL', label: '🆕 Mới', cls: 'border-emerald-600 bg-emerald-500/10 text-emerald-400' },
-                    { value: 'SOLD_OUT',    label: '✅ Đã bán', cls: 'border-blue-600 bg-blue-500/10 text-blue-400' },
-                    { value: 'ORDER_ONLY',  label: '📦 Order', cls: 'border-amber-600 bg-amber-500/10 text-amber-400' },
+                    { value: 'NEW_ARRIVAL', label: '🆕 Mới',     cls: 'border-emerald-600 bg-emerald-500/10 text-emerald-400' },
+                    { value: 'SOLD_OUT',    label: '✅ Đã bán',  cls: 'border-blue-600 bg-blue-500/10 text-blue-400' },
+                    { value: 'ORDER_ONLY',  label: '📦 Order',   cls: 'border-amber-600 bg-amber-500/10 text-amber-400' },
                   ] as const).map(b => (
                     <button key={b.value} type="button"
                       onClick={() => setBadge(badge === b.value ? null : b.value)}
-                      className={`rounded-lg border px-2.5 py-1 text-xs font-medium transition-all ${badge === b.value ? b.cls : 'border-gray-700 text-gray-500 hover:border-gray-500 hover:text-gray-400'}`}>
+                      className={`rounded-lg border px-2 py-2 text-xs font-medium transition-all text-center ${badge === b.value ? b.cls : 'border-gray-700 text-gray-500 hover:border-gray-500 hover:text-gray-400'}`}>
                       {b.label}
                     </button>
                   ))}
+                  <button
+                    type="button"
+                    onClick={() => setShowOnHome(v => !v)}
+                    className={`flex items-center justify-center gap-1.5 rounded-lg border px-2 py-2 text-xs font-medium transition-all ${showOnHome ? 'border-red-500 bg-red-500/10 text-red-400' : 'border-gray-700 text-gray-500 hover:border-gray-500 hover:text-gray-400'}`}
+                  >
+                    <span className={`inline-flex h-3.5 w-6 shrink-0 items-center rounded-full transition-colors ${showOnHome ? 'bg-red-500' : 'bg-gray-600'}`}>
+                      <span className={`inline-block h-2.5 w-2.5 transform rounded-full bg-white shadow transition-transform ${showOnHome ? 'translate-x-3' : 'translate-x-0.5'}`} />
+                    </span>
+                    {showOnHome ? 'Trang chủ' : 'Trang chủ'}
+                  </button>
                 </div>
               </div>
             </div>

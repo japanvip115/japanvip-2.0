@@ -10,10 +10,12 @@ const schema = z.object({
   slug: z.string().min(1).max(255).regex(/^[a-z0-9-]+$/).optional(),
   description: z.string().optional().nullable(),
   imageUrl: z.string().min(1).optional().nullable(),
+  imagePosition: z.string().max(20).optional().nullable(),
   icon: z.string().max(512).optional().nullable(),
   parentId: z.string().uuid().optional().nullable(),
   sortOrder: z.number().int().optional(),
   isActive: z.boolean().optional(),
+  showOnHome: z.boolean().optional(),
   metaTitle: z.string().max(255).optional().nullable(),
   metaDesc: z.string().optional().nullable(),
 })

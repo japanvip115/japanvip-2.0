@@ -11,10 +11,9 @@ function guard(session: any) {
 }
 
 export async function GET() {
-  const rows = await prisma.$queryRaw<any[]>`
-    SELECT id, name, city, photo_url as "photoUrl", text, rating, sort_order as "sortOrder", is_active as "isActive"
-    FROM testimonials ORDER BY sort_order ASC, created_at ASC
-  `
+  const rows = await prisma.testimonial.findMany({
+    orderBy: [{ sortOrder: 'asc' }, { createdAt: 'asc' }],
+  })
   return NextResponse.json(rows)
 }
 
@@ -25,11 +24,9 @@ export async function POST(req: NextRequest) {
   const { name, city, photoUrl, text, rating = 5, sortOrder = 0 } = await req.json()
   if (!name?.trim() || !text?.trim()) return NextResponse.json({ error: 'Thiếu tên hoặc nội dung' }, { status: 400 })
 
-  const [row] = await prisma.$queryRaw<any[]>`
-    INSERT INTO testimonials (name, city, photo_url, text, rating, sort_order)
-    VALUES (${name.trim()}, ${(city || '').trim()}, ${photoUrl || null}, ${text.trim()}, ${rating}, ${sortOrder})
-    RETURNING id, name, city, photo_url as "photoUrl", text, rating, sort_order as "sortOrder", is_active as "isActive"
-  `
+  const row = await prisma.testimonial.create({
+    data: { name: name.trim(), city: (city || '').trim(), photoUrl: photoUrl || null, text: text.trim(), rating, sortOrder },
+  })
   return NextResponse.json(row, { status: 201 })
 }
 
@@ -40,13 +37,10 @@ export async function PUT(req: NextRequest) {
   const { id, name, city, photoUrl, text, rating, sortOrder, isActive } = await req.json()
   if (!id) return NextResponse.json({ error: 'Thiếu id' }, { status: 400 })
 
-  await prisma.$executeRaw`
-    UPDATE testimonials SET
-      name = ${name}, city = ${city}, photo_url = ${photoUrl ?? null},
-      text = ${text}, rating = ${rating ?? 5}, sort_order = ${sortOrder ?? 0},
-      is_active = ${isActive ?? true}, updated_at = now()
-    WHERE id = ${id}::uuid
-  `
+  await prisma.testimonial.update({
+    where: { id },
+    data: { name, city, photoUrl: photoUrl ?? null, text, rating: rating ?? 5, sortOrder: sortOrder ?? 0, isActive: isActive ?? true },
+  })
   return NextResponse.json({ ok: true })
 }
 
@@ -56,6 +50,6 @@ export async function DELETE(req: NextRequest) {
 
   const { id } = await req.json()
   if (!id) return NextResponse.json({ error: 'Thiếu id' }, { status: 400 })
-  await prisma.$executeRaw`DELETE FROM testimonials WHERE id = ${id}::uuid`
+  await prisma.testimonial.delete({ where: { id } })
   return NextResponse.json({ ok: true })
 }

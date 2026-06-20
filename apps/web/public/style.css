@@ -142,6 +142,8 @@ ul, ol { list-style: none; }
   box-shadow: 0 12px 32px rgba(196,30,58,0.38);
 }
 .btn-primary.large { padding: 14px 36px; font-size: 1rem; }
+.btn-outline-red { display: inline-flex; align-items: center; gap: 8px; background: transparent; color: var(--jp-red); padding: 12px 28px; border-radius: var(--radius-full); font-size: 0.9rem; font-weight: 600; letter-spacing: 0.02em; transition: var(--transition); border: 2px solid #fecaca; white-space: nowrap; }
+.btn-outline-red:hover { background: var(--gradient-red); color: white; border-color: var(--jp-red); transform: translateY(-2px); box-shadow: var(--shadow-red); }
 
 .btn-outline {
   display: inline-flex;
@@ -193,22 +195,30 @@ ul, ol { list-style: none; }
 
 .btn-sm { padding: 6px 14px; background: var(--gradient-red); color: white; border-radius: var(--radius-sm); font-size: 0.8rem; font-weight: 600; }
 .btn-bid {
-  width: 100%;
-  padding: 10px;
+  width: auto;
+  display: block;
+  margin: 0 auto;
+  padding: 7px 32px;
   background: var(--gradient-red);
   color: white;
   border-radius: var(--radius-md);
   font-weight: 700;
-  font-size: 0.9rem;
+  font-size: 0.78rem;
   transition: var(--transition);
   box-shadow: var(--shadow-red);
+  opacity: 0;
+  transform: translateY(8px);
 }
 .btn-bid:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(196,30,58,0.38); }
+.auction-card:hover .btn-bid,
+.auction-slider-card:hover .btn-bid,
+.product-card:hover .btn-bid { opacity: 1; transform: translateY(0); }
 .btn-bid.urgent-bid { background: linear-gradient(135deg, #dc2626, #b91c1c); animation: urgentPulse 2s infinite; }
 .btn-notify { width: 100%; padding: 10px; background: var(--jp-gray-100); color: var(--jp-gray-700); border-radius: var(--radius-md); font-weight: 600; font-size: 0.9rem; transition: var(--transition); }
 .btn-notify:hover { background: var(--jp-gray-200); }
-.btn-buy { width: 100%; padding: 10px 16px; background: var(--gradient-red); color: white; border-radius: var(--radius-md); font-weight: 600; font-size: 0.85rem; transition: var(--transition); }
+.btn-buy { width: auto; display: block; margin: 0 auto; padding: 7px 32px; background: var(--gradient-red); color: white; border-radius: var(--radius-md); font-weight: 600; font-size: 0.78rem; transition: var(--transition); opacity: 0; transform: translateY(8px); }
 .btn-buy:hover { transform: translateY(-2px); box-shadow: var(--shadow-red); }
+.product-card:hover .btn-buy { opacity: 1; transform: translateY(0); }
 .btn-track { padding: 6px 14px; background: var(--jp-gray-100); border-radius: var(--radius-sm); font-size: 0.8rem; font-weight: 500; transition: var(--transition); }
 .btn-track:hover { background: var(--jp-red); color: white; }
 .btn-bid-big { width: 100%; padding: 16px; background: var(--gradient-red); color: white; border-radius: var(--radius-lg); font-weight: 800; font-size: 1.1rem; letter-spacing: 0.02em; transition: var(--transition); box-shadow: var(--shadow-red); }

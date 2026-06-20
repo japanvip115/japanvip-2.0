@@ -9,7 +9,7 @@ import { ChevronRight, Plus } from 'lucide-react'
 import type { ProductStatus } from '@japanvip/db'
 import { ProductPublishButton } from '@/components/admin/product-publish-button'
 
-type Props = { params: Promise<{ id: string }> }
+type Props = { params: Promise<{ id: string }>; searchParams: Promise<{ returnTo?: string }> }
 
 const STATUS_CONFIG: Record<ProductStatus, { label: string; cls: string }> = {
   ACTIVE:   { label: 'Đang bán',  cls: 'bg-green-500/15 text-green-400 ring-green-500/20' },
@@ -26,8 +26,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export const dynamic = 'force-dynamic'
 
-export default async function AdminProductDetailPage({ params }: Props) {
+export default async function AdminProductDetailPage({ params, searchParams }: Props) {
   const { id } = await params
+  const { returnTo } = await searchParams
 
   const [product, categories, brands] = await Promise.all([
     prisma.product.findUnique({
@@ -59,7 +60,7 @@ export default async function AdminProductDetailPage({ params }: Props) {
         <div className="min-w-0">
           {/* Breadcrumb */}
           <div className="mb-2 flex items-center gap-1.5 text-xs text-gray-500">
-            <Link href="/admin/products" className="hover:text-gray-300 transition-colors">Sản phẩm</Link>
+            <Link href={returnTo ?? '/admin/products'} className="hover:text-gray-300 transition-colors">Sản phẩm</Link>
             <ChevronRight className="h-3 w-3 flex-shrink-0" />
             <span className="truncate text-gray-400 max-w-[240px]">{product.name}</span>
           </div>
@@ -100,6 +101,7 @@ export default async function AdminProductDetailPage({ params }: Props) {
         productId={product.id}
         categories={categories}
         brands={brands}
+        returnTo={returnTo}
         initialData={{
           name: product.name,
           slug: product.slug,
@@ -110,6 +112,7 @@ export default async function AdminProductDetailPage({ params }: Props) {
           ownerType: product.ownerType as 'JAPANVIP' | 'PARTNER',
           status: (product.status === 'ACTIVE' ? 'ACTIVE' : 'DRAFT') as 'DRAFT' | 'ACTIVE',
           badge: (product.badge as 'NEW_ARRIVAL' | 'SOLD_OUT' | 'ORDER_ONLY' | null) ?? null,
+          showOnHome: product.showOnHome ?? false,
           originUrl: product.originUrl ?? '',
           salePrice: product.salePrice ? Number(product.salePrice) : null,
           marketPrice: product.marketPrice ? Number(product.marketPrice) : null,

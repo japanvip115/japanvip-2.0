@@ -11,9 +11,23 @@ export const dynamic = 'force-dynamic'
 export default async function HomePage() {
   const session = await auth()
   const now = new Date()
-  const [categories, products, liveAuctions, contentRows, brands, testimonials, heroBanners] = await Promise.all([
+  const productSelect = {
+    id: true,
+    name: true,
+    slug: true,
+    originPrice: true,
+    salePrice: true,
+    marketPrice: true,
+    condition: true,
+    badge: true,
+    brand: { select: { name: true } },
+    category: { select: { name: true, slug: true } },
+    images: { where: { isPrimary: true }, take: 1, select: { url: true } },
+  } as const
+
+  const [categories, homeProducts, orderProducts, liveAuctions, contentRows, brands, testimonials, heroBanners] = await Promise.all([
     prisma.category.findMany({
-      where: { isActive: true, parentId: null },
+      where: { isActive: true, showOnHome: true, parentId: null },
       orderBy: { sortOrder: 'asc' },
       select: {
         id: true,
@@ -25,26 +39,20 @@ export default async function HomePage() {
       },
     }),
 
+    // Sản Phẩm Bán Chạy — tick showOnHome, không phải ORDER_ONLY
     prisma.product.findMany({
-      where: { status: 'ACTIVE' },
+      where: { status: 'ACTIVE', showOnHome: true, OR: [{ badge: null }, { badge: { not: 'ORDER_ONLY' } }] },
       orderBy: { createdAt: 'desc' },
       take: 8,
-      select: {
-        id: true,
-        name: true,
-        slug: true,
-        originPrice: true,
-        salePrice: true,
-        marketPrice: true,
-        condition: true,
-        brand: { select: { name: true } },
-        category: { select: { name: true, slug: true } },
-        images: {
-          where: { isPrimary: true },
-          take: 1,
-          select: { url: true },
-        },
-      },
+      select: productSelect,
+    }),
+
+    // Hàng Order — hiện trong MixedSlider cạnh đấu giá
+    prisma.product.findMany({
+      where: { status: 'ACTIVE', badge: 'ORDER_ONLY' },
+      orderBy: { createdAt: 'desc' },
+      take: 8,
+      select: productSelect,
     }),
 
     prisma.auction.findMany({
@@ -101,15 +109,18 @@ export default async function HomePage() {
   const content: Record<string, string> = {}
   for (const row of contentRows) content[row.key] = row.value
 
+  const mapProduct = (p: typeof homeProducts[0]) => ({
+    ...p,
+    originPrice: p.originPrice ? Number(p.originPrice) : null,
+    salePrice: p.salePrice ? Number(p.salePrice) : null,
+    marketPrice: p.marketPrice ? Number(p.marketPrice) : null,
+  })
+
   return (
     <HomePageClient
       categories={categories}
-      products={products.map((p) => ({
-        ...p,
-        originPrice: p.originPrice ? Number(p.originPrice) : null,
-        salePrice: p.salePrice ? Number(p.salePrice) : null,
-        marketPrice: p.marketPrice ? Number(p.marketPrice) : null,
-      }))}
+      products={homeProducts.map(mapProduct)}
+      orderProducts={orderProducts.map(mapProduct)}
       auctions={liveAuctions.map((a) => ({
         ...a,
         currentPrice: Number(a.currentPrice),

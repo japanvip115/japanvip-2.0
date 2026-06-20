@@ -2,7 +2,7 @@ import { S3Client, PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import { v4 as uuidv4 } from 'uuid'
 
-export type UploadFolder = 'products' | 'avatars' | 'banners' | 'blogs' | 'brands' | 'categories' | 'category-icons' | 'deposits' | 'settings' | 'logo-templates'
+export type UploadFolder = 'products' | 'avatars' | 'banners' | 'blogs' | 'brands' | 'categories' | 'category-icons' | 'deposits' | 'settings' | 'logo-templates' | 'testimonials'
 
 export const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/avif', 'video/mp4', 'video/webm', 'video/quicktime']
 export const MAX_UPLOAD_BYTES = 100 * 1024 * 1024 // 100MB (video)

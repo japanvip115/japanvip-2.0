@@ -1,11 +1,17 @@
 import type { NextRequest } from 'next/server'
+
+export const config = {
+  api: { bodyParser: { sizeLimit: '100mb' } },
+}
+
+export const maxDuration = 60
 import { auth } from '@/lib/auth'
 import { hasRole } from '@/lib/auth-types'
 import { apiSuccess, apiError, handleApiError } from '@/lib/api-response'
 import { uploadFile, ALLOWED_MIME_TYPES, MAX_UPLOAD_BYTES, type UploadFolder } from '@/lib/r2'
 import { rateLimit } from '@/lib/rate-limit'
 
-const ALLOWED_FOLDERS: UploadFolder[] = ['products', 'banners', 'blogs', 'brands', 'categories', 'category-icons', 'settings']
+const ALLOWED_FOLDERS: UploadFolder[] = ['products', 'banners', 'blogs', 'brands', 'categories', 'category-icons', 'settings', 'testimonials']
 
 export async function POST(req: NextRequest) {
   const session = await auth()

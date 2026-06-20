@@ -1,0 +1,12 @@
+require('./jv-env.cjs')
+const {PrismaClient}=require('@prisma/client')
+const p=new PrismaClient()
+;(async()=>{
+  const cats=await p.category.findMany({where:{icon:{not:null}},select:{name:true,icon:true}})
+  const brands=await p.brand.findMany({select:{name:true,logoUrl:true,imageUrl:true}}).catch(()=>null)
+  console.log('=== CATEGORY ICONS ('+cats.length+') ===')
+  cats.forEach(c=>console.log(c.name,'|',c.icon))
+  console.log('\n=== BRANDS ===')
+  if(brands) brands.forEach(b=>console.log(b.name,'|',b.logoUrl||b.imageUrl||'(none)'))
+  await p.$disconnect()
+})().catch(e=>{console.error('ERR',e.message);process.exit(1)})

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { prisma } from '@japanvip/db'
 import Link from 'next/link'
-import { Plus } from 'lucide-react'
+import { Plus, Film } from 'lucide-react'
 import { BannerActions } from './banner-actions'
 
 export const metadata: Metadata = { title: 'Admin — Banner' }
@@ -54,11 +54,17 @@ export default async function AdminBannersPage() {
               <tr key={banner.id} className="hover:bg-gray-700/30 transition-colors cursor-pointer">
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-3">
-                    <img
-                      src={banner.imageUrl}
-                      alt={banner.title}
-                      className="h-12 w-20 rounded object-cover bg-gray-700"
-                    />
+                    {/\.(mp4|webm|mov)/i.test(banner.imageUrl) ? (
+                      <div className="h-12 w-20 rounded bg-gray-700 flex items-center justify-center">
+                        <Film className="h-6 w-6 text-gray-400" />
+                      </div>
+                    ) : (
+                      <img
+                        src={banner.imageUrl}
+                        alt={banner.title}
+                        className="h-12 w-20 rounded object-cover bg-gray-700"
+                      />
+                    )}
                     <div>
                       <div className="text-sm font-medium text-gray-300">{banner.title}</div>
                       {banner.linkUrl && (

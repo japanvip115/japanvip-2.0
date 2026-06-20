@@ -357,7 +357,10 @@ export function BfjUrlForm({ fees }: { fees: StaticFees }) {
           <button
             onClick={handleParse}
             disabled={step === 'loading' || !url.trim()}
-            className="mt-3 mx-auto flex w-96 cursor-pointer items-center justify-center gap-2 rounded-xl bg-brand-red py-3 text-sm font-semibold text-white transition hover:bg-brand-red-dark disabled:opacity-60"
+            className="mt-3 mx-auto flex w-96 cursor-pointer items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold transition disabled:opacity-60"
+            style={{background:'transparent', color:'#c41e3a', border:'2px solid #fecaca'}}
+            onMouseEnter={e => { if (!e.currentTarget.disabled) { e.currentTarget.style.background='#c41e3a'; e.currentTarget.style.color='white'; e.currentTarget.style.border='2px solid #c41e3a' }}}
+            onMouseLeave={e => { e.currentTarget.style.background='transparent'; e.currentTarget.style.color='#c41e3a'; e.currentTarget.style.border='2px solid #fecaca' }}
           >
             {step === 'loading' ? (
               <><div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />Đang lấy thông tin...</>
@@ -1001,7 +1004,10 @@ export function BfjUrlForm({ fees }: { fees: StaticFees }) {
                 <p className="mb-3 text-xs text-gray-400">Tư vấn viên hỗ trợ từ 8:00 – 18:30 mỗi ngày</p>
                 <a
                   href="tel:0988969896"
-                  className="mb-2 flex items-center justify-center gap-2 rounded-lg bg-brand-red py-2.5 text-sm font-semibold text-white hover:bg-brand-red-dark"
+                  className="mb-2 flex items-center justify-center gap-2 rounded-lg py-2.5 text-sm font-semibold transition"
+                  style={{border:'2px solid rgba(255,255,255,0.5)', color:'white', background:'transparent'}}
+                  onMouseEnter={e => { e.currentTarget.style.background='rgba(255,255,255,0.15)'; e.currentTarget.style.borderColor='white' }}
+                  onMouseLeave={e => { e.currentTarget.style.background='transparent'; e.currentTarget.style.borderColor='rgba(255,255,255,0.5)' }}
                 >
                   📞 0988.969.896
                 </a>

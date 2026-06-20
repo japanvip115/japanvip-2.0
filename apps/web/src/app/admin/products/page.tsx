@@ -177,7 +177,7 @@ export default async function AdminProductsPage({ searchParams }: { searchParams
               products.map((product) => (
                 <tr key={product.id} className="hover:bg-gray-700/30 transition-colors">
                   <td className="px-4 py-3">
-                    <Link href={`/admin/products/${product.id}`} className="flex items-center gap-3">
+                    <Link href={`/admin/products/${product.id}?returnTo=${encodeURIComponent(`/admin/products?status=${status}&q=${q}&categoryId=${categoryId}&page=${pageNum}`)}`} className="flex items-center gap-3">
                       {product.images[0] ? (
                         <div className="relative h-10 w-10 flex-shrink-0 overflow-hidden rounded-lg border border-gray-700">
                           <Image src={product.images[0].url} alt="" fill className="object-cover" sizes="40px" unoptimized={!product.images[0].url.includes('media.japanvip.vn')} />
@@ -213,7 +213,7 @@ export default async function AdminProductsPage({ searchParams }: { searchParams
                   <td className="px-4 py-3">
                     <div className="flex items-center justify-end gap-3">
                       <Link
-                        href={`/admin/products/${product.id}`}
+                        href={`/admin/products/${product.id}?returnTo=${encodeURIComponent(`/admin/products?status=${status}&q=${q}&categoryId=${categoryId}&page=${pageNum}`)}`}
                         className="whitespace-nowrap text-xs font-medium text-red-400 hover:underline"
                       >
                         Chi tiết
@@ -233,29 +233,48 @@ export default async function AdminProductsPage({ searchParams }: { searchParams
       </div>
 
       {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="mt-4 flex items-center justify-between text-sm text-gray-500">
-          <span>Trang {pageNum} / {totalPages}</span>
-          <div className="flex gap-2">
-            {pageNum > 1 && (
-              <Link
-                href={`/admin/products?status=${status}&q=${q}&categoryId=${categoryId}&page=${pageNum - 1}`}
-                className="rounded-lg border border-gray-700 bg-gray-800 px-3 py-1 text-sm font-medium text-gray-300 transition-colors hover:border-gray-600 hover:bg-gray-700 hover:text-white"
-              >
-                ← Trước
-              </Link>
-            )}
-            {pageNum < totalPages && (
-              <Link
-                href={`/admin/products?status=${status}&q=${q}&categoryId=${categoryId}&page=${pageNum + 1}`}
-                className="rounded-lg border border-gray-700 bg-gray-800 px-3 py-1 text-sm font-medium text-gray-300 transition-colors hover:border-gray-600 hover:bg-gray-700 hover:text-white"
-              >
-                Sau →
-              </Link>
-            )}
+      {totalPages > 1 && (() => {
+        const delta = 2
+        const pages: (number | '...')[] = []
+        const left = Math.max(2, pageNum - delta)
+        const right = Math.min(totalPages - 1, pageNum + delta)
+        pages.push(1)
+        if (left > 2) pages.push('...')
+        for (let i = left; i <= right; i++) pages.push(i)
+        if (right < totalPages - 1) pages.push('...')
+        if (totalPages > 1) pages.push(totalPages)
+        const base = `/admin/products?status=${status}&q=${q}&categoryId=${categoryId}`
+        const btnCls = 'rounded-lg border px-3 py-1 text-sm font-medium transition-colors'
+        const activeCls = `${btnCls} border-red-500 bg-red-600 text-white`
+        const normalCls = `${btnCls} border-gray-700 bg-gray-800 text-gray-300 hover:border-gray-600 hover:bg-gray-700 hover:text-white`
+        const disabledCls = `${btnCls} border-gray-800 bg-gray-900 text-gray-600 cursor-not-allowed`
+        return (
+          <div className="mt-4 flex items-center justify-between text-sm text-gray-500">
+            <span>Trang {pageNum} / {totalPages} &nbsp;·&nbsp; {total} sản phẩm</span>
+            <div className="flex items-center gap-1">
+              {pageNum > 1 ? (
+                <Link href={`${base}&page=${pageNum - 1}`} className={normalCls}>← Trước</Link>
+              ) : (
+                <span className={disabledCls}>← Trước</span>
+              )}
+              {pages.map((p, i) =>
+                p === '...' ? (
+                  <span key={`dots-${i}`} className="px-1 text-gray-600">…</span>
+                ) : (
+                  <Link key={p} href={`${base}&page=${p}`} className={p === pageNum ? activeCls : normalCls}>
+                    {p}
+                  </Link>
+                )
+              )}
+              {pageNum < totalPages ? (
+                <Link href={`${base}&page=${pageNum + 1}`} className={normalCls}>Sau →</Link>
+              ) : (
+                <span className={disabledCls}>Sau →</span>
+              )}
+            </div>
           </div>
-        </div>
-      )}
+        )
+      })()}
     </div>
   )
 }

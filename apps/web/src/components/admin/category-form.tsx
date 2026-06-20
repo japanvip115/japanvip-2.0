@@ -15,13 +15,23 @@ type Props = {
     slug: string
     description: string | null
     imageUrl: string | null
+    imagePosition: string | null
     icon: string | null
     parentId: string | null
     sortOrder: number
     isActive: boolean
+    showOnHome: boolean
     metaTitle: string | null
     metaDesc: string | null
   }
+}
+
+const STEP = 5
+function clamp(v: number) { return Math.max(0, Math.min(100, v)) }
+function posToXY(pos: string): [number, number] {
+  const parts = (pos ?? '50% 50%').trim().split(/\s+/)
+  const parse = (s: string) => parseInt(s) || 50
+  return [parse(parts[0]), parse(parts[1] ?? '50%')]
 }
 
 function toSlug(str: string) {
@@ -52,9 +62,15 @@ export function CategoryForm({ mode, parents, initial }: Props) {
     parentId: initial?.parentId ?? '',
     sortOrder: initial?.sortOrder ?? 0,
     isActive: initial?.isActive ?? true,
+    showOnHome: initial?.showOnHome ?? true,
     metaTitle: initial?.metaTitle ?? '',
     metaDesc: initial?.metaDesc ?? '',
   })
+
+  const initXY = posToXY(initial?.imagePosition ?? '50% 50%')
+  const [imgX, setImgX] = useState(initXY[0])
+  const [imgY, setImgY] = useState(initXY[1])
+  const imagePosition = `${imgX}% ${imgY}%`
 
   function set<K extends keyof typeof form>(key: K, val: (typeof form)[K]) {
     setForm((f) => ({ ...f, [key]: val }))
@@ -75,6 +91,7 @@ export function CategoryForm({ mode, parents, initial }: Props) {
           ...form,
           parentId: form.parentId || null,
           imageUrl: form.imageUrl || null,
+          imagePosition: form.imageUrl ? imagePosition : null,
           icon: form.icon || null,
           description: form.description || null,
           metaTitle: form.metaTitle || null,
@@ -186,6 +203,17 @@ export function CategoryForm({ mode, parents, initial }: Props) {
                 <option value="0">Ẩn</option>
               </select>
             </div>
+            <div>
+              <label className={LABEL_CLS}>Trang chủ</label>
+              <select
+                value={form.showOnHome ? '1' : '0'}
+                onChange={(e) => set('showOnHome', e.target.value === '1')}
+                className={INPUT_CLS}
+              >
+                <option value="1">Hiện ở trang chủ</option>
+                <option value="0">Ẩn khỏi trang chủ</option>
+              </select>
+            </div>
           </div>
         </div>
 
@@ -209,6 +237,38 @@ export function CategoryForm({ mode, parents, initial }: Props) {
             previewClass="h-32 w-full"
             placeholder="https://..."
           />
+
+          {form.imageUrl && (
+            <div>
+              <label className={LABEL_CLS}>Căn chỉnh ảnh banner</label>
+              <div className="flex items-center gap-4 mt-1">
+                <div className="grid grid-cols-3 gap-1 w-fit">
+                  <div />
+                  <button type="button" onClick={() => setImgY(clamp(imgY - STEP))} className="w-9 h-9 rounded-lg bg-gray-700 text-gray-200 hover:bg-gray-600 active:scale-95 transition flex items-center justify-center">↑</button>
+                  <div />
+                  <button type="button" onClick={() => setImgX(clamp(imgX - STEP))} className="w-9 h-9 rounded-lg bg-gray-700 text-gray-200 hover:bg-gray-600 active:scale-95 transition flex items-center justify-center">←</button>
+                  <button type="button" onClick={() => { setImgX(50); setImgY(50) }} className="w-9 h-9 rounded-lg bg-gray-900 border border-gray-600 text-gray-400 hover:text-white hover:border-gray-400 transition text-xs flex items-center justify-center">⊙</button>
+                  <button type="button" onClick={() => setImgX(clamp(imgX + STEP))} className="w-9 h-9 rounded-lg bg-gray-700 text-gray-200 hover:bg-gray-600 active:scale-95 transition flex items-center justify-center">→</button>
+                  <div />
+                  <button type="button" onClick={() => setImgY(clamp(imgY + STEP))} className="w-9 h-9 rounded-lg bg-gray-700 text-gray-200 hover:bg-gray-600 active:scale-95 transition flex items-center justify-center">↓</button>
+                  <div />
+                </div>
+                <div className="flex-1 space-y-2">
+                  <div>
+                    <div className="flex justify-between text-xs text-gray-500 mb-1"><span>Ngang</span><span className="text-gray-300">{imgX}%</span></div>
+                    <input type="range" min={0} max={100} value={imgX} onChange={(e) => setImgX(Number(e.target.value))} className="w-full accent-red-600 h-1.5 rounded-full cursor-pointer" />
+                  </div>
+                  <div>
+                    <div className="flex justify-between text-xs text-gray-500 mb-1"><span>Dọc</span><span className="text-gray-300">{imgY}%</span></div>
+                    <input type="range" min={0} max={100} value={imgY} onChange={(e) => setImgY(Number(e.target.value))} className="w-full accent-red-600 h-1.5 rounded-full cursor-pointer" />
+                  </div>
+                </div>
+              </div>
+              <div className="mt-2 w-full h-28 overflow-hidden rounded-lg">
+                <img src={form.imageUrl} alt="" className="w-full h-full object-cover" style={{ objectPosition: imagePosition }} />
+              </div>
+            </div>
+          )}
 
           <div>
             <label className={LABEL_CLS}>Meta Title</label>

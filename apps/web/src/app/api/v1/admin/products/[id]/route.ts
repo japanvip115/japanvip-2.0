@@ -17,6 +17,7 @@ const patchSchema = z.object({
   condition: z.enum(['NEW', 'LIKE_NEW', 'GOOD', 'FAIR']).optional(),
   status: z.enum(['DRAFT', 'ACTIVE', 'SOLD', 'ARCHIVED']).optional(),
   badge: z.enum(['NEW_ARRIVAL', 'SOLD_OUT', 'ORDER_ONLY']).nullable().optional(),
+  showOnHome: z.boolean().optional(),
   originUrl: z.string().url().nullable().optional(),
   salePrice: z.number().positive().nullable().optional(),
   marketPrice: z.number().positive().nullable().optional(),
@@ -80,6 +81,7 @@ export async function PATCH(req: NextRequest, { params }: Params) {
     if (body.condition !== undefined) data.condition = body.condition as Prisma.EnumProductConditionFilter['equals']
     if (body.status !== undefined) data.status = body.status as Prisma.EnumProductStatusFilter['equals']
     if (body.badge !== undefined) data.badge = body.badge
+    if (body.showOnHome !== undefined) data.showOnHome = body.showOnHome
     if (body.originUrl !== undefined) data.originUrl = body.originUrl
     if (body.salePrice !== undefined) data.salePrice = body.salePrice !== null ? new Prisma.Decimal(body.salePrice) : null
     if (body.marketPrice !== undefined) data.marketPrice = body.marketPrice !== null ? new Prisma.Decimal(body.marketPrice) : null

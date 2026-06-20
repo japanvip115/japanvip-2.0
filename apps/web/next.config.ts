@@ -1,6 +1,9 @@
 import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
+  experimental: {
+    serverActions: { bodySizeLimit: '100mb' },
+  },
   typedRoutes: false,
   serverExternalPackages: ['@prisma/client', '@japanvip/db'],
   images: {
@@ -39,6 +42,7 @@ const nextConfig: NextConfig = {
               "img-src 'self' data: https: blob:",
               "font-src 'self' data:",
               "connect-src 'self' https:",
+              "media-src 'self' https:",
               "frame-ancestors 'none'",
             ].join('; '),
           },

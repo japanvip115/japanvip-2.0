@@ -1,0 +1,3019 @@
+{
+ "categories": [
+  {
+   "slug": "bep-tu",
+   "name": "Bếp Từ",
+   "sortOrder": 0
+  },
+  {
+   "slug": "lo-vi-song",
+   "name": "Lò vi sóng",
+   "sortOrder": 1
+  },
+  {
+   "slug": "hut-mui-bep",
+   "name": "Hút mùi bếp",
+   "sortOrder": 2
+  },
+  {
+   "slug": "do-dung-khac",
+   "name": "Đồ dùng khác",
+   "sortOrder": 3
+  },
+  {
+   "slug": "voi-bep",
+   "name": "Vòi Bếp",
+   "sortOrder": 4
+  },
+  {
+   "slug": "may-loc-nuoc",
+   "name": "Máy Lọc Nước",
+   "sortOrder": 5
+  },
+  {
+   "slug": "may-rua-bat",
+   "name": "Máy rửa bát",
+   "sortOrder": 6
+  },
+  {
+   "slug": "may-hut-bui",
+   "name": "Máy Hút Bụi",
+   "sortOrder": 7
+  },
+  {
+   "slug": "quat-dien",
+   "name": "Quạt điện",
+   "sortOrder": 8
+  },
+  {
+   "slug": "noi-u",
+   "name": "Nồi ủ",
+   "sortOrder": 9
+  },
+  {
+   "slug": "noi-com-dien",
+   "name": "Nồi cơm điện",
+   "sortOrder": 10
+  },
+  {
+   "slug": "noi-chien-khong-dau",
+   "name": "Nồi Chiên Không Dầu",
+   "sortOrder": 11
+  },
+  {
+   "slug": "may-suoi",
+   "name": "Máy Sưởi",
+   "sortOrder": 12
+  },
+  {
+   "slug": "may-hut-am",
+   "name": "Máy hút ẩm",
+   "sortOrder": 13
+  },
+  {
+   "slug": "may-loc-khi",
+   "name": "Máy lọc khí",
+   "sortOrder": 14
+  },
+  {
+   "slug": "bet-ve-sinh",
+   "name": "Bệt Vệ Sinh",
+   "sortOrder": 15
+  },
+  {
+   "slug": "voi-chau",
+   "name": "Vòi chậu",
+   "sortOrder": 16
+  },
+  {
+   "slug": "nap-bet",
+   "name": "Nắp Bệt",
+   "sortOrder": 17
+  },
+  {
+   "slug": "phu-kien",
+   "name": "Phụ Kiện",
+   "sortOrder": 18
+  },
+  {
+   "slug": "sen-cay",
+   "name": "Sen cây",
+   "sortOrder": 19
+  },
+  {
+   "slug": "sen-voi",
+   "name": "Sen Vòi",
+   "sortOrder": 20
+  },
+  {
+   "slug": "dong-ho",
+   "name": "Đồng Hồ",
+   "sortOrder": 21
+  },
+  {
+   "slug": "ghe-massage",
+   "name": "Ghế Massage",
+   "sortOrder": 22
+  },
+  {
+   "slug": "may-say-toc",
+   "name": "Máy sấy tóc",
+   "sortOrder": 23
+  },
+  {
+   "slug": "am-thanh-giai-tri",
+   "name": "Âm Thanh Giải Trí",
+   "sortOrder": 24
+  },
+  {
+   "slug": "may-pha-ca-phe",
+   "name": "Máy Pha Cà Phê",
+   "sortOrder": 25
+  },
+  {
+   "slug": "tu-lanh",
+   "name": "Tủ lạnh",
+   "sortOrder": 26
+  },
+  {
+   "slug": "tu-cap-dong",
+   "name": "Tủ cấp đông",
+   "sortOrder": 27
+  },
+  {
+   "slug": "may-giat",
+   "name": "Máy giặt",
+   "sortOrder": 28
+  },
+  {
+   "slug": "dieu-hoa",
+   "name": "Điều hòa",
+   "sortOrder": 29
+  },
+  {
+   "slug": "may-say-bat",
+   "name": "Máy sấy bát",
+   "sortOrder": 30
+  },
+  {
+   "slug": "thiet-bi-nha-bep",
+   "name": "Thiết Bị Nhà Bếp",
+   "sortOrder": 31
+  },
+  {
+   "slug": "do-dung-gia-dinh",
+   "name": "Đồ Dùng Gia Đình",
+   "sortOrder": 32
+  },
+  {
+   "slug": "hang-dien-lanh",
+   "name": "Hàng Điện Lạnh",
+   "sortOrder": 33
+  },
+  {
+   "slug": "san-pham-cong-nghe",
+   "name": "Sản Phẩm Công Nghệ",
+   "sortOrder": 34
+  }
+ ],
+ "products": [
+  {
+   "srcId": "831",
+   "name": "Máy rửa bát Rinnai RSW-F402C",
+   "slug": "may-rua-bat-rinnai-rsw-f402c",
+   "description": "Máy rửa bát Rinnai RSW-F402C không chỉ là một thiết bị gia dụng, mà là trợ thủ đắc lực giúp bạn giải phóng thời gian, nâng cấp căn bếp, và bảo vệ sức khỏe gia đình. Với công nghệ Nhật Bản tiên tiến, thiết kế sang trọng, nhỏ gọn phù hợp với mọi căn bếp Việt Nam, và các tính năng thông minh như vòi phun đôi, ion bạc kháng khuẩn, và sấy khô không khí nóng, Rinnai RSW-F402C mang đến trải nghiệm rửa bát hoàn hảo mà bạn chưa từng thấy.",
+   "salePrice": 30500000,
+   "marketPrice": null,
+   "brand": null,
+   "categorySlug": "may-rua-bat",
+   "originUrl": "https://japanvip.vn/may-rua-bat-rinnai-rsw-f402c.html",
+   "images": [
+    "https://japanvip.vn/media/product/831_2.jpg",
+    "https://japanvip.vn/media/product/831_1.jpg"
+   ]
+  },
+  {
+   "srcId": "829",
+   "name": "Bồn cầu Toto CES9898 (TCF9898+CS989B)",
+   "slug": "bon-cau-toto-ces9898-tcf9898cs989b",
+   "description": "Trong nhịp sống bận rộn của những người thành đạt, mỗi khoảnh khắc thư giãn đều vô cùng quý giá. Phòng tắm không còn đơn thuần là nơi phục vụ nhu cầu cá nhân, mà đã trở thành không gian thư giãn riêng tư, nơi bạn tìm được sự yên bình giữa cuộc sống hối hả. TOTO NEOREST CES9898 - kiệt tác công nghệ từ Nhật Bản - được thiết kế dành riêng cho những ai hiểu rõ giá trị của sự tinh tế và đẳng cấp trong từng chi tiết cuộc sống.",
+   "salePrice": null,
+   "marketPrice": null,
+   "brand": "Toto",
+   "categorySlug": "bet-ve-sinh",
+   "originUrl": "https://japanvip.vn/bon-cau-toto-ces9898-tcf9898cs989b.html",
+   "images": [
+    "https://japanvip.vn/media/product/829_untitled_1.jpg",
+    "https://japanvip.vn/media/product/829_bon_cau_nk_toto_ces9898_3.jpg"
+   ]
+  },
+  {
+   "srcId": "828",
+   "name": "Nồi chiên không dầu Gourmia GAF858",
+   "slug": "noi-chien-khong-dau-gourmia-gaf858",
+   "description": "Bạn đang tìm kiếm một giải pháp nấu ăn lành mạnh và tiện lợi cho gia đình? Hãy cùng khám phá Nồi chiên không dầu Gourmia GAF858 – trợ thủ đắc lực cho căn bếp hiện đại, giúp bạn biến những bữa ăn hàng ngày trở nên ngon miệng, giòn rụm và bổ dưỡng mà không cần dùng đến dầu mỡ!",
+   "salePrice": null,
+   "marketPrice": null,
+   "brand": null,
+   "categorySlug": "noi-chien-khong-dau",
+   "originUrl": "https://japanvip.vn/noi-chien-khong-dau-gourmia-gaf858.html",
+   "images": [
+    "https://japanvip.vn/media/product/828_1.jpg",
+    "https://japanvip.vn/media/product/828_51gtstorsyl__ac_.jpg",
+    "https://japanvip.vn/media/product/828_71yxhqodeul__ac_sl1200_.jpg",
+    "https://japanvip.vn/media/product/828_61cgpdy41nl__ac_sl1200_.jpg"
+   ]
+  },
+  {
+   "srcId": "827",
+   "name": "Quạt sàn Unold Windmaschine Speed",
+   "slug": "quat-san-unold-windmaschine-speed",
+   "description": "Trong suốt hơn 20 năm làm việc với các thiết bị điện gia dụng, tôi đã trải nghiệm hàng trăm dòng sản phẩm làm mát. Nhưng chỉ có một số ít sản phẩm thực sự nổi bật nhờ hiệu năng vượt trội, thiết kế bền bỉ và trải nghiệm người dùng tuyệt vời – và Quạt Sàn Unold 86756 Windmaschine Speed chính là một trong số đó. Được thiết kế và sản xuất theo tiêu chuẩn khắt khe từ Đức, mẫu quạt sàn này không chỉ là một thiết bị làm mát, mà còn là sự lựa chọn lý tưởng cho mọi không gian sống và làm việc, từ nhà riêng, văn phòng, bệnh viện đến trung tâm hội nghị.",
+   "salePrice": 2190000,
+   "marketPrice": null,
+   "brand": null,
+   "categorySlug": "quat-dien",
+   "originUrl": "https://japanvip.vn/quat-san-unold-windmaschine-speed.html",
+   "images": [
+    "https://japanvip.vn/media/product/827_1.jpg",
+    "https://japanvip.vn/media/product/827_quat_san_2.jpg",
+    "https://japanvip.vn/media/product/827_quat_san_unold_1df225c2c4674cd3b5216eda7c10de44_master.jpg",
+    "https://japanvip.vn/media/product/827_quat_san_unold_86756_donhapkhau_vn_5.jpg"
+   ]
+  },
+  {
+   "srcId": "826",
+   "name": "Robot Hút Bụi Lau Nhà iRobot Roomba Combo 10 Max",
+   "slug": "robot-hut-bui-irobot-roomba-combo-10-max",
+   "description": "Bạn đang tìm kiếm một giải pháp làm sạch thông minh và hiệu quả cho ngôi nhà của mình? iRobot Roomba Combo 10 Max chính là câu trả lời hoàn hảo! Với khả năng hút bụi và lau nhà mạnh mẽ, cùng với công nghệ tự giặt giẻ, sấy khô và cấp nước tự động, sản phẩm này sẽ giúp bạn giữ cho ngôi nhà của mình luôn sạch sẽ và thoáng mát.",
+   "salePrice": 39990000,
+   "marketPrice": 45000000,
+   "brand": null,
+   "categorySlug": "may-hut-bui",
+   "originUrl": "https://japanvip.vn/robot-hut-bui-irobot-roomba-combo-10-max.html",
+   "images": [
+    "https://japanvip.vn/media/product/826_1.jpg",
+    "https://japanvip.vn/media/product/826_71_y6cbzjfl.jpg"
+   ]
+  },
+  {
+   "srcId": "825",
+   "name": "Quạt cây Trotec TVE 26S",
+   "slug": "quat-cay-trotec-tve-26s",
+   "description": "Quạt cây Trotec TVE 26S là sản phẩm quạt cây cao cấp đến từ tập đoàn Trotec - thương hiệu với hơn 25 năm kinh nghiệm trong lĩnh vực điều hòa không khí tại CHLB Đức. Với thiết kế sang trọng cùng công nghệ tiên tiến, TVE 26S mang đến giải pháp làm mát hiệu quả và tiết kiệm cho mọi không gian sống.",
+   "salePrice": 4890000,
+   "marketPrice": null,
+   "brand": null,
+   "categorySlug": "quat-dien",
+   "originUrl": "https://japanvip.vn/quat-cay-trotec-tve-26s.html",
+   "images": [
+    "https://japanvip.vn/media/product/825_1.jpg",
+    "https://japanvip.vn/media/product/825_quat_trotec_tve_26s_2.png"
+   ]
+  },
+  {
+   "srcId": "824",
+   "name": "Máy lọc không khí Panasonic F-VC70XV",
+   "slug": "may-loc-khong-khi-panasonic-f-vc70xv",
+   "description": "Trong không gian sống hiện đại ngày nay, chất lượng không khí đóng vai trò then chốt tạo nên sức khỏe và sự thoải mái cho gia đình. Panasonic, thương hiệu hàng đầu từ Nhật Bản, tự hào giới thiệu dòng máy lọc không khí cao cấp F-VC70XV – một sản phẩm không chỉ mang lại hiệu suất lọc vượt trội mà còn là điểm nhấn thẩm mỹ cho không gian của bạn.",
+   "salePrice": 10900000,
+   "marketPrice": null,
+   "brand": "Panasonic",
+   "categorySlug": "may-loc-khi",
+   "originUrl": "https://japanvip.vn/may-loc-khong-khi-panasonic-f-vc70xv.html",
+   "images": [
+    "https://japanvip.vn/media/product/824_1.jpg",
+    "https://japanvip.vn/media/product/824_untitled_2.png",
+    "https://japanvip.vn/media/product/824_vn_11134207_7r98o_lxh0uz3d7c9l95.jpg"
+   ]
+  },
+  {
+   "srcId": "822",
+   "name": "Máy lọc không khí Sharp KI-HS70",
+   "slug": "may-loc-khong-khi-sharp-ki-hs70",
+   "description": "Trong thời đại mà chất lượng không khí ngày càng trở thành mối quan tâm hàng đầu của mỗi gia đình, Sharp đã cho ra mắt sản phẩm máy lọc không khí KI-HS70-W - một giải pháp toàn diện kết hợp công nghệ tiên tiến và thiết kế thông minh. Với khả năng loại bỏ 99,99% bụi mịn cùng mật độ Ion Plasma lên đến 25.000 ion, đây là lựa chọn lý tưởng cho những ai quan tâm đến sức khỏe gia đình và chất lượng không khí trong nhà.",
+   "salePrice": 6950000,
+   "marketPrice": null,
+   "brand": "Sharp",
+   "categorySlug": "may-loc-khi",
+   "originUrl": "https://japanvip.vn/may-loc-khong-khi-sharp-ki-hs70.html",
+   "images": [
+    "https://japanvip.vn/media/product/822_untitled_1.jpg",
+    "https://japanvip.vn/media/product/822_may_loc_khong_khi_sharp_ki_hs70.jpg"
+   ]
+  },
+  {
+   "srcId": "821",
+   "name": "Nắp bệt Toto TCF8GM24",
+   "slug": "nap-bet-toto-tcf8gm24",
+   "description": "Bạn đang tìm kiếm một nắp bệt điện tử cao cấp, dễ sử dụng và đảm bảo vệ sinh tối đa? Hãy khám phá Toto TCF8GM24, sản phẩm đến từ thương hiệu thiết bị vệ sinh hàng đầu Nhật Bản – TOTO.",
+   "salePrice": 10250000,
+   "marketPrice": null,
+   "brand": null,
+   "categorySlug": "nap-bet",
+   "originUrl": "https://japanvip.vn/nap-bet-toto-tcf8gm24.html",
+   "images": [
+    "https://japanvip.vn/media/product/821_1.jpg",
+    "https://japanvip.vn/media/product/821_thong_so_ky_thuat_toto_tcf8gm24.jpg"
+   ]
+  },
+  {
+   "srcId": "820",
+   "name": "Nồi cơm điện Toshiba RC-10VST",
+   "slug": "noi-com-dien-toshiba-rc-10vst",
+   "description": "Nồi cơm điện Toshiba RC-10VST là một sản phẩm cao cấp, tích hợp công nghệ cao tần IH và áp suất hút chân không độc quyền, mang đến trải nghiệm nấu cơm hoàn hảo cho gia đình bạn.",
+   "salePrice": 7250000,
+   "marketPrice": null,
+   "brand": "Toshiba",
+   "categorySlug": "noi-com-dien",
+   "originUrl": "https://japanvip.vn/noi-com-dien-toshiba-rc-10vst.html",
+   "images": [
+    "https://japanvip.vn/media/product/820_1.jpg",
+    "https://japanvip.vn/media/product/820_untitled.png"
+   ]
+  },
+  {
+   "srcId": "819",
+   "name": "Tủ Lạnh Panasonic NR-FVF45S1",
+   "slug": "tu-lanh-panasonic-nr-fvf45s1",
+   "description": "Với không gian bếp ngày càng thu hẹp, việc lựa chọn một chiếc tủ lạnh vừa tiết kiệm diện tích vừa đáp ứng nhu cầu lưu trữ lớn là ưu tiên hàng đầu của nhiều gia đình. Tủ lạnh Panasonic NR-FVF45S1-W chính là sự kết hợp hoàn hảo giữa thiết kế tinh tế và công nghệ tiên tiến, mang đến trải nghiệm sử dụng vượt trội. Dưới đây là những tính năng nổi bật cùng lợi ích thiết thực dành cho người dùng:",
+   "salePrice": 41990000,
+   "marketPrice": null,
+   "brand": "Panasonic",
+   "categorySlug": "tu-lanh",
+   "originUrl": "https://japanvip.vn/tu-lanh-panasonic-nr-fvf45s1.html",
+   "images": [
+    "https://japanvip.vn/media/product/819_1.jpg",
+    "https://japanvip.vn/media/product/819_pnmmc6qq5eav6.jpg",
+    "https://japanvip.vn/media/product/819_tu_lanh_panasonic_nr_fvf45s1_w_3.jpg"
+   ]
+  },
+  {
+   "srcId": "818",
+   "name": "Nồi cơm điện Panasonic SR-VSX101",
+   "slug": "noi-com-dien-panasonic-sr-vsx101",
+   "description": "Nồi cơm điện Panasonic SR-VSX101 không chỉ là một thiết bị nấu cơm thông thường - đây là một kiệt tác công nghệ giúp tái tạo hương vị thơm ngon của gạo mới thu hoạch cho mọi bữa ăn của gia đình bạn.",
+   "salePrice": 15990000,
+   "marketPrice": null,
+   "brand": "Panasonic",
+   "categorySlug": "noi-com-dien",
+   "originUrl": "https://japanvip.vn/noi-com-dien-panasonic-sr-vsx101.html",
+   "images": [
+    "https://japanvip.vn/media/product/818_1.jpg",
+    "https://japanvip.vn/media/product/818_untitled_1.png"
+   ]
+  },
+  {
+   "srcId": "817",
+   "name": "Sen tắm Toto TBV03404J",
+   "slug": "sen-tam-toto-tbv03404j",
+   "description": "Bạn có đang tìm kiếm một bộ sen tắm không chỉ tiện lợi, bền bỉ mà còn mang đến vẻ đẹp sang trọng cho phòng tắm của mình? Vậy thì, Sen tắm TOTO TBV03404J chính là lựa chọn hoàn hảo mà bạn không thể bỏ qua.",
+   "salePrice": 5350000,
+   "marketPrice": null,
+   "brand": "Toto",
+   "categorySlug": "sen-voi",
+   "originUrl": "https://japanvip.vn/sen-tam-toto-tbv03404j.html",
+   "images": [
+    "https://japanvip.vn/media/product/817_1.jpg",
+    "https://japanvip.vn/media/product/817_htsy_tbv03404j_1_d_20221129151829.jpg"
+   ]
+  },
+  {
+   "srcId": "816",
+   "name": "Máy Pha Cà Phê Panasonic NC-A58",
+   "slug": "may-pha-ca-phe-panasonic-nc-a58",
+   "description": "Hãy tưởng tượng bạn có một bartender chuyên nghiệp ngay trong gian bếp của mình, luôn sẵn sàng chiết xuất ly cà phê hoàn hảo mỗi khi bạn muốn. Máy pha cà phê Panasonic NC-A58 không chỉ đơn thuần là một chiếc máy, mà còn là cánh cổng dẫn bạn đến một hành trình cà phê phi thường.",
+   "salePrice": 8990000,
+   "marketPrice": null,
+   "brand": "Panasonic",
+   "categorySlug": "may-pha-ca-phe",
+   "originUrl": "https://japanvip.vn/may-pha-ca-phe-panasonic-nc-a58.html",
+   "images": [
+    "https://japanvip.vn/media/product/816_1.jpg",
+    "https://japanvip.vn/media/product/816_img02_sp.jpeg",
+    "https://japanvip.vn/media/product/816_panasonic_store_y_nc_a58_k_5_d_20250121172205.jpg"
+   ]
+  },
+  {
+   "srcId": "815",
+   "name": "Quạt Hitachi HEF-DL300D",
+   "slug": "quat-hitachi-hef-dl300d",
+   "description": "Quạt Hitachi HEF-DL300D là sản phẩm quạt điện cao cấp được sản xuất tại Nhật Bản, mang đến trải nghiệm làm mát tối ưu với công nghệ tiên tiến và thiết kế thông minh.",
+   "salePrice": 4190000,
+   "marketPrice": null,
+   "brand": "Hitachi",
+   "categorySlug": "quat-dien",
+   "originUrl": "https://japanvip.vn/quat-hitachi-hef-dl300d.html",
+   "images": [
+    "https://japanvip.vn/media/product/815_1.jpg",
+    "https://japanvip.vn/media/product/815_341_quat_dien_hitachi_hef_dl300d_013.jpg",
+    "https://japanvip.vn/media/product/815_dl300d_6_muc.jpg"
+   ]
+  },
+  {
+   "srcId": "814",
+   "name": "Điều hòa Mitsubishi MSZ-GV2224-W",
+   "slug": "dieu-hoa-mitsubishi-msz-gv2224-w",
+   "description": "Trong thị trường điều hòa đa dạng hiện nay, Mitsubishi MSZ-GV2224-W nổi bật với chất lượng Nhật Bản và tính năng vượt trội. Sản phẩm này không chỉ làm mát hiệu quả vào mùa hè mà còn sưởi ấm tuyệt vời trong mùa đông, đáp ứng nhu cầu sử dụng quanh năm của mọi gia đình.",
+   "salePrice": 15500000,
+   "marketPrice": null,
+   "brand": "Mitsubishi",
+   "categorySlug": "hang-dien-lanh",
+   "originUrl": "https://japanvip.vn/dieu-hoa-mitsubishi-msz-gv2224-w.html",
+   "images": [
+    "https://japanvip.vn/media/product/814_1.jpg",
+    "https://japanvip.vn/media/product/814_rakurakumarket_msz_gv2224_w_6_d_20240529155537.jpg"
+   ]
+  },
+  {
+   "srcId": "813",
+   "name": "Quạt treo tường Toshiba TF-30RK25",
+   "slug": "quat-treo-tuong-toshiba-tf-30rk25",
+   "description": "Quạt treo tường Toshiba TF-30RK25 với 7 cánh độc đáo, 4 cấp độ gió, 3 chế độ gió tự nhiên, điều khiển từ xa, hẹn giờ, thiết kế tinh tế, tiết kiệm điện.",
+   "salePrice": 2750000,
+   "marketPrice": null,
+   "brand": "Toshiba",
+   "categorySlug": "quat-dien",
+   "originUrl": "https://japanvip.vn/quat-treo-tuong-toshiba-tf-30rk25.html",
+   "images": [
+    "https://japanvip.vn/media/product/813_1.jpg",
+    "https://japanvip.vn/media/product/813_quat_treo_tuong_toshiba_tf_30rk25_460x422_1.png"
+   ]
+  },
+  {
+   "srcId": "812",
+   "name": "Máy lọc không khí Sharp KI-RS50",
+   "slug": "may-loc-khong-khi-sharp-ki-rs50",
+   "description": "Máy lọc không khí Sharp KI-RS50 nội địa Nhật là một thiết bị hiện đại, tích hợp nhiều tính năng ưu việt như lọc không khí, bù ẩm thông minh và công nghệ ion Plasmacluster độc quyền. Với khả năng làm sạch không khí, khử mùi hiệu quả và thu gom bụi bẩn, sản phẩm này không chỉ mang lại bầu không khí trong lành mà còn hoạt động êm ái, phù hợp cho các không gian nhỏ như căn hộ studio hay phòng ngủ.",
+   "salePrice": 6150000,
+   "marketPrice": null,
+   "brand": "Sharp",
+   "categorySlug": "may-loc-khi",
+   "originUrl": "https://japanvip.vn/may-loc-khong-khi-sharp-ki-rs50.html",
+   "images": [
+    "https://japanvip.vn/media/product/812_1.jpg",
+    "https://japanvip.vn/media/product/812_m__y_l___c_kh__ng_kh___sharp_ki_n50v_w_t___o____m_kh__ng_kh___xanh____nh______i_di___n.jpg",
+    "https://japanvip.vn/media/product/812_ogp.jpg"
+   ]
+  },
+  {
+   "srcId": "811",
+   "name": "Quạt tháp Rowenta VU6770 Eole Infinite",
+   "slug": "quat-thap-rowenta-vu6770-eole-infinite",
+   "description": "Rowenta là một trong những thương hiệu hàng đầu tại thị trường CHLB Đức, nổi bật trong lĩnh vực sản xuất thiết bị gia dụng như quạt và máy sưởi. Quạt tháp Rowenta VU6670 Eole Infinite với màu đen sang trọng không chỉ mang lại khả năng làm mát hiệu quả mà còn góp phần tạo nên vẻ đẹp thanh lịch cho không gian sống của bạn.",
+   "salePrice": 3790000,
+   "marketPrice": null,
+   "brand": null,
+   "categorySlug": "quat-dien",
+   "originUrl": "https://japanvip.vn/quat-thap-rowenta-vu6770-eole-infinite.html",
+   "images": [
+    "https://japanvip.vn/media/product/811_1.jpg",
+    "https://japanvip.vn/media/product/811_65749048_727789910986050_157513321375858688_n.jpg"
+   ]
+  },
+  {
+   "srcId": "810",
+   "name": "Máy giặt Hitachi BD-SX130KL",
+   "slug": "may-giat-hitachi-bd-sx130kl",
+   "description": "Máy giặt Hitachi BD-SX130KL là dòng máy giặt nội địa Nhật Bản cao cấp, tích hợp công nghệ hiện đại với công suất giặt lên đến 13kg và sấy 7kg. Sản phẩm được trang bị nhiều tính năng thông minh như tự động điều chỉnh lượng nước, chế độ giặt nước nóng phù hợp với từng loại vải, ngăn ngừa ố vàng, kết hợp công nghệ sinh học ở nhiệt độ thấp giúp làm sạch hiệu quả mà vẫn tiết kiệm điện nước tối đa.",
+   "salePrice": null,
+   "marketPrice": null,
+   "brand": "Hitachi",
+   "categorySlug": "hang-dien-lanh",
+   "originUrl": "https://japanvip.vn/may-giat-hitachi-bd-sx130kl.html",
+   "images": [
+    "https://japanvip.vn/media/product/810_1.jpg",
+    "https://japanvip.vn/media/product/810_4549873192376_a02.jpg",
+    "https://japanvip.vn/media/product/810_4549873192376_a03.jpg"
+   ]
+  },
+  {
+   "srcId": "809",
+   "name": "Quạt cây Rowenta VU5870",
+   "slug": "quat-cay-rowenta-vu5870",
+   "description": "Trong những ngày hè nóng bức, một chiếc quạt cây mạnh mẽ, êm ái và tiện ích là vật dụng không thể thiếu trong mỗi gia đình. Quạt cây Rowenta VU5870 chính là giải pháp lý tưởng, mang đến luồng gió mát lạnh, không gian yên tĩnh và trong lành. Với công nghệ tiên tiến kết hợp thiết kế thông minh, sản phẩm này không chỉ làm mát hiệu quả mà còn nâng tầm trải nghiệm sống của bạn. Hãy cùng JapanVip khám phá chi tiết về chiếc quạt đứng cao cấp này ngay bây giờ!",
+   "salePrice": 5490000,
+   "marketPrice": null,
+   "brand": null,
+   "categorySlug": "quat-dien",
+   "originUrl": "https://japanvip.vn/quat-cay-rowenta-vu5870.html",
+   "images": [
+    "https://japanvip.vn/media/product/809_1.jpg",
+    "https://japanvip.vn/media/product/809_ava_quat_thap_rowenta_vu5870_6.jpg",
+    "https://japanvip.vn/media/product/809_rowenta_vu5870_10_800x800.jpg"
+   ]
+  },
+  {
+   "srcId": "808",
+   "name": "Máy lọc không khí 3 trong 1 Sharp KI-RD50",
+   "slug": "may-loc-khong-khi-3-trong-1-sharp-ki-rd50",
+   "description": "Máy lọc không khí Sharp KI-RD50 là sự kết hợp hoàn hảo giữa công nghệ tiên tiến và thiết kế hiện đại, mang đến giải pháp 3 trong 1: lọc không khí, hút ẩm và bù ẩm. Với công nghệ Plasmacluster Ion, bộ lọc tiên tiến và than hoạt tính, sản phẩm không chỉ làm sạch không khí hiệu quả mà còn loại bỏ vi khuẩn, virus, mùi hôi khó chịu, mang lại không gian sống an toàn và trong lành cho gia đình bạn.",
+   "salePrice": 9350000,
+   "marketPrice": null,
+   "brand": "Sharp",
+   "categorySlug": "may-hut-am",
+   "originUrl": "https://japanvip.vn/may-loc-khong-khi-3-trong-1-sharp-ki-rd50.html",
+   "images": [
+    "https://japanvip.vn/media/product/808_1.jpg",
+    "https://japanvip.vn/media/product/808_may_loc_khong_khi_sharp_ki_rd50_7.png",
+    "https://japanvip.vn/media/product/808_vn_11134207_7r98o_lqbpxqmj9yk767.jpg"
+   ]
+  },
+  {
+   "srcId": "807",
+   "name": "Tủ Sấy Bát Đĩa Kanazawa Kogyo KEL-A090D35",
+   "slug": "tu-say-bat-dia-kanazawa-kogyo-kel-a090d35",
+   "description": "Trong xu hướng thiết kế bếp hiện đại, việc lựa chọn những thiết bị thông minh, tiện ích và đảm bảo vệ sinh là ưu tiên hàng đầu của các gia đình. Tủ sấy bát đĩa Kanazawa Kogyo KEL-A090D35 là một trong những sản phẩm nổi bật được JapanVip lựa chọn, mang đến sự tiện lợi và an toàn tuyệt đối cho người dùng. Với thiết kế tinh tế và công nghệ hiện đại, sản phẩm này không chỉ phù hợp để sử dụng đồng bộ với hệ thống tủ bếp Takara Standard mà còn có thể lắp đặt linh hoạt với các hệ tủ bếp đóng tại Việt Nam.",
+   "salePrice": 27990000,
+   "marketPrice": null,
+   "brand": null,
+   "categorySlug": "thiet-bi-nha-bep",
+   "originUrl": "https://japanvip.vn/tu-say-bat-dia-kanazawa-kogyo-kel-a090d35.html",
+   "images": [
+    "https://japanvip.vn/media/product/807_untitled_1.jpg",
+    "https://japanvip.vn/media/product/807_chan_say_bat_tu_dong_kanazawa_kogyo_kel_b090d35_1669629336976.jpg",
+    "https://japanvip.vn/media/product/807____nh_ch___p_m__n_h__nh_2019_10_29_l__c_13_12_30.png"
+   ]
+  },
+  {
+   "srcId": "806",
+   "name": "Máy Lọc Không Khí Daikin MCK904A",
+   "slug": "may-loc-khong-khi-daikin-mck904a",
+   "description": "Trong cuộc sống hiện đại, khi chất lượng không khí ngày càng trở thành mối quan tâm hàng đầu, việc sở hữu một chiếc máy lọc không khí không chỉ là một tiện ích, mà còn là một sự đầu tư xứng đáng cho sức khỏe và phong cách sống. Máy lọc không khí Daikin MCK904A nội địa Nhật Bản, với thiết kế tinh tế, công nghệ tiên tiến và khả năng lọc khí vượt trội, chính là sự lựa chọn hoàn hảo cho những gia đình khá giả, những người luôn tìm kiếm sự hoàn hảo trong từng chi tiết.",
+   "salePrice": 16850000,
+   "marketPrice": null,
+   "brand": "Daikin",
+   "categorySlug": "may-loc-khi",
+   "originUrl": "https://japanvip.vn/may-loc-khong-khi-daikin-mck904a.html",
+   "images": [
+    "https://japanvip.vn/media/product/806_1.jpg",
+    "https://japanvip.vn/media/product/806_may_loc_khong_khi_daikin_mck904a_1.jpg"
+   ]
+  },
+  {
+   "srcId": "805",
+   "name": "Máy sưởi Panasonic DS-FKS1206",
+   "slug": "may-suoi-panasonic-ds-fks1206",
+   "description": "Với thiết kế nhỏ gọn, hiện đại cùng công nghệ tiên tiến, máy sưởi Panasonic DS-FKS1206 là sự lựa chọn hoàn hảo cho mùa đông lạnh giá. Sản phẩm không chỉ mang đến không khí ấm áp mà còn giúp duy trì độ ẩm lý tưởng, bảo vệ sức khỏe cho cả gia đình.",
+   "salePrice": 6090000,
+   "marketPrice": null,
+   "brand": "Panasonic",
+   "categorySlug": "may-suoi",
+   "originUrl": "https://japanvip.vn/may-suoi-panasonic-ds-fks1206.html",
+   "images": [
+    "https://japanvip.vn/media/product/805_1.jpg",
+    "https://japanvip.vn/media/product/805_e_maxjapan_ds_fkx1206_w_9_d_20241020173116.jpg"
+   ]
+  },
+  {
+   "srcId": "804",
+   "name": "Nồi Lẩu Đa Năng Zojirushi EP-RV30-TA",
+   "slug": "noi-lau-da-nang-zojirushi-ep-rv30-ta",
+   "description": "Bạn đang tìm kiếm một thiết bị nấu ăn tiện lợi, đa năng và hiện đại cho căn bếp của mình? Nồi lẩu đa năng Zojirushi EP-RV30-TA chính là lựa chọn tuyệt vời mà bạn không thể bỏ qua. Với khả năng nấu lẩu, chiên, xào hay hấp thực phẩm, sản phẩm này sẽ mang lại cho bạn những bữa ăn ngon miệng và tiết kiệm thời gian.",
+   "salePrice": 4490000,
+   "marketPrice": null,
+   "brand": "Zojirushi",
+   "categorySlug": "do-dung-khac",
+   "originUrl": "https://japanvip.vn/noi-lau-da-nang-zojirushi-ep-rv30-ta.html",
+   "images": [
+    "https://japanvip.vn/media/product/804_1.jpg",
+    "https://japanvip.vn/media/product/804_ryohinmori_ep_rv30_ta_1_d_20240502180004.jpg"
+   ]
+  },
+  {
+   "srcId": "803",
+   "name": "Nồi cơm điện Toshiba RC-18KGW",
+   "slug": "noi-com-dien-toshiba-rc-18kgw",
+   "description": "Nồi cơm điện TOSHIBA RC-18KGW không chỉ là một thiết bị gia dụng thông thường mà còn là trợ thủ đắc lực giúp bạn chế biến những bữa cơm thơm ngon, đầy đủ dinh dưỡng. Với công nghệ chân không áp suất IH tiên tiến và thiết kế thông minh, sản phẩm này hứa hẹn mang đến trải nghiệm nấu nướng vượt trội, đáp ứng mọi nhu cầu của gia đình. Dưới đây là những điểm nổi bật giúp TOSHIBA RC-18KGW trở thành lựa chọn hàng đầu cho căn bếp hiện đại.",
+   "salePrice": 9490000,
+   "marketPrice": null,
+   "brand": "Toshiba",
+   "categorySlug": "noi-com-dien",
+   "originUrl": "https://japanvip.vn/noi-com-dien-toshiba-rc-18kgw.html",
+   "images": [
+    "https://japanvip.vn/media/product/803_1.jpg",
+    "https://japanvip.vn/media/product/803_noi_com_dien_toshiba_rc_18kgw_2.jpg",
+    "https://japanvip.vn/media/product/803_noi_com_toshiba_rc_18kgw_5.jpg",
+    "https://japanvip.vn/media/product/803_vn_11134207_7ras8_m13xgga7o5tn4d.jpg"
+   ]
+  },
+  {
+   "srcId": "802",
+   "name": "Nồi cơm điện Zojirushi NW-JX18",
+   "slug": "noi-com-dien-zojirushi-nw-jx18",
+   "description": "Bạn đang tìm kiếm một chiếc nồi cơm điện không chỉ nấu cơm ngon mà còn đa năng, tiện lợi? Nồi cơm điện áp suất IH Zojirushi NW-JX18 chính là sự lựa chọn hoàn hảo. Với công nghệ gia nhiệt IH, áp suất cao 1.3atm và 49 thực đơn nấu ăn, sản phẩm mang đến những bữa cơm thơm ngon, chuẩn vị Nhật Bản cho gia đình bạn.",
+   "salePrice": 13490000,
+   "marketPrice": null,
+   "brand": "Zojirushi",
+   "categorySlug": "noi-com-dien",
+   "originUrl": "https://japanvip.vn/noi-com-dien-zojirushi-nw-jx18.html",
+   "images": [
+    "https://japanvip.vn/media/product/802_1.jpg",
+    "https://japanvip.vn/media/product/802_5_000000000569.jpg",
+    "https://japanvip.vn/media/product/802_61bxrnlh1vl__ac_uf894_1000_ql80_.jpg",
+    "https://japanvip.vn/media/product/802_huong_dan_su_dung_noi_com_dien_tach_duong_zojirushi_nw_jb18_1.png"
+   ]
+  },
+  {
+   "srcId": "801",
+   "name": "Máy lọc không khí Panasonic F-VXV90",
+   "slug": "may-loc-khong-khi-panasonic-f-vxv90",
+   "description": "Hãy tưởng tượng bạn bước vào ngôi nhà của mình sau một ngày dài làm việc. Không còn mùi khói bụi đường phố, không còn cảm giác khô rát da vì điều hòa, mà thay vào đó là làn không khí trong lành, mát mẻ, như vừa được “tái sinh”. Đó chính là điều mà máy lọc không khí Panasonic F-VXV90 mang đến – một giải pháp toàn diện cho không gian sống hiện đại, nơi sức khỏe và sự thoải mái được đặt lên hàng đầu.",
+   "salePrice": 19100000,
+   "marketPrice": null,
+   "brand": "Panasonic",
+   "categorySlug": "may-loc-khi",
+   "originUrl": "https://japanvip.vn/may-loc-khong-khi-panasonic-f-vxv90.html",
+   "images": [
+    "https://japanvip.vn/media/product/801_1.jpg",
+    "https://japanvip.vn/media/product/801_71lkduvte2l__ac_sl1500_.jpg",
+    "https://japanvip.vn/media/product/801_img10_pc.jpeg",
+    "https://japanvip.vn/media/product/801_mainimg02_sp.jpeg"
+   ]
+  },
+  {
+   "srcId": "800",
+   "name": "Đèn bàn Panasonic SQ-LD527",
+   "slug": "den-ban-panasonic-sq-ld527",
+   "description": "Bạn đang tìm kiếm một chiếc đèn bàn không chỉ chiếu sáng hoàn hảo mà còn bảo vệ đôi mắt? Đèn bàn Panasonic SQ-LD527 chính là giải pháp.",
+   "salePrice": 3490000,
+   "marketPrice": null,
+   "brand": "Panasonic",
+   "categorySlug": "do-dung-gia-dinh",
+   "originUrl": "https://japanvip.vn/den-ban-panasonic-sq-ld527.html",
+   "images": [
+    "https://japanvip.vn/media/product/800_1.jpg",
+    "https://japanvip.vn/media/product/800_8f5ade6e_0774_4fe5_b7c7_9335aa54bcd4__.jpg"
+   ]
+  },
+  {
+   "srcId": "799",
+   "name": "Điều hòa Mitsubishi MSZ-GV2824",
+   "slug": "dieu-hoa-mitsubishi-msz-gv2824",
+   "description": "Bạn đang tìm kiếm một chiếc điều hòa không chỉ làm mát hiệu quả mà còn mang lại sự sang trọng và tiện nghi cho ngôi nhà của mình? Điều hòa Mitsubishi MSZ-GV2824 chính là sự lựa chọn hoàn hảo dành cho bạn! Với công nghệ tiên tiến đến từ Nhật Bản, sản phẩm này không chỉ giải quyết vấn đề nóng bức mà còn tiết kiệm điện năng tối đa, mang lại không gian sống thoải mái và đẳng cấp.",
+   "salePrice": 18590000,
+   "marketPrice": null,
+   "brand": "Mitsubishi",
+   "categorySlug": "hang-dien-lanh",
+   "originUrl": "https://japanvip.vn/dieu-hoa-mitsubishi-msz-gv2824.html",
+   "images": [
+    "https://japanvip.vn/media/product/799_1.jpg",
+    "https://japanvip.vn/media/product/799_untitled_3.png"
+   ]
+  },
+  {
+   "srcId": "798",
+   "name": "Quạt không cánh Dyson TP7A",
+   "slug": "quat-khong-canh-dyson-tp7a",
+   "description": "Quạt không cánh Dyson TP7A thiết kế không cánh độc đáo và công nghệ tiên tiến, Dyson TP7A không chỉ mang đến làn gió tự nhiên, mát mẻ mà còn đảm bảo an toàn tuyệt đối cho gia đình bạn.\r\nSản phẩm được tích hợp chức năng lọc không khí, giúp loại bỏ bụi mịn PM2.5, phấn hoa và các chất gây ô nhiễm, mang lại không gian sống trong lành, thoáng mát. Đây chính là giải pháp lý tưởng cho những gia đình hiện đại, yêu thích sản phẩm công nghệ cao cấp từ thương hiệu Dyson nổi tiếng toàn cầu.",
+   "salePrice": 16190000,
+   "marketPrice": null,
+   "brand": "Dyson",
+   "categorySlug": "quat-dien",
+   "originUrl": "https://japanvip.vn/quat-khong-canh-dyson-tp7a.html",
+   "images": [
+    "https://japanvip.vn/media/product/798_1.jpg",
+    "https://japanvip.vn/media/product/798_untitled.png"
+   ]
+  },
+  {
+   "srcId": "797",
+   "name": "Bình nóng lạnh tổng Heatpump Daikin EQA37YFHV",
+   "slug": "binh-nong-lanh-tong-heatpump-daikin-eqa37yfhv",
+   "description": "Bình nóng lạnh tổng Heatpump Daikin EQA37YFHV là sản phẩm nổi bật của thương hiệu Daikin – một trong những tập đoàn hàng đầu về thiết bị điều hòa và điện lạnh. Với công nghệ tiên tiến cùng nhiều tính năng độc đáo, sản phẩm này không chỉ đáp ứng nhu cầu sử dụng nước nóng tiện nghi mà còn giúp tiết kiệm năng lượng, thân thiện với môi trường.",
+   "salePrice": null,
+   "marketPrice": null,
+   "brand": "Daikin",
+   "categorySlug": "hang-dien-lanh",
+   "originUrl": "https://japanvip.vn/binh-nong-lanh-tong-heatpump-daikin-eqa37yfhv.html",
+   "images": [
+    "https://japanvip.vn/media/product/797_3.jpg",
+    "https://japanvip.vn/media/product/797_eq37wfhv_3set_main.jpg"
+   ]
+  },
+  {
+   "srcId": "796",
+   "name": "Quạt không cánh Dyson Pure Cool TP04-WS",
+   "slug": "quat-khong-canh-dyson-pure-cool-tp04-ws",
+   "description": "Quạt không cánh Dyson Pure Cool TP04-WS không chỉ làm mát mà còn mang đến bầu không khí trong lành nhờ công nghệ lọc không khí tiên tiến. Với bộ lọc HEPA cao cấp, quạt loại bỏ hiệu quả mùi hôi, chất gây ô nhiễm và các hạt bụi siêu nhỏ, mang lại luồng gió sạch và an toàn cho người dùng.",
+   "salePrice": 15190000,
+   "marketPrice": null,
+   "brand": "Dyson",
+   "categorySlug": "quat-dien",
+   "originUrl": "https://japanvip.vn/quat-khong-canh-dyson-pure-cool-tp04-ws.html",
+   "images": [
+    "https://japanvip.vn/media/product/796_1.jpg",
+    "https://japanvip.vn/media/product/796_quat_khong_canh_kem_loc_khong_khi_dyson_pure_cool_link_tp04_17.jpg",
+    "https://japanvip.vn/media/product/796_quat_khong_canh_kem_loc_khong_khi_dyson_pure_cool_link_tp04_19.jpg"
+   ]
+  },
+  {
+   "srcId": "795",
+   "name": "Tai nghe bluetooth Bose SoundSport Free Wireless",
+   "slug": "tai-nghe-bluetooth-bose-soundsport-free-wireless",
+   "description": "Bạn đã từng nghe đến Bose - thương hiệu âm thanh hàng đầu đến từ Mỹ, nổi tiếng với những sản phẩm chất lượng như loa thùng, soundbar và dàn rạp hát tại gia. Nay, Bose tiếp tục khẳng định vị thế của mình trong thị trường tai nghe không dây với sản phẩm tai nghe bluetooth Bose SoundSport Free Wireless. Đây là mẫu tai nghe in-ear không dây đầu tiên của Bose, hứa hẹn mang đến trải nghiệm âm thanh tuyệt vời cho người dùng.",
+   "salePrice": 5090000,
+   "marketPrice": null,
+   "brand": null,
+   "categorySlug": "am-thanh-giai-tri",
+   "originUrl": "https://japanvip.vn/tai-nghe-bluetooth-bose-soundsport-free-wireless.html",
+   "images": [
+    "https://japanvip.vn/media/product/795_1.jpg",
+    "https://japanvip.vn/media/product/795_1626_xuanvu_audio_bose_soundsport_free_wireless_blue_3.jpg",
+    "https://japanvip.vn/media/product/795_bosesndsportfreeblk_106027_1200px.jpg",
+    "https://japanvip.vn/media/product/795_soundsport_free_case_plus_orange.jpg",
+    "https://japanvip.vn/media/product/795_tai_nghe_khong_day_bose_soundsport_free_13_600x600.jpg",
+    "https://japanvip.vn/media/product/795_tai_nghe_khong_day_bose_soundsport_free_chinh_hang_do.jpg"
+   ]
+  },
+  {
+   "srcId": "794",
+   "name": "Máy giặt Hitachi BD-STX120HL",
+   "slug": "may-giat-hitachi-bd-stx120hl",
+   "description": "Máy giặt Hitachi BD-STX120HL là biểu tượng của sự kết hợp hoàn hảo giữa công nghệ tiên tiến và thiết kế tinh tế. Với công suất giặt 12kg và sấy 6kg, chiếc máy giặt này không chỉ đáp ứng mọi nhu cầu giặt giũ của gia đình bạn mà còn mang đến những trải nghiệm tuyệt vời nhờ những tính năng độc đáo.",
+   "salePrice": null,
+   "marketPrice": null,
+   "brand": "Hitachi",
+   "categorySlug": "hang-dien-lanh",
+   "originUrl": "https://japanvip.vn/may-giat-hitachi-bd-stx120hl.html",
+   "images": [
+    "https://japanvip.vn/media/product/794_2.jpg",
+    "https://japanvip.vn/media/product/794_dimensions_bdstx120h.jpg"
+   ]
+  },
+  {
+   "srcId": "792",
+   "name": "Nắp bệt Toshiba SCS-T260",
+   "slug": "nap-bet-toshiba-scs-t260",
+   "description": "Nắp bệt Toshiba SCS-T260 không chỉ là một thiết bị vệ sinh thông thường, đó là một giải pháp nâng cao chất lượng cuộc sống, mang đến sự tiện nghi, thoải mái và an toàn cho mọi thành viên trong gia đình bạn. Với thiết kế hiện đại, tinh tế và những tính năng tiên tiến, SCS-T260 sẽ biến không gian vệ sinh của bạn trở nên sang trọng và tiện nghi hơn bao giờ hết.",
+   "salePrice": 7890000,
+   "marketPrice": null,
+   "brand": "Toshiba",
+   "categorySlug": "nap-bet",
+   "originUrl": "https://japanvip.vn/nap-bet-toshiba-scs-t260.html",
+   "images": [
+    "https://japanvip.vn/media/product/792_1.jpg",
+    "https://japanvip.vn/media/product/792_image_10.jpg",
+    "https://japanvip.vn/media/product/792_vn_11134207_23010_wg8l3xxhe4lv6c.jpg"
+   ]
+  },
+  {
+   "srcId": "791",
+   "name": "Quạt không cánh Dyson Humidify + Cool PH2 De-NOx PH05 WG",
+   "slug": "quat-khong-canh-dyson-ph05-wg",
+   "description": "Bạn đang tìm kiếm một giải pháp toàn diện cho không khí trong nhà?  Đừng chần chừ nữa, hãy khám phá quạt không cánh Dyson Humidify + Cool PH2 De-NOx PH05 WG - sự kết hợp hoàn hảo giữa công nghệ tiên tiến và thiết kế thông minh, mang đến bầu không khí trong lành và tiện nghi cho gia đình bạn suốt cả năm.",
+   "salePrice": 25990000,
+   "marketPrice": null,
+   "brand": "Dyson",
+   "categorySlug": "quat-dien",
+   "originUrl": "https://japanvip.vn/quat-khong-canh-dyson-ph05-wg.html",
+   "images": [
+    "https://japanvip.vn/media/product/791_1.jpg",
+    "https://japanvip.vn/media/product/791_de44db0d6a3455ed602271a61a6b9dd6.jpeg",
+    "https://japanvip.vn/media/product/791_f94818304e2bc53e665b9e89eae205c9.jpeg"
+   ]
+  },
+  {
+   "srcId": "790",
+   "name": "Máy lọc không khí Dyson Big+Quiet Formaldehyde BP03",
+   "slug": "may-loc-khong-khi-dyson-bigquiet-formaldehyde-bp03",
+   "description": "Khuếch tán không khí được lọc sạch bằng HEPA trong không gian rộng đến 100 m². Êm ái.1\r\n\r\nChặn lại tác nhân gây dị ứng và đến 99,9% vi-rút.14\r\n\r\nBộ lọc HEPA H13 lớn và sử dụng lâu năm. Kéo dài đến 5 năm.\r\nBộ lọc K Carbon MỚI. Hấp thụ NO2 gấp 3 lần4 so với bộ lọc carbon tiêu chuẩn của chúng tôi.\r\n\r\nPhát hiện và khử formaldehyde vĩnh viễn.5\r\nNhận biết và báo cáo mức CO2 theo thời gian thực.",
+   "salePrice": 23680000,
+   "marketPrice": null,
+   "brand": "Dyson",
+   "categorySlug": "may-loc-khi",
+   "originUrl": "https://japanvip.vn/may-loc-khong-khi-dyson-bigquiet-formaldehyde-bp03.html",
+   "images": [
+    "https://japanvip.vn/media/product/790_dyson_big_03.jpg",
+    "https://japanvip.vn/media/product/790_formaldehyde_bp03.jpg"
+   ]
+  },
+  {
+   "srcId": "789",
+   "name": "Nồi cơm điện Panasonic SR-V18BA-H",
+   "slug": "noi-com-dien-panasonic-sr-v18ba-h",
+   "description": "Nồi cơm điện Panasonic SR-V18BA-H Bistro không chỉ là một chiếc nồi cơm thông thường, đó là một thiết bị nấu ăn chuyên nghiệp, mang đến những bữa cơm ngon chuẩn vị nhà hàng ngay tại căn bếp của bạn. Với công nghệ tiên tiến và thiết kế thông minh, SR-V18BA-K Bistro sẽ giúp bạn nấu cơm ngon hơn bao giờ hết.",
+   "salePrice": 19900000,
+   "marketPrice": null,
+   "brand": "Panasonic",
+   "categorySlug": "noi-com-dien",
+   "originUrl": "https://japanvip.vn/noi-com-dien-panasonic-sr-v18ba-h.html",
+   "images": [
+    "https://japanvip.vn/media/product/789_1.jpg",
+    "https://japanvip.vn/media/product/789_2010123698_d_10.jpg",
+    "https://japanvip.vn/media/product/789_2010123697_d_14.jpg",
+    "https://japanvip.vn/media/product/789_2010123698_d_11.jpg",
+    "https://japanvip.vn/media/product/789_408544c996a240c15ab985c6c898bdc4.jpeg"
+   ]
+  },
+  {
+   "srcId": "788",
+   "name": "Robot hút bụi lau nhà Roborock S8 MaxV Ultra",
+   "slug": "robot-hut-bui-lau-nha-roborock-s8-maxv-ultra",
+   "description": "Bạn đang tìm kiếm một giải pháp làm sạch sàn nhà toàn diện, mạnh mẽ và tiện lợi? Robot hút bụi lau nhà Roborock S8 MaxV Ultra thế hệ mới sẽ đáp ứng mọi kỳ vọng của bạn. Với lực hút siêu việt, khả năng lau rung tốc độ cao, công nghệ tránh chướng ngại vật thông minh và dock sạc tự động 5 trong 1, Roborock S8 MaxV Ultra mang đến trải nghiệm làm sạch hoàn toàn rảnh tay, giúp bạn tận hưởng cuộc sống trọn vẹn.",
+   "salePrice": 22990000,
+   "marketPrice": null,
+   "brand": null,
+   "categorySlug": "may-hut-bui",
+   "originUrl": "https://japanvip.vn/robot-hut-bui-lau-nha-roborock-s8-maxv-ultra.html",
+   "images": [
+    "https://japanvip.vn/media/product/788_2.jpg",
+    "https://japanvip.vn/media/product/788_loc_bui_roborock_s8_maxv_ultra.jpg",
+    "https://japanvip.vn/media/product/788_maxv_ultra_kit__45127.jpg",
+    "https://japanvip.vn/media/product/788_miviet_com_roborock_s8_maxv_ultra_auto_robot_hut_bui_lau_nha_thong_minh_ban_quoc_te_bh_24_thang_6.jpg",
+    "https://japanvip.vn/media/product/788_roborock_s8_maxv_ultra_image_5.jpg",
+    "https://japanvip.vn/media/product/788_roborock_s8_maxv_ultra_image_6.jpg",
+    "https://japanvip.vn/media/product/788_roborock_s8_maxv_ultra_image_11.jpg",
+    "https://japanvip.vn/media/product/788_roborock_s8_maxv_ultra_image_12.jpg",
+    "https://japanvip.vn/media/product/788_roborock_s8_maxv_ultra_mi360_1.jpg"
+   ]
+  },
+  {
+   "srcId": "787",
+   "name": "Robot hút bụi lau nhà Roborock S7 Max Ultra",
+   "slug": "robot-hut-bui-roborock-s7-max-ultra",
+   "description": "Roborock tiếp tục khẳng định vị thế dẫn đầu trong lĩnh vực robot hút bụi với sự ra mắt của S7 Max Ultra. Phiên bản này không chỉ là bản nâng cấp đơn thuần mà là một cuộc cách mạng về khả năng làm sạch, mang đến trải nghiệm rảnh tay hoàn toàn cho người dùng.",
+   "salePrice": 20600000,
+   "marketPrice": null,
+   "brand": null,
+   "categorySlug": "may-hut-bui",
+   "originUrl": "https://japanvip.vn/robot-hut-bui-roborock-s7-max-ultra.html",
+   "images": [
+    "https://japanvip.vn/media/product/787_1.jpg",
+    "https://japanvip.vn/media/product/787_roborock_s7_max_ultra_1.jpg",
+    "https://japanvip.vn/media/product/787_robot_hut_bui_roborock_s7_maxv_6_1.jpg",
+    "https://japanvip.vn/media/product/787_robot_hut_bui_roborock_s7_maxv_ultra_oneway_1660103898.png",
+    "https://japanvip.vn/media/product/787_vn_11134207_7qukw_lgm50di8aprn7d.jpg",
+    "https://japanvip.vn/media/product/787_vn_11134208_7qukw_lgm5bi21y0j62c.jpg"
+   ]
+  },
+  {
+   "srcId": "786",
+   "name": "Quạt không cánh Dyson Hot and Cool HP09",
+   "slug": "quat-khong-canh-dyson-hot-and-cool-hp09",
+   "description": "Trong bối cảnh công nghệ phát triển vượt bậc, việc lựa chọn một chiếc quạt tích hợp 3 tính năng: làm mát, sưởi ấm và lọc không khí chất lượng cao là một quyết định sáng suốt và đầy tiện lợi. Đặc biệt, khi tình trạng ô nhiễm ngày càng gia tăng, việc bảo vệ sức khỏe cho gia đình và bản thân trở nên vô cùng quan trọng. Đó chính là lý do Quạt không cánh Dyson Hot and Cool HP09 ra đời. Hãy cùng JapanVip khám phá những đặc điểm nổi bật của sản phẩm này trong bài viết dưới đây.",
+   "salePrice": 14500000,
+   "marketPrice": 23500000,
+   "brand": "Dyson",
+   "categorySlug": "quat-dien",
+   "originUrl": "https://japanvip.vn/quat-khong-canh-dyson-hot-and-cool-hp09.html",
+   "images": [
+    "https://japanvip.vn/media/product/786_1.jpg",
+    "https://japanvip.vn/media/product/786_dyson_hp09_header.jpg",
+    "https://japanvip.vn/media/product/786_quat_khong_canh_3in1_mat_suoi_loc_khong_khi_dyson_purifier_hotcool_formaldehyde_hp0911.jpeg"
+   ]
+  },
+  {
+   "srcId": "785",
+   "name": "Máy hút bụi lau nhà Dyson V15s Detect Submarine Complete",
+   "slug": "may-hut-bui-lau-nha-dyson-v15s-detect-submarine-complete",
+   "description": "Bạn đang tìm kiếm một chiếc máy hút bụi có thể xử lý mọi loại bụi bẩn, từ khô đến ướt? Máy hút bụi lau nhà Dyson V15s Detect Submarine chính là lựa chọn hoàn hảo dành cho bạn. Với thiết kế thông minh và công nghệ tiên tiến, Dyson V15s Detect Submarine không chỉ hút sạch bụi bẩn, lông tóc mà còn lau sạch vết bẩn ướt, mang đến không gian sống sạch sẽ và trong lành cho gia đình bạn.",
+   "salePrice": 25990000,
+   "marketPrice": 29000000,
+   "brand": "Dyson",
+   "categorySlug": "may-hut-bui",
+   "originUrl": "https://japanvip.vn/may-hut-bui-lau-nha-dyson-v15s-detect-submarine-complete.html",
+   "images": [
+    "https://japanvip.vn/media/product/785_1.jpg",
+    "https://japanvip.vn/media/product/785_2_up_to_60_minutes_of_run_time.jpg",
+    "https://japanvip.vn/media/product/785_dyson_v15s_detect_submarine_001.jpg"
+   ]
+  },
+  {
+   "srcId": "784",
+   "name": "Quạt không cánh Dyson Purifier Cool Formaldehyde TP09",
+   "slug": "quat-khong-canh-dyson-purifier-cool-formaldehyde-tp09",
+   "description": "Bạn đang tìm kiếm một giải pháp lọc không khí toàn diện, hiệu quả và an toàn? Quạt không cánh Dyson Purifier Cool Formaldehyde TP09 mới nhất sẽ đáp ứng mọi nhu cầu của bạn. Với công nghệ tiên tiến, Dyson không chỉ loại bỏ bụi bẩn, chất gây dị ứng mà còn phát hiện và khử formaldehyde liên tục, mang đến không gian sống trong lành và an toàn cho gia đình bạn.",
+   "salePrice": 18990000,
+   "marketPrice": 23500000,
+   "brand": "Dyson",
+   "categorySlug": "quat-dien",
+   "originUrl": "https://japanvip.vn/quat-khong-canh-dyson-purifier-cool-formaldehyde-tp09.html",
+   "images": [
+    "https://japanvip.vn/media/product/784_1.jpg",
+    "https://japanvip.vn/media/product/784_61zjflmq2ql__ac_sl1500_.jpg",
+    "https://japanvip.vn/media/product/784_71vg4tcfual__ac_sl1500_.jpg",
+    "https://japanvip.vn/media/product/784_ec_tp09_6.png",
+    "https://japanvip.vn/media/product/784_tp09_jd_with_machine_imagery_1024x833.jpeg"
+   ]
+  },
+  {
+   "srcId": "783",
+   "name": "Máy hút bụi Dyson V12 Detect Slim™ Absolute",
+   "slug": "may-hut-bui-dyson-v12-detect-slim-absolute",
+   "description": "Bạn đang tìm kiếm một chiếc máy hút bụi không dây mạnh mẽ, thông minh và tiện lợi? Máy hút bụi Dyson V12 Detect Slim chính là lựa chọn hoàn hảo dành cho bạn. Với công nghệ tiên tiến và thiết kế đột phá, Dyson V12 Detect Slim không chỉ hút sạch bụi bẩn mà còn \"soi\" ra những hạt bụi nhỏ nhất, mang đến không gian sống sạch sẽ và trong lành cho gia đình bạn.",
+   "salePrice": 18590000,
+   "marketPrice": 21500000,
+   "brand": "Dyson",
+   "categorySlug": "may-hut-bui",
+   "originUrl": "https://japanvip.vn/may-hut-bui-dyson-v12-detect-slim-absolute.html",
+   "images": [
+    "https://japanvip.vn/media/product/783_1.jpg",
+    "https://japanvip.vn/media/product/783_51ozzvebvxl.jpg",
+    "https://japanvip.vn/media/product/783_7207469_007.jpg",
+    "https://japanvip.vn/media/product/783_10049915_may_hut_bui_dyson_v12_detect_slim_5.jpg",
+    "https://japanvip.vn/media/product/783_dyson_v12_detect_slim_absolute_2023_448884_01_10.jpg",
+    "https://japanvip.vn/media/product/783_dyson_v12_detect_slim_absolute_handheld_vacuum_nickel_yellow_bagless_2023.jpg",
+    "https://japanvip.vn/media/product/783_v12_deteect_5599.png"
+   ]
+  },
+  {
+   "srcId": "782",
+   "name": "Máy lau nhà Dyson WashG1",
+   "slug": "may-lau-nha-dyson-washg1",
+   "description": "Máy lau nhà Dyson WashG1™\r\nLàm sạch hiệu quả, hợp vệ sinh cho sàn cứng.\r\n\r\nNhanh chóng loại bỏ các vết bẩn cứng đầu khô và ướt.\r\n\r\nPhạm vi hoạt động lên tới 290m2, với thời gian hoạt động lên tới 35 phút.2\r\n\r\nHệ thống phân tách độc đáo cho phép bỏ rác không chạm hợp vệ sinh.",
+   "salePrice": 18990000,
+   "marketPrice": 21000000,
+   "brand": "Dyson",
+   "categorySlug": "may-hut-bui",
+   "originUrl": "https://japanvip.vn/may-lau-nha-dyson-washg1.html",
+   "images": [
+    "https://japanvip.vn/media/product/782_may_lau_nha_dyson_washg1.png",
+    "https://japanvip.vn/media/product/782_1.jpg",
+    "https://japanvip.vn/media/product/782_2.jpg"
+   ]
+  },
+  {
+   "srcId": "781",
+   "name": "Ghế Massage  Nhật Bản FUJIIRYOKI Cyper-Relax JP2000",
+   "slug": "ghe-massage-nhat-ban-fujiiryoki-cyper-relax-jp2000",
+   "description": "Công nghệ trí tuệ nhân tạo 5D-AI\r\nMàn hình điều khiển LCD cảm ứng 4.3”, tích hợp hướng dẫn giọng nói\r\n12 chương trình tập trung từng vùng cơ thể\r\n23 chương trình tự động\r\nMassage toàn thân với con lăn bàn chân\r\nMasssage túi khí kéo giãn cơ thể\r\nCông nghệ AI Double Sensing dò tìm huyệt đạo và nhóm cơ với độ chính xác rất cao",
+   "salePrice": null,
+   "marketPrice": null,
+   "brand": null,
+   "categorySlug": "ghe-massage",
+   "originUrl": "https://japanvip.vn/ghe-massage-nhat-ban-fujiiryoki-cyper-relax-jp2000.html",
+   "images": [
+    "https://japanvip.vn/media/product/781_web_jp2000_1_scaled_copy.jpg",
+    "https://japanvip.vn/media/product/781_jp200000014_copy.png"
+   ]
+  },
+  {
+   "srcId": "780",
+   "name": "Ghế massage Fujiiryoki JP4000 Cyber Relax AI 5D",
+   "slug": "ghe-massage-fujiiryoki-jp4000-cyber-relax-ai-5d",
+   "description": "Ghế Massage Fujiiryoki Cyber Relax AI 5D – Trải Nghiệm Thư Giãn Tối Ưu!\r\n\r\nHãy để Fujiiryoki Cyber Relax AI 5D JP4000 biến không gian nhà bạn thành một phòng spa đẳng cấp, mang lại một liệu trình massage toàn thân chuẩn y tế ngay tại nhà! Được trang bị công nghệ AI 5D tiên tiến và thiết kế công thái học hoàn hảo, ghế massage này sẽ giúp bạn xóa tan mọi căng thẳng, phục hồi năng lượng và thư giãn sâu đến từng cơ bắp.\r\n\r\nCông nghệ Massage 5D AI cho cơ bắp sâu: Mang đến một cảm giác thư giãn tuyệt vời cho toàn bộ cơ thể.\r\n40 Chương trình tự động, bao gồm 13 chương trình kéo giãn giúp bạn linh hoạt lựa chọn liệu trình phù hợp nhất.\r\n98 Kỹ thuật massage đa dạng và hiệu quả, mang đến cảm giác thư giãn tuyệt vời cho toàn bộ cơ thể.\r\nThiết kế gần 180 độ: Chế độ nghiêng phẳng giúp bạn thư giãn tối đa, trải nghiệm cảm giác nhẹ nhàng như đang bay.\r\nMassage chân Shiatsu Reflexology: Không chỉ giúp thư giãn mà còn thúc đẩy tuần hoàn máu và giảm căng thẳng.\r\nMở rộng chân kép: Trải nghiệm sự thoải mái, hỗ trợ kéo dài cơ thể, giải tỏa mọi mệt mỏi sau một ngày dài.\r\nĐây chính là chiếc ghế massage bạn luôn tìm kiếm để nâng cao sức khỏe và làm mới tinh thần ngay tại ngôi nhà của mình! Đừng chần chừ, trải nghiệm ngay và cảm nhận sự khác biệt!",
+   "salePrice": null,
+   "marketPrice": null,
+   "brand": null,
+   "categorySlug": "ghe-massage",
+   "originUrl": "https://japanvip.vn/ghe-massage-fujiiryoki-jp4000-cyber-relax-ai-5d.html",
+   "images": [
+    "https://japanvip.vn/media/product/780_ghe_massage_nhat_ban_fujiiryoki_jp4000_41_copy.png",
+    "https://japanvip.vn/media/product/780_ghe_massage_nhat_ban_fujiiryoki_jp4000_48_copy.png"
+   ]
+  },
+  {
+   "srcId": "779",
+   "name": "Ghế Massage Fujiiryoki Cyper-Relax JP-3000",
+   "slug": "ghe-massage-fujiiryoki-cyper-relax-jp-3000",
+   "description": "Công nghệ AI 5D-AI tiên tiến, ghế tự động dò quét cơ thể, xác định chính xác các điểm đau nhức và điều chỉnh cường độ massage phù hợp.\r\nHệ thống con lăn 4D linh hoạt kết hợp cùng túi khí toàn thân tạo nên các bài massage chuyên sâu, giảm đau mỏi, căng thẳng và hỗ trợ cải thiện các vấn đề về xương khớp.\r\nChế độ không trọng lực Zero Gravity đưa bạn vào trạng thái thư giãn sâu nhất, đồng thời các chương trình massage đa dạng đáp ứng mọi nhu cầu của bạn.\r\n\r\nMột trải nghiệm massage ĐẲNG CẤP, SANG TRỌNG, XỨNG TẦM với ghế massage toàn thân Nhật Bản FUJIIRYOKI Cyper-Relax JP-300\r\nSự phát triển không ngừng của cuộc sống đã tạo ra những thay đổi lớn trong cách chúng ta sống và làm việc. Sự thay đổi này không chỉ ảnh hưởng đến năng suất làm việc mà gây ra nhiều loại mệt mỏi và căng thẳng tinh thần. Để duy trì năng lượng mỗi ngày và đạt được trạng thái tốt nhất, việc chăm sóc cả cơ thể và tinh thần là vô cùng quan trọng.",
+   "salePrice": null,
+   "marketPrice": null,
+   "brand": null,
+   "categorySlug": "ghe-massage",
+   "originUrl": "https://japanvip.vn/ghe-massage-fujiiryoki-cyper-relax-jp-3000.html",
+   "images": [
+    "https://japanvip.vn/media/product/779_jp3000_brown_600x600_1_copy.png",
+    "https://japanvip.vn/media/product/779_ghe_massage_thu_gian_thong_minh_fujiiryoki_cyper_jp_3000_1.jpg",
+    "https://japanvip.vn/media/product/779_ghe_massage_thu_gian_thong_minh_fujiiryoki_cyper_jp_3000_3.jpg"
+   ]
+  },
+  {
+   "srcId": "778",
+   "name": "Máy lọc khí Sharp KC-S50",
+   "slug": "may-loc-khi-sharp-kc-s50",
+   "description": "Sharp từ lâu đã nổi tiếng với các dòng máy lọc không khí nội địa Nhật Bản chất lượng cao. Tiếp nối thành công đó, Sharp KC-S50-W là phiên bản mới nhất cho năm 2025, được nâng cấp từ model KC-R50-W, mang đến những cải tiến vượt trội và trải nghiệm tuyệt vời cho người dùng.",
+   "salePrice": null,
+   "marketPrice": null,
+   "brand": "Sharp",
+   "categorySlug": "may-loc-khi",
+   "originUrl": "https://japanvip.vn/may-loc-khi-sharp-kc-s50.html",
+   "images": [
+    "https://japanvip.vn/media/product/778_1.jpg",
+    "https://japanvip.vn/media/product/778_2.jpg"
+   ]
+  },
+  {
+   "srcId": "777",
+   "name": "Máy lọc không khí Dyson Big+Quiet Formaldehyde BP04",
+   "slug": "may-loc-khong-khi-dyson-bigquiet-formaldehyde-bp04",
+   "description": "Khuếch tán không khí được lọc sạch bằng HEPA trong không gian rộng đến 100 m². Êm ái.1\r\n\r\nChặn lại tác nhân gây dị ứng và đến 99,9% vi-rút.14\r\n\r\nBộ lọc HEPA H13 lớn và sử dụng lâu năm. Kéo dài đến 5 năm.\r\nBộ lọc K Carbon MỚI. Hấp thụ NO2 gấp 3 lần4 so với bộ lọc carbon tiêu chuẩn của chúng tôi.\r\n\r\nPhát hiện và khử formaldehyde vĩnh viễn.5\r\nNhận biết và báo cáo mức CO2 theo thời gian thực.",
+   "salePrice": 25680000,
+   "marketPrice": null,
+   "brand": "Dyson",
+   "categorySlug": "may-loc-khi",
+   "originUrl": "https://japanvip.vn/may-loc-khong-khi-dyson-bigquiet-formaldehyde-bp04.html",
+   "images": [
+    "https://japanvip.vn/media/product/777_formaldehyde_bp04.jpg",
+    "https://japanvip.vn/media/product/777_dyson_big_04.jpg"
+   ]
+  },
+  {
+   "srcId": "776",
+   "name": "Tủ lạnh Hitachi R-GXCC67W-H",
+   "slug": "tu-lanh-hitachi-r-gxcc67w-h",
+   "description": "Năm 2025 đánh dấu sự ra đời của một \"tuyệt tác\" công nghệ trong thế giới tủ lạnh - Hitachi R-GXCC67W-H. Không chỉ đơn thuần là một thiết bị lưu trữ thực phẩm, R-GXCC67W-H còn là \"linh hồn\" của gian bếp, là \"trái tim\" của mỗi bữa ăn ngon.",
+   "salePrice": null,
+   "marketPrice": null,
+   "brand": "Hitachi",
+   "categorySlug": "tu-lanh",
+   "originUrl": "https://japanvip.vn/tu-lanh-hitachi-r-gxcc67w-h.html",
+   "images": [
+    "https://japanvip.vn/media/product/776_1.jpg",
+    "https://japanvip.vn/media/product/776_untitled_1.png"
+   ]
+  },
+  {
+   "srcId": "775",
+   "name": "Nắp bệt Toto TCF2213E",
+   "slug": "nap-bet-toto-tcf2213e",
+   "description": "Nắp bệt Toto TCF2213E không chỉ là một thiết bị vệ sinh thông thường, mà là một \"trợ thủ\" đắc lực, mang đến trải nghiệm vệ sinh hoàn toàn mới lạ, tiện nghi và thoải mái cho người dùng. Với những tính năng hiện đại, TCF2213E sẽ biến phòng vệ sinh của bạn trở thành không gian thư giãn và chăm sóc sức khỏe.",
+   "salePrice": 6550000,
+   "marketPrice": null,
+   "brand": "Toto",
+   "categorySlug": "nap-bet",
+   "originUrl": "https://japanvip.vn/nap-bet-toto-tcf2213e.html",
+   "images": [
+    "https://japanvip.vn/media/product/775_1.jpg",
+    "https://japanvip.vn/media/product/775_2.jpg"
+   ]
+  },
+  {
+   "srcId": "774",
+   "name": "Máy sưởi Sharp HX-SK12-W",
+   "slug": "may-suoi-sharp-hx-sk12-w",
+   "description": "Mùa đông đến rồi! Bạn đã sẵn sàng để đối phó với cái lạnh chưa? Máy sưởi gốm Sharp HX-SK12-W sẽ là người bạn đồng hành tuyệt vời, mang đến không gian ấm áp, thoải mái và an toàn cho gia đình bạn.",
+   "salePrice": 5500000,
+   "marketPrice": null,
+   "brand": "Sharp",
+   "categorySlug": "may-suoi",
+   "originUrl": "https://japanvip.vn/may-suoi-sharp-hx-sk12-w.html",
+   "images": [
+    "https://japanvip.vn/media/product/774_1.jpg",
+    "https://japanvip.vn/media/product/774_587_may_suoi_gom_loc_khong_khi_bu_am_sharp_hx_rk12_w_008.jpg"
+   ]
+  },
+  {
+   "srcId": "773",
+   "name": "Máy lọc không khí Sharp KI-PX100-W",
+   "slug": "may-loc-khong-khi-sharp-ki-px100-w",
+   "description": "Máy lọc không khí, bù ẩm Sharp KI-PX100-W không chỉ là một thiết bị thông thường, mà là một \"trợ thủ\" đắc lực giúp bạn và gia đình tận hưởng không gian sống trong lành, sạch sẽ và ẩm mát. Với công nghệ Plasmacluster 50000 độc quyền, KI-PX100-W mang đến những tính năng vượt trội, đáp ứng mọi nhu cầu của bạn.",
+   "salePrice": 15350000,
+   "marketPrice": null,
+   "brand": "Sharp",
+   "categorySlug": "may-loc-khi",
+   "originUrl": "https://japanvip.vn/may-loc-khong-khi-sharp-ki-px100-w.html",
+   "images": [
+    "https://japanvip.vn/media/product/773_1.jpg",
+    "https://japanvip.vn/media/product/773_untitled_4.png"
+   ]
+  },
+  {
+   "srcId": "772",
+   "name": "Đồng hồ treo tường Rhythm 4MN535SR23",
+   "slug": "dong-ho-treo-tuong-rhythm-4mn535sr23",
+   "description": "Bạn đã bao giờ cảm nhận được sự bình yên khi nhìn vào một chiếc đồng hồ treo tường phong cách cổ điển, tinh tế? Đồng hồ Rhythm 4MN535SR23 sẽ mang đến cho bạn trải nghiệm tuyệt vời đó. Với thiết kế thanh lịch, chất liệu cao cấp và những tính năng ưu việt, chiếc đồng hồ này không chỉ đơn thuần là một vật dụng để xem giờ mà còn là một tác phẩm nghệ thuật tô điểm cho không gian sống của bạn.",
+   "salePrice": 6990000,
+   "marketPrice": 9000000,
+   "brand": null,
+   "categorySlug": "dong-ho",
+   "originUrl": "https://japanvip.vn/dong-ho-treo-tuong-rhythm-4mn535sr23.html",
+   "images": [
+    "https://japanvip.vn/media/product/772_1.jpg",
+    "https://japanvip.vn/media/product/772_2.jpg"
+   ]
+  },
+  {
+   "srcId": "771",
+   "name": "Đồng hồ treo tường Seiko RE582G",
+   "slug": "dong-ho-treo-tuong-seiko-re582g",
+   "description": "Seiko RE582G là một lựa chọn đồng hồ treo tường tuyệt vời, kết hợp giữa vẻ đẹp thẩm mỹ và chất lượng vượt trội. Thiết kế tinh xảo, chất liệu cao cấp và âm thanh du dương khiến chiếc đồng hồ này trở thành điểm nhấn nổi bật trong mọi không gian. Không chỉ là công cụ xem giờ, Seiko RE582G còn là món đồ trang trí giá trị, thể hiện gu thẩm mỹ tinh tế của chủ sở hữu.",
+   "salePrice": 5990000,
+   "marketPrice": null,
+   "brand": "Seiko",
+   "categorySlug": "dong-ho",
+   "originUrl": "https://japanvip.vn/dong-ho-treo-tuong-seiko-re582g.html",
+   "images": [
+    "https://japanvip.vn/media/product/771_1.jpg",
+    "https://japanvip.vn/media/product/771_seiko_re582g_2.jpg"
+   ]
+  },
+  {
+   "srcId": "770",
+   "name": "Đồng hồ treo tường Seiko RE561H",
+   "slug": "dong-ho-treo-tuong-seiko-re561h",
+   "description": "Seiko RE561H là một chiếc đồng hồ treo tường chất lượng cao, thiết kế đẹp mắt, âm thanh hay và độ bền bỉ theo thời gian. Sản phẩm này không chỉ là một công cụ xem giờ mà còn là một món đồ trang trí, một món quà ý nghĩa.",
+   "salePrice": 12990000,
+   "marketPrice": 15000000,
+   "brand": "Seiko",
+   "categorySlug": "dong-ho",
+   "originUrl": "https://japanvip.vn/dong-ho-treo-tuong-seiko-re561h.html",
+   "images": [
+    "https://japanvip.vn/media/product/770_1.jpg",
+    "https://japanvip.vn/media/product/770_2.jpg"
+   ]
+  },
+  {
+   "srcId": "769",
+   "name": "Máy sấy tóc Dyson Supersonic Nural™ HD16",
+   "slug": "may-say-toc-dyson-supersonic-nural-hd16",
+   "description": "Máy sấy tóc Dyson Supersonic Nural™ HD16 là phiên bản nâng cấp của dòng máy sấy tóc Supersonic, tích hợp công nghệ cảm biến Nural™ thông minh. Công nghệ này tự động điều chỉnh nhiệt độ và lưu lượng không khí để bảo vệ sức khỏe da đầu và tăng cường độ bóng cho tóc",
+   "salePrice": 10850000,
+   "marketPrice": null,
+   "brand": null,
+   "categorySlug": "may-say-toc",
+   "originUrl": "https://japanvip.vn/may-say-toc-dyson-supersonic-nural-hd16.html",
+   "images": [
+    "https://japanvip.vn/media/product/769_dyson_800x1200_ssnural_bluetopaz_attachments_case.jpg",
+    "https://japanvip.vn/media/product/769_605g_pdp_gallery_images_vibltrctpor_01.jpg",
+    "https://japanvip.vn/media/product/769_605g_pdp_gallery_images_vibltrctpor_05.jpg",
+    "https://japanvip.vn/media/product/769_605gm_pdp_gallery_images_vibltrctpor_02_tampo.jpg",
+    "https://japanvip.vn/media/product/769_605gm_pdp_gallery_images_vibltrctpor_03_tampo.jpg",
+    "https://japanvip.vn/media/product/769_may_say_toc_dyson_supersonic_nural_hd16_vn_11134207.jpg"
+   ]
+  },
+  {
+   "srcId": "767",
+   "name": "Máy sưởi &amp; Bù ẩm SHARP HX-PK12-W",
+   "slug": "may-suoi-amp-bu-am-sharp-hx-pk12-w",
+   "description": "Máy sưởi gốm Sharp HX-PK12 được trang bị bình tạo ẩm lớn với dung tích lên tới 3,1 lít. Đây cũng là một trong những ưu điểm của chiếc máy này, máy được trang bị cảm biến siêu nhạy và có thể thực hiện bù độ ẩm thông minh theo độ ẩm của môi trường xung quanh. Nước được cung cấp từ phía trên bộ lọc tạo độ ẩm và được kiểm soát để làm ẩm không khí khô sau khi đi qua bộ lọc.",
+   "salePrice": 3500000,
+   "marketPrice": 5100000,
+   "brand": null,
+   "categorySlug": "may-suoi",
+   "originUrl": "https://japanvip.vn/may-suoi-amp-bu-am-sharp-hx-pk12-w.html",
+   "images": [
+    "https://japanvip.vn/media/product/767_586_may_suoi_gom_loc_khong_khi_bu_am_sharp_hx_pk12_w_0000.jpeg",
+    "https://japanvip.vn/media/product/767_hx_rk12_w_6__1_.jpg"
+   ]
+  },
+  {
+   "srcId": "766",
+   "name": "Máy sấy tóc Dyson Airwrap Complete Long",
+   "slug": "may-say-toc-dyson-airwrap-complete-long",
+   "description": "Máy tạo kiểu tóc Dyson Airwrap Multi-Styler Complete Long - phiên bản cho tóc dài hiện đang rất được rất nhiều chị em phụ nữ yêu thích bởi độ hữu dụng của nó. Không chỉ là máy tạo kiểu tóc thông thường mà nó còn có thể tạo ra các lọn tóc xoăn tròn một cách nhanh chóng. Với phiên bản mới này chắc hẳn bạn sẽ không thể bỏ lỡ.",
+   "salePrice": 11500000,
+   "marketPrice": 17800000,
+   "brand": "Dyson",
+   "categorySlug": "may-say-toc",
+   "originUrl": "https://japanvip.vn/may-say-toc-dyson-airwrap-complete-long.html",
+   "images": [
+    "https://japanvip.vn/media/product/766_dyson.png",
+    "https://japanvip.vn/media/product/766_dyson_1.png"
+   ]
+  },
+  {
+   "srcId": "765",
+   "name": "DJI Mic 2 (2 TX + 1 RX + Charging Case)",
+   "slug": "dji-mic-2-2-tx-1-rx-charging-case",
+   "description": "DJI Mic 2 là thiết bị ghi âm thanh chuyên nghiệp không thể thiếu dành cho những nhà sáng tạo nội dung, youtube, vlogger,… Với thiết kế nhỏ gọn, DJI Mic 2 không chỉ cung cấp chất lượng ghi âm cao cấp mà còn tích hợp chức năng Intelligent Noise Cancelling hoàn toàn mới và hỗ trợ ghi âm nội bộ 32-bit floating-point. Sở hữu phạm vi ghi âm lên tới 250m và pin sử dụng đến 18 giờ, Mic 2 phù hợp sử dụng trong mọi tình huống và công việc khác nhau.",
+   "salePrice": 8490000,
+   "marketPrice": null,
+   "brand": null,
+   "categorySlug": "san-pham-cong-nghe",
+   "originUrl": "https://japanvip.vn/dji-mic-2-2-tx-1-rx-charging-case.html",
+   "images": [
+    "https://japanvip.vn/media/product/765_dji_mic_2_6.jpg",
+    "https://japanvip.vn/media/product/765_dji.jpg",
+    "https://japanvip.vn/media/product/765_dji_mic_2_05.jpg",
+    "https://japanvip.vn/media/product/765_dji_mic_2_9.jpg",
+    "https://japanvip.vn/media/product/765_dji_mic_2_10.jpg",
+    "https://japanvip.vn/media/product/765_dji_mic_2_30.jpg",
+    "https://japanvip.vn/media/product/765_dji_mic_2_34.jpg",
+    "https://japanvip.vn/media/product/765_dji_mic_2_35_scaled.jpg"
+   ]
+  },
+  {
+   "srcId": "764",
+   "name": "DJI Osmo Pocket 3",
+   "slug": "dji-osmo-pocket-3",
+   "description": "DJI Osmo Pocket 3 là sản phẩm camera hành động mới của DJI, có nhiều tính năng nâng cấp hiện đại hơn người anh em tiền nhiệm Pocket 3 của nó. Phiên bản mới sở hữu cảm biến CMOS 1 inch, giúp ghi lại các chi tiết trong điều kiện ánh sáng yếu tốt hơn, có khả năng quay video 4K/120fps, hỗ trợ chế độ màu D-Log M và HLG 10-bit, ghi lại phong cảnh với màu sắc chân thực, sinh động…",
+   "salePrice": 15890000,
+   "marketPrice": 16990000,
+   "brand": null,
+   "categorySlug": "san-pham-cong-nghe",
+   "originUrl": "https://japanvip.vn/dji-osmo-pocket-3.html",
+   "images": [
+    "https://japanvip.vn/media/product/764_dji_osmo_pocket_3_2_1.jpg",
+    "https://japanvip.vn/media/product/764_dji_osmo_pocket_3_1_1.jpg",
+    "https://japanvip.vn/media/product/764_dji_osmo_pocket_3_6_3.jpg",
+    "https://japanvip.vn/media/product/764_dji_osmo_pocket_3_8_1.jpg",
+    "https://japanvip.vn/media/product/764_dji_osmo_pocket_3_9_1.jpg",
+    "https://japanvip.vn/media/product/764_dji_osmo_pocket_3_10.jpg",
+    "https://japanvip.vn/media/product/764_dji_osmo_pocket_3_12.jpg",
+    "https://japanvip.vn/media/product/764_dji_osmo_pocket_3_63.jpg",
+    "https://japanvip.vn/media/product/764_dji_pocket_3_1.jpg",
+    "https://japanvip.vn/media/product/764_artboard_2.jpg",
+    "https://japanvip.vn/media/product/764_artboard_3.jpg",
+    "https://japanvip.vn/media/product/764_artboard_5.jpg",
+    "https://japanvip.vn/media/product/764_artboard_9.jpg",
+    "https://japanvip.vn/media/product/764_artboard_10.jpg",
+    "https://japanvip.vn/media/product/764_dji_osmo_pocket_3_4_1.jpg",
+    "https://japanvip.vn/media/product/764_dji_osmo_pocket_3_3_1.jpg",
+    "https://japanvip.vn/media/product/764_dji_osmo_pocket_3_5_1.jpg"
+   ]
+  },
+  {
+   "srcId": "763",
+   "name": "Đồng hồ treo tường Seiko RE564H",
+   "slug": "dong-ho-treo-tuong-seiko-re564h",
+   "description": "Chắc hẳn bạn đã quen thuộc với những mẫu đồng hồ treo tường Seiko – một thương hiệu danh tiếng toàn cầu. Với kiểu dáng thanh lịch, chất liệu cao cấp và những tính năng vượt trội, đồng hồ Seiko luôn là sự lựa chọn hàng đầu của người tiêu dùng. Trong bài viết này, chúng ta sẽ cùng tìm hiểu về dòng đồng hồ treo tường Seiko RE564H – Melody VIP, một sản phẩm thực sự đẳng cấp và xứng đáng để đầu tư.",
+   "salePrice": 15990000,
+   "marketPrice": null,
+   "brand": "Seiko",
+   "categorySlug": "dong-ho",
+   "originUrl": "https://japanvip.vn/dong-ho-treo-tuong-seiko-re564h.html",
+   "images": [
+    "https://japanvip.vn/media/product/763_seiko_re564h.jpg",
+    "https://japanvip.vn/media/product/763_seiko_re564h_4.jpg"
+   ]
+  },
+  {
+   "srcId": "761",
+   "name": "Nồi cơm Panasonic SR-V18BB",
+   "slug": "noi-com-panasonic-sr-v18bb",
+   "description": "Nồi cơm Panasonic SR-V18BB được trang bị công nghệ Fuzzy Logic, cho phép nồi tự động điều chỉnh nhiệt độ và thời gian nấu dựa trên loại gạo và lượng nước. Công nghệ này đảm bảo cơm chín đều, thơm ngon và giữ nguyên hương vị tự nhiên. Lòng nồi chống dính cao cấp giúp cơm không bị bám dính, dễ dàng vệ sinh.",
+   "salePrice": 15890000,
+   "marketPrice": 19500000,
+   "brand": "Panasonic",
+   "categorySlug": "noi-com-dien",
+   "originUrl": "https://japanvip.vn/noi-com-panasonic-sr-v18bb.html",
+   "images": [
+    "https://japanvip.vn/media/product/761_noi_com_dien_sr_v18bb_k_1.jpg",
+    "https://japanvip.vn/media/product/761_noi_com_dien_sr_v18bb_k_.jpg"
+   ]
+  },
+  {
+   "srcId": "760",
+   "name": "Nồi cơm điện Tiger JPI-A100",
+   "slug": "noi-com-dien-tiger-jpi-a100",
+   "description": "Nồi cơm điện Tiger JPI-A100 là một trong những mẫu nồi cơm điện cao tần hiện đại và cao cấp nhất của thương hiệu Tiger tại Nhật Bản. Sản phẩm được thiết kế với tính năng nấu cao tần cùng áp suất và có dung tích 1 lít, rất phù hợp cho gia đình từ 3 đến 5 người.",
+   "salePrice": 8900000,
+   "marketPrice": 10000000,
+   "brand": "Tiger",
+   "categorySlug": "noi-com-dien",
+   "originUrl": "https://japanvip.vn/noi-com-dien-tiger-jpi-a100.html",
+   "images": [
+    "https://japanvip.vn/media/product/760_1.jpg",
+    "https://japanvip.vn/media/product/760_2.jpg"
+   ]
+  },
+  {
+   "srcId": "759",
+   "name": "Máy lọc không khí LG PuriCare 360",
+   "slug": "may-loc-khong-khi-lg-puricare-360",
+   "description": "Máy lọc không khí PuriCare™ tự động nhận biết chất lượng không khí trong nhà và hiển thị trạng thái thông qua đèn báo mã màu ở mặt bên của thiết bị. Bốn màu được sử dụng bao gồm: đỏ, cam, vàng và xanh lá. Đèn đỏ biểu thị chất lượng không khí kém, còn đèn xanh lá biểu thị chất lượng không khí tốt nhất.",
+   "salePrice": 22500000,
+   "marketPrice": 28000000,
+   "brand": "LG",
+   "categorySlug": "may-loc-khi",
+   "originUrl": "https://japanvip.vn/may-loc-khong-khi-lg-puricare-360.html",
+   "images": [
+    "https://japanvip.vn/media/product/759_unnamed.jpg",
+    "https://japanvip.vn/media/product/759_1619229975_maylockhongkhilgpuricare__602tang.jpg"
+   ]
+  },
+  {
+   "srcId": "758",
+   "name": "Máy hút ẩm Mitsubishi MJ-PV250WX-W",
+   "slug": "may-hut-am-mitsubishi-mj-pv250wx-w",
+   "description": "Máy hút ẩm Mitsubishi MJ-PV250WX-W từ Nhật Bản, hoạt động hiệu quả nhờ công nghệ máy nén, với khả năng hút ẩm lên tới 24,5L mỗi ngày. Sản phẩm tự động điều chỉnh độ ẩm, tiết kiệm năng lượng và mang lại môi trường sống thoải mái, an toàn.",
+   "salePrice": 18990000,
+   "marketPrice": 21900000,
+   "brand": "Mitsubishi",
+   "categorySlug": "may-hut-am",
+   "originUrl": "https://japanvip.vn/may-hut-am-mitsubishi-mj-pv250wx-w.html",
+   "images": [
+    "https://japanvip.vn/media/product/758_2.jpg",
+    "https://japanvip.vn/media/product/758_1.jpg"
+   ]
+  },
+  {
+   "srcId": "757",
+   "name": "Quạt không cánh Dyson HP00",
+   "slug": "quat-khong-canh-dyson-hp00",
+   "description": "Quạt không cánh Dyson HP00 đến từ Nhật Bản, tích hợp 3 chức năng: sưởi ấm, làm mát và lọc không khí. Sản phẩm sử dụng công nghệ Air Multiplier cùng bộ lọc HEPA 360° để mang lại không khí trong lành.",
+   "salePrice": 7900000,
+   "marketPrice": null,
+   "brand": "Dyson",
+   "categorySlug": "quat-dien",
+   "originUrl": "https://japanvip.vn/quat-khong-canh-dyson-hp00.html",
+   "images": [
+    "https://japanvip.vn/media/product/757_1.jpg",
+    "https://japanvip.vn/media/product/757_sg_11134201_23030_l2h5qb8ptpov0d.jpg"
+   ]
+  },
+  {
+   "srcId": "756",
+   "name": "Điều hòa Panasonic CS-283DFL",
+   "slug": "dieu-hoa-panasonic-cs-283dfl",
+   "description": "Điều hòa Panasonic CS-283DFL nằm trong dòng sản phẩm Eolia, đây là dòng điều hòa với các chức năng cơ bản và mức giá rất hợp lý của Panasonic tại Nhật Bản.",
+   "salePrice": 16500000,
+   "marketPrice": null,
+   "brand": "Panasonic",
+   "categorySlug": "dieu-hoa",
+   "originUrl": "https://japanvip.vn/dieu-hoa-panasonic-cs-283dfl.html",
+   "images": [
+    "https://japanvip.vn/media/product/756_1.jpg",
+    "https://japanvip.vn/media/product/756_538_dieu_hoa_panasonic_cs_283dfl_020__9.jpeg"
+   ]
+  },
+  {
+   "srcId": "755",
+   "name": "Nồi ủ Thermos KBG-4500",
+   "slug": "noi-u-thermos-kbg-4500",
+   "description": "Nồi ủ Thermos KBG-4500 là sản phẩm nội địa Nhật Bản với dung tích 4.5L, có khả năng ủ và nấu thức ăn nhừ mà không cần phải đun trên bếp. Bộ giữ nhiệt chân không của nồi giúp nấu thức ăn nhừ mà không cần đặt trên bếp. Chỉ cần đun sôi thực phẩm rồi cho vào nồi ủ, bộ phận giữ nhiệt và cách nhiệt sẽ giữ cho thức ăn vẫn nóng sau khi ngừng đun. Nồi có thể chế biến nhiều món ăn như luộc, hầm, kho, … Nhờ vào tính năng ủ, lượng dưỡng chất và vitamin trong thực phẩm không bị mất đi, giúp món ăn trở nên ngon hơn.",
+   "salePrice": 3290000,
+   "marketPrice": null,
+   "brand": "Thermos",
+   "categorySlug": "noi-u",
+   "originUrl": "https://japanvip.vn/noi-u-thermos-kbg-4500.html",
+   "images": [
+    "https://japanvip.vn/media/product/755_1.jpg",
+    "https://japanvip.vn/media/product/755_2.jpg"
+   ]
+  },
+  {
+   "srcId": "754",
+   "name": "Nồi cơm Toshiba RC-18VSV",
+   "slug": "noi-com-toshiba-rc-18vsv",
+   "description": "Nồi cơm Toshiba RC-18VSV là một sản phẩm nồi cơm điện nội địa Nhật Bản, sử dụng công nghệ đun nóng cao tần IH với dung tích 1.8 lít. Sản phẩm mang thương hiệu Toshiba nổi tiếng, có thiết kế sang trọng cùng với các phím bấm cảm ứng dễ sử dụng. Màn hình hiển thị LCD trực quan giúp người dùng dễ dàng điều khiển trong quá trình nấu. Nồi cơm Toshiba RC-18VSV được trang bị nhiều tính năng thông minh và công nghệ tiên tiến như công nghệ hút chân không và công nghệ áp suất nấu bằng IH, giúp hạt gạo chín đều và ngon hơn. Ngoài ra, nồi còn có nhiều menu nấu nướng đa dạng, làm phong phú thêm thực đơn hàng ngày.",
+   "salePrice": 8500000,
+   "marketPrice": null,
+   "brand": "Toshiba",
+   "categorySlug": "noi-com-dien",
+   "originUrl": "https://japanvip.vn/noi-com-toshiba-rc-18vsv.html",
+   "images": [
+    "https://japanvip.vn/media/product/754_4.jpg",
+    "https://japanvip.vn/media/product/754_1.jpg"
+   ]
+  },
+  {
+   "srcId": "753",
+   "name": "Bình nóng lạnh tổng Heat Pump Mitsubishi SRT-S376U",
+   "slug": "binh-nong-lanh-tong-heat-pump-mitsubishi-srt-s376u",
+   "description": "Máy nước nóng trung tâm Mitsubishi SRT-N376 có dung tích lớn lên đến 370L, mang đến khả năng cung cấp nước nóng an toàn và tiết kiệm điện cho người dùng. Đặc biệt, máy có thể tạo ra nhiệt độ nước lên tới 70 độ C, giúp ngăn chặn sự phát triển của vi khuẩn và nấm trong nước. Việc sử dụng máy nước nóng trung tâm này không chỉ giúp tiết kiệm chi phí điện mà còn đảm bảo an toàn vệ sinh cho người sử dụng.",
+   "salePrice": null,
+   "marketPrice": null,
+   "brand": null,
+   "categorySlug": "hang-dien-lanh",
+   "originUrl": "https://japanvip.vn/binh-nong-lanh-tong-heat-pump-mitsubishi-srt-s376u.html",
+   "images": [
+    "https://japanvip.vn/media/product/753_1.jpg",
+    "https://japanvip.vn/media/product/753_2.jpg"
+   ]
+  },
+  {
+   "srcId": "751",
+   "name": "Máy hút ẩm Mitsubishi MJ-P180WX",
+   "slug": "may-hut-am-mitsubishi-mj-p180wx",
+   "description": "Máy hút ẩm Mitsubishi MJ-P180WX là sản phẩm máy hút ẩm mới nhất từ Nhật Bản, với công suất hút ẩm đạt 18 lít/ngày và khả năng hoạt động hiệu quả trong không gian lên đến 75m2. Máy rất hữu ích trong những ngày thời tiết nồm, giúp hút ẩm cho phòng, khử mùi cho quần áo và ngăn ngừa sự phát triển của nấm mốc. Đây là phiên bản nâng cấp của Mitsubishi MJ-P180VX. Dòng máy hút ẩm Mitsubishi chân voi này đã trở nên quen thuộc trên thị trường Việt Nam, được biết đến với khả năng hút ẩm mạnh mẽ, độ bền cao và tiết kiệm điện năng.",
+   "salePrice": 10990000,
+   "marketPrice": null,
+   "brand": "Mitsubishi",
+   "categorySlug": "may-hut-am",
+   "originUrl": "https://japanvip.vn/may-hut-am-mitsubishi-mj-p180wx.html",
+   "images": [
+    "https://japanvip.vn/media/product/751_1.jpg",
+    "https://japanvip.vn/media/product/751_2.jpg"
+   ]
+  },
+  {
+   "srcId": "750",
+   "name": "Quạt Toyotomi FS-D30KHR(A)",
+   "slug": "quat-toyotomi-fs-d30khra",
+   "description": "Quạt Toyotomi FS-D30KHR(A) là một sản phẩm quạt thông minh, được trang bị động cơ DC hiệu quả, giúp tiết kiệm điện năng và giảm tiếng ồn so với các loại quạt thông thường sử dụng động cơ AC. Quạt Toyotomi FS-D30KHR(A) còn có cảm biến dừng thông minh, phù hợp cho việc sử dụng trong nhà.",
+   "salePrice": 4550000,
+   "marketPrice": null,
+   "brand": null,
+   "categorySlug": "quat-dien",
+   "originUrl": "https://japanvip.vn/quat-toyotomi-fs-d30khra.html",
+   "images": [
+    "https://japanvip.vn/media/product/750_1.jpg",
+    "https://japanvip.vn/media/product/750_2.jpg"
+   ]
+  },
+  {
+   "srcId": "749",
+   "name": "Bếp từ Hitachi HT-N8KTWF",
+   "slug": "bep-tu-hitachi-ht-n8ktwf",
+   "description": "Bếp từ Hitachi HT-N8KTWF là sản phẩm bếp từ nội địa Nhật, được thiết kế với phong cách tinh tế và hiện đại, tích hợp các công nghệ tiên tiến, mang lại sự tiện lợi và an toàn tối đa cho người dùng. Là phiên bản nâng cấp của mẫu HT-M8AKTWF, bếp từ Hitachi HT-N8KTWF không chỉ kế thừa những ưu điểm của người tiền nhiệm mà còn được bổ sung nhiều cải tiến vượt trội, đáp ứng nhu cầu nấu nướng thông minh và tiết kiệm điện cho gia đình.",
+   "salePrice": 23400000,
+   "marketPrice": null,
+   "brand": "Hitachi",
+   "categorySlug": "bep-tu",
+   "originUrl": "https://japanvip.vn/bep-tu-hitachi-ht-n8ktwf.html",
+   "images": [
+    "https://japanvip.vn/media/product/749_bep_tu_hitachi_ht_n8ktwf.jpg",
+    "https://japanvip.vn/media/product/749_2.jpg"
+   ]
+  },
+  {
+   "srcId": "748",
+   "name": "Tủ lạnh Hitachi R-WXC74X-X",
+   "slug": "tu-lanh-hitachi-r-wxc74x-x",
+   "description": "Tủ lạnh Hitachi R-WXC74X-X là một trong những sản phẩm cao cấp nổi bật trên thị trường hiện nay, thu hút sự chú ý nhờ vào thiết kế tinh tế, công nghệ hiện đại và dung tích lớn lên tới 735 lít. Sản phẩm này không chỉ cung cấp không gian lưu trữ rộng rãi mà còn được trang bị nhiều tính năng thông minh, giúp người dùng dễ dàng quản lý và tối ưu hóa hiệu quả sử dụng. Dưới đây là những điểm nổi bật của sản phẩm, giúp bạn hiểu rõ hơn về những lợi ích mà nó mang lại.",
+   "salePrice": 80500000,
+   "marketPrice": null,
+   "brand": "Hitachi",
+   "categorySlug": "tu-lanh",
+   "originUrl": "https://japanvip.vn/tu-lanh-hitachi-r-wxc74x-x.html",
+   "images": [
+    "https://japanvip.vn/media/product/748_1.jpg",
+    "https://japanvip.vn/media/product/748_2.jpg"
+   ]
+  },
+  {
+   "srcId": "747",
+   "name": "Tủ cấp đông Hitachi R-K11R-N",
+   "slug": "tu-cap-dong-hitachi-r-k11r-n",
+   "description": "Tủ đông Hitachi R-K11R-N là một sản phẩm nổi bật của thương hiệu Hitachi, được thiết kế nhằm đáp ứng nhu cầu lưu trữ thực phẩm đông lạnh một cách hiệu quả. Sản phẩm này rất phù hợp cho các gia đình hoặc nhà hàng nhỏ cần bảo quản thực phẩm tươi lâu mà không lo mất đi chất dinh dưỡng.",
+   "salePrice": 14500000,
+   "marketPrice": 16500000,
+   "brand": "Hitachi",
+   "categorySlug": "tu-cap-dong",
+   "originUrl": "https://japanvip.vn/tu-cap-dong-hitachi-r-k11r-n.html",
+   "images": [
+    "https://japanvip.vn/media/product/747_1.jpg",
+    "https://japanvip.vn/media/product/747_2.jpg"
+   ]
+  },
+  {
+   "srcId": "746",
+   "name": "Máy giặt Toshiba TW-127XP3L",
+   "slug": "may-giat-toshiba-tw-127xp3l",
+   "description": "Máy giặt Toshiba TW-127XP3L có công suất giặt 12 kg và sấy 7 kg, được trang bị nhiều tính năng hiện đại như chuyển đổi nước thành nước siêu bọt mịn, giặt bằng nước nóng, công nghệ sấy bơm nhiệt và khử trùng bằng tia UV.",
+   "salePrice": null,
+   "marketPrice": null,
+   "brand": "Toshiba",
+   "categorySlug": "may-giat",
+   "originUrl": "https://japanvip.vn/may-giat-toshiba-tw-127xp3l.html",
+   "images": [
+    "https://japanvip.vn/media/product/746_1.jpg",
+    "https://japanvip.vn/media/product/746_2.jpg"
+   ]
+  },
+  {
+   "srcId": "745",
+   "name": "Máy rửa bát Panasonic NP-TZ500",
+   "slug": "may-rua-bat-panasonic-np-tz500",
+   "description": "Máy rửa bát Panasonic NP-TZ500 được trang bị công nghệ NanoeX giúp khử mùi và diệt khuẩn hiệu quả, có khả năng rửa 5 bộ bát đĩa. Nhờ vào công nghệ Inverter và Econavi, thiết bị này tiết kiệm năng lượng và nước. Với thiết kế hiện đại và phím bấm cảm ứng, máy còn đi kèm với hộp chứa kem và các phụ kiện đồng bộ.",
+   "salePrice": 22900000,
+   "marketPrice": 28500000,
+   "brand": "Panasonic",
+   "categorySlug": "may-rua-bat",
+   "originUrl": "https://japanvip.vn/may-rua-bat-panasonic-np-tz500.html",
+   "images": [
+    "https://japanvip.vn/media/product/745_2.jpg",
+    "https://japanvip.vn/media/product/745_1.jpg"
+   ]
+  },
+  {
+   "srcId": "744",
+   "name": "Máy lọc khí Sharp KI-LS70",
+   "slug": "may-loc-khi-sharp-ki-ls70",
+   "description": "Máy lọc khí Sharp KI-LS70 là phiên bản cải tiến của máy lọc không khí SHARP KI-HS70-W. Đây là một thiết bị lọc không khí có chức năng bù ẩm, hoạt động tự động nhờ vào trí thông minh nhân tạo (AI) trong hệ thống đám mây thông minh của công nghệ độc quyền Sharp.",
+   "salePrice": 7490000,
+   "marketPrice": null,
+   "brand": null,
+   "categorySlug": "may-loc-khi",
+   "originUrl": "https://japanvip.vn/may-loc-khi-sharp-ki-ls70.html",
+   "images": [
+    "https://japanvip.vn/media/product/744_1.jpg",
+    "https://japanvip.vn/media/product/744_2.jpg"
+   ]
+  },
+  {
+   "srcId": "743",
+   "name": "Máy giặt Hitachi BD-SV120HL",
+   "slug": "may-giat-hitachi-bd-sv120hl",
+   "description": "Máy giặt Hitachi BD-SV120HL Nhật Nội Địa là model mới với công suất giặt 12kg và sấy 6kg, đi kèm nhiều tính năng hữu ích, giúp hỗ trợ bạn và gia đình trong các công việc nội trợ hàng ngày.",
+   "salePrice": 46900000,
+   "marketPrice": null,
+   "brand": "Hitachi",
+   "categorySlug": "may-giat",
+   "originUrl": "https://japanvip.vn/may-giat-hitachi-bd-sv120hl.html",
+   "images": [
+    "https://japanvip.vn/media/product/743_1.jpg",
+    "https://japanvip.vn/media/product/743_2.jpg"
+   ]
+  },
+  {
+   "srcId": "742",
+   "name": "Bếp từ Hitachi HT-M8AKTWF",
+   "slug": "bep-tu-hitachi-ht-m8aktwf",
+   "description": "Hitachi HT-M8AKTWF là bếp từ nội địa Nhật phân khúc cao cấp. Thiết kế hiện đại với 3 bếp từ, 1 lò nướng. Được trang bị mặt kính Ceramic màu đen cường lực chịu nhiệt tốt. Bếp có tốc độ đun nấu nhanh mà vẫn tiết kiệm điện nhờ công nghệ inverter cùng với hàng loạt công nghệ tiên tiến (tự ngắt khi quên nồi, cạn nước, trào nước, cảm biến tự động bật tắt hút mùi,…)",
+   "salePrice": 21500000,
+   "marketPrice": null,
+   "brand": "Hitachi",
+   "categorySlug": "bep-tu",
+   "originUrl": "https://japanvip.vn/bep-tu-hitachi-ht-m8aktwf.html",
+   "images": [
+    "https://japanvip.vn/media/product/742_1.jpg",
+    "https://japanvip.vn/media/product/742_2.jpg"
+   ]
+  },
+  {
+   "srcId": "741",
+   "name": "Máy giặt Hitachi BD-SG110JL",
+   "slug": "may-giat-hitachi-bd-sg110jl",
+   "description": "Máy giặt Hitachi BD-SG110JL Nhật Nội Địa model 2024 có công suất giặt 11kg, sấy 6kg cùng nhiều tính năng hữu ích khác đóng một vai trò quan trọng trong cuộc sống, như một cánh tay đắc lực hỗ trợ các công việc nội trợ hằng ngày cho bạn và gia đình.",
+   "salePrice": 41500000,
+   "marketPrice": null,
+   "brand": "Hitachi",
+   "categorySlug": "may-giat",
+   "originUrl": "https://japanvip.vn/may-giat-hitachi-bd-sg110jl.html",
+   "images": [
+    "https://japanvip.vn/media/product/741_1.jpg",
+    "https://japanvip.vn/media/product/741_kich_thuoc_hitachi_bd_sg110jl_w.jpg"
+   ]
+  },
+  {
+   "srcId": "740",
+   "name": "Máy giặt khô LG Styler S3GW",
+   "slug": "may-giat-kho-lg-styler-s3gw",
+   "description": "LG S3GW là dòng máy giặt hấp sấy khô, còn được gọi là tủ chăm sóc quần áo thông minh, đến từ thương hiệu LG. Máy giặt khô LG Styler S3GW là loại tủ 3 móc chăm sóc quần áo kỹ càng, chỉn chu đến mọi chi tiết. Máy tích hợp công nghệ Truesteam độc quyền, có khả năng loại bỏ bụi PM2.5, phấn hoa, vi khuẩn, các chất gây dị ứng và khử khuẩn mạnh mẽ.",
+   "salePrice": null,
+   "marketPrice": null,
+   "brand": "LG",
+   "categorySlug": "may-giat",
+   "originUrl": "https://japanvip.vn/may-giat-kho-lg-styler-s3gw.html",
+   "images": [
+    "https://japanvip.vn/media/product/740_1.jpg",
+    "https://japanvip.vn/media/product/740_2.jpg"
+   ]
+  },
+  {
+   "srcId": "738",
+   "name": "Tủ lạnh Mitsubishi MR-WXD70K",
+   "slug": "tu-lanh-mitsubishi-mr-wxd70k",
+   "description": "Tủ lạnh Mitsubishi MR-WXD70K là một sản phẩm nổi bật của năm 2024, được thiết kế để thay thế mẫu tủ lạnh MR-WXD70J với hàng loạt tính năng tiên tiến và dung tích lớn 700L. Đây không chỉ là một thiết bị lưu trữ thực phẩm mà còn là một điểm nhấn cho không gian bếp hiện đại nhờ thiết kế sang trọng, mặt gương cường lực và nhiều công nghệ thông minh, giúp tối ưu hóa trải nghiệm người dùng.",
+   "salePrice": null,
+   "marketPrice": null,
+   "brand": "Mitsubishi",
+   "categorySlug": "tu-lanh",
+   "originUrl": "https://japanvip.vn/tu-lanh-mitsubishi-mr-wxd70k.html",
+   "images": [
+    "https://japanvip.vn/media/product/738_1.jpg",
+    "https://japanvip.vn/media/product/738_2.jpg"
+   ]
+  },
+  {
+   "srcId": "737",
+   "name": "Nồi cơm điện Toshiba RC-18VXV",
+   "slug": "noi-com-dien-toshiba-rc-18vxv",
+   "description": "Nồi cơm điện Toshiba RC-18VXV là một trong những model nồi cơm điện cao tần cao cấp, mới nhất của Toshiba nội địa Nhật, đây là phiên bản mới của nồi Toshiba RC-18VXT. Nồi được thiết kế với chức năng nấu cơm cao tần, áp suất, hút chân không, dung tích 1,8 lít phù hợp với gia đình từ 5-8 người ăn.",
+   "salePrice": 15800000,
+   "marketPrice": null,
+   "brand": "Toshiba",
+   "categorySlug": "noi-com-dien",
+   "originUrl": "https://japanvip.vn/noi-com-dien-toshiba-rc-18vxv.html",
+   "images": [
+    "https://japanvip.vn/media/product/737_1.jpg",
+    "https://japanvip.vn/media/product/737_2.jpg"
+   ]
+  },
+  {
+   "srcId": "736",
+   "name": "Tủ cấp đông Mitsubishi MF-U14H",
+   "slug": "tu-cap-dong-mitsubishi-mf-u14h",
+   "description": "Tủ cấp đông Mitsubishi MF-U14H là dòng tủ đông nội địa Nhật Bản mới nhất hiện nay . Đây chính là mẫu tủ cấp đông nâng cấp của sản phẩm MF-U14G-B với cải tiến về khả năng tiết kiệm điện và trọng lượng của tủ. Tủ đông Mitsubishi MF-U14H được thiết kế với dung tích 144 lít, phù hợp với hầu hết các hộ gia đình tại Việt Nam.",
+   "salePrice": 13290000,
+   "marketPrice": null,
+   "brand": "Mitsubishi",
+   "categorySlug": "tu-cap-dong",
+   "originUrl": "https://japanvip.vn/tu-cap-dong-mitsubishi-mf-u14h.html",
+   "images": [
+    "https://japanvip.vn/media/product/736_1.jpg",
+    "https://japanvip.vn/media/product/736_2.jpg"
+   ]
+  },
+  {
+   "srcId": "735",
+   "name": "Tủ cấp đông Mitsubishi MF-U22J-W",
+   "slug": "tu-cap-dong-mitsubishi-mf-u22j-w",
+   "description": "Tủ cấp đông Mitsubishi MF-U22J-W là mẫu tủ đông nội địa Nhật Bản tiên tiến, đáp ứng nhu cầu lưu trữ thực phẩm của khách hàng trong những ngày lễ tết tới. Với dung tích rộng rãi 220 lít, sản phẩm này thích hợp cho hầu hết các gia đình Việt, mang lại sự tiện lợi và giải pháp bảo quản thực phẩm hiệu quả.",
+   "salePrice": 22900000,
+   "marketPrice": null,
+   "brand": "Mitsubishi",
+   "categorySlug": "tu-cap-dong",
+   "originUrl": "https://japanvip.vn/tu-cap-dong-mitsubishi-mf-u22j-w.html",
+   "images": [
+    "https://japanvip.vn/media/product/735_1.jpg",
+    "https://japanvip.vn/media/product/735_2.jpg"
+   ]
+  },
+  {
+   "srcId": "733",
+   "name": "Quạt treo tường Toshiba TF-30RK27(W)",
+   "slug": "quat-treo-tuong-toshiba-tf-30rk27w",
+   "description": "Quạt treo tường Toshiba TF-30RK27(W) với thiết kế 07 cánh giảm tiếng ồn và điện năng tiêu thụ tối đa chỉ 37W sẽ đem đến cho người dùng có một trải nghiệm sử dụng thật thoải mái và tiện nghi.",
+   "salePrice": 2590000,
+   "marketPrice": null,
+   "brand": "Toshiba",
+   "categorySlug": "quat-dien",
+   "originUrl": "https://japanvip.vn/quat-treo-tuong-toshiba-tf-30rk27w.html",
+   "images": [
+    "https://japanvip.vn/media/product/733_2.jpg",
+    "https://japanvip.vn/media/product/733_1.jpg"
+   ]
+  },
+  {
+   "srcId": "732",
+   "name": "Máy lọc nước Mitsubishi Cleansui Al800",
+   "slug": "may-loc-nuoc-mitsubishi-cleansui-al800",
+   "description": "Máy lọc nước Mitsubishi Cleansui Alkaline AL800 là dòng máy lọc nước Nhật nội địa với công suất lọc 3 lít/phút. Đây là phiên bản nâng cấp của máy lọc nước Mitsubishi Cleansui AL700 (EU301) với cải tiến về thân vòi và công suất lõi lọc. Máy sử dụng công nghệ điện phân cùng hệ thống màng lọc sợi rỗng giúp loại bỏ hoàn toàn các tạp chất cũng như các vi khuẩn có hại tồn tại trong nước như Coliform, Ecoli, …đồng thời tạo ra 5 chế độ nước với nồng độ pH khác nhau phù hợp với từng nhu cầu sử dụng.",
+   "salePrice": 20800000,
+   "marketPrice": null,
+   "brand": "Mitsubishi",
+   "categorySlug": "may-loc-nuoc",
+   "originUrl": "https://japanvip.vn/may-loc-nuoc-mitsubishi-cleansui-al800.html",
+   "images": [
+    "https://japanvip.vn/media/product/732_1.jpg",
+    "https://japanvip.vn/media/product/732_2.jpg"
+   ]
+  },
+  {
+   "srcId": "731",
+   "name": "Máy lọc nước Panasonic TK-HB50",
+   "slug": "may-loc-nuoc-panasonic-tk-hb50",
+   "description": "Máy lọc nước ion kiềm Panasonic TK-HB50 có thiết kế nhỏ gọn, loại bỏ 99,9% vi khuẩn và 13 chất gây hại, cung cấp 5 chế độ nước, sở hữu công nghệ tự động vệ sinh điện cực và lõi lọc hiệu suất cao.",
+   "salePrice": 21490000,
+   "marketPrice": null,
+   "brand": "Panasonic",
+   "categorySlug": "may-loc-nuoc",
+   "originUrl": "https://japanvip.vn/may-loc-nuoc-panasonic-tk-hb50.html",
+   "images": [
+    "https://japanvip.vn/media/product/731_1.jpg",
+    "https://japanvip.vn/media/product/731_2.jpg"
+   ]
+  },
+  {
+   "srcId": "730",
+   "name": "Máy lọc nước Panasonic TK-AS31-W",
+   "slug": "may-loc-nuoc-panasonic-tk-as31-w",
+   "description": "Máy lọc nước Panasonic TK-AS31 là dòng máy lọc nước nội địa Nhật Bản với công suất lọc 6000 lít (Mã mới thay thế cho máy Panasonic TK-AS30), máy sử dụng công nghệ điện phân và màng lọc sợi rỗng giúp loại bỏ hoàn toàn các tạp chất cũng như các vi khuẩn có hại tồn tại trong nước như Coliform, Ecoli, ...",
+   "salePrice": 7390000,
+   "marketPrice": null,
+   "brand": "Panasonic",
+   "categorySlug": "may-loc-nuoc",
+   "originUrl": "https://japanvip.vn/may-loc-nuoc-panasonic-tk-as31-w.html",
+   "images": [
+    "https://japanvip.vn/media/product/730_1.jpg",
+    "https://japanvip.vn/media/product/730_2.jpg"
+   ]
+  },
+  {
+   "srcId": "729",
+   "name": "Máy lọc nước Panasonic TK-AS47",
+   "slug": "may-loc-nuoc-panasonic-tk-as47",
+   "description": "Máy lọc nước Panasonic TK-AS47-H là dòng máy lọc nước tạo ion kiềm Nhật nội địa với công suất lọc 2,2 lít/phút. Máy sử dụng công nghệ điện phân cùng hệ thống màng lọc sợi rỗng giúp loại bỏ hoàn toàn các tạp chất cũng như các vi khuẩn có hại tồn tại trong nước như Coliform, Ecoli, …đồng thời tạo ra 5 chế độ nước với nồng độ pH khác nhau phù hợp với từng nhu cầu sử dụng.",
+   "salePrice": 13290000,
+   "marketPrice": null,
+   "brand": "Panasonic",
+   "categorySlug": "may-loc-nuoc",
+   "originUrl": "https://japanvip.vn/may-loc-nuoc-panasonic-tk-as47.html",
+   "images": [
+    "https://japanvip.vn/media/product/729_1.jpg",
+    "https://japanvip.vn/media/product/729_2.jpg"
+   ]
+  },
+  {
+   "srcId": "728",
+   "name": "Máy lọc nước Panasonic TK-AS48-S",
+   "slug": "may-loc-nuoc-panasonic-tk-as48-s",
+   "description": "Máy lọc nước Panasonic TK-AS48-S có thiết kế không vòi, giúp lắp đặt ở các không gian đặc biệt, nơi không thể để máy lọc nước ngay cạnh lavabo. Có thể đặt ở xa hàng mét so với nguồn nước nhờ các kết nối có dây tùy chỉnh. Diện tích lắp đặt đã được giảm khoảng 25% với kích thước rộng 16,8 cm x sâu 9,5 cm. Kích thước Panasonic AS 48 nhỏ gọn cho phép nó được lắp đặt gọn gàng trong không gian bên cạnh vòi nước. Nó đảm bảo không gian thoáng trong nhà bếp và làm việc một cách dễ dàng.",
+   "salePrice": 14590000,
+   "marketPrice": null,
+   "brand": "Panasonic",
+   "categorySlug": "may-loc-nuoc",
+   "originUrl": "https://japanvip.vn/may-loc-nuoc-panasonic-tk-as48-s.html",
+   "images": [
+    "https://japanvip.vn/media/product/728_1.jpg",
+    "https://japanvip.vn/media/product/728_2.jpg"
+   ]
+  },
+  {
+   "srcId": "727",
+   "name": "Máy lọc nước Panasonic TK-HS92",
+   "slug": "may-loc-nuoc-panasonic-tk-hs92",
+   "description": "Máy lọc nước Panasonic TK-HS92 là dòng máy lọc nước tạo ion kiềm Nhật nội địa với công suất lọc 2,3 lít/phút. Máy sử dụng công nghệ điện phân cùng hệ thống màng lọc sợi rỗng giúp loại bỏ hoàn toàn các tạp chất cũng như các vi khuẩn có hại tồn tại trong nước như Coliform, Ecoli, …đồng thời tạo ra 8 chế độ nước với nồng độ pH khác nhau phù hợp với từng nhu cầu sử dụng.",
+   "salePrice": 31890000,
+   "marketPrice": null,
+   "brand": "Panasonic",
+   "categorySlug": "may-loc-nuoc",
+   "originUrl": "https://japanvip.vn/may-loc-nuoc-panasonic-tk-hs92.html",
+   "images": [
+    "https://japanvip.vn/media/product/727_1.jpg",
+    "https://japanvip.vn/media/product/727_2.jpg"
+   ]
+  },
+  {
+   "srcId": "726",
+   "name": "Máy lọc nước Hydro Trim ion Grace",
+   "slug": "may-loc-nuoc-hydro-trim-ion-grace",
+   "description": "Máy lọc nước Trim Ion Grace là dòng máy lọc nước tạo kiềm giàu Hydro nội địa Nhật Bản. Máy được thiết kế với mặt kính đen, phím bấm cảm ứng cùng tính năng tạo 8 loại nước pH khác nhau phù hợp với từng nhu cầu sử dụng.",
+   "salePrice": 48390000,
+   "marketPrice": null,
+   "brand": null,
+   "categorySlug": "may-loc-nuoc",
+   "originUrl": "https://japanvip.vn/may-loc-nuoc-hydro-trim-ion-grace.html",
+   "images": [
+    "https://japanvip.vn/media/product/726_1.jpg",
+    "https://japanvip.vn/media/product/726_2.jpg"
+   ]
+  },
+  {
+   "srcId": "725",
+   "name": "Máy sấy bát Mitsubishi TK-TS20A-H",
+   "slug": "may-say-bat-mitsubishi-tk-ts20a-h",
+   "description": "Máy sấy bát Mitsubishi TK-TS20A là một sản phẩm lý tưởng để nâng cao tiện ích và hiệu suất trong việc vệ sinh, khử khuẩn bát đĩa. Với công nghệ tiên tiến và thiết kế tinh tế, sản phẩm này hứa hẹn mang lại trải nghiệm sử dụng đỉnh cao và tiết kiệm thời gian đáng kể cho gia đình.",
+   "salePrice": 3600000,
+   "marketPrice": null,
+   "brand": "Mitsubishi",
+   "categorySlug": "may-say-bat",
+   "originUrl": "https://japanvip.vn/may-say-bat-mitsubishi-tk-ts20a-h.html",
+   "images": [
+    "https://japanvip.vn/media/product/725_4.jpg",
+    "https://japanvip.vn/media/product/725_2.jpg"
+   ]
+  },
+  {
+   "srcId": "724",
+   "name": "Máy sấy bát Mitsubishi TK-ST30A-H",
+   "slug": "may-say-bat-mitsubishi-tk-st30a-h",
+   "description": "Máy sấy bát Mitsubishi TK-ST30A-H là model máy sấy bát nội địa Nhật mới nhất hiện tại, có khả năng sấy khô & diệt khuẩn trên bát đĩa, dao thớt và dụng cụ nấu ăn trong thời gian ngắn với nhiệt độ lên đến 90°C. Khay chứa và các chi tiết có thể tháo rời giúp tăng diện tích sấy và thuận tiện trong việc vệ sinh sản phẩm.",
+   "salePrice": 3790000,
+   "marketPrice": null,
+   "brand": "Mitsubishi",
+   "categorySlug": "thiet-bi-nha-bep",
+   "originUrl": "https://japanvip.vn/may-say-bat-mitsubishi-tk-st30a-h.html",
+   "images": [
+    "https://japanvip.vn/media/product/724_5.jpg",
+    "https://japanvip.vn/media/product/724_3.jpg"
+   ]
+  },
+  {
+   "srcId": "723",
+   "name": "Máy sấy bát Panasonic FD-S35T3",
+   "slug": "may-say-bat-panasonic-fd-s35t3",
+   "description": "Panasonic FD-S35T3 là dòng máy sấy bát nội địa Nhật Bản. Hệ thống sấy bằng khí nóng luân chuyển đều trong buồng sấy, giúp sấy khô nhanh chóng các dụng cụ bếp từ bát đĩa, đũa tăm, muỗng nĩa chỉ trong vòng 20-45 phút.",
+   "salePrice": 4800000,
+   "marketPrice": null,
+   "brand": "Panasonic",
+   "categorySlug": "may-say-bat",
+   "originUrl": "https://japanvip.vn/may-say-bat-panasonic-fd-s35t3.html",
+   "images": [
+    "https://japanvip.vn/media/product/723_1.jpg",
+    "https://japanvip.vn/media/product/723_2.jpg"
+   ]
+  },
+  {
+   "srcId": "722",
+   "name": "Tủ sấy bát Kanazawa Kogyo KEL- E090D35",
+   "slug": "tu-say-bat-kanazawa-kogyo-kel-e090d35",
+   "description": "Tủ sấy bát Kanazawa Kogyo KEL- E090D35 được nhiều khách hàng lựa chọn ứng dụng trong việc sấy khô bát đĩa gia đình, quán ăn, khách sạn, nhà hàng, nhà bếp gia đình, nhà bếp công nghiệp là dòng sản phẩm có nhiều tiện lợi. Tủ sấy bát Kanazawa Kogyo KEL- E090D35 mới nguyên hộp, chất lượng rất bền, trong quá trình sấy có chức năng sấy khô khử khuẩn, diệt trùng tuyệt đối trên bát đĩa, tủ kiêm luôn làm nơi lưu trữ bát đĩa, bạn ko phải xếp đi xếp lại nhiều lần như các loại máy sấy bát khác.",
+   "salePrice": 23900000,
+   "marketPrice": null,
+   "brand": null,
+   "categorySlug": "may-say-bat",
+   "originUrl": "https://japanvip.vn/tu-say-bat-kanazawa-kogyo-kel-e090d35.html",
+   "images": [
+    "https://japanvip.vn/media/product/722_1.jpg",
+    "https://japanvip.vn/media/product/722_2.jpg"
+   ]
+  },
+  {
+   "srcId": "721",
+   "name": "Bồn cầu Toto CES9788 (TCF9788+CS989B)",
+   "slug": "bon-cau-toto-ces9788-tcf9788cs989b",
+   "description": "Bồn cầu Toto CES9788 (TCF9788+CS989B) là mẫu bồn cầu vệ sinh liền khối cao cấp nội địa Nhật Bản của TOTO. Mẫu bồn cầu này thuộc dòng thiết kế AH Style với ngôn ngữ thiết kế tuyến tính, làm tăng thêm vẻ hiện đại cho không gian. Đây là mẫu bồn cầu thông minh được trang bị gần như đầy đủ các công nghệ tiên tiến nhất của TOTO hiện nay như: Trang bị bộ 3 công nghệ làm sạch hiện đại Nhất của Toto, Hệ thống nước phun tiệt trùng cho vòi và bệt sứ, Bệt sứ công nghệ Cefion Tech, mật độ sứ Nano, Công nghệ xả xoáy siêu mạnh nhưng tiết kiệm nước, Đầy đủ chức năng với phiên bản cao cấp nhất: Tự động đóng mở, sấy khô, hút mùi phun tiệt trùng, sấy ấm ghế tức thời.",
+   "salePrice": null,
+   "marketPrice": null,
+   "brand": null,
+   "categorySlug": "bet-ve-sinh",
+   "originUrl": "https://japanvip.vn/bon-cau-toto-ces9788-tcf9788cs989b.html",
+   "images": [
+    "https://japanvip.vn/media/product/721_1.jpg",
+    "https://japanvip.vn/media/product/721_2.jpg"
+   ]
+  },
+  {
+   "srcId": "720",
+   "name": "Bồn cầu Toto CES9710 (TCF9710+CS921B)",
+   "slug": "bon-cau-toto-ces9710-tcf9710cs921b",
+   "description": "Bồn cầu Toto CES9710 (TCF9710+CS921B) là mẫu bồn cầu vệ sinh liền khối cao cấp nội địa Nhật Bản của TOTO mới nhất hiện nay. Mẫu bồn cầu này thuộc dòng thiết kế AH Style với ngôn ngữ thiết kế tuyến tính, làm tăng thêm vẻ hiện đại cho không gian. Đây là mẫu bồn cầu thông minh được trang bị gần như đầy đủ các công nghệ tiên tiến nhất của TOTO hiện nay như: Trang bị bộ 3 công nghệ làm sạch hiện đại Nhất của Toto, Hệ thống nước phun tiệt trùng cho vòi và bệt sứ, Bệt sứ công nghệ Cefion Tech, mật độ sứ Nano, Công nghệ xả xoáy siêu mạnh nhưng tiết kiệm nước, Đầy đủ chức năng với phiên bản cao cấp nhất: Tự động đóng mở, sấy khô, hút mùi phun tiệt trùng, sấy ấm ghế tức thời…",
+   "salePrice": null,
+   "marketPrice": null,
+   "brand": "Toto",
+   "categorySlug": "bet-ve-sinh",
+   "originUrl": "https://japanvip.vn/bon-cau-toto-ces9710-tcf9710cs921b.html",
+   "images": [
+    "https://japanvip.vn/media/product/720_1.jpg",
+    "https://japanvip.vn/media/product/720_2.jpg"
+   ]
+  },
+  {
+   "srcId": "719",
+   "name": "Máy rửa bát Panasonic NP-TZ300",
+   "slug": "may-rua-bat-panasonic-np-tz300",
+   "description": "Máy rửa bát Panasonic NP-TZ300 là model máy rửa bát nội địa Nhật phiên bản cao cấp nhất của hãng. Được thiết kế dành riêng cho gia đình từ 5 – 6 người, chiếc máy rửa bát này hứa hẹn sẽ đáp ứng tối đa mọi nhu cầu trong gian bếp với bảng điều khiển cảm ứng hiện đại, sử dụng nước nóng để phun áp lực và công nghệ NanoeX diệt khuẩn 99%,…",
+   "salePrice": 22500000,
+   "marketPrice": null,
+   "brand": "Panasonic",
+   "categorySlug": "may-rua-bat",
+   "originUrl": "https://japanvip.vn/may-rua-bat-panasonic-np-tz300.html",
+   "images": [
+    "https://japanvip.vn/media/product/719_1.jpg",
+    "https://japanvip.vn/media/product/719_2.jpg"
+   ]
+  },
+  {
+   "srcId": "718",
+   "name": "Máy rủa bát Panasonic NP-TH4",
+   "slug": "may-rua-bat-panasonic-np-th4",
+   "description": "Máy rủa bát Panasonic NP-TH4 là máy rửa bát nội địa Nhật dành cho 5-6 người. Máy sử dụng công nghệ cảm biến ECONAVI để tiết kiệm điện và nước. Máy sử dụng nước nóng phun áp lực và sấy khô để tiệt trùng hiệu quả.",
+   "salePrice": 20500000,
+   "marketPrice": null,
+   "brand": "Panasonic",
+   "categorySlug": "may-rua-bat",
+   "originUrl": "https://japanvip.vn/may-rua-bat-panasonic-np-th4.html",
+   "images": [
+    "https://japanvip.vn/media/product/718_thi___t_k____ch__a_c___t__n.jpg",
+    "https://japanvip.vn/media/product/718_may_rua_bat_panasonic_np_th1.jpg"
+   ]
+  },
+  {
+   "srcId": "717",
+   "name": "Máy rửa bát Panasonic NP-45MD9S",
+   "slug": "may-rua-bat-panasonic-np-45md9s",
+   "description": "Máy rửa bát Panasonic NP-45MD9S có thiết kế nhỏ gọn, âm tủ bếp, đẹp mắt, tích hợp sẵn 6 chương trình rửa tiện lợi đáp ứng nhiều nhu cầu sử dụng khác nhau của bạn và gia đình. Là dòng máy lắp âm tủ bếp, có thể thay đổi thiết kế mặt trước để đồng bộ với không gian bếp khác nhau. Máy có sức rửa 6 người ăn theo tiêu chuẩn Nhật Bản, tương đương với khoảng 8 người Việt.",
+   "salePrice": 30500000,
+   "marketPrice": null,
+   "brand": "Panasonic",
+   "categorySlug": "may-rua-bat",
+   "originUrl": "https://japanvip.vn/may-rua-bat-panasonic-np-45md9s.html",
+   "images": [
+    "https://japanvip.vn/media/product/717_1.jpg",
+    "https://japanvip.vn/media/product/717_untitled.png"
+   ]
+  },
+  {
+   "srcId": "716",
+   "name": "Máy rửa bát Panasonic NP-60MS8S",
+   "slug": "may-rua-bat-panasonic-np-60ms8s",
+   "description": "Máy rửa bát âm tủ Nhật nội địa Panasonic NP-60MS8S là mẫu máy nhỏ gọn được đặt âm tủ có thể tích chứa lớn 57L dành cho gia đình 7~8 thành viên cùng thiết kế nhiều cách xếp bát, đĩa, cốc chén,… Kết hợp nhiều chế độ rửa, sấy tiệt trùng khác nhau giúp các vật dụng, dụng cụ nhà bếp luôn được rửa, sấy, sạch sẽ và khô thoáng, tránh tạo môi trường cho vi khuẩn phát sinh gây ảnh hưởng tới sức khoẻ cho mọi thành viên cho gia đình bạn.",
+   "salePrice": 41000000,
+   "marketPrice": null,
+   "brand": "Panasonic",
+   "categorySlug": "may-rua-bat",
+   "originUrl": "https://japanvip.vn/may-rua-bat-panasonic-np-60ms8s.html",
+   "images": [
+    "https://japanvip.vn/media/product/716_untitled_1.jpg",
+    "https://japanvip.vn/media/product/716_may_rua_bat_am_tu_panasonic_np_60ms8s_600x600.jpg"
+   ]
+  },
+  {
+   "srcId": "715",
+   "name": "Hút mùi Panasonic FY-7HGC5",
+   "slug": "hut-mui-panasonic-fy-7hgc5",
+   "description": "Hút mùi Panasonic FY-7HGC5 là dòng máy hút mùi bếp nội địa Nhật Bản bán chạy nhất hiện nay nhờ khả năng hút mùi triệt để, êm ái, tiết kiệm điện và đặc biệt là dễ dàng vệ sinh. Tích hợp cảm ứng với các bếp cảm ứng.",
+   "salePrice": 10200000,
+   "marketPrice": null,
+   "brand": "Panasonic",
+   "categorySlug": "hut-mui-bep",
+   "originUrl": "https://japanvip.vn/hut-mui-panasonic-fy-7hgc5.html",
+   "images": [
+    "https://japanvip.vn/media/product/715_untitled_1.jpg",
+    "https://japanvip.vn/media/product/715_1.jpg"
+   ]
+  },
+  {
+   "srcId": "714",
+   "name": "Hút mùi bếp Panasonic FY- 9HGC5",
+   "slug": "hut-mui-bep-panasonic-fy-9hgc5",
+   "description": "Hút mùi bếp Panasonic FY- 9HGC5 là dòng máy hút mùi bếp nội địa Nhật Bản bán chạy nhất hiện nay nhờ khả năng hút mùi triệt để, êm ái, tiết kiệm điện và đặc biệt là dễ dàng vệ sinh.",
+   "salePrice": 11990000,
+   "marketPrice": null,
+   "brand": "Panasonic",
+   "categorySlug": "hut-mui-bep",
+   "originUrl": "https://japanvip.vn/hut-mui-bep-panasonic-fy-9hgc5.html",
+   "images": [
+    "https://japanvip.vn/media/product/714_1.jpg",
+    "https://japanvip.vn/media/product/714_untitled.png"
+   ]
+  },
+  {
+   "srcId": "713",
+   "name": "Quạt thông gió Panasonic FY-17C8",
+   "slug": "quat-thong-gio-panasonic-fy-17c8",
+   "description": "Quạt thông gió Panasonic FY-17C8 là mẫu quạt hút phòng tắm nội địa Nhật với khả năng hút mạnh và độ ồn thấp. Trang bị quạt ly tâm cánh Sirocco giúp thông gió lưu lượng lớn, bảo vệ không gian phòng tắm luôn thông thoáng.",
+   "salePrice": 1900000,
+   "marketPrice": null,
+   "brand": "Panasonic",
+   "categorySlug": "phu-kien",
+   "originUrl": "https://japanvip.vn/quat-thong-gio-panasonic-fy-17c8.html",
+   "images": [
+    "https://japanvip.vn/media/product/713_1.jpg",
+    "https://japanvip.vn/media/product/713____nh_ch___p_m__n_h__nh_2020_06_03_l__c_09_51_10.png"
+   ]
+  },
+  {
+   "srcId": "712",
+   "name": "Quạt sưởi thông gió nhà vệ sinh Mitsubishi V-141BZ5",
+   "slug": "quat-suoi-thong-gio-nha-ve-sinh-mitsubishi-v-141bz5",
+   "description": "Quạt sưởi thông gió nhà vệ sinh Mitsubishi V-141BZ5 là sản phẩm gắn âm trần tích hợp 4 trong 1 gồm: Sấy khô – Sưởi ấm – Làm gió mát – Thông gió. Sử dụng hệ thống động cơ hiện đại giúp lưu thông gió mạnh mẽ, kết hợp bộ điều khiển từ xa giúp bạn đem đến trải nghiệm sử dụng thật tiện nghi trong phòng tắm của bạn.",
+   "salePrice": 12500000,
+   "marketPrice": null,
+   "brand": "Mitsubishi",
+   "categorySlug": "phu-kien",
+   "originUrl": "https://japanvip.vn/quat-suoi-thong-gio-nha-ve-sinh-mitsubishi-v-141bz5.html",
+   "images": [
+    "https://japanvip.vn/media/product/712_1.jpg",
+    "https://japanvip.vn/media/product/712_2.jpg"
+   ]
+  },
+  {
+   "srcId": "711",
+   "name": "Nắp bệt Toto TCF8GM44",
+   "slug": "nap-bet-toto-tcf8gm44",
+   "description": "Nắp bệt Toto TCF8GM44 được tích hợp cảm biến thông minh tự động phát hiện người ra vào và tự động đóng mở nắp. Khi đó các chức năng khử mùi, sưởi ấm chỗ ngồi bắt đầu hoạt động. Ngoài việc giúp người sử dụng không cần dùng đến tay để mở nắp và tối ưu khả năng tiết kiệm điện nhờ công nghệ thông minh này",
+   "salePrice": 14900000,
+   "marketPrice": null,
+   "brand": "Toto",
+   "categorySlug": "nap-bet",
+   "originUrl": "https://japanvip.vn/nap-bet-toto-tcf8gm44.html",
+   "images": [
+    "https://japanvip.vn/media/product/711_thi___t_k____ch__a_c___t__n.jpg",
+    "https://japanvip.vn/media/product/711_1.jpg",
+    "https://japanvip.vn/media/product/711_2.jpg"
+   ]
+  },
+  {
+   "srcId": "710",
+   "name": "Vòi chậu Toto TLG02305JA",
+   "slug": "voi-chau-toto-tlg02305ja",
+   "description": "Vòi chậu Toto TLG02305JA là sản phẩm vòi rửa mặt cao cấp của thương hiệu TOTO Nhật Bản. Vòi được thiết kế sang trọng với lớp mạ chrome sáng bóng, thích hợp lắp đặt trên chậu rửa mặt. Ngoài ra, vòi còn được thiết kế thông minh, tiết kiệm nước, dễ dùng và bền bỉ.",
+   "salePrice": null,
+   "marketPrice": null,
+   "brand": "Toto",
+   "categorySlug": "voi-chau",
+   "originUrl": "https://japanvip.vn/voi-chau-toto-tlg02305ja.html",
+   "images": [
+    "https://japanvip.vn/media/product/710_1.jpg",
+    "https://japanvip.vn/media/product/710_untitled.png"
+   ]
+  },
+  {
+   "srcId": "709",
+   "name": "Vòi rửa mặt Toto TLHG31DEFR",
+   "slug": "voi-rua-mat-toto-tlhg31defr",
+   "description": "Vòi rửa mặt Toto TLHG31DEFR là sản phẩm vòi rửa mặt nội địa Nhật Bản, nổi bật với chức năng xoay đầu vòi. Thân vòi được làm từ đồng thau, được mạ Crom sáng bóng và mịn màng, giúp giảm thiểu tình trạng bám bẩn. Vòi còn tích hợp chế độ Eco tiết kiệm nước và có cần gạt thoát nước ngay trên thân vòi.",
+   "salePrice": 4400000,
+   "marketPrice": null,
+   "brand": "Toto",
+   "categorySlug": "voi-chau",
+   "originUrl": "https://japanvip.vn/voi-rua-mat-toto-tlhg31defr.html",
+   "images": [
+    "https://japanvip.vn/media/product/709_1.jpg",
+    "https://japanvip.vn/media/product/709____nh_ch___p_m__n_h__nh_2020_03_04_l__c_20_04_13.png"
+   ]
+  },
+  {
+   "srcId": "708",
+   "name": "Vòi chậu Toto TLHG31AEFR",
+   "slug": "voi-chau-toto-tlhg31aefr",
+   "description": "Vòi chậu rửa mặt TOTO TLHG31AEFR là sản phẩm chính hãng TOTO với chất lượng vượt trội, kiểu dáng độc đáo và hiện đại. TOTO luôn mang đến cho khách hàng những sản phẩm tốt nhất, tạo sự đẳng cấp và thoải mái khi sử dụng, và luôn tô thêm vẻ đẹp cho không gian phòng tắm mỗi gia đình.",
+   "salePrice": 3850000,
+   "marketPrice": null,
+   "brand": "Toto",
+   "categorySlug": "voi-chau",
+   "originUrl": "https://japanvip.vn/voi-chau-toto-tlhg31aefr.html",
+   "images": [
+    "https://japanvip.vn/media/product/708_1.jpg",
+    "https://japanvip.vn/media/product/708_i_img1148x1200_1724520664599mg8ggg.jpg"
+   ]
+  },
+  {
+   "srcId": "707",
+   "name": "Vòi rửa bát Toto TKS05305JA",
+   "slug": "voi-rua-bat-toto-tks05305ja",
+   "description": "Vòi rửa bát TOTO TK S05305JA nội địa Nhật Bản là dòng sản phẩm vòi rửa bát nóng lạnh có chức năng kéo dài đầu vòi và nút chỉnh nước ngay tại đầu vòi mới nhất hiện nay. Vòi được thiết kế từ chất liệu đồng thau nguyên khối cùng lớp mạ Nickel Chrome cao cấp.",
+   "salePrice": 5200000,
+   "marketPrice": null,
+   "brand": null,
+   "categorySlug": "voi-bep",
+   "originUrl": "https://japanvip.vn/voi-rua-bat-toto-tks05305ja.html",
+   "images": [
+    "https://japanvip.vn/media/product/707_1.jpg",
+    "https://japanvip.vn/media/product/707_tks05305ja_bvkt.jpg"
+   ]
+  },
+  {
+   "srcId": "706",
+   "name": "Chậu rửa bát Toyoura N800BIA-EB",
+   "slug": "chau-rua-bat-toyoura-n800bia-eb",
+   "description": "Chậu rửa bát Toyoura N800BIA-EB là mẫu chậu rửa bát 1 hố với thiết kế truyền thống của Nhật, sử dụng vô cùng tiện dụng với những đường nét tinh tế. Chậu có xiphong xả ngang với đường thoát nước bán kính 180mm thoát nước nhanh và ngăn mùi hiệu quả. Với kích thước ngang 834mm, sâu 554m, mẫu chậu này sẽ tạo cho bạn 1 không gian vô cùng rộng rãi vài thoải mái, phù hợp với các hệ bếp làm sâu 650mm.",
+   "salePrice": 11790000,
+   "marketPrice": null,
+   "brand": null,
+   "categorySlug": "do-dung-khac",
+   "originUrl": "https://japanvip.vn/chau-rua-bat-toyoura-n800bia-eb.html",
+   "images": [
+    "https://japanvip.vn/media/product/706_1.jpg",
+    "https://japanvip.vn/media/product/706_untitled.png"
+   ]
+  },
+  {
+   "srcId": "705",
+   "name": "Vòi rửa bát Toto TKN34PBTA",
+   "slug": "voi-rua-bat-toto-tkn34pbta",
+   "description": "Vòi rửa bát Toto TKN34PBTA là model thay thế cho TKN34PBTRR sử dụng cho thị trường nội địa Nhật, lấy cảm hứng từ thiên nga mang đến sự tinh tế, sang trọng, tiện lợi cho không gian nhà bếp của mọi gia đình.",
+   "salePrice": 9200000,
+   "marketPrice": null,
+   "brand": "Toto",
+   "categorySlug": "voi-bep",
+   "originUrl": "https://japanvip.vn/voi-rua-bat-toto-tkn34pbta.html",
+   "images": [
+    "https://japanvip.vn/media/product/705_1.jpg",
+    "https://japanvip.vn/media/product/705_ban_ve_voi_bep_toto_tkn34pbtn_1000x1000.jpg"
+   ]
+  },
+  {
+   "srcId": "704",
+   "name": "Vòi rửa bát Toto TKN34PBRRA",
+   "slug": "voi-rua-bat-toto-tkn34pbrra",
+   "description": "Vòi rửa bát Toto TKN34PBRRA được thiết kế theo kiểu cổ ngỗng, chế tạo từ chất liệu đồng thau bền chắc và được mạ lớp Niken Crom. Vòi có khả năng kéo dài, điều chỉnh tia nước và tính năng tiết kiệm nước thông qua chế độ ECO.",
+   "salePrice": 6490000,
+   "marketPrice": null,
+   "brand": "Toto",
+   "categorySlug": "voi-bep",
+   "originUrl": "https://japanvip.vn/voi-rua-bat-toto-tkn34pbrra.html",
+   "images": [
+    "https://japanvip.vn/media/product/704_1.jpg",
+    "https://japanvip.vn/media/product/704_untitled.png"
+   ]
+  },
+  {
+   "srcId": "703",
+   "name": "Bồn cầu Toto CES9435R (TCF9435R+CS890B)",
+   "slug": "bon-cau-toto-ces9435r-tcf9435rcs890b",
+   "description": "Bồn cầu Toto CES9435R (TCF9435R+CS890B) thiết kế nhỏ gọn nhưng vẫn đầy đủ những tính năng cần thiết như khử mùi, rửa nước ấm, sưởi ấm bệ ngồi, khử mùi hay sấy khô. Đồng thời với công nghệ xả xoáy và chống bám bẩn, còn tiết kiệm nước cho gia đình bạn.",
+   "salePrice": 38990000,
+   "marketPrice": null,
+   "brand": "Toto",
+   "categorySlug": "bet-ve-sinh",
+   "originUrl": "https://japanvip.vn/bon-cau-toto-ces9435r-tcf9435rcs890b.html",
+   "images": [
+    "https://japanvip.vn/media/product/703_untitled_1.jpg",
+    "https://japanvip.vn/media/product/703_ces9435r_main.jpg"
+   ]
+  },
+  {
+   "srcId": "702",
+   "name": "Sen cây Toto TBW04401J1",
+   "slug": "sen-cay-toto-tbw04401j1",
+   "description": "Sen cây Toto TBW04401J1 là một mẫu sen cây đơn giản, có giá cả hợp lý, nhưng vẫn sở hữu những ưu điểm nổi bật của các mẫu sen cây Nhật nội địa như ổn định nhiệt, bền, chịu lực, chịu nhiệt tốt, thiết kế sang trọng, thông minh và an toàn.",
+   "salePrice": 12500000,
+   "marketPrice": 15890000,
+   "brand": "Toto",
+   "categorySlug": "sen-cay",
+   "originUrl": "https://japanvip.vn/sen-cay-toto-tbw04401j1.html",
+   "images": [
+    "https://japanvip.vn/media/product/702_untitled_1.jpg",
+    "https://japanvip.vn/media/product/702_sen_cay_toto_tbw04401j_6.jpg"
+   ]
+  },
+  {
+   "srcId": "701",
+   "name": "Sen cây Toto TBW01403JA",
+   "slug": "sen-cay-toto-tbw01403ja",
+   "description": "Sen cây Toto TBW01403JA Nhật Bản là sản phẩm cao cấp mang lại nhiều tính năng và tiện ích cho người dùng trong quá trình tắm. Kết hợp với các công nghệ hiện đại tiên tiến nhất đã tạo ra 1 sản phẩm vòi sen cây mang đến nhiều trải nghiệm cho người sử dụng.",
+   "salePrice": 17490000,
+   "marketPrice": null,
+   "brand": "Toto",
+   "categorySlug": "sen-cay",
+   "originUrl": "https://japanvip.vn/sen-cay-toto-tbw01403ja.html",
+   "images": [
+    "https://japanvip.vn/media/product/701_untitled_1.jpg",
+    "https://japanvip.vn/media/product/701_1.png"
+   ]
+  },
+  {
+   "srcId": "700",
+   "name": "Sen tắm ToTo TMN40TY4",
+   "slug": "sen-tam-toto-tmn40ty4",
+   "description": "Sen tắm ToTo TMN40TY4 sử dụng công nghệ SMA, lò xo nhiệt tự động điều chỉnh van đóng mở theo nhiệt độ nguồn nước. Duy trì nhiệt độ không đổi khi nhiệt độ nguồn nước tăng giảm đột ngột. Giúp cho việc sử dụng thuận tiện hơn. Công nghệ SMA (hợp kim nhớ hình) độc quyền của TOTO được trang bị: bộ điều khiển nhiệt độ SMA độc quyền trên thế giới, có thể giảm thiểu sự thay đổi nhiệt độ nước một cách hiệu quả. Ngay cả khi hình dạng của SMA (hợp kim nhớ hình) thay đổi, nó có thể ngay lập tức trở lại hình dạng ban đầu ngay khi được làm nóng và sẽ không có vấn đề nóng lạnh. Ngoài ra, phần nước nóng của vòi được che chắn bằng một đường dẫn giúp vòi không bị nóng nên bạn sẽ không có cảm giác nóng nếu vô tình chạm vào.",
+   "salePrice": 8390000,
+   "marketPrice": null,
+   "brand": "Toto",
+   "categorySlug": "sen-voi",
+   "originUrl": "https://japanvip.vn/sen-tam-toto-tmn40ty4.html",
+   "images": [
+    "https://japanvip.vn/media/product/700_untitled_1.jpg",
+    "https://japanvip.vn/media/product/700_sen_tam_toto_tmn40ty4_3.jpg"
+   ]
+  },
+  {
+   "srcId": "699",
+   "name": "Sen tắm Toto TBV03404J",
+   "slug": "sen-tam-toto-tbv03404j-699",
+   "description": "Sen tắm Toto TBV03404J là dòng sen tắm nhiệt độ xuất xứ Nhật Bản, được làm từ chất liệu đồng thau cao cấp mạ Nikel, có khống chế nhiệt, chốt an toàn chống bỏng và chế độ chỉnh nước ở đầu bát sen.",
+   "salePrice": 4990000,
+   "marketPrice": null,
+   "brand": "Toto",
+   "categorySlug": "sen-voi",
+   "originUrl": "https://japanvip.vn/sen-tam-toto-tbv03404j.html",
+   "images": [
+    "https://japanvip.vn/media/product/699_untitled_1.jpg",
+    "https://japanvip.vn/media/product/699_sen_tam_toto_tmn40ty4_3.jpg"
+   ]
+  },
+  {
+   "srcId": "698",
+   "name": "Sen tắm Toto TBV03401J1",
+   "slug": "sen-tam-toto-tbv03401j1",
+   "description": "Sen tắm Toto TBV03401J1 là một mẫu sen vòi cơ bản mới của TOTO Nhật Bản, có giá cả hợp lý, nhưng vẫn sở hữu những ưu điểm nổi bật của các mẫu sen Nhật nội địa như ổn định nhiệt, bền, chịu lực, chịu nhiệt tốt, thiết kế thông minh, an toàn.",
+   "salePrice": 4290000,
+   "marketPrice": null,
+   "brand": "Toto",
+   "categorySlug": "sen-voi",
+   "originUrl": "https://japanvip.vn/sen-tam-toto-tbv03401j1.html",
+   "images": [
+    "https://japanvip.vn/media/product/698_untitled_1.jpg",
+    "https://japanvip.vn/media/product/698_products_03401j1_3.jpg"
+   ]
+  },
+  {
+   "srcId": "697",
+   "name": "Điều hoà Mitsubishi MSZ-ZW7123S-W",
+   "slug": "dieu-hoa-mitsubishi-msz-zw7123s-w",
+   "description": "Điều hoà Mitsubishi MSZ-ZW7123S-W là mẫu điều hòa không khí cao cấp của dòng Kirigamine Z Series, mang đến sự thoải mái và tiết kiệm năng lượng tối ưu. Với thiết kế màu trắng tinh khiết, sản phẩm này không chỉ tạo nên sự thanh lịch cho mọi không gian sống mà còn tích hợp nhiều công nghệ tiên tiến để đảm bảo không khí trong lành và dễ chịu.",
+   "salePrice": 47900000,
+   "marketPrice": null,
+   "brand": "Mitsubishi",
+   "categorySlug": "dieu-hoa",
+   "originUrl": "https://japanvip.vn/dieu-hoa-mitsubishi-msz-zw7123s-w.html",
+   "images": [
+    "https://japanvip.vn/media/product/697_1.jpg",
+    "https://japanvip.vn/media/product/697_maxresdefault.jpg"
+   ]
+  },
+  {
+   "srcId": "696",
+   "name": "Bếp từ Panasonic KZ-L32AST",
+   "slug": "bep-tu-panasonic-kz-l32ast",
+   "description": "Bếp từ Panasonic KZ-L32AST là mẫu mới được giới thiệu tại Nhật Bản, quê hương của nhiều công nghệ và sản phẩm gia dụng hiện đại, là một trong những thị trường ưa chuộng các loại bếp từ nhất thế giới. Đây là một mẫu bếp từ khá quen thuộc với người dùng bếp từ Nhật nội địa. Hãy cùng với Shop nội địa Nhật tìm hiểu chi tiết sẽ giúp bạn có lựa chọn tốt nhất.",
+   "salePrice": 10700000,
+   "marketPrice": null,
+   "brand": null,
+   "categorySlug": "bep-tu",
+   "originUrl": "https://japanvip.vn/bep-tu-panasonic-kz-l32ast.html",
+   "images": [
+    "https://japanvip.vn/media/product/696_1.jpg",
+    "https://japanvip.vn/media/product/696_bep_tu_hitachi_ht_k6k_7.jpg"
+   ]
+  },
+  {
+   "srcId": "695",
+   "name": "Bếp từ Panasonic KZ-L32AS",
+   "slug": "bep-tu-panasonic-kz-l32as",
+   "description": "Panasonic đã giới thiệu mẫu Panasonic KZ-L32AS, một trong những mẫu đẹp của hãng. Đây là mẫu được Panasonic cải tiến từ người anh em KZ-G32AS, vẫn với màu đen phủ toàn bộ phần mặt bếp, bàn phím màu ghi bắt mắt đến phía trước lò nướng.",
+   "salePrice": 10700000,
+   "marketPrice": null,
+   "brand": "Panasonic",
+   "categorySlug": "bep-tu",
+   "originUrl": "https://japanvip.vn/bep-tu-panasonic-kz-l32as.html",
+   "images": [
+    "https://japanvip.vn/media/product/695_1.jpg",
+    "https://japanvip.vn/media/product/695_bep_tu_hitachi_ht_k6k_7.jpg"
+   ]
+  },
+  {
+   "srcId": "694",
+   "name": "Quạt sưởi thông gió nhà vệ sinh Takasu BF-231SHA",
+   "slug": "quat-suoi-thong-gio-nha-ve-sinh-takasu-bf-231sha",
+   "description": "Quạt sưởi thông gió nhà vệ sinh Takasu BF-231SHA là mẫu máy thông gió 4 trong 1, hàng nội địa Nhật. Đây là 1 sản phẩm tuyệt vời và cần thiết cho căn phòng tắm của bạn. Sản phẩm hoạt động yên tĩnh, thiết kế rất sang trọng và hiện đại.",
+   "salePrice": 8490000,
+   "marketPrice": null,
+   "brand": null,
+   "categorySlug": "phu-kien",
+   "originUrl": "https://japanvip.vn/quat-suoi-thong-gio-nha-ve-sinh-takasu-bf-231sha.html",
+   "images": [
+    "https://japanvip.vn/media/product/694_1.jpg",
+    "https://japanvip.vn/media/product/694_untitled.png"
+   ]
+  },
+  {
+   "srcId": "693",
+   "name": "Bồn cầu Toto CES9720 (TCF9720+CS921B)",
+   "slug": "bon-cau-toto-ces9720-tcf9720cs921b",
+   "description": "Bồn cầu Toto CES9720 (TCF9720+CS921B) là một sản phẩm xuất sắc trong lĩnh vực thiết kế sang trọng và tiện tích vượt trội. Được sản xuất bởi Toto, một thương hiệu danh tiếng về thiết bị vệ sinh từ Nhật Bản, sản phẩm này đem lại sự tiện lợi và tiết kiệm nước cho gia đình của bạn.",
+   "salePrice": null,
+   "marketPrice": null,
+   "brand": "Toto",
+   "categorySlug": "bet-ve-sinh",
+   "originUrl": "https://japanvip.vn/bon-cau-toto-ces9720-tcf9720cs921b.html",
+   "images": [
+    "https://japanvip.vn/media/product/693_1.jpg",
+    "https://japanvip.vn/media/product/693_as_1024x700.jpg"
+   ]
+  },
+  {
+   "srcId": "692",
+   "name": "Bếp từ Panasonic KZ-L32AK",
+   "slug": "bep-tu-panasonic-kz-l32ak",
+   "description": "Bếp từ Panasonic KZ-L32AK là một trong 3 model bếp từ nằm ở phân khúc phổ thông nhằm phục vụ thị trường. KZ-L32AK với nhiều cải tiến vượt trội so với dòng G32 của Panasonic. Thiết kế mạnh mẽ và công nghệ tiên tiến cùng với màn hình hiển thị LED, bảng điều khiển sắc nét mang đến trải nghiệm người dùng tốt nhất.",
+   "salePrice": 10700000,
+   "marketPrice": null,
+   "brand": "Panasonic",
+   "categorySlug": "bep-tu",
+   "originUrl": "https://japanvip.vn/bep-tu-panasonic-kz-l32ak.html",
+   "images": [
+    "https://japanvip.vn/media/product/692_1.jpg",
+    "https://japanvip.vn/media/product/692_i_img1200x1200_1723946514232314wmn171804.jpg"
+   ]
+  },
+  {
+   "srcId": "691",
+   "name": "Bếp từ Mitsubishi CS-T322BFR",
+   "slug": "bep-tu-mitsubishi-cs-t322bfr",
+   "description": "Bếp từ Mitsubishi CS-T3222BFR là một sản phẩm độc đáo trong dòng sản phẩm bếp từ của hãng Mitsubishi, với thiết kế hiện đại mang phong cách Châu âu và nhiều tính năng tiện ích.",
+   "salePrice": 25800000,
+   "marketPrice": null,
+   "brand": "Mitsubishi",
+   "categorySlug": "bep-tu",
+   "originUrl": "https://japanvip.vn/bep-tu-mitsubishi-cs-t322bfr.html",
+   "images": [
+    "https://japanvip.vn/media/product/691_untitled_1.jpg",
+    "https://japanvip.vn/media/product/691_bep_tu_mitsubishi_cs_t322bfr_5.png"
+   ]
+  },
+  {
+   "srcId": "690",
+   "name": "Bếp từ Hitachi HT-M6S",
+   "slug": "bep-tu-hitachi-ht-m6s",
+   "description": "Bếp từ Hitachi HT-M6S cũng như Hitachi HT-M6K, Hitachi HT-M60S là mẫu bếp thay thế cho Hitachi HT-K6S (một trong những mẫu bếp bán chạy nhất trong 3 năm trở lại đây). Mẫu bếp mới này hứa hẹn sẽ là sản phẩm kế thừa những đặc tính nổi bật nhất của mẫu trước đó. Bếp có cấu tạo gồm 2 bếp từ, 1 bếp hồng ngoại và 1 lò nướng. Sự thay đổi lớn nhất ở mẫu bếp này chính là phần thiết kế: Mặt kính màu đen và lò nướng có màu bạc, phần điều khiển thu nhỏ lại và được thiết kế để tránh nước tràn vào, bên ngoài là khung phay inox có độ chắc chắn cao. Phần lưới thoát nhiệt cũng được làm từ inox cắt CNC.",
+   "salePrice": null,
+   "marketPrice": null,
+   "brand": "Hitachi",
+   "categorySlug": "bep-tu",
+   "originUrl": "https://japanvip.vn/bep-tu-hitachi-ht-m6s.html",
+   "images": [
+    "https://japanvip.vn/media/product/690_1.jpg",
+    "https://japanvip.vn/media/product/690_lap_dat_bep_tu_nhat.jpg"
+   ]
+  },
+  {
+   "srcId": "689",
+   "name": "Máy lọc khí Sharp KC-R50",
+   "slug": "may-loc-khi-sharp-kc-r50",
+   "description": "Máy lọc khí Sharp KC-R50 là model phiên bản mới cho thị trường 2024 thay thế cho Sharp KC-P50-W với cấu hình tương đương. Sharp KC-R50-W với thiết kế nhỏ gọn dành cho phòng dưới 38m2, công nghệ inverter tiết kiệm điện năng, cảm biến bụi, ánh sáng, công nghệ ion plasma khử mùi, khử nấm mốc, bù ẩm, cùng nhiều tính năng khác mang lại sự trải nghiệm tuyệt vời cho người dùng.",
+   "salePrice": 5390000,
+   "marketPrice": null,
+   "brand": "Sharp",
+   "categorySlug": "may-loc-khi",
+   "originUrl": "https://japanvip.vn/may-loc-khi-sharp-kc-r50.html",
+   "images": [
+    "https://japanvip.vn/media/product/689_untitled_1.jpg",
+    "https://japanvip.vn/media/product/689_may_loc_khong_khi_sharp_kc_r50_w_2.jpg"
+   ]
+  },
+  {
+   "srcId": "688",
+   "name": "Máy lọc khí Sharp KI-NS40-W",
+   "slug": "may-loc-khi-sharp-ki-ns40-w",
+   "description": "Với tình hình ô nhiễm không khí ngày càng trầm trọng, việc sở hữu một chiếc máy lọc không khí trở thành một ưu tiên hàng đầu. Trong số đó, máy lọc khí Sharp KI-NS40-W đã nổi bật với những tính năng và công nghệ tiên tiến, hứa hẹn mang lại không gian sống trong lành và an toàn cho mọi gia đình.",
+   "salePrice": 5100000,
+   "marketPrice": null,
+   "brand": "Sharp",
+   "categorySlug": "may-loc-khi",
+   "originUrl": "https://japanvip.vn/may-loc-khi-sharp-ki-ns40-w.html",
+   "images": [
+    "https://japanvip.vn/media/product/688_1.jpg",
+    "https://japanvip.vn/media/product/688_may_loc_khong_khi_sharp_ki_ns40_w_13_1400x788.jpg"
+   ]
+  },
+  {
+   "srcId": "687",
+   "name": "Máy giặt khô LG Styler S5MB",
+   "slug": "may-giat-kho-lg-styler-s5mb",
+   "description": "Khám phá sức mạnh của máy giặt khô LG Styler S5MB - giải pháp hoàn hảo cho việc chăm sóc quần áo của bạn. Bạn sẽ không chỉ có những bộ quần áo sạch sẽ mà còn đảm bảo rằng chúng luôn mềm mại và thơm tho suốt cả ngày. Đặc biệt, công nghệ tiên tiến giúp loại bỏ vi khuẩn và mùi khó chịu.",
+   "salePrice": 48500000,
+   "marketPrice": null,
+   "brand": "LG",
+   "categorySlug": "hang-dien-lanh",
+   "originUrl": "https://japanvip.vn/may-giat-kho-lg-styler-s5mb.html",
+   "images": [
+    "https://japanvip.vn/media/product/687_1.jpg",
+    "https://japanvip.vn/media/product/687_2.jpg"
+   ]
+  },
+  {
+   "srcId": "686",
+   "name": "Máy giặt Panasonic NA-LX125CL-W",
+   "slug": "may-giat-panasonic-na-lx125cl-w",
+   "description": "Panasonic NA-LX125CL-W là một trong những dòng máy giặt tiên tiến nhất từ Nhật Bản hiện nay. Được thiết kế với khối lượng giặt lên đến 12kg và khả năng sấy 6kg, nó mang lại sự linh hoạt và tiện ích cho người sử dụng. Thiết kế vuông vức và gọn gàng của máy giặt này không chỉ tạo điểm nhấn esthetic mà còn giúp tiết kiệm không gian lắp đặt. Công nghệ sấy Heatpump tiên tiến không chỉ đảm bảo sự an toàn cho quần áo mà còn giữ được độ mới của chúng, quần áo sau khi sấy có thể mặc được luôn.",
+   "salePrice": null,
+   "marketPrice": null,
+   "brand": "Panasonic",
+   "categorySlug": "may-giat",
+   "originUrl": "https://japanvip.vn/may-giat-panasonic-na-lx125cl-w.html",
+   "images": [
+    "https://japanvip.vn/media/product/686_1.jpg",
+    "https://japanvip.vn/media/product/686_na_lx125cl_6.jpeg"
+   ]
+  },
+  {
+   "srcId": "685",
+   "name": "Máy giặt Hitachi BD-SX120HL",
+   "slug": "may-giat-hitachi-bd-sx120hl",
+   "description": "Máy giặt Hitachi BD-SX120HL là dòng máy giặt nội địa Nhật giặt kiêm sấy với công suất giặt lớn 12KG và sấy 6KG. Được cải tiến với nhiều tính năng thông minh và tiện ích như tự động điều chỉnh nước giặt, nước xả theo lượng quần áo, chức năng giặt nước nóng theo từng nhiệt độ phù hợp với các loại vải ngăn chặn ố vàng, kết hợp với công nghệ sấy gió ở nhiệt độ thấp, giúp quần áo được làm sạch và làm phẳng một cách hiệu quả và thông minh mà còn giúp tiết kiệm điện và nước tối đa.",
+   "salePrice": null,
+   "marketPrice": null,
+   "brand": "Hitachi",
+   "categorySlug": "may-giat",
+   "originUrl": "https://japanvip.vn/may-giat-hitachi-bd-sx120hl.html",
+   "images": [
+    "https://japanvip.vn/media/product/685_1.jpg",
+    "https://japanvip.vn/media/product/685_2.jpg"
+   ]
+  },
+  {
+   "srcId": "684",
+   "name": "Tủ lạnh Hitachi R-HXC62T(X)",
+   "slug": "tu-lanh-hitachi-r-hxc62tx",
+   "description": "Tủ lạnh Hitachi R-HXC62T(X) là mẫu thay thế cho mã tủ R-WXC62S. Tủ lạnh R-HXC62T là sản phẩm gia đình hoàn hảo cho những người cần một không gian lưu trữ rộng rãi và các tính năng tiên tiến. Với dung tích lên đến 617 lít, nó đảm bảo rằng bạn có đủ không gian để lưu trữ thực phẩm và đồ uống cho cả gia đình mà không cần lo lắng về việc thiếu chỗ.",
+   "salePrice": null,
+   "marketPrice": null,
+   "brand": "Hitachi",
+   "categorySlug": "tu-lanh",
+   "originUrl": "https://japanvip.vn/tu-lanh-hitachi-r-hxc62tx.html",
+   "images": [
+    "https://japanvip.vn/media/product/684_2.jpg",
+    "https://japanvip.vn/media/product/684_1.png"
+   ]
+  },
+  {
+   "srcId": "683",
+   "name": "Tủ lạnh Mitsubishi MR-WXD70J",
+   "slug": "tu-lanh-mitsubishi-mr-wxd70j",
+   "description": "Tủ lạnh Mitsubishi MR-WXD70J ra mắt thay thế cho model MR-WXD70G. Với chiều rộng 31,5 inch (80 cm), nó có sức chứa lớn đáng kinh ngạc là 700 lít. Thiết kế mặt gương sang trọng, cùng 5 cảm biến AI và nhiều tính năng thông minh hữu ích sẽ đem đến cho người dùng một chiếc tủ lạnh thật mới lạ và đặc biệt.",
+   "salePrice": null,
+   "marketPrice": null,
+   "brand": "Mitsubishi",
+   "categorySlug": "tu-lanh",
+   "originUrl": "https://japanvip.vn/tu-lanh-mitsubishi-mr-wxd70j.html",
+   "images": [
+    "https://japanvip.vn/media/product/683_3.jpg",
+    "https://japanvip.vn/media/product/683_1.png"
+   ]
+  },
+  {
+   "srcId": "682",
+   "name": "Tủ lạnh Hitachi R-WXC74T",
+   "slug": "tu-lanh-hitachi-r-wxc74t",
+   "description": "Tủ lạnh Hitachi Inverter 735 lít R-WXC74T thiết kế 6 cánh cửa với kính gương đen sang trọng và nhiều ngăn chứa riêng biệt, bảo quản thực phẩm đa dạng, gọn gàng, sử dụng tiết kiệm điện với công nghệ Inverter, cảm biến nhiệt Eco, công nghệ tái tạo băng, bảo toàn độ tươi ngon, dưỡng chất trong thực phẩm với ngăn bảo quản thực phẩm chân không, ngăn rau quả thông minh Aero-care.",
+   "salePrice": null,
+   "marketPrice": null,
+   "brand": "Hitachi",
+   "categorySlug": "tu-lanh",
+   "originUrl": "https://japanvip.vn/tu-lanh-hitachi-r-wxc74t.html",
+   "images": [
+    "https://japanvip.vn/media/product/682_1.jpg",
+    "https://japanvip.vn/media/product/682_untitled.png"
+   ]
+  },
+  {
+   "srcId": "681",
+   "name": "Bếp từ Hitachi HT-N8STWF",
+   "slug": "bep-tu-hitachi-ht-n8stwf",
+   "description": "Bếp từ Hitachi HT-N8STWF (S) là phiên bản mới, nâng cấp từ model cũ HT-M8STWF. Với kích thước lớn 75 cm và nhiều cải tiến vượt trội, bếp từ này không chỉ mang lại hiệu suất sử dụng tối ưu mà còn là điểm nhấn tinh tế cho không gian bếp của bạn.",
+   "salePrice": null,
+   "marketPrice": null,
+   "brand": "Hitachi",
+   "categorySlug": "bep-tu",
+   "originUrl": "https://japanvip.vn/bep-tu-hitachi-ht-n8stwf.html",
+   "images": [
+    "https://japanvip.vn/media/product/681_1.jpg",
+    "https://japanvip.vn/media/product/681_untitled.png"
+   ]
+  },
+  {
+   "srcId": "680",
+   "name": "Tủ lạnh Hitachi R-WXC74V (X)",
+   "slug": "tu-lanh-hitachi-r-wxc74v-x",
+   "description": "Tủ lạnh Hitachi R-WXC74V (X) có thiết kế 6 cánh cửa với kính gương đen sang trọng và nhiều ngăn chứa riêng biệt, giúp bảo quản thực phẩm đa dạng, gọn gàng. Sản phẩm sử dụng tiết kiệm điện với công nghệ Inverter, cảm biến nhiệt Eco, công nghệ tái tạo băng, bảo toàn độ tươi ngon và dưỡng chất trong thực phẩm với ngăn bảo quản thực phẩm chân không, ngăn rau quả thông minh Aero-care.",
+   "salePrice": null,
+   "marketPrice": null,
+   "brand": null,
+   "categorySlug": "tu-lanh",
+   "originUrl": "https://japanvip.vn/tu-lanh-hitachi-r-wxc74v-x.html",
+   "images": [
+    "https://japanvip.vn/media/product/680_1.jpg",
+    "https://japanvip.vn/media/product/680_tu_lanh_hitachi_r_wxc74v.png"
+   ]
+  },
+  {
+   "srcId": "679",
+   "name": "Bếp từ Hitachi HT-M60S",
+   "slug": "bep-tu-hitachi-ht-m60s",
+   "description": "Trải nghiệm Hitachi HT-M60S, một trong những dòng bếp từ âm của Hitachi đã khiến nhiều người rất bất ngờ, khi HT-M60S đem đến nhiều tính năng nổi bật mà không phải bất kì dòng bếp từ Nhật nào cũng có thể làm được. Nó có thiết kế trang nhã, hài hòa phù hợp cho rất nhiều không gian nội thất khác nhau.",
+   "salePrice": null,
+   "marketPrice": null,
+   "brand": "Hitachi",
+   "categorySlug": "bep-tu",
+   "originUrl": "https://japanvip.vn/bep-tu-hitachi-ht-m60s.html",
+   "images": [
+    "https://japanvip.vn/media/product/679_1.jpg",
+    "https://japanvip.vn/media/product/679_57a3c63d893506fc648faeafb8d3e2d5.jpg"
+   ]
+  },
+  {
+   "srcId": "678",
+   "name": "Quạt Toshiba TF-30DL27",
+   "slug": "quat-toshiba-tf-30dl27",
+   "description": "Quạt cây Toshiba TF-30DL27(W) là phiên bản mới nhất, được phát triển để thay thế cho model cũ TF-30DL26. Với nhiều cải tiến về thiết kế và tính năng, TF-30DL27 hứa hẹn mang đến trải nghiệm sử dụng thoải mái và tiện nghi nhất cho người dùng.",
+   "salePrice": 3990000,
+   "marketPrice": null,
+   "brand": "Toshiba",
+   "categorySlug": "quat-dien",
+   "originUrl": "https://japanvip.vn/quat-toshiba-tf-30dl27.html",
+   "images": [
+    "https://japanvip.vn/media/product/678_1.jpg",
+    "https://japanvip.vn/media/product/678_2.jpg"
+   ]
+  },
+  {
+   "srcId": "677",
+   "name": "Quạt Toshiba TFC-23Y27(W)",
+   "slug": "quat-toshiba-tfc-23y27w",
+   "description": "Quạt Toshiba TFC-23Y27(W) là một sản phẩm nổi bật trong dòng quạt điện của TOSHIBA, với nhiều tính năng hiện đại và tiện ích. Quạt được thiết kế với hai chế độ gió ngẫu nhiên, mang lại sự thoải mái và tươi mát cho không gian sống của bạn.",
+   "salePrice": 5100000,
+   "marketPrice": null,
+   "brand": "Toshiba",
+   "categorySlug": "quat-dien",
+   "originUrl": "https://japanvip.vn/quat-toshiba-tfc-23y27w.html",
+   "images": [
+    "https://japanvip.vn/media/product/677_1.jpg",
+    "https://japanvip.vn/media/product/677_555_quat_dien_toshiba_tfc_23y27_001.jpeg"
+   ]
+  },
+  {
+   "srcId": "676",
+   "name": "Máy lọc nước ion kiềm Trim Hyper",
+   "slug": "may-loc-nuoc-ion-kiem-trim-hyper",
+   "description": "Máy lọc nước ion kiềm Trim Hyper là máy lọc nước ion kiềm đã được chứng nhận y tế Nhật Bản với số 226AGBZX00012000. Máy có khả năng lọc lên đến 8000L nhờ vào công nghệ màng lọc sợi rỗng. Với công nghệ điện giải kép, máy tạo ra nước uống siêu giàu Hydro, mang lại tác dụng tích cực trong việc chống lão hóa, loại bỏ các gốc tự do nguy hiểm và tăng cường sức đề kháng",
+   "salePrice": 26400000,
+   "marketPrice": null,
+   "brand": null,
+   "categorySlug": "may-loc-nuoc",
+   "originUrl": "https://japanvip.vn/may-loc-nuoc-ion-kiem-trim-hyper.html",
+   "images": [
+    "https://japanvip.vn/media/product/676_1.jpg",
+    "https://japanvip.vn/media/product/676_avater_san_pham.jpg"
+   ]
+  },
+  {
+   "srcId": "675",
+   "name": "Máy lọc nước ion kiềm Trim Ion Gracia",
+   "slug": "may-loc-nuoc-ion-kiem-trim-ion-gracia",
+   "description": "Máy lọc nước ion kiềm Trim Ion Gracia là sản phẩm cao cấp nhất trong dòng máy lọc nước tạo kiềm giàu Hydro nội địa Nhật Bản hiện nay. Với thiết kế tích hợp vòi rửa cao cấp dạng cảm ứng từ hãng GROHR của Đức và khả năng tạo ra năm loại nước có độ pH khác nhau, máy không chỉ cải thiện chất lượng nước mà còn mang đến sự tiện lợi và vẻ sang trọng cho không gian bếp gia đình bạn.",
+   "salePrice": 50400000,
+   "marketPrice": null,
+   "brand": null,
+   "categorySlug": "may-loc-nuoc",
+   "originUrl": "https://japanvip.vn/may-loc-nuoc-ion-kiem-trim-ion-gracia.html",
+   "images": [
+    "https://japanvip.vn/media/product/675_1.jpg",
+    "https://japanvip.vn/media/product/675_avater_san_pham.jpg"
+   ]
+  },
+  {
+   "srcId": "674",
+   "name": "Ghế massage Panasonic Real Pro EP-MA120",
+   "slug": "ghe-massage-panasonic-real-pro-ep-ma120",
+   "description": "Ghế massage Panasonic Real Pro EP-MA120 đánh dấu bước đột phá trong thiết kế và công nghệ so với các phiên bản trước như MA103 và MA102. Với vỏ bọc toàn thân, mẫu ghế này không chỉ tạo ra không gian riêng tư mà còn mang lại cảm giác thư giãn toàn diện cho cả cơ thể và tâm trí người dùng.",
+   "salePrice": null,
+   "marketPrice": null,
+   "brand": "Panasonic",
+   "categorySlug": "ghe-massage",
+   "originUrl": "https://japanvip.vn/ghe-massage-panasonic-real-pro-ep-ma120.html",
+   "images": [
+    "https://japanvip.vn/media/product/674_1.jpg",
+    "https://japanvip.vn/media/product/674_2.jpg"
+   ]
+  },
+  {
+   "srcId": "673",
+   "name": "Tủ Lạnh Hitachi R-HWC54T",
+   "slug": "tu-lanh-hitachi-r-hwc54t",
+   "description": "Tủ lạnh Hitachi R-HWC54T là một trong những dòng sản phẩm cao cấp nhất của Hitachi, được thiết kế và sản xuất hoàn toàn tại Nhật Bản. Với nhiều tính năng vượt trội và thiết kế sang trọng, sản phẩm này chắc chắn sẽ đáp ứng mọi nhu cầu của gia đình bạn.",
+   "salePrice": null,
+   "marketPrice": null,
+   "brand": "Hitachi",
+   "categorySlug": "tu-lanh",
+   "originUrl": "https://japanvip.vn/tu-lanh-hitachi-r-hwc54t.html",
+   "images": [
+    "https://japanvip.vn/media/product/673_1.jpg",
+    "https://japanvip.vn/media/product/673_2.jpg"
+   ]
+  },
+  {
+   "srcId": "671",
+   "name": "Máy lọc không khí Panasonic F-VXV70",
+   "slug": "may-loc-khong-khi-panasonic-f-vxv70",
+   "description": "Máy lọc không khí Panasonic F-VXV70 là sản phẩm thuộc phân khúc cao cấp, xuất xứ nội địa Nhật Bản. Với tình trạng mới 100%, sản phẩm này mang đến cho người dùng không chỉ thiết kế hiện đại mà còn tích hợp nhiều tính năng tiên tiến, nhằm đảm bảo không gian sống luôn trong lành và an toàn cho gia đình bạn.",
+   "salePrice": null,
+   "marketPrice": null,
+   "brand": "Panasonic",
+   "categorySlug": "may-loc-khi",
+   "originUrl": "https://japanvip.vn/may-loc-khong-khi-panasonic-f-vxv70.html",
+   "images": [
+    "https://japanvip.vn/media/product/671_1.jpg",
+    "https://japanvip.vn/media/product/671_2.jpg"
+   ]
+  },
+  {
+   "srcId": "670",
+   "name": "Máy lọc nước ion kiềm Panasonic TK-AS48-S",
+   "slug": "may-loc-nuoc-ion-kiem-panasonic-tk-as48-s",
+   "description": "Máy lọc nước ion kiềm Panasonic TK-AS48-S là sản phẩm nội địa Nhật Bản. Máy lọc nước này có khả năng tạo ra 5 loại nước khác nhau, bao gồm 3 mức nước kiềm, nước lọc trung tính và một mức nước có tính axit, giúp hỗ trợ xây dựng một lối sống lành mạnh. Với chức năng loại bỏ vi khuẩn và 19 chất gây hại trong nước, Panasonic TK-AS48-S đảm bảo mang lại nguồn nước uống an toàn cho gia đình bạn.",
+   "salePrice": 14500000,
+   "marketPrice": null,
+   "brand": "Panasonic",
+   "categorySlug": "may-loc-nuoc",
+   "originUrl": "https://japanvip.vn/may-loc-nuoc-ion-kiem-panasonic-tk-as48-s.html",
+   "images": [
+    "https://japanvip.vn/media/product/670_4.jpg",
+    "https://japanvip.vn/media/product/670_1.png"
+   ]
+  },
+  {
+   "srcId": "669",
+   "name": "Máy giặt Toshiba TW-127XM3L",
+   "slug": "may-giat-toshiba-tw-127xm3l",
+   "description": "Máy giặt Toshiba TW-127XM3L là dòng sản phẩm cao cấp nhất của Toshiba trong năm 2024, được thiết kế để thay thế model TW-127XM2L. Với công suất giặt lên đến 12kg và sấy 7kg, máy giặt này không chỉ đáp ứng nhu cầu giặt giũ lớn mà còn mang lại nhiều tính năng tiên tiến nhằm tối ưu hóa trải nghiệm sử dụng.",
+   "salePrice": null,
+   "marketPrice": null,
+   "brand": "Toshiba",
+   "categorySlug": "may-giat",
+   "originUrl": "https://japanvip.vn/may-giat-toshiba-tw-127xm3l.html",
+   "images": [
+    "https://japanvip.vn/media/product/669_3.jpg",
+    "https://japanvip.vn/media/product/669_may_giat_toshiba_tw_127xm3l_1.jpg"
+   ]
+  },
+  {
+   "srcId": "668",
+   "name": "Tủ lạnh Hitachi R-HXCC62T",
+   "slug": "tu-lanh-hitachi-r-hxcc62t",
+   "description": "Việc lựa chọn một chiếc tủ lạnh không chỉ dừng lại ở khả năng bảo quản thực phẩm mà còn phải đáp ứng các yêu cầu về thiết kế, công nghệ và tính năng tiện ích. Tủ lạnh Hitachi R-HXCC62T là một sản phẩm tủ lạnh của Nhật Bản, không chỉ làm hài lòng người dùng bằng dung tích lớn mà còn với các công nghệ tiên tiến và thiết kế sang trọng. R-HXCC62T thực sự là sự lựa chọn hoàn hảo cho những gia đình mong muốn một cuộc sống tiện nghi và đẳng cấp.",
+   "salePrice": null,
+   "marketPrice": null,
+   "brand": "Hitachi",
+   "categorySlug": "tu-lanh",
+   "originUrl": "https://japanvip.vn/tu-lanh-hitachi-r-hxcc62t.html",
+   "images": [
+    "https://japanvip.vn/media/product/668_1.jpg",
+    "https://japanvip.vn/media/product/668_tu_lanh_hitachi_r_hxcc62t_x_dung_tich_617_lit.png"
+   ]
+  },
+  {
+   "srcId": "667",
+   "name": "Máy lọc không khí Daikin ACK70Y",
+   "slug": "may-loc-khong-khi-daikin-ack70y",
+   "description": "Máy lọc không khí đã trở thành một thiết bị thiết yếu trong mỗi gia đình hiện đại, đặc biệt là trong bối cảnh ô nhiễm không khí ngày càng gia tăng. Máy lọc không khí Daikin ACK70Y, với thiết kế tinh tế và tính năng vượt trội, không chỉ giúp cải thiện chất lượng không khí mà còn mang đến không gian sống trong lành và an toàn. Sản phẩm thuộc phân khúc cao cấp này là sự lựa chọn lý tưởng cho những ai đang tìm kiếm một thiết bị lọc không khí hiệu quả",
+   "salePrice": 9500000,
+   "marketPrice": null,
+   "brand": "Daikin",
+   "categorySlug": "may-loc-khi",
+   "originUrl": "https://japanvip.vn/may-loc-khong-khi-daikin-ack70y.html",
+   "images": [
+    "https://japanvip.vn/media/product/667_3.jpg",
+    "https://japanvip.vn/media/product/667_2.jpg"
+   ]
+  },
+  {
+   "srcId": "666",
+   "name": "Bồn cầu thông minh Toto CES9820",
+   "slug": "bon-cau-thong-minh-toto-ces9820",
+   "description": "Bồn cầu thông minh Toto CES9820 là sự kết hợp hoàn hảo giữa thiết kế hiện đại và công nghệ tiên tiến, mang đến trải nghiệm tiện ích và thoải mái tối đa cho người dùng. Với thiết kế nguyên khối và các tính năng tự động cao cấp, sản phẩm này không chỉ giúp tiết kiệm nước mà còn đảm bảo vệ sinh và sự sạch sẽ cho không gian phòng tắm.",
+   "salePrice": null,
+   "marketPrice": null,
+   "brand": "Toto",
+   "categorySlug": "bet-ve-sinh",
+   "originUrl": "https://japanvip.vn/bon-cau-thong-minh-toto-ces9820.html",
+   "images": [
+    "https://japanvip.vn/media/product/666_2.jpg",
+    "https://japanvip.vn/media/product/666_1.png"
+   ]
+  },
+  {
+   "srcId": "665",
+   "name": "Robot hút bụi lau nhà Roborock Q Revo Master",
+   "slug": "robot-hut-bui-lau-nha-roborock-q-revo-master",
+   "description": null,
+   "salePrice": 24900000,
+   "marketPrice": null,
+   "brand": null,
+   "categorySlug": "may-hut-bui",
+   "originUrl": "https://japanvip.vn/robot-hut-bui-lau-nha-roborock-q-revo-master.html",
+   "images": [
+    "https://japanvip.vn/media/product/665_hut_bui_2.jpg",
+    "https://japanvip.vn/media/product/665_hut_bui.jpg"
+   ]
+  },
+  {
+   "srcId": "664",
+   "name": "Tủ lạnh Hitachi R-HXCC62V",
+   "slug": "tu-lanh-hitachi-r-hxcc62v",
+   "description": "Tủ lạnh nội địa Nhật Bản Hitachi R-HXCC62V có dung tích 617 lít, là mẫu tủ lạnh cao cấp nhất trong dòng tủ lạnh 6 cánh. Tủ lạnh này có thiết kế mặt gương pha lê đen sang trọng và tích hợp các công nghệ cao cấp nhất của Hitachi như công nghệ Inverter siêu tiết kiệm điện, công nghệ làm lạnh gián tiếp và công nghệ cấp đông mềm, cùng với khả năng kết nối với điện thoại thông minh để kiểm soát thực phẩm trong tủ.",
+   "salePrice": null,
+   "marketPrice": null,
+   "brand": "Hitachi",
+   "categorySlug": "tu-lanh",
+   "originUrl": "https://japanvip.vn/tu-lanh-hitachi-r-hxcc62v.html",
+   "images": [
+    "https://japanvip.vn/media/product/664_4.jpg",
+    "https://japanvip.vn/media/product/664_2.jpg"
+   ]
+  },
+  {
+   "srcId": "663",
+   "name": "Lò vi sóng Hitachi MRO-S8A-K",
+   "slug": "lo-vi-song-hitachi-mro-s8a-k",
+   "description": "Lò vi sóng nội địa Nhật Bản Hitachi MRO-S8A-K có dung tích 31 lít, sử dụng công nghệ vi sóng 3D không cần đĩa quay, giúp khoang lò rộng rãi hơn và đảm bảo nhiệt lượng phân bố đều. Sản phẩm này có sẵn 116 chương trình nấu tự động cùng 18 chương trình chiên không dầu, áp dụng công nghệ nướng đối lưu kết hợp bù ẩm, mang đến những món ăn thơm ngon, mềm mại và tốt cho sức khỏe. Bên cạnh đó, thiết kế bề mặt phẳng và lớp phủ sơn Silicon chịu nhiệt giúp người dùng dễ dàng làm sạch khoang lò sau khi sử dụng.",
+   "salePrice": 9150000,
+   "marketPrice": null,
+   "brand": "Hitachi",
+   "categorySlug": "lo-vi-song",
+   "originUrl": "https://japanvip.vn/lo-vi-song-hitachi-mro-s8a-k.html",
+   "images": [
+    "https://japanvip.vn/media/product/663_2.jpg",
+    "https://japanvip.vn/media/product/663_3.jpg"
+   ]
+  },
+  {
+   "srcId": "662",
+   "name": "Tủ lạnh Hitachi R-HXCC54V",
+   "slug": "tu-lanh-hitachi-r-hxcc54v",
+   "description": "Tủ lạnh Hitachi R-HXCC54V không chỉ nổi bật với thiết kế kiểu Pháp sang trọng mà còn chinh phục người dùng bằng công nghệ làm lạnh hiện đại và các tính năng thông minh. Với dung tích lớn và khả năng tiết kiệm năng lượng, sản phẩm này đáp ứng hoàn hảo nhu cầu bảo quản thực phẩm, giúp không gian bếp của bạn thêm phần tiện nghi và hiện đại.",
+   "salePrice": null,
+   "marketPrice": null,
+   "brand": "Hitachi",
+   "categorySlug": "tu-lanh",
+   "originUrl": "https://japanvip.vn/tu-lanh-hitachi-r-hxcc54v.html",
+   "images": [
+    "https://japanvip.vn/media/product/662_untitled_1.jpg",
+    "https://japanvip.vn/media/product/662_2.jpg"
+   ]
+  },
+  {
+   "srcId": "661",
+   "name": "Lò vi sóng Hitachi MRO-S8A-W",
+   "slug": "lo-vi-song-hitachi-mro-s8a-w",
+   "description": "Lò vi sóng Hitachi MRO-S8A-W là model nội địa Nhật Bản nổi bật với dung tích lớn 31 lít và màu trắng tinh tế. Sản phẩm này được trang bị công nghệ Vi sóng 3D tiên tiến, không sử dụng đĩa quay truyền thống, kết hợp với chức năng nướng đối lưu bù ẩm, giúp mang đến những bữa ăn ngon miệng, bổ dưỡng cho cả gia đình. Với 116 menu tự động và 18 menu chiên không dầu, lò vi sóng này là giải pháp hoàn hảo cho nhu cầu nấu nướng đa dạng của người dùng hiện đại.",
+   "salePrice": 9150000,
+   "marketPrice": null,
+   "brand": "Hitachi",
+   "categorySlug": "lo-vi-song",
+   "originUrl": "https://japanvip.vn/lo-vi-song-hitachi-mro-s8a-w.html",
+   "images": [
+    "https://japanvip.vn/media/product/661_untitled_1.jpg",
+    "https://japanvip.vn/media/product/661_thi___t_k____ch__a_c___t__n.png"
+   ]
+  },
+  {
+   "srcId": "660",
+   "name": "Bếp từ Mitsubishi CS-G321MS",
+   "slug": "bep-tu-mitsubishi-cs-g321ms",
+   "description": "Bếp từ Mitsubishi CS-G321MS là một trong những sản phẩm bếp từ mới nhất của Mitsubishi Nhật Bản hiện nay. Bếp được thiết kế với vẻ mạnh mẽ, sang trọng với mặt kính đen được làm từ gốm thủy tinh cao cấp, bề mặt chống xước chịu lực và chịu nhiệt tốt. Đặc biệt rất dễ dàng vệ sinh lau chùi.",
+   "salePrice": 10990000,
+   "marketPrice": null,
+   "brand": "Mitsubishi",
+   "categorySlug": "bep-tu",
+   "originUrl": "https://japanvip.vn/bep-tu-mitsubishi-cs-g321ms.html",
+   "images": [
+    "https://japanvip.vn/media/product/660_untitled_1.jpg",
+    "https://japanvip.vn/media/product/660_bep_tu_mitsubishi_cs_kg32ms2.jpg"
+   ]
+  },
+  {
+   "srcId": "659",
+   "name": "Nồi lẩu đa năng Zojirushi EP-PX30-TA",
+   "slug": "noi-lau-da-nang-zojirushi-ep-px30-ta",
+   "description": "Nồi lẩu đa năng Zojirushi EP-PX30-TA có công suất lên tới 1300W, với thiết kế nắp đậy kín giúp bạn rút ngắn thời gian nấu mà vẫn đảm bảo được mùi vị và dinh dưỡng của thức ăn. Dung tích nồi 2.5L cho phép bạn và gia đình thoải mái trong những bữa liên hoan. Bên cạnh đó tính năng sử dụng linh hoạt sẽ giúp bạn tiết kiệm chi phí vì ngoài việc nấu lẩu, nồi lẩu điện Zojirushi EP-PX30-TA còn có thể dùng để nướng, chiên, xào... thay cho chảo. Lòng nồi được phủ lớp chống dính giúp cho việc nấu nướng và vệ sinh trở nên dễ dàng hơn.",
+   "salePrice": 3790000,
+   "marketPrice": null,
+   "brand": "Zojirushi",
+   "categorySlug": "do-dung-khac",
+   "originUrl": "https://japanvip.vn/noi-lau-da-nang-zojirushi-ep-px30-ta.html",
+   "images": [
+    "https://japanvip.vn/media/product/659_untitled_1.jpg",
+    "https://japanvip.vn/media/product/659_untitled_2.jpg"
+   ]
+  },
+  {
+   "srcId": "658",
+   "name": "Bếp từ Hitachi HT-M6K",
+   "slug": "bep-tu-hitachi-ht-m6k",
+   "description": "Bếp từ Hitachi HT-M6K là dòng bếp từ nội địa Nhật Bản được nâng cấp từ phiên bản Hitachi HT-K6K. Bếp được thiết kế sang trọng với 2 bếp từ, 1 bếp hồng ngoại và 1 lò nướng.",
+   "salePrice": null,
+   "marketPrice": null,
+   "brand": "Hitachi",
+   "categorySlug": "bep-tu",
+   "originUrl": "https://japanvip.vn/bep-tu-hitachi-ht-m6k.html",
+   "images": [
+    "https://japanvip.vn/media/product/658_bep_tu_hitachi_ht_m6k.jpg",
+    "https://japanvip.vn/media/product/658_untitled_1.jpg"
+   ]
+  },
+  {
+   "srcId": "657",
+   "name": "Bếp từ Hitachi HT-M8STWF",
+   "slug": "bep-tu-hitachi-ht-m8stwf",
+   "description": "Bếp từ Hitachi HT-M8STWF là dòng bếp từ cao cấp của Hitachi nội địa Nhật – mới 100%, được thiết kế sang trọng, tinh tế với mặt kính Ceramic màu ghi xám, làm từ gốm thủy tinh cao cấp, bề mặt chống xước và chịu được nhiệt độ cao. Bếp được thiết kế đẹp mắt với 3 bếp từ cùng 1 lò nướng với tổng công suất lên đến 5,8 kw.",
+   "salePrice": 20990000,
+   "marketPrice": null,
+   "brand": "Hitachi",
+   "categorySlug": "bep-tu",
+   "originUrl": "https://japanvip.vn/bep-tu-hitachi-ht-m8stwf.html",
+   "images": [
+    "https://japanvip.vn/media/product/657_bep_tu_hitachi_ht_m8stwf.jpg",
+    "https://japanvip.vn/media/product/657_bep_tu_hitachi_ht_m8stwf_info_1.jpg"
+   ]
+  },
+  {
+   "srcId": "655",
+   "name": "Máy sấy bát Mitsubishi TK-ST11-H",
+   "slug": "may-say-bat-mitsubishi-tk-st11-h",
+   "description": "Máy sấy bát Mitsubishi TK-ST11-H là máy sấy bát diệt khuẩn, tiết kiệm điện của Nhật Bản, được sử dụng phổ biến tại các gia đình ở xứ sở hoa Anh Đào, đặc biệt nếu nhà bạn bị tối, ẩm, có trẻ nhỏ thì nên đầu tư ngay 1 chiếc máy sấy bát để bảo vệ sức khoẻ gia đình.",
+   "salePrice": 3890000,
+   "marketPrice": null,
+   "brand": "Mitsubishi",
+   "categorySlug": "thiet-bi-nha-bep",
+   "originUrl": "https://japanvip.vn/may-say-bat-mitsubishi-tk-st11-h.html",
+   "images": [
+    "https://japanvip.vn/media/product/655_may_say_bat_mitsubishi_tk_st11.jpg",
+    "https://japanvip.vn/media/product/655_w380557135_1.jpg"
+   ]
+  },
+  {
+   "srcId": "654",
+   "name": "Lò vi sóng Hitachi MRO-S8Z",
+   "slug": "lo-vi-song-hitachi-mro-s8z",
+   "description": "Lò vi sóng Hitachi MRO-S8Z có công suất tối đa 1,450W mạnh mẽ. Sản phẩm lò vi sóng cho gia đình dung tích 31 lít, tích hợp đa dạng các menu nấu nướng tự động lên tới 97 menu. MRO-S8Z là \"hỗ trợ viên\" đắc lực trong căn bếp của gia đình bạn.",
+   "salePrice": null,
+   "marketPrice": null,
+   "brand": "Hitachi",
+   "categorySlug": "lo-vi-song",
+   "originUrl": "https://japanvip.vn/lo-vi-song-hitachi-mro-s8z.html",
+   "images": [
+    "https://japanvip.vn/media/product/654_untitled_1.jpg",
+    "https://japanvip.vn/media/product/654_untitled_1__2_.jpg"
+   ]
+  },
+  {
+   "srcId": "652",
+   "name": "Nồi cơm điện Toshiba RC-18VST",
+   "slug": "noi-com-dien-toshiba-rc-18vst",
+   "description": "Nồi cơm điện Toshiba RC-18VST-W là một mô hình nhỏ gọn, tiện ích mô phỏng quá trình nấu cơm trên Kamado thời xưa của Nhật Bản. Mang đến những bát cơm dẻo, mịn, thơm ngon mỗi ngày cho mọi gia đình.",
+   "salePrice": null,
+   "marketPrice": null,
+   "brand": "Toshiba",
+   "categorySlug": "noi-com-dien",
+   "originUrl": "https://japanvip.vn/noi-com-dien-toshiba-rc-18vst.html",
+   "images": [
+    "https://japanvip.vn/media/product/652_noi_com_toshiba_rc_18vst.jpg",
+    "https://japanvip.vn/media/product/652_noi_com_toshiba_rc_18vst_9_1.jpg"
+   ]
+  },
+  {
+   "srcId": "651",
+   "name": "Nồi cơm điện Hitachi RZ-WV180M",
+   "slug": "noi-com-dien-hitachi-rz-wv180m",
+   "description": "Nồi cơm điện Hitachi RZ-WV180M nấu cơm ngon, hạt cơm chín đều, dẻo và giữ được hương vị thơm ngon của cơm mà không làm mất đi chất dinh dưỡng hay vitamin có trong gạo.",
+   "salePrice": 9490000,
+   "marketPrice": null,
+   "brand": "Hitachi",
+   "categorySlug": "noi-com-dien",
+   "originUrl": "https://japanvip.vn/noi-com-dien-hitachi-rz-wv180m.html",
+   "images": [
+    "https://japanvip.vn/media/product/651_noi_com_dien_cao_tan_hitachi_rz_wv180m.jpg",
+    "https://japanvip.vn/media/product/651_noi_com_dien_cao_tan_hitachi_rz_wv180m__1_.jpg"
+   ]
+  },
+  {
+   "srcId": "650",
+   "name": "Nồi cơm điện Zojirushi NW-VB18-TA",
+   "slug": "noi-com-dien-zojirushi-nw-vb18-ta",
+   "description": "Nồi cơm điện Zojirushi NW-VB18-TA nội địa Nhật Bản dung tích 1.8L với chức năng cao tần IH giúp cơm ngon hơn, hạt gạo chín đều từ trong ra đến ngoài. Hẹn giờ cơm chín, chức năng nấu nhanh,  tiết kiệm điện năng tối ưu, lõi nồi dày nhiệt được truyền đến toàn bộ nồi giúp gạo được nấu chín từ trong ra ngoài. Tùy chọn các chế độ nấu khác nhau, nấu gạo cứng, nấu cháo, ...dễ dàng tháo nắp để vệ sinh nồi cùng với các phím bấm led dễ dàng sử dụng và điều khiển, có các nút thông minh và kí hiệu cho người khiếm thị, lựa chọn các loại gạo nấu khác nhau cho bữa ăn thêm đa dạng và phong phú hơn",
+   "salePrice": 6390000,
+   "marketPrice": null,
+   "brand": "Zojirushi",
+   "categorySlug": "noi-com-dien",
+   "originUrl": "https://japanvip.vn/noi-com-dien-zojirushi-nw-vb18-ta.html",
+   "images": [
+    "https://japanvip.vn/media/product/650_noi_com_djien_zojirushi_nw_vb18_ta.jpg",
+    "https://japanvip.vn/media/product/650_noi_com_djien_zojirushi_nw_vb18_ta__1_.jpg"
+   ]
+  },
+  {
+   "srcId": "649",
+   "name": "Nồi cơm điện Tiger JPI-S180-KT",
+   "slug": "noi-com-dien-tiger-jpi-s180-kt",
+   "description": "Nồi cơm điện Tiger JPI-S180-KT là một sản phẩm nồi cơm điện cao cấp từ thương hiệu Tiger. Với dung tích 1,8 lít, nồi cơm này có thiết kế đơn giản và hiệu suất tốt. Có nhiều chế độ nấu cơm khác nhau và công nghệ nấu thông minh giúp cung cấp cơm chín đều và thơm ngon. Xoong nồi thiết kế nhiều lớp giữ cơm ấm và tươi ngon sau khi nấu. Ngoài ra, nó còn có chức năng giữ ấm tự động, vỏ ngoài bằng thép không gỉ dễ dàng vệ sinh. Tóm lại, nồi cơm Tiger JPI-S180-KT là một lựa chọn tiện ích và đáng tin cậy cho gia đình bạn.",
+   "salePrice": 13900000,
+   "marketPrice": null,
+   "brand": "Tiger",
+   "categorySlug": "noi-com-dien",
+   "originUrl": "https://japanvip.vn/noi-com-dien-tiger-jpi-s180-kt.html",
+   "images": [
+    "https://japanvip.vn/media/product/649_noi_com_dien_cao_tan_tiger_jpi_s180.jpg",
+    "https://japanvip.vn/media/product/649_80d07c1b4ce621ad32560b19967cd8d3.jpeg"
+   ]
+  },
+  {
+   "srcId": "648",
+   "name": "Máy hút bụi Irobot Roomba 890",
+   "slug": "may-hut-bui-irobot-roomba-890",
+   "description": "Máy hút bụi Irobot Roomba 890 tích hợp tính năng Dirt Detect, có khả năng phát hiện và làm sạch sâu các vết bẩn mà Roomba cho là cần thiết. Chế độ hút thảm riêng biệt và tự động, chổi quét cao su cao cấp và hiệu quả khiến Roomba 890 trở thành robot được đánh giá cao nhất trong seri 800.",
+   "salePrice": 13900000,
+   "marketPrice": null,
+   "brand": null,
+   "categorySlug": "may-hut-bui",
+   "originUrl": "https://japanvip.vn/may-hut-bui-irobot-roomba-890.html",
+   "images": [
+    "https://japanvip.vn/media/product/648_irobot_roomba_890.jpg",
+    "https://japanvip.vn/media/product/648_irobot_roomba_890__2_.jpg"
+   ]
+  },
+  {
+   "srcId": "647",
+   "name": "Máy hút bụi Irobot Roomba 980",
+   "slug": "may-hut-bui-irobot-roomba-980",
+   "description": "Máy hút bụi Irobot Roomba 980 hiện đang đứng đầu bảng thế giới về khả năng hút sạch bụi, và các tính năng thông minh. Với Hệ thống làm sạch AeroForce™, Power Boost giúp tự động tăng lực hút trên thảm, hoặc vị trí bụi bẩn hơn. Và một ứng dụng iRobot HOME, bạn có thể dễ dàng dọn dẹp và lên lịch ở bất cứ đâu.",
+   "salePrice": 16490000,
+   "marketPrice": 17490000,
+   "brand": null,
+   "categorySlug": "may-hut-bui",
+   "originUrl": "https://japanvip.vn/may-hut-bui-irobot-roomba-980.html",
+   "images": [
+    "https://japanvip.vn/media/product/647_irobot_roomba_980.jpg",
+    "https://japanvip.vn/media/product/647_roomba_980rear_750xx3000_1688_0_384.jpg"
+   ]
+  },
+  {
+   "srcId": "646",
+   "name": "Máy hút ẩm Panasonic F-YC120HUX-H",
+   "slug": "may-hut-am-panasonic-f-yc120hux-h",
+   "description": "Máy hút ẩm Panasonic F-YC120HUX-H với tính năng hút ẩm tự động, hút ẩm liên tục, hút sấy quần áo tự động, sấy quần áo liên tục, khi hút ẩm có thể lấy gió ấm gió lạnh độc lập, hẹn giờ tắt máy, cánh gió tự động đảo 4 chiều, điều chỉnh tốc độ gió mạnh yếu, khi hút ẩm kết hợp bộ phát NANOE khử mùi hôi nấm mốc vi khuẩn trong phòng.",
+   "salePrice": 15490000,
+   "marketPrice": null,
+   "brand": "Panasonic",
+   "categorySlug": "may-hut-am",
+   "originUrl": "https://japanvip.vn/may-hut-am-panasonic-f-yc120hux-h.html",
+   "images": [
+    "https://japanvip.vn/media/product/646_untitled_1.jpg",
+    "https://japanvip.vn/media/product/646_i_img1200x1194_1638737873u2twri307451.jpg"
+   ]
+  },
+  {
+   "srcId": "645",
+   "name": "Máy hút ẩm Mitsubishi MJ-P180TX",
+   "slug": "may-hut-am-mitsubishi-mj-p180tx",
+   "description": "Mitsubishi MJ-P180TX là một model máy hút ẩm chân voi được thiết kế cho phòng từ 30-75m² và dành riêng cho thị trường Nhật Bản. Máy sử dụng công nghệ hút bằng máy nén (block) và trang bị các cảm biến thông minh 3D giúp nhận diện vùng ẩm và cân bằng độ ẩm một cách hiệu quả.",
+   "salePrice": null,
+   "marketPrice": null,
+   "brand": "Mitsubishi",
+   "categorySlug": "may-hut-am",
+   "originUrl": "https://japanvip.vn/may-hut-am-mitsubishi-mj-p180tx.html",
+   "images": [
+    "https://japanvip.vn/media/product/645_may_hut_am_mitsubishi_mj_p180tx_w.jpg",
+    "https://japanvip.vn/media/product/645_may_hut_am_mitsubishi_mj_p180rx__1_.jpg"
+   ]
+  },
+  {
+   "srcId": "644",
+   "name": "Máy giặt hấp sấy LG Styler S3WF",
+   "slug": "may-giat-hap-say-lg-styler-s3wf",
+   "description": "Máy giặt hấp sấy LG Styler S3WF dễ dàng loại bỏ mùi khó chịu, các chất ô nhiễm có hại, nếp nhăn và khó làm sạch trên quần áo một cách nhanh chóng và hiệu quả tại nhà của bạn.",
+   "salePrice": null,
+   "marketPrice": null,
+   "brand": "LG",
+   "categorySlug": "may-giat",
+   "originUrl": "https://japanvip.vn/may-giat-hap-say-lg-styler-s3wf.html",
+   "images": [
+    "https://japanvip.vn/media/product/644_untitled_1.jpg",
+    "https://japanvip.vn/media/product/644_d88cf2b01540ba8ba0c54fa432a8a005.jpg"
+   ]
+  },
+  {
+   "srcId": "643",
+   "name": "Máy giặt Hitachi BD-NX120FR",
+   "slug": "may-giat-hitachi-bd-nx120fr",
+   "description": "Máy giặt Hitachi BD-NX120FR là sản phẩm cao cấp với công suất giặt lớn lên đến 12KG và sấy 7KG. Điểm đặc biệt của máy giặt này là tính năng tự động điều chỉnh nước giặt và nước xả theo lượng quần áo, đồng thời còn có chức năng giặt nước nóng với nhiều nhiệt độ phù hợp với từng loại vải, giúp ngăn chặn ố vàng trên quần áo một cách hiệu quả. Bên cạnh đó, máy giặt này còn tích hợp công nghệ sấy nhiệt tái chế hơi nước giúp quần áo của bạn được làm sạch và làm phẳng một cách hiệu quả và tiết kiệm chi phí.",
+   "salePrice": null,
+   "marketPrice": null,
+   "brand": "Hitachi",
+   "categorySlug": "may-giat",
+   "originUrl": "https://japanvip.vn/may-giat-hitachi-bd-nx120fr.html",
+   "images": [
+    "https://japanvip.vn/media/product/643_may_giat_hitachi_bd_nx120fr_giat_12kg_say_7kg_tu_djong_cho_nuoc_giat_1024x1024.jpg",
+    "https://japanvip.vn/media/product/643_230505001575639170.png"
+   ]
+  },
+  {
+   "srcId": "642",
+   "name": "Máy giặt Hitachi BD-SG100FL",
+   "slug": "may-giat-hitachi-bd-sg100fl",
+   "description": "Máy giặt Hitachi BD-SG100FL là dòng máy giặt có thiết kế hiện đại cửa bấm và có màn hình LCD, máy được trang bị động cơ truyền động trực tiếp mạnh mẽ và êm ái, lồng giặt nghiêng chứa nhiều quần áo và cho phép giặt sạch hơn, công nghệ inverter tiết kiệm điện năng. Công nghệ eco thông minh thân thiện với môi trường, công nghệ giặt phun bọt hỗ trợ giặt sạch hơn…vv",
+   "salePrice": 42990000,
+   "marketPrice": null,
+   "brand": "Hitachi",
+   "categorySlug": "may-giat",
+   "originUrl": "https://japanvip.vn/may-giat-hitachi-bd-sg100fl.html",
+   "images": [
+    "https://japanvip.vn/media/product/642_untitled_1.jpg",
+    "https://japanvip.vn/media/product/642_display_bdsg100f.jpg"
+   ]
+  },
+  {
+   "srcId": "641",
+   "name": "Tủ lạnh Hitachi R-KX57N-X",
+   "slug": "tu-lanh-hitachi-r-kx57n-x",
+   "description": "Tủ lạnh Hitachi R-KX57N-X dung tích 567L  được thiết kế trang nhã, thân thiện với người dùng, cùng hệ thống đèn LED tiết kiệm điện năng. Mặt kính nguyên khối cùng thiết kế thanh lịch giúp không gian bếp thêm nổi bật và đẳng cấp. Với dung tích 567 lít chiếc tủ lạnh Inverter này là sự lựa chọn phù hợp với gia đình khoảng 5 -7 thành viên.",
+   "salePrice": null,
+   "marketPrice": null,
+   "brand": "Hitachi",
+   "categorySlug": "tu-lanh",
+   "originUrl": "https://japanvip.vn/tu-lanh-hitachi-r-kx57n-x.html",
+   "images": [
+    "https://japanvip.vn/media/product/641_tu_lanh_hitachi_r_kx57n_x.jpg",
+    "https://japanvip.vn/media/product/641_r.jpg"
+   ]
+  },
+  {
+   "srcId": "640",
+   "name": "Tủ lạnh Hitachi R-WXC62N (X)",
+   "slug": "tu-lanh-hitachi-r-wxc62n-x",
+   "description": "Tủ lạnh Hitachi R-WXC62N (X) dung tích 615 lít là dòng tủ lạnh nội địa Nhật mới nhất và cao cấp nhất hiện nay, đây là phiên bản sau của Hitachi R-WX62K với nâng cấp về khả năng kết nối điện thoại thông minh. Tương tự như mẫu tủ lạnh Hitachi R-WX62K, tủ lạnh Hitachi R-WXC62N được thiết kế dạng 6 cánh, mặt gương, phím bấm cảm ứng, cửa trợ lực điện giúp làm tăng sự sang trọng không gian bếp gia đình bạn.",
+   "salePrice": null,
+   "marketPrice": null,
+   "brand": "Hitachi",
+   "categorySlug": "tu-lanh",
+   "originUrl": "https://japanvip.vn/tu-lanh-hitachi-r-wxc62n-x.html",
+   "images": [
+    "https://japanvip.vn/media/product/640_tu_lanh_hitachi_r_wxc62n.jpg",
+    "https://japanvip.vn/media/product/640_tu_lanh_hitachi_r_wx62k_cau_tao.jpg"
+   ]
+  },
+  {
+   "srcId": "639",
+   "name": "Tủ lạnh Hitachi R-WXC74S (X)",
+   "slug": "tu-lanh-hitachi-r-wxc74s-x",
+   "description": "Tủ lạnh Hitachi R-WXC74S (X) là mẫu tủ lạnh cỡ lớn cao cấp nhất và mới ra nhất của Hitachi được bán ra vào năm 2022. Mẫu tủ hội tụ tất cả nhưng công nghệ cao nhất của Hitachi hiện nay trong phân khúc tủ lạnh với dung tích lớn nhất 735L và công nghệ hút chân không độc quyền của Hitachi. Phiên bản màu đen gương cực kỳ sang trọng, thu hút mọi ánh nhìn.",
+   "salePrice": null,
+   "marketPrice": null,
+   "brand": null,
+   "categorySlug": "tu-lanh",
+   "originUrl": "https://japanvip.vn/tu-lanh-hitachi-r-wxc74s-x.html",
+   "images": [
+    "https://japanvip.vn/media/product/639_tu_lanh_hitachi_r_wxc74s.jpg",
+    "https://japanvip.vn/media/product/639_2.jpg"
+   ]
+  },
+  {
+   "srcId": "638",
+   "name": "Nắp bệt Toto TCF8CS67",
+   "slug": "nap-bet-toto-tcf8cs67",
+   "description": "Sử dụng nhà vệ sinh vào những ngày trời rét buốt thực sự là một trải nghiệm rất tệ, nhưng nó sẽ tệ hơn nếu bạn chưa biết đến sản phẩm nắp bệt tự động Toto TCF8CS67 đến từ Nhật Bản. Sản phẩm này giúp sưởi ấm, rửa nước nóng tự động, khử mùi và vệ sinh vô cùng tiện lợi",
+   "salePrice": 9900000,
+   "marketPrice": null,
+   "brand": null,
+   "categorySlug": "nap-bet",
+   "originUrl": "https://japanvip.vn/nap-bet-toto-tcf8cs67.html",
+   "images": [
+    "https://japanvip.vn/media/product/638_untitled_1.jpg",
+    "https://japanvip.vn/media/product/638_nap_bet_toto_tcf8cs67.jpg"
+   ]
+  },
+  {
+   "srcId": "616",
+   "name": "CHORD - DAVE",
+   "slug": "chord-dave",
+   "description": "DAVE cũng được trang bị bộ lọc nguồn cao cấp cùng với khả năng tương thích với các định dạng âm thanh số độ phân giải cao mới nhất như PCM - DXD 32bit / 768kHz và DSD256. Hệ thống các ngõ vào và ra bao gồm đầy đủ các giao tiếp chuẩn audiophile như ngõ vào coax BNC, AES/EBU, TOSlink và USB audio 2.0; Ngõ ra analog XLR và RCA. Ngoài ra còn có cổng dành cho headphone loại 6mm.",
+   "salePrice": 324840000,
+   "marketPrice": null,
+   "brand": null,
+   "categorySlug": "am-thanh-giai-tri",
+   "originUrl": "https://japanvip.vn/chord-dave.html",
+   "images": [
+    "https://japanvip.vn/media/product/616_dave_front_900x675.jpg",
+    "https://japanvip.vn/media/product/616_dave_rear_900x675.jpg"
+   ]
+  }
+ ]
+}

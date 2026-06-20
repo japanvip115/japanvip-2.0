@@ -25,7 +25,7 @@ export function ProductGallery({ images, productName }: { images: GalleryImage[]
   return (
     <div className="space-y-3">
       {/* Main image */}
-      <div className="relative aspect-square overflow-hidden rounded-2xl border border-gray-100 bg-gray-50">
+      <div className="relative aspect-square overflow-hidden rounded-2xl border border-red-200 bg-gray-50 shadow-sm">
         <Image
           src={active?.url ?? primary!.url}
           alt={active?.altText ?? productName}

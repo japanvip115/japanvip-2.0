@@ -93,7 +93,7 @@ export default async function ProductsPage({ searchParams }: { searchParams: Sea
     } : {}),
   }
 
-  const [products, total, categories, brands, activeCategory] = await Promise.all([
+  const [products, total, categories, brands, activeCategory, productsBannerSetting] = await Promise.all([
     prisma.product.findMany({
       where,
       orderBy,
@@ -110,16 +110,19 @@ export default async function ProductsPage({ searchParams }: { searchParams: Sea
     prisma.category.findMany({
       where: { isActive: true, parentId: null },
       orderBy: { sortOrder: 'asc' },
-      select: { id: true, name: true, slug: true, _count: { select: { products: { where: { status: 'ACTIVE' } } } } },
+      select: { id: true, name: true, slug: true, icon: true, _count: { select: { products: { where: { status: 'ACTIVE' } } } } },
     }),
     prisma.brand.findMany({
       where: { isActive: true },
       orderBy: { name: 'asc' },
       select: { id: true, name: true },
     }),
-    categoryId ? prisma.category.findUnique({ where: { id: categoryId }, select: { name: true } }) : null,
+    categoryId ? prisma.category.findUnique({ where: { id: categoryId }, select: { name: true, imageUrl: true, imagePosition: true, description: true } }) : null,
+    !categoryId ? prisma.siteSetting.findMany({ where: { key: { in: ['products_banner_url', 'products_banner_position'] } } }) : null,
   ])
 
+  const productsBannerUrl = productsBannerSetting?.find?.((r) => r.key === 'products_banner_url')?.value ?? ''
+  const productsBannerPosition = productsBannerSetting?.find?.((r) => r.key === 'products_banner_position')?.value ?? 'center'
   const totalPages = Math.ceil(total / take)
 
   const buildUrl = (overrides: Record<string, string>) => {
@@ -132,7 +135,19 @@ export default async function ProductsPage({ searchParams }: { searchParams: Sea
   }
 
   return (
-    <div className="container pt-20 pb-14 lg:pt-24">
+    <div className="pb-14">
+      {/* Category / Products Banner */}
+      {(activeCategory?.imageUrl || productsBannerUrl) && (
+        <div className="relative w-full h-48 sm:h-64 lg:h-80 overflow-hidden">
+          <img
+            src={activeCategory?.imageUrl ?? productsBannerUrl}
+            alt={activeCategory?.name ?? 'Sản phẩm'}
+            className="w-full h-full object-cover"
+            style={{ objectPosition: activeCategory ? (activeCategory.imagePosition ?? 'center') : productsBannerPosition }}
+          />
+        </div>
+      )}
+    <div className="container pt-20 pb-0 lg:pt-24">
 
       <div className="flex gap-8">
         {/* Sidebar */}
@@ -140,16 +155,16 @@ export default async function ProductsPage({ searchParams }: { searchParams: Sea
           {/* Categories */}
           <div className="mb-1 rounded-2xl border border-gray-100 bg-white shadow-sm overflow-hidden">
             <div className="flex items-center gap-2 border-b border-gray-100 px-4 py-3">
-              <h3 className="text-xs font-bold uppercase tracking-widest text-gray-500">Danh Mục</h3>
+              <h3 className="text-sm font-extrabold uppercase tracking-widest text-gray-700">Danh Mục</h3>
             </div>
             <ul className="py-1.5">
               <li>
                 <Link
                   href={buildUrl({ categoryId: '', page: '1' })}
-                  className={`flex items-center gap-2 px-4 py-2 text-sm transition-all
+                  className={`flex items-center gap-2 px-4 py-1.5 text-base transition-all
                     ${!categoryId
-                      ? 'border-l-2 border-brand-red bg-red-50 font-semibold text-brand-red'
-                      : 'border-l-2 border-transparent text-gray-600 hover:border-gray-200 hover:bg-gray-50 hover:text-gray-900'}`}
+                      ? 'border-l-2 border-brand-red bg-red-50 font-bold text-brand-red'
+                      : 'border-l-2 border-transparent text-gray-700 font-medium hover:border-gray-200 hover:bg-gray-50 hover:text-gray-900'}`}
                 >
                   <span className="flex-1">Tất cả danh mục</span>
                 </Link>
@@ -158,10 +173,10 @@ export default async function ProductsPage({ searchParams }: { searchParams: Sea
                 <li key={cat.id}>
                   <Link
                     href={buildUrl({ categoryId: cat.id, page: '1' })}
-                    className={`flex items-center gap-2 px-4 py-2 text-sm transition-all
+                    className={`flex items-center gap-2 px-4 py-1.5 text-base transition-all
                       ${categoryId === cat.id
-                        ? 'border-l-2 border-brand-red bg-red-50 font-semibold text-brand-red'
-                        : 'border-l-2 border-transparent text-gray-600 hover:border-gray-200 hover:bg-gray-50 hover:text-gray-900'}`}
+                        ? 'border-l-2 border-brand-red bg-red-50 font-bold text-brand-red'
+                        : 'border-l-2 border-transparent text-gray-700 font-medium hover:border-gray-200 hover:bg-gray-50 hover:text-gray-900'}`}
                   >
                     <span className="flex-1">{cat.name}</span>
                     {cat._count.products > 0 && (
@@ -179,16 +194,16 @@ export default async function ProductsPage({ searchParams }: { searchParams: Sea
           {/* Condition */}
           <div className="my-3 rounded-2xl border border-gray-100 bg-white shadow-sm overflow-hidden">
             <div className="flex items-center gap-2 border-b border-gray-100 px-4 py-3">
-              <h3 className="text-xs font-bold uppercase tracking-widest text-gray-500">Tình Trạng</h3>
+              <h3 className="text-sm font-extrabold uppercase tracking-widest text-gray-700">Tình Trạng</h3>
             </div>
             <ul className="py-1.5">
               <li>
                 <Link
                   href={buildUrl({ condition: '', page: '1' })}
-                  className={`flex items-center px-4 py-2 text-sm transition-all
+                  className={`flex items-center px-4 py-1.5 text-base transition-all
                     ${!condition
-                      ? 'border-l-2 border-brand-red bg-red-50 font-semibold text-brand-red'
-                      : 'border-l-2 border-transparent text-gray-600 hover:border-gray-200 hover:bg-gray-50 hover:text-gray-900'}`}
+                      ? 'border-l-2 border-brand-red bg-red-50 font-bold text-brand-red'
+                      : 'border-l-2 border-transparent text-gray-700 font-medium hover:border-gray-200 hover:bg-gray-50 hover:text-gray-900'}`}
                 >
                   Tất cả
                 </Link>
@@ -197,10 +212,10 @@ export default async function ProductsPage({ searchParams }: { searchParams: Sea
                 <li key={opt.value}>
                   <Link
                     href={buildUrl({ condition: opt.value, page: '1' })}
-                    className={`flex items-center px-4 py-2 text-sm transition-all
+                    className={`flex items-center px-4 py-1.5 text-base transition-all
                       ${condition === opt.value
-                        ? 'border-l-2 border-brand-red bg-red-50 font-semibold text-brand-red'
-                        : 'border-l-2 border-transparent text-gray-600 hover:border-gray-200 hover:bg-gray-50 hover:text-gray-900'}`}
+                        ? 'border-l-2 border-brand-red bg-red-50 font-bold text-brand-red'
+                        : 'border-l-2 border-transparent text-gray-700 font-medium hover:border-gray-200 hover:bg-gray-50 hover:text-gray-900'}`}
                   >
                     {opt.label}
                   </Link>
@@ -213,16 +228,16 @@ export default async function ProductsPage({ searchParams }: { searchParams: Sea
           {brands.length > 0 && (
             <div className="rounded-2xl border border-gray-100 bg-white shadow-sm overflow-hidden">
               <div className="flex items-center gap-2 border-b border-gray-100 px-4 py-3">
-                <h3 className="text-xs font-bold uppercase tracking-widest text-gray-500">Thương Hiệu</h3>
+                <h3 className="text-sm font-extrabold uppercase tracking-widest text-gray-700">Thương Hiệu</h3>
               </div>
-              <ul className="max-h-52 overflow-y-auto py-1.5 scrollbar-thin">
+              <ul className="max-h-80 overflow-y-auto py-1.5 scrollbar-thin">
                 <li>
                   <Link
                     href={buildUrl({ brandId: '', page: '1' })}
-                    className={`flex items-center px-4 py-2 text-sm transition-all
+                    className={`flex items-center px-4 py-1.5 text-base transition-all
                       ${!brandId
-                        ? 'border-l-2 border-brand-red bg-red-50 font-semibold text-brand-red'
-                        : 'border-l-2 border-transparent text-gray-600 hover:border-gray-200 hover:bg-gray-50 hover:text-gray-900'}`}
+                        ? 'border-l-2 border-brand-red bg-red-50 font-bold text-brand-red'
+                        : 'border-l-2 border-transparent text-gray-700 font-medium hover:border-gray-200 hover:bg-gray-50 hover:text-gray-900'}`}
                   >
                     Tất cả thương hiệu
                   </Link>
@@ -231,10 +246,10 @@ export default async function ProductsPage({ searchParams }: { searchParams: Sea
                   <li key={b.id}>
                     <Link
                       href={buildUrl({ brandId: b.id, page: '1' })}
-                      className={`flex items-center px-4 py-2 text-sm transition-all
+                      className={`flex items-center px-4 py-1.5 text-base transition-all
                         ${brandId === b.id
-                          ? 'border-l-2 border-brand-red bg-red-50 font-semibold text-brand-red'
-                          : 'border-l-2 border-transparent text-gray-600 hover:border-gray-200 hover:bg-gray-50 hover:text-gray-900'}`}
+                          ? 'border-l-2 border-brand-red bg-red-50 font-bold text-brand-red'
+                          : 'border-l-2 border-transparent text-gray-700 font-medium hover:border-gray-200 hover:bg-gray-50 hover:text-gray-900'}`}
                     >
                       {b.name}
                     </Link>
@@ -332,6 +347,7 @@ export default async function ProductsPage({ searchParams }: { searchParams: Sea
           )}
         </div>
       </div>
+    </div>
     </div>
   )
 }

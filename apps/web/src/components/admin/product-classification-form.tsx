@@ -27,6 +27,7 @@ type Props = {
   initialCondition?: 'NEW' | 'LIKE_NEW' | 'GOOD' | 'FAIR'
   initialStatus?: 'DRAFT' | 'ACTIVE' | 'SOLD' | 'ARCHIVED'
   initialBadge?: ProductBadge | null
+  initialShowOnHome?: boolean
   initialOriginUrl?: string
 }
 
@@ -34,7 +35,7 @@ export function ProductClassificationForm({
   productId, categories, brands,
   initialCategoryId = '', initialBrandId = '',
   initialOwnerType = 'JAPANVIP', initialCondition = 'NEW',
-  initialStatus = 'DRAFT', initialBadge = null, initialOriginUrl = '',
+  initialStatus = 'DRAFT', initialBadge = null, initialShowOnHome = false, initialOriginUrl = '',
 }: Props) {
   const [categoryId, setCategoryId] = useState(initialCategoryId)
   const [brandId, setBrandId] = useState(initialBrandId)
@@ -43,6 +44,7 @@ export function ProductClassificationForm({
   const [condition, setCondition] = useState(initialCondition)
   const [status, setStatus] = useState(initialStatus)
   const [badge, setBadge] = useState<ProductBadge | null>(initialBadge)
+  const [showOnHome, setShowOnHome] = useState(initialShowOnHome)
   const [originUrl, setOriginUrl] = useState(initialOriginUrl)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
@@ -76,7 +78,7 @@ export function ProductClassificationForm({
         body: JSON.stringify({
           categoryId: categoryId || null,
           brandId: brandId || null,
-          ownerType, condition, status, badge,
+          ownerType, condition, status, badge, showOnHome,
           originUrl: originUrl || null,
         }),
       })
@@ -166,6 +168,23 @@ export function ProductClassificationForm({
               </button>
             )}
           </div>
+        </div>
+        <div className="sm:col-span-2">
+          <label className={LABEL_CLS}>Hiển thị trang chủ</label>
+          <button
+            type="button"
+            onClick={() => setShowOnHome((v) => !v)}
+            className={`flex items-center gap-3 rounded-lg border px-4 py-2.5 text-sm font-medium transition-all ${
+              showOnHome
+                ? 'border-red-500 bg-red-500/10 text-red-400'
+                : 'border-gray-700 bg-transparent text-gray-500 hover:border-gray-500 hover:text-gray-400'
+            }`}
+          >
+            <span className={`inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors ${showOnHome ? 'bg-red-500' : 'bg-gray-700'}`}>
+              <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow transition-transform ${showOnHome ? 'translate-x-4' : 'translate-x-1'}`} />
+            </span>
+            {showOnHome ? 'Đang hiển thị trên trang chủ' : 'Không hiển thị trang chủ'}
+          </button>
         </div>
         <div className="sm:col-span-2">
           <label className={LABEL_CLS}>URL nguồn (Nhật)</label>

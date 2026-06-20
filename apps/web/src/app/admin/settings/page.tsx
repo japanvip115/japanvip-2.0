@@ -55,6 +55,12 @@ const SETTING_ITEMS = [
     desc: 'Chỉnh sửa tiêu đề, mô tả, nút CTA và các đoạn văn bản trên trang chủ',
   },
   {
+    href: '/admin/settings/products-banner',
+    icon: '🖼️',
+    title: 'Banner Trang Sản Phẩm',
+    desc: 'Ảnh banner hiển thị đầu trang /san-pham khi xem tất cả sản phẩm',
+  },
+  {
     href: '/admin/settings/auction-fees',
     icon: '🔨',
     title: 'Phí Đấu Giá',

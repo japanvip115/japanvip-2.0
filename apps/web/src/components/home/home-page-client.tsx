@@ -80,6 +80,7 @@ export type ProductItem = {
   salePrice: number | null
   marketPrice: number | null
   condition: string
+  badge: string | null
   brand: { name: string } | null
   category: { name: string; slug: string } | null
   images: { url: string }[]
@@ -236,7 +237,7 @@ function MixedSlider({
                   </div>
                   <button
                     className={`btn-bid${endingSoon ? ' urgent-bid' : ''}`}
-                    style={{marginTop:'auto'}}
+                    style={{marginTop:'auto', width:'fit-content', margin:'auto auto 0'}}
                     onClick={(e) => { e.stopPropagation(); router.push(`/dau-gia/${auction.id}`) }}
                   >
                     Đặt Giá Ngay
@@ -255,7 +256,9 @@ function MixedSlider({
               className="auction-card auction-slider-card"
               onClick={() => router.push(`/${p.slug}`)}
             >
-              <div className="auction-badge-live" style={{fontSize:'0.55rem', padding:'2px 6px'}}>PRE ORDER</div>
+              {p.badge === 'ORDER_ONLY' && <div className="auction-badge-live" style={{fontSize:'0.55rem', padding:'2px 6px'}}>PRE ORDER</div>}
+              {p.badge === 'NEW_ARRIVAL' && <div className="auction-badge-live" style={{fontSize:'0.55rem', padding:'2px 6px', background:'#16a34a'}}>MỚI</div>}
+              {p.badge === 'SOLD_OUT' && <div className="auction-badge-live" style={{fontSize:'0.55rem', padding:'2px 6px', background:'#6b7280'}}>ĐÃ BÁN</div>}
               <div className="auction-img">
                 {p.images[0]
                   ? <img src={p.images[0].url} alt={p.name} style={{width:'100%',height:'100%',objectFit:'contain',padding:'10px',background:'#fff'}} />
@@ -285,7 +288,7 @@ function MixedSlider({
                 </div>
                 <button
                   className="btn-bid"
-                  style={{marginTop:'auto', background:'#e85d7a'}}
+                  style={{marginTop:'auto', background:'#e85d7a', width:'fit-content', margin:'auto auto 0'}}
                   onMouseEnter={e => (e.currentTarget.style.background = 'var(--gradient-red)')}
                   onMouseLeave={e => (e.currentTarget.style.background = '#e85d7a')}
                   onClick={(e) => { e.stopPropagation(); setQuickOrder({ id: p.id, slug: p.slug, name: p.name, image: p.images[0]?.url ?? null, priceVnd: p.salePrice ?? p.originPrice ?? p.marketPrice ?? null }) }}
@@ -519,11 +522,6 @@ function HeroBannerSlider({ banners, router }: { banners: HeroBanner[]; router: 
         />
       )}
       <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 60%)' }} />
-      {banner.title && (
-        <div style={{ position: 'absolute', bottom: 48, left: 0, right: 0, textAlign: 'center', color: '#fff' }}>
-          <h2 style={{ fontSize: 28, fontWeight: 700, textShadow: '0 2px 8px rgba(0,0,0,0.6)' }}>{banner.title}</h2>
-        </div>
-      )}
       {banners.length > 1 && (
         <>
           <button
@@ -564,7 +562,7 @@ function TestimonialSlider({ data }: { data: TestimonialItem[] }) {
   const total = Math.ceil(items.length / perPage)
 
   useEffect(() => {
-    const t = setInterval(() => setPage(p => (p + 1) % total), 4000)
+    const t = setInterval(() => setPage(p => (p + 1) % total), 12000)
     return () => clearInterval(t)
   }, [total])
 
@@ -637,6 +635,7 @@ type BrandItem = { id: string; name: string; slug: string; logoUrl: string }
 export default function HomePageClient({
   categories,
   products,
+  orderProducts = [],
   auctions,
   content = {},
   heroBanners = [],
@@ -646,6 +645,7 @@ export default function HomePageClient({
 }: {
   categories: CategoryItem[]
   products: ProductItem[]
+  orderProducts?: ProductItem[]
   auctions: AuctionItem[]
   content?: Record<string, string>
   heroBanners?: HeroBanner[]
@@ -819,7 +819,7 @@ export default function HomePageClient({
                   <p>📦 Chưa có sản phẩm hay phiên đấu giá nào.</p>
                 </div>
               ) : (
-                <MixedSlider auctions={auctions} products={products} router={router} isAdmin={isAdmin} />
+                <MixedSlider auctions={auctions} products={orderProducts} router={router} isAdmin={isAdmin} />
               )}
             </div>
           </section>
@@ -889,7 +889,7 @@ export default function HomePageClient({
                       </div>
                     ))}
                   </div>
-                  <button className="btn-primary" onClick={() => router.push('/lien-he')}>Tìm Hiểu Thêm</button>
+                  <button className="btn-outline-red" onClick={() => router.push('/lien-he')}>Tìm Hiểu Thêm</button>
                 </div>
                 <div className="why-right">
                   <div className="why-stats-grid">

@@ -14,6 +14,7 @@ const schema = z.object({
   parentId: z.string().uuid().optional().nullable(),
   sortOrder: z.number().int().default(0),
   isActive: z.boolean().default(true),
+  showOnHome: z.boolean().default(true),
   metaTitle: z.string().max(255).optional().nullable(),
   metaDesc: z.string().optional().nullable(),
 })

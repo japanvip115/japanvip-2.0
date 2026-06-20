@@ -483,7 +483,7 @@ export function AuctionDetailClient({
 
       {/* ── Bid form ── */}
       {canBid && (
-        <div className="rounded-2xl border border-red-200 bg-white overflow-hidden">
+        <div className="group rounded-2xl border border-red-200 bg-white overflow-hidden">
           {/* Tab switcher */}
           <div className="grid grid-cols-2 border-b border-red-100">
             <button
@@ -562,11 +562,10 @@ export function AuctionDetailClient({
                 <button
                   onClick={handleBid}
                   disabled={bidding}
-                  className={`w-full rounded-xl py-4 text-base font-black text-white shadow-sm transition-all active:scale-[0.98] disabled:opacity-60 cursor-pointer ${
-                    urgent
-                      ? 'bg-gradient-to-r from-red-600 to-orange-500 shadow-red-300 hover:from-red-700 hover:to-orange-600'
-                      : 'bg-brand-red hover:bg-red-700'
-                  }`}
+                  className="w-full rounded-xl py-4 text-base font-black transition-all active:scale-[0.98] disabled:opacity-60 cursor-pointer border-2"
+                  style={{border:'2px solid #fecaca', color:'#c41e3a', background:'white'}}
+                  onMouseEnter={e => { e.currentTarget.style.background='#c41e3a'; e.currentTarget.style.color='white'; e.currentTarget.style.border='2px solid #c41e3a' }}
+                  onMouseLeave={e => { e.currentTarget.style.background='white'; e.currentTarget.style.color='#c41e3a'; e.currentTarget.style.border='2px solid #fecaca' }}
                 >
                   {bidding ? (
                     <span className="flex items-center justify-center gap-2">
@@ -643,7 +642,10 @@ export function AuctionDetailClient({
                 <button
                   onClick={handleMaxBid}
                   disabled={maxBidding}
-                  className="w-full rounded-xl bg-brand-red py-4 text-base font-black text-white shadow-sm transition-all active:scale-[0.98] hover:bg-red-700 disabled:opacity-60 cursor-pointer"
+                  className="w-full rounded-xl py-4 text-base font-black transition-all active:scale-[0.98] disabled:opacity-60 cursor-pointer border-2"
+                  style={{border:'2px solid #fecaca', color:'#c41e3a', background:'white'}}
+                  onMouseEnter={e => { e.currentTarget.style.background='#c41e3a'; e.currentTarget.style.color='white'; e.currentTarget.style.border='2px solid #c41e3a' }}
+                  onMouseLeave={e => { e.currentTarget.style.background='white'; e.currentTarget.style.color='#c41e3a'; e.currentTarget.style.border='2px solid #fecaca' }}
                 >
                   {maxBidding ? (
                     <span className="flex items-center justify-center gap-2">

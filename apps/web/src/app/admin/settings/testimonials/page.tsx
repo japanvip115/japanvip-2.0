@@ -1,7 +1,7 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { Plus, Pencil, Trash2, Star, GripVertical, Eye, EyeOff } from 'lucide-react'
+import { useEffect, useState, useRef } from 'react'
+import { Plus, Pencil, Trash2, Star, GripVertical, Eye, EyeOff, Upload, X } from 'lucide-react'
 
 type T = { id: string; name: string; city: string; photoUrl: string | null; text: string; rating: number; sortOrder: number; isActive: boolean }
 
@@ -11,6 +11,22 @@ export default function TestimonialsAdminPage() {
   const [list, setList] = useState<T[]>([])
   const [editing, setEditing] = useState<(Partial<T> & { id?: string }) | null>(null)
   const [saving, setSaving] = useState(false)
+  const [uploading, setUploading] = useState(false)
+  const fileRef = useRef<HTMLInputElement>(null)
+
+  async function uploadPhoto(file: File) {
+    setUploading(true)
+    try {
+      const fd = new FormData()
+      fd.append('file', file)
+      fd.append('folder', 'testimonials')
+      const res = await fetch('/api/v1/admin/upload', { method: 'POST', body: fd })
+      const data = await res.json()
+      if (data.data?.publicUrl) setEditing(p => ({ ...p!, photoUrl: data.data.publicUrl }))
+    } finally {
+      setUploading(false)
+    }
+  }
 
   const load = () => fetch('/api/v1/admin/testimonials').then(r => r.json()).then(setList)
   useEffect(() => { load() }, [])
@@ -102,10 +118,32 @@ export default function TestimonialsAdminPage() {
                 </div>
               </div>
               <div>
-                <label className="text-xs text-gray-400 mb-1 block">URL ảnh đại diện</label>
-                <input value={editing.photoUrl ?? ''} onChange={e => setEditing(p => ({ ...p!, photoUrl: e.target.value }))}
-                  className="w-full rounded-lg bg-gray-800 border border-gray-700 px-3 py-2 text-sm text-white focus:outline-none focus:border-red-500" placeholder="https://..." />
-                {editing.photoUrl && <img src={editing.photoUrl} className="mt-2 h-12 w-12 rounded-full object-cover" onError={e => e.currentTarget.style.display = 'none'} />}
+                <label className="text-xs text-gray-400 mb-1 block">Ảnh đại diện</label>
+                <div className="flex items-center gap-3">
+                  {editing.photoUrl ? (
+                    <div className="relative flex-shrink-0">
+                      <img src={editing.photoUrl} className="h-14 w-14 rounded-full object-cover border border-gray-700" onError={e => e.currentTarget.style.display = 'none'} />
+                      <button onClick={() => setEditing(p => ({ ...p!, photoUrl: '' }))}
+                        className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-red-600 flex items-center justify-center hover:bg-red-500">
+                        <X className="h-2.5 w-2.5 text-white" />
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="h-14 w-14 rounded-full bg-gray-800 border border-dashed border-gray-600 flex items-center justify-center flex-shrink-0">
+                      <Upload className="h-5 w-5 text-gray-500" />
+                    </div>
+                  )}
+                  <div className="flex-1 space-y-2">
+                    <input ref={fileRef} type="file" accept="image/*" className="hidden"
+                      onChange={e => { const f = e.target.files?.[0]; if (f) uploadPhoto(f) }} />
+                    <button onClick={() => fileRef.current?.click()} disabled={uploading}
+                      className="w-full rounded-lg border border-dashed border-gray-600 bg-gray-800 px-3 py-2 text-xs text-gray-400 hover:border-red-500 hover:text-white transition-colors disabled:opacity-50">
+                      {uploading ? 'Đang tải lên...' : 'Chọn ảnh từ máy tính'}
+                    </button>
+                    <input value={editing.photoUrl ?? ''} onChange={e => setEditing(p => ({ ...p!, photoUrl: e.target.value }))}
+                      className="w-full rounded-lg bg-gray-800 border border-gray-700 px-3 py-2 text-xs text-white focus:outline-none focus:border-red-500" placeholder="Hoặc dán URL ảnh..." />
+                  </div>
+                </div>
               </div>
               <div>
                 <label className="text-xs text-gray-400 mb-1 block">Nội dung đánh giá *</label>

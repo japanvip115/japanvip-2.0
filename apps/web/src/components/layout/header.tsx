@@ -27,11 +27,11 @@ export async function Header() {
           <div className="hidden items-center gap-4 md:flex">
             <span className="flex items-center gap-1">🇯🇵 Cam kết hàng Nhật chính hãng</span>
             <span className="text-gray-600">|</span>
-            <span>Hotline: <a href="tel:0988969896" className="font-semibold text-white hover:text-gray-300">0988.969.896</a></span>
-            <span className="text-gray-600">|</span>
             <span>Thứ 2 – Thứ 7: 8:00–18:30</span>
           </div>
           <div className="flex items-center gap-4 ml-auto">
+            <span>Hotline: <a href="tel:0988969896" className="font-semibold text-white hover:text-gray-300">0988.969.896</a></span>
+            <span className="text-gray-600">|</span>
             <Link href="/lien-he" className="hover:text-white transition-colors">Liên hệ</Link>
             <span className="text-gray-600">|</span>
             <span>🇻🇳 VI</span>

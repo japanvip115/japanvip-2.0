@@ -1,0 +1,11 @@
+require('./jv-env.cjs')
+const {PrismaClient}=require('@prisma/client')
+const p=new PrismaClient()
+;(async()=>{
+  const noPrice=await p.product.count({where:{OR:[{salePrice:null},{salePrice:0}]}})
+  const r=await p.product.updateMany({where:{status:'DRAFT'},data:{status:'ACTIVE'}})
+  console.log('Activated:',r.count)
+  console.log('ACTIVE total:',await p.product.count({where:{status:'ACTIVE'}}))
+  console.log('⚠ products with price 0/null (show "Liên hệ"):',noPrice)
+  await p.$disconnect()
+})().catch(e=>{console.error(e.message);process.exit(1)})
