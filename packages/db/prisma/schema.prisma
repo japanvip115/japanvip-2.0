@@ -1071,6 +1071,48 @@ model Testimonial {
 }
 
 // Bảng cước vận chuyển JP → VN (per kg, 2 loại hàng)
+// ─────────────────────────────────────────
+// DOMAIN: CONTENT CALENDAR
+// ─────────────────────────────────────────
+
+enum ContentTaskType {
+  PRODUCT_DESCRIPTION
+  BLOG_POST
+  FAQ
+  SEO_META
+}
+
+enum ContentTaskStatus {
+  PENDING
+  RUNNING
+  DONE
+  FAILED
+}
+
+model ContentTask {
+  id            String            @id @default(uuid()) @db.Uuid
+  type          ContentTaskType
+  status        ContentTaskStatus @default(PENDING)
+  scheduledAt   DateTime          @map("scheduled_at") @db.Timestamptz
+  title         String            @db.VarChar(500)
+  topic         String?           @db.Text
+  keywords      String?           @db.Text
+  sourceUrl     String?           @map("source_url") @db.VarChar(1000)
+  productId     String?           @map("product_id") @db.Uuid
+  provider      String            @default("anthropic") @db.VarChar(50)
+  resultId      String?           @map("result_id") @db.Uuid
+  resultType    String?           @map("result_type") @db.VarChar(50)
+  errorMessage  String?           @map("error_message") @db.Text
+  ranAt         DateTime?         @map("ran_at") @db.Timestamptz
+  createdBy     String            @map("created_by") @db.Uuid
+  createdAt     DateTime          @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt     DateTime          @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@index([status, scheduledAt])
+  @@index([createdBy])
+  @@map("content_tasks")
+}
+
 model BfjFreightRate {
   id                  String   @id @default(uuid()) @db.Uuid
   minWeightKg         Decimal  @map("min_weight_kg") @db.Decimal(8, 2)

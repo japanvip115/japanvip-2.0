@@ -552,3 +552,33 @@ export async function sendBfjStatusEmail(opts: {
     `),
   })
 }
+
+export async function sendContentDoneEmail(opts: {
+  title: string
+  type: string
+  viewUrl: string
+}) {
+  const typeLabel: Record<string, string> = {
+    BLOG_POST: 'Bài Blog',
+    PRODUCT_DESCRIPTION: 'Mô tả sản phẩm',
+    FAQ: 'FAQ',
+    SEO_META: 'SEO Meta',
+  }
+  const cfg = await getSmtpConfig()
+  await createTransport(cfg).sendMail({
+    from: cfg.from,
+    to: 'admin@japanvip.vn',
+    subject: `✅ Nội dung đã tạo xong: ${opts.title}`,
+    html: emailLayout(`
+      <div style="background:#f0fdf4;border:1.5px solid #86efac;border-radius:12px;padding:20px 24px;margin-bottom:24px;text-align:center">
+        <p style="margin:0 0 8px;font-size:36px">✅</p>
+        <p style="margin:0;font-size:18px;font-weight:800;color:#16a34a">Nội dung đã được tạo tự động!</p>
+      </div>
+      <p style="margin:0 0 8px;font-size:14px;color:#374151">Loại: <strong>${typeLabel[opts.type] ?? opts.type}</strong></p>
+      <p style="margin:0 0 24px;font-size:14px;color:#374151">Tiêu đề: <strong>${opts.title}</strong></p>
+      <a href="${opts.viewUrl}" style="background:#b91c1c;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;display:inline-block;font-weight:700;font-size:14px">
+        Xem kết quả →
+      </a>
+    `),
+  })
+}

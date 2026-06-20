@@ -52,6 +52,15 @@ export default async function AdminContentPage() {
         { label: 'Powered by', value: 'Claude', color: 'text-purple-400' },
       ],
     },
+    {
+      href: '/admin/content/calendar',
+      icon: Sparkles,
+      title: '📅 Content Calendar',
+      desc: 'Lên lịch tạo nội dung tự động, AI viết và publish theo giờ',
+      stats: [
+        { label: 'Auto-publish', value: '24/7', color: 'text-green-400' },
+      ],
+    },
   ]
 
   return (

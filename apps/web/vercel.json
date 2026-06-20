@@ -3,5 +3,10 @@
   "installCommand": "cd ../.. && pnpm install",
   "outputDirectory": ".next",
   "framework": "nextjs",
-  "crons": []
+  "crons": [
+    {
+      "path": "/api/v1/cron/publish-scheduled",
+      "schedule": "0 * * * *"
+    }
+  ]
 }
