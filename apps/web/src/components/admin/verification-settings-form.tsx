@@ -8,13 +8,15 @@ type Props = {
   bingVerification: string
   facebookVerification: string
   facebookPixelId: string
+  ga4Id: string
 }
 
-export function VerificationSettingsForm({ googleVerification, bingVerification, facebookVerification, facebookPixelId }: Props) {
+export function VerificationSettingsForm({ googleVerification, bingVerification, facebookVerification, facebookPixelId, ga4Id }: Props) {
   const [google, setGoogle] = useState(googleVerification)
   const [bing, setBing] = useState(bingVerification)
   const [facebook, setFacebook] = useState(facebookVerification)
   const [pixel, setPixel] = useState(facebookPixelId)
+  const [ga4, setGa4] = useState(ga4Id)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
 
@@ -32,6 +34,12 @@ export function VerificationSettingsForm({ googleVerification, bingVerification,
     return (digits ? digits[0] : input).trim()
   }
 
+  // GA4 Measurement ID dạng G-XXXXXXX — cho dán cả đoạn gtag vẫn bóc ra được
+  function extractGa4Id(input: string): string {
+    const m = input.match(/G-[A-Z0-9]{6,}/i)
+    return (m ? m[0].toUpperCase() : input).trim()
+  }
+
   async function handleSave() {
     setSaving(true)
     setSaved(false)
@@ -44,6 +52,7 @@ export function VerificationSettingsForm({ googleVerification, bingVerification,
           site_bing_verification: extractContent(bing),
           site_facebook_verification: extractContent(facebook),
           site_facebook_pixel_id: extractPixelId(pixel),
+          site_ga4_id: extractGa4Id(ga4),
         }),
       })
       if (res.ok) {
@@ -51,6 +60,7 @@ export function VerificationSettingsForm({ googleVerification, bingVerification,
         setBing(extractContent(bing))
         setFacebook(extractContent(facebook))
         setPixel(extractPixelId(pixel))
+        setGa4(extractGa4Id(ga4))
         setSaved(true)
         setTimeout(() => setSaved(false), 2500)
       }
@@ -129,6 +139,24 @@ export function VerificationSettingsForm({ googleVerification, bingVerification,
           className="w-full rounded-lg border border-gray-600 bg-gray-800 px-3 py-2 text-sm text-white placeholder-gray-500 outline-none focus:border-blue-500"
         />
         <p className="mt-1.5 text-[11px] text-gray-600">Lấy tại: business.facebook.com → Trình quản lý sự kiện (Events Manager) → chọn Pixel → ID hiện ở đầu.</p>
+      </div>
+
+      <div className="rounded-xl border border-orange-500/25 bg-orange-500/[0.04] p-5">
+        <div className="flex items-center gap-2 mb-1">
+          <span className="text-lg">📊</span>
+          <h2 className="font-semibold text-white">Google Analytics 4 <span className="text-xs font-normal text-orange-300/80">(Tracking + Remarketing)</span></h2>
+        </div>
+        <p className="text-xs text-gray-500 mb-3">
+          Nhập <b className="text-gray-300">Measurement ID</b> dạng <code className="rounded bg-gray-900 px-1 py-0.5 text-[11px] text-gray-300">G-XXXXXXX</code> từ GA4 → hệ thống tự chèn <code className="rounded bg-gray-900 px-1 py-0.5 text-[11px] text-gray-300">gtag.js</code> và bắn event e-commerce
+          (view_item, add_to_cart, view_cart, begin_checkout, <b className="text-gray-300">purchase</b>) — bằng đúng các điểm chạm như Meta Pixel.
+        </p>
+        <input
+          value={ga4}
+          onChange={e => setGa4(e.target.value)}
+          placeholder="VD: G-XXXXXXXXXX — hoặc dán cả đoạn gtag.js"
+          className="w-full rounded-lg border border-gray-600 bg-gray-800 px-3 py-2 text-sm text-white placeholder-gray-500 outline-none focus:border-orange-500"
+        />
+        <p className="mt-1.5 text-[11px] text-gray-600">Lấy tại: analytics.google.com → Quản trị → Luồng dữ liệu (Data Streams) → chọn luồng web → Measurement ID.</p>
       </div>
 
       <div className="flex items-center gap-3">

@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useCartStore } from '@/store/cart'
 import { ShoppingCart, Zap, Check } from 'lucide-react'
 import { QuickOrderModal } from './quick-order-modal'
-import { trackFb, CURRENCY } from '@/lib/fbq'
+import { trackViewItem, trackAddToCart, trackBeginCheckout } from '@/lib/fbq'
 
 type Props = {
   productId: string
@@ -20,14 +20,9 @@ export function AddToCartButtons({ productId, slug, name, image, priceJpy, price
   const [added, setAdded] = useState(false)
   const [quickOrderOpen, setQuickOrderOpen] = useState(false)
 
-  // Meta Pixel: khách xem chi tiết sản phẩm
+  // Tracking: khách xem chi tiết sản phẩm
   useEffect(() => {
-    trackFb('ViewContent', {
-      content_ids: [productId],
-      content_name: name,
-      content_type: 'product',
-      ...(priceVnd ? { value: priceVnd, currency: CURRENCY } : {}),
-    })
+    trackViewItem({ ids: [productId], name, value: priceVnd, items: [{ id: productId, name, price: priceVnd ?? undefined }] })
   }, [productId, name, priceVnd])
 
   function handleAddToCart() {
@@ -35,24 +30,12 @@ export function AddToCartButtons({ productId, slug, name, image, priceJpy, price
     setAdded(true)
     setTimeout(() => setAdded(false), 2200)
     window.dispatchEvent(new CustomEvent('cart:open'))
-    trackFb('AddToCart', {
-      content_ids: [productId],
-      content_name: name,
-      content_type: 'product',
-      contents: [{ id: productId, quantity: 1 }],
-      ...(priceVnd ? { value: priceVnd, currency: CURRENCY } : {}),
-    })
+    trackAddToCart({ ids: [productId], name, value: priceVnd, numItems: 1, items: [{ id: productId, name, quantity: 1, price: priceVnd ?? undefined }] })
   }
 
   function handleBuyNow() {
     setQuickOrderOpen(true)
-    trackFb('InitiateCheckout', {
-      content_ids: [productId],
-      content_name: name,
-      content_type: 'product',
-      num_items: 1,
-      ...(priceVnd ? { value: priceVnd, currency: CURRENCY } : {}),
-    })
+    trackBeginCheckout({ ids: [productId], name, value: priceVnd, numItems: 1, items: [{ id: productId, name, quantity: 1, price: priceVnd ?? undefined }] })
   }
 
   return (

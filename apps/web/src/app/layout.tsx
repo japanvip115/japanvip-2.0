@@ -63,7 +63,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     getActiveFont(),
     prisma.siteSetting.findUnique({ where: { key: 'content_protection_enabled' } }).catch(() => null),
     prisma.siteSetting
-      .findMany({ where: { key: { in: ['site_facebook_verification', 'site_facebook_pixel_id'] } } })
+      .findMany({ where: { key: { in: ['site_facebook_verification', 'site_facebook_pixel_id', 'site_ga4_id'] } } })
       .catch(() => [] as { key: string; value: string }[]),
   ])
   const activeFontVar = getFontCssVar(activeFont)
@@ -71,6 +71,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const layoutMap = Object.fromEntries(layoutSettings.map(r => [r.key, r.value?.trim()]))
   const facebookVerify = layoutMap['site_facebook_verification']
   const fbPixelId = layoutMap['site_facebook_pixel_id']
+  const ga4Id = layoutMap['site_ga4_id']
 
   return (
     <html
@@ -90,6 +91,16 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               __html: `!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','${fbPixelId}');fbq('track','PageView');`,
             }}
           />
+        )}
+        {ga4Id && (
+          <>
+            <script async src={`https://www.googletagmanager.com/gtag/js?id=${ga4Id}`} />
+            <script
+              dangerouslySetInnerHTML={{
+                __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','${ga4Id}');`,
+              }}
+            />
+          </>
         )}
       </head>
       <body>

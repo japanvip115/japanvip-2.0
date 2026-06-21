@@ -5,7 +5,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useCartStore } from '@/store/cart'
 import { formatVND } from '@japanvip/utils'
-import { trackFb, CURRENCY } from '@/lib/fbq'
+import { trackViewCart } from '@/lib/fbq'
 
 const JPY_RATE = 175
 
@@ -33,12 +33,11 @@ export function CartDrawer({ open, onClose }: Props) {
   // Meta Pixel: khách mở giỏ hàng để xem
   useEffect(() => {
     if (!open || items.length === 0) return
-    trackFb('ViewCart', {
-      content_ids: items.map((i) => i.productId),
-      content_type: 'product',
-      contents: items.map((i) => ({ id: i.productId, quantity: i.quantity })),
-      num_items: items.reduce((s, i) => s + i.quantity, 0),
-      ...(totalVnd > 0 ? { value: totalVnd, currency: CURRENCY } : {}),
+    trackViewCart({
+      ids: items.map((i) => i.productId),
+      value: totalVnd,
+      numItems: items.reduce((s, i) => s + i.quantity, 0),
+      items: items.map((i) => ({ id: i.productId, name: i.name, quantity: i.quantity })),
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open])

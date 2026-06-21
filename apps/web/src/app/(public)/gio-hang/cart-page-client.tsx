@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useCartStore } from '@/store/cart'
 import { formatVND } from '@japanvip/utils'
-import { trackFb, CURRENCY } from '@/lib/fbq'
+import { trackViewCart, trackPurchase } from '@/lib/fbq'
 
 const FALLBACK_JPY_RATE = 175
 
@@ -39,12 +39,11 @@ export function CartPageClient() {
   useEffect(() => {
     if (viewCartFired.current || items.length === 0) return
     viewCartFired.current = true
-    trackFb('ViewCart', {
-      content_ids: items.map((i) => i.productId),
-      content_type: 'product',
-      contents: items.map((i) => ({ id: i.productId, quantity: i.quantity })),
-      num_items: items.reduce((s, i) => s + i.quantity, 0),
-      ...(totalVnd > 0 ? { value: totalVnd, currency: CURRENCY } : {}),
+    trackViewCart({
+      ids: items.map((i) => i.productId),
+      value: totalVnd,
+      numItems: items.reduce((s, i) => s + i.quantity, 0),
+      items: items.map((i) => ({ id: i.productId, name: i.name, quantity: i.quantity })),
     })
   }, [items, totalVnd])
 
@@ -77,12 +76,12 @@ export function CartPageClient() {
       })
       const data = await res.json()
       if (!data.success) throw new Error(data.error ?? 'Đặt hàng thất bại')
-      trackFb('Purchase', {
-        content_ids: items.map((i) => i.productId),
-        content_type: 'product',
-        contents: items.map((i) => ({ id: i.productId, quantity: i.quantity })),
-        num_items: items.reduce((s, i) => s + i.quantity, 0),
-        ...(totalVnd > 0 ? { value: totalVnd, currency: CURRENCY } : { currency: CURRENCY }),
+      trackPurchase({
+        ids: items.map((i) => i.productId),
+        value: totalVnd,
+        numItems: items.reduce((s, i) => s + i.quantity, 0),
+        transactionId: data.data.orderNumber,
+        items: items.map((i) => ({ id: i.productId, name: i.name, quantity: i.quantity })),
       })
       clear()
       setOrderSuccess({ orderNumber: data.data.orderNumber, orderId: data.data.id })

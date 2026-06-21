@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import { formatVND } from '@japanvip/utils'
 import { X, Phone, User, MapPin, Minus, Plus, CheckCircle, Loader2, Mail, ShieldCheck } from 'lucide-react'
-import { trackFb, CURRENCY } from '@/lib/fbq'
+import { trackPurchase } from '@/lib/fbq'
 
 type Props = {
   open: boolean
@@ -122,13 +122,13 @@ export function QuickOrderModal({ open, onClose, product }: Props) {
       if (!data.success) throw new Error(data.error ?? 'Có lỗi xảy ra')
       setOrderRef(data.data.orderRef)
       setStep('success')
-      trackFb('Purchase', {
-        content_ids: [product.id],
-        content_name: product.name,
-        content_type: 'product',
-        contents: [{ id: product.id, quantity }],
-        num_items: quantity,
-        ...(product.priceVnd ? { value: product.priceVnd * quantity, currency: CURRENCY } : { currency: CURRENCY }),
+      trackPurchase({
+        ids: [product.id],
+        name: product.name,
+        value: product.priceVnd ? product.priceVnd * quantity : null,
+        numItems: quantity,
+        transactionId: data.data.orderRef,
+        items: [{ id: product.id, name: product.name, quantity, price: product.priceVnd ?? undefined }],
       })
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Không thể gửi đơn. Vui lòng thử lại.')

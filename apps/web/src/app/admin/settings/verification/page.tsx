@@ -8,7 +8,7 @@ export const metadata: Metadata = { title: 'Admin — Xác Minh Website' }
 
 export default async function VerificationSettingsPage() {
   const rows = await prisma.siteSetting.findMany({
-    where: { key: { in: ['site_google_verification', 'site_bing_verification', 'site_facebook_verification', 'site_facebook_pixel_id'] } },
+    where: { key: { in: ['site_google_verification', 'site_bing_verification', 'site_facebook_verification', 'site_facebook_pixel_id', 'site_ga4_id'] } },
   })
   const map = Object.fromEntries(rows.map(r => [r.key, r.value ?? '']))
 
@@ -33,6 +33,7 @@ export default async function VerificationSettingsPage() {
         bingVerification={map['site_bing_verification'] ?? ''}
         facebookVerification={map['site_facebook_verification'] ?? ''}
         facebookPixelId={map['site_facebook_pixel_id'] ?? ''}
+        ga4Id={map['site_ga4_id'] ?? ''}
       />
     </div>
   )
