@@ -28,8 +28,8 @@ export default function NewsletterAdminPage() {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ subject, bodyHtml, campaignId }),
         })
-        const data = await res.json()
-        if (!data?.success) { alert(data?.error || 'Lỗi gửi'); break }
+        const data = await res.json().catch(() => null)
+        if (!data?.success) { alert(data?.error || `Lỗi gửi (HTTP ${res.status})`); break }
         campaignId = data.data.campaignId
         total += data.data.sent
         setProgress({ sent: total })

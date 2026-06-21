@@ -19,16 +19,27 @@ export default function AutomationsAdminPage() {
   const [loading, setLoading] = useState(true)
   const [savedKey, setSavedKey] = useState<string | null>(null)
 
-  const load = () => fetch('/api/v1/admin/automations').then(r => r.json()).then(d => { setItems(d?.data ?? []); setLoading(false) })
+  const load = async () => {
+    try {
+      const res = await fetch('/api/v1/admin/automations')
+      if (!res.ok) return
+      const d = await res.json()
+      setItems(d?.data ?? [])
+    } catch { /* bỏ qua, giữ trạng thái rỗng */ } finally {
+      setLoading(false)
+    }
+  }
   useEffect(() => { load() }, [])
 
   async function update(key: string, patch: Partial<Pick<Item, 'enabled' | 'config'>>) {
     setItems(prev => prev.map(it => it.key === key ? { ...it, ...patch, config: { ...it.config, ...(patch.config ?? {}) } } : it))
-    await fetch('/api/v1/admin/automations', {
-      method: 'PUT', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ key, ...patch }),
-    })
-    setSavedKey(key); setTimeout(() => setSavedKey(null), 1500)
+    try {
+      await fetch('/api/v1/admin/automations', {
+        method: 'PUT', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key, ...patch }),
+      })
+      setSavedKey(key); setTimeout(() => setSavedKey(null), 1500)
+    } catch { /* bỏ qua */ }
   }
 
   if (loading) return <div className="flex items-center gap-2 text-gray-400 p-6"><Loader2 className="h-5 w-5 animate-spin" /> Đang tải...</div>
