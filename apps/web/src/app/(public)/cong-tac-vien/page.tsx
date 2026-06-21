@@ -12,53 +12,112 @@ const HOW_IT_WORKS = [
   { step: '03', title: 'Nhận tiền', desc: 'Khi khách đặt hàng qua link của bạn và đơn hoàn thành, hoa hồng tự động ghi nhận.' },
 ]
 
+const STATS = [
+  { value: '5%', label: 'Hoa hồng cơ bản' },
+  { value: '∞', label: 'Không giới hạn đơn' },
+  { value: '24h', label: 'Thanh toán nhanh' },
+]
+
+const BENEFITS = [
+  { icon: '🎌', title: 'Thương hiệu uy tín', desc: 'Hàng nội địa Nhật chính hãng 100% — dễ dàng thuyết phục khách hàng.' },
+  { icon: '📈', title: 'Hoa hồng minh bạch', desc: 'Theo dõi real-time mọi đơn hàng và hoa hồng ngay trên dashboard riêng.' },
+  { icon: '🛡️', title: 'Thanh toán đảm bảo', desc: 'Chuyển khoản đúng hạn về tài khoản ngân hàng bạn đăng ký.' },
+]
+
 export default function AffiliatePage() {
   return (
-    <div className="bg-white">
+    <div className="bg-[#0a0a0f]">
       {/* Hero */}
-      <section className="bg-gradient-to-br from-gray-900 via-gray-800 to-red-900 py-16 text-center text-white">
-        <div className="mx-auto max-w-2xl px-4">
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-red-600/20 border border-red-500/30 px-4 py-1.5 text-sm font-medium text-red-300">
-            💰 Chương trình Cộng tác viên
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#0a0a0f] via-[#12101a] to-[#0a0a0f] py-12 text-center text-white sm:py-14">
+        {/* Ambient glow */}
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute left-1/2 top-0 h-[500px] w-[500px] -translate-x-1/2 rounded-full bg-amber-500/10 blur-[120px]" />
+          <div className="absolute bottom-0 left-1/4 h-[300px] w-[300px] rounded-full bg-red-600/10 blur-[100px]" />
+        </div>
+        {/* Subtle grid */}
+        <div
+          className="pointer-events-none absolute inset-0 opacity-[0.04]"
+          style={{
+            backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)',
+            backgroundSize: '48px 48px',
+          }}
+        />
+
+        <div className="relative mx-auto max-w-3xl px-4">
+          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-amber-400/30 bg-amber-400/5 px-5 py-2 text-sm font-medium tracking-wide text-amber-200 backdrop-blur-sm">
+            <span className="h-1.5 w-1.5 rounded-full bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.8)]" />
+            Chương trình Đối Tác Cao Cấp
           </div>
-          <h1 className="text-4xl font-bold tracking-tight">
-            Kiếm thu nhập cùng<br />
-            <span className="text-red-400">Japan VIP</span>
+
+          <h1 className="text-5xl font-bold leading-[1.1] tracking-tight sm:text-6xl">
+            Kiến tạo thu nhập cùng
+            <br />
+            <span className="bg-gradient-to-r from-amber-200 via-amber-400 to-amber-200 bg-clip-text text-transparent">
+              Japan VIP
+            </span>
           </h1>
-          <p className="mt-4 text-lg text-gray-300">
-            Giới thiệu hàng gia dụng nội địa Nhật chính hãng và nhận hoa hồng hấp dẫn cho mỗi đơn hàng thành công
+
+          <p className="mx-auto mt-4 max-w-xl text-lg leading-relaxed text-gray-400">
+            Trở thành đối tác phân phối hàng gia dụng nội địa Nhật chính hãng.
+            Hoa hồng hấp dẫn, minh bạch cho mỗi đơn hàng thành công.
           </p>
-          <div className="mt-8 flex justify-center gap-6">
-            <div className="text-center">
-              <p className="text-3xl font-bold text-red-400">5%</p>
-              <p className="text-sm text-gray-400">Hoa hồng cơ bản</p>
-            </div>
-            <div className="w-px bg-gray-700" />
-            <div className="text-center">
-              <p className="text-3xl font-bold text-red-400">∞</p>
-              <p className="text-sm text-gray-400">Không giới hạn đơn</p>
-            </div>
-            <div className="w-px bg-gray-700" />
-            <div className="text-center">
-              <p className="text-3xl font-bold text-red-400">24h</p>
-              <p className="text-sm text-gray-400">Thanh toán nhanh</p>
-            </div>
+
+          {/* Stats */}
+          <div className="mx-auto mt-7 flex max-w-lg items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/[0.03] p-5 backdrop-blur-sm sm:gap-8">
+            {STATS.map((s, i) => (
+              <div key={s.label} className="flex flex-1 items-center">
+                <div className="flex-1 text-center">
+                  <p className="bg-gradient-to-b from-amber-200 to-amber-500 bg-clip-text text-4xl font-bold text-transparent">
+                    {s.value}
+                  </p>
+                  <p className="mt-1 text-xs tracking-wide text-gray-500">{s.label}</p>
+                </div>
+                {i < STATS.length - 1 && <div className="h-10 w-px bg-gradient-to-b from-transparent via-white/15 to-transparent" />}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Benefits */}
+      <section className="relative bg-[#0a0a0f] py-8">
+        <div className="mx-auto max-w-5xl px-4">
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
+            {BENEFITS.map((b) => (
+              <div
+                key={b.title}
+                className="group relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.06] to-transparent p-6 transition-all duration-300 hover:border-amber-400/30"
+              >
+                <div className="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-amber-400/5 blur-2xl transition-opacity duration-300 group-hover:bg-amber-400/15" />
+                <div className="relative">
+                  <div className="mb-3 text-3xl">{b.icon}</div>
+                  <h3 className="text-lg font-semibold text-white">{b.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-gray-400">{b.desc}</p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* How it works */}
-      <section className="py-12 bg-gray-50">
-        <div className="mx-auto max-w-4xl px-4">
-          <h2 className="text-center text-2xl font-bold text-gray-900 mb-8">Cách hoạt động</h2>
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
-            {HOW_IT_WORKS.map((h) => (
-              <div key={h.step} className="rounded-xl bg-white border p-6 text-center shadow-sm">
-                <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-600 text-xl font-black text-white">
+      <section className="relative bg-gradient-to-b from-[#0a0a0f] to-[#12101a] py-10">
+        <div className="mx-auto max-w-5xl px-4">
+          <div className="mb-8 text-center">
+            <p className="mb-2 text-sm font-semibold uppercase tracking-[0.2em] text-amber-400/80">Quy trình</p>
+            <h2 className="text-3xl font-bold text-white">Chỉ 3 bước đơn giản</h2>
+          </div>
+          <div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
+            {HOW_IT_WORKS.map((h, i) => (
+              <div key={h.step} className="relative text-center">
+                {i < HOW_IT_WORKS.length - 1 && (
+                  <div className="absolute left-[calc(50%+2.5rem)] top-8 hidden h-px w-[calc(100%-5rem)] bg-gradient-to-r from-amber-400/40 to-transparent sm:block" />
+                )}
+                <div className="relative mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full border border-amber-400/30 bg-gradient-to-b from-amber-400/15 to-transparent text-xl font-bold text-amber-300 shadow-[0_0_24px_rgba(251,191,36,0.15)]">
                   {h.step}
                 </div>
-                <h3 className="font-semibold text-gray-900">{h.title}</h3>
-                <p className="mt-2 text-sm text-gray-500">{h.desc}</p>
+                <h3 className="text-lg font-semibold text-white">{h.title}</h3>
+                <p className="mx-auto mt-3 max-w-xs text-sm leading-relaxed text-gray-400">{h.desc}</p>
               </div>
             ))}
           </div>
@@ -66,10 +125,14 @@ export default function AffiliatePage() {
       </section>
 
       {/* Register form */}
-      <section className="py-12">
-        <div className="mx-auto max-w-lg px-4">
-          <h2 className="text-center text-2xl font-bold text-gray-900 mb-2">Đăng ký ngay</h2>
-          <p className="text-center text-sm text-gray-500 mb-8">Miễn phí · Duyệt trong 24h làm việc</p>
+      <section className="relative overflow-hidden bg-[#12101a] py-10">
+        <div className="pointer-events-none absolute left-1/2 top-1/2 h-[400px] w-[400px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-amber-500/[0.07] blur-[120px]" />
+        <div className="relative mx-auto max-w-lg px-4">
+          <div className="mb-6 text-center">
+            <p className="mb-2 text-sm font-semibold uppercase tracking-[0.2em] text-amber-400/80">Bắt đầu ngay</p>
+            <h2 className="text-3xl font-bold text-white">Đăng ký đối tác</h2>
+            <p className="mt-2 text-sm text-gray-400">Miễn phí · Xét duyệt trong 24h làm việc</p>
+          </div>
           <AffiliateRegisterForm />
         </div>
       </section>

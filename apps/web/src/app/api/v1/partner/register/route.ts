@@ -7,9 +7,6 @@ import { verifyOtp } from '@/lib/otp.service'
 const schema = z.object({
   fullName: z.string().min(2).max(100),
   phone: z.string().min(9).max(15),
-  bankName: z.string().min(2).max(100),
-  bankAccount: z.string().min(6).max(30),
-  bankHolder: z.string().min(2).max(100),
   refCode: z.string().min(3).max(20).regex(/^[A-Z0-9_]+$/i, 'Chỉ dùng chữ hoa, số và _'),
   email: z.string().email(),
   otp: z.string().length(6),
@@ -40,9 +37,6 @@ export async function POST(req: NextRequest) {
         data: {
           userId: session.user.id,
           refCode,
-          bankName: body.bankName,
-          bankAccount: body.bankAccount,
-          bankHolder: body.bankHolder,
           status: 'PENDING',
         },
       }),

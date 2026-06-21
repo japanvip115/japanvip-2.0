@@ -6,7 +6,7 @@ import Link from 'next/link'
 
 export function AffiliateRegisterForm() {
   const { data: session, status } = useSession()
-  const [form, setForm] = useState({ fullName: '', phone: '', bankName: '', bankAccount: '', bankHolder: '', refCode: '', email: '', otp: '' })
+  const [form, setForm] = useState({ fullName: '', phone: '', refCode: '', email: '', otp: '' })
   const [submitting, setSubmitting] = useState(false)
   const [sendingOtp, setSendingOtp] = useState(false)
   const [otpSent, setOtpSent] = useState(false)
@@ -54,10 +54,10 @@ export function AffiliateRegisterForm() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError('')
-    if (!form.fullName || !form.phone || !form.bankName || !form.bankAccount || !form.bankHolder || !form.refCode || !form.email || !form.otp) {
-      setError('Vui lòng điền đầy đủ thông tin và xác minh email')
-      return
-    }
+    if (!form.fullName) { setError('Vui lòng nhập họ tên'); return }
+    if (!form.phone) { setError('Vui lòng nhập số điện thoại'); return }
+    if (!form.email || !form.otp) { setError('Vui lòng xác minh email bằng mã OTP'); return }
+    if (!form.refCode) { setError('Vui lòng nhập Mã giới thiệu của bạn (ô cuối cùng)'); return }
     if (!/^[A-Z0-9_]{3,20}$/i.test(form.refCode)) {
       setError('Mã giới thiệu chỉ dùng chữ cái, số và _, tối thiểu 3 ký tự')
       return
@@ -88,13 +88,13 @@ export function AffiliateRegisterForm() {
 
   if (!session) {
     return (
-      <div className="rounded-xl border bg-white p-6 shadow-sm space-y-4">
-        <p className="text-center text-gray-700 font-medium">Đăng nhập để tiếp tục đăng ký</p>
+      <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-7 shadow-2xl backdrop-blur-xl space-y-4">
+        <p className="text-center font-medium text-gray-300">Đăng nhập để tiếp tục đăng ký</p>
 
         {/* Google */}
         <button
           onClick={() => signIn('google', { callbackUrl: '/cong-tac-vien' })}
-          className="flex w-full items-center justify-center gap-3 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"
+          className="flex w-full items-center justify-center gap-3 rounded-lg border border-white/15 bg-white px-4 py-3 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100"
         >
           <svg className="h-5 w-5" viewBox="0 0 24 24">
             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -106,21 +106,21 @@ export function AffiliateRegisterForm() {
         </button>
 
         <div className="flex items-center gap-3">
-          <div className="flex-1 h-px bg-gray-200" />
-          <span className="text-xs text-gray-400">hoặc</span>
-          <div className="flex-1 h-px bg-gray-200" />
+          <div className="h-px flex-1 bg-white/10" />
+          <span className="text-xs text-gray-500">hoặc</span>
+          <div className="h-px flex-1 bg-white/10" />
         </div>
 
         <Link
           href="/login?callbackUrl=/cong-tac-vien"
-          className="flex w-full items-center justify-center rounded-lg bg-red-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-red-500 transition-colors"
+          className="flex w-full items-center justify-center rounded-lg border border-white/15 bg-white/[0.04] px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/[0.08]"
         >
           Đăng nhập bằng Email
         </Link>
 
         <p className="text-center text-xs text-gray-500">
           Chưa có tài khoản?{' '}
-          <Link href="/register?callbackUrl=/cong-tac-vien" className="font-medium text-red-600 hover:underline">
+          <Link href="/register?callbackUrl=/cong-tac-vien" className="font-medium text-amber-400 hover:underline">
             Đăng ký miễn phí
           </Link>
         </p>
@@ -130,24 +130,24 @@ export function AffiliateRegisterForm() {
 
   if (success) {
     return (
-      <div className="rounded-xl border border-green-200 bg-green-50 p-8 text-center">
-        <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-green-100 text-2xl">✓</div>
-        <h3 className="text-lg font-bold text-green-800">Đăng ký thành công!</h3>
-        <p className="mt-2 text-sm text-green-700">
-          Đơn đăng ký của bạn đã được gửi. Admin Japan VIP sẽ xét duyệt trong vòng 24h làm việc và thông báo qua email <strong>{form.email}</strong>.
+      <div className="rounded-2xl border border-emerald-400/20 bg-emerald-400/[0.06] p-8 text-center shadow-2xl backdrop-blur-xl">
+        <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full border border-emerald-400/30 bg-emerald-400/15 text-2xl text-emerald-300">✓</div>
+        <h3 className="text-lg font-bold text-white">Đăng ký thành công!</h3>
+        <p className="mt-2 text-sm text-gray-300">
+          Đơn đăng ký của bạn đã được gửi. Admin Japan VIP sẽ xét duyệt trong vòng 24h làm việc và thông báo qua email <strong className="text-white">{form.email}</strong>.
         </p>
-        <p className="mt-4 text-sm text-green-600">Mã giới thiệu của bạn: <strong className="font-mono text-lg">{form.refCode.toUpperCase()}</strong></p>
+        <p className="mt-4 text-sm text-gray-400">Mã giới thiệu của bạn: <strong className="font-mono text-lg text-amber-300">{form.refCode.toUpperCase()}</strong></p>
       </div>
     )
   }
 
-  const inputCls = 'w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500/30'
-  const labelCls = 'mb-1 block text-xs font-semibold uppercase tracking-wide text-gray-500'
+  const inputCls = 'w-full rounded-lg border border-white/10 bg-white/[0.04] px-3.5 py-2.5 text-sm text-white placeholder-gray-500 transition-colors focus:border-amber-400/60 focus:bg-white/[0.06] focus:outline-none focus:ring-1 focus:ring-amber-400/30'
+  const labelCls = 'mb-1.5 block text-xs font-semibold uppercase tracking-wider text-gray-400'
 
   return (
-    <form onSubmit={handleSubmit} className="rounded-xl border bg-white p-6 shadow-sm space-y-4">
-      <div className="rounded-lg bg-blue-50 border border-blue-200 px-4 py-3 text-xs text-blue-700">
-        Đăng ký với tài khoản: <strong>{session.user?.email}</strong>
+    <form onSubmit={handleSubmit} className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 shadow-2xl backdrop-blur-xl space-y-4">
+      <div className="rounded-lg border border-amber-400/20 bg-amber-400/[0.06] px-4 py-3 text-xs text-amber-200/90">
+        Đăng ký với tài khoản: <strong className="text-amber-200">{session.user?.email}</strong>
       </div>
 
       <div className="grid grid-cols-2 gap-4">
@@ -162,8 +162,8 @@ export function AffiliateRegisterForm() {
       </div>
 
       {/* Email + OTP */}
-      <div className="border-t pt-4">
-        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Xác minh email nhận thông báo</p>
+      <div className="border-t border-white/10 pt-5">
+        <p className="text-xs font-semibold text-amber-400/70 uppercase tracking-wider mb-3">Xác minh email nhận thông báo</p>
         <div className="space-y-3">
           <div>
             <label className={labelCls}>Email *</label>
@@ -180,7 +180,7 @@ export function AffiliateRegisterForm() {
                 type="button"
                 onClick={sendOtp}
                 disabled={sendingOtp || (otpSent && otpCountdown > 0)}
-                className="flex-shrink-0 rounded-lg border border-red-500 px-4 py-2.5 text-xs font-semibold text-red-600 hover:bg-red-50 disabled:opacity-50 transition-colors whitespace-nowrap"
+                className="flex-shrink-0 rounded-lg border border-amber-400/40 bg-amber-400/10 px-4 py-2.5 text-xs font-semibold text-amber-300 hover:bg-amber-400/20 disabled:opacity-40 transition-colors whitespace-nowrap"
               >
                 {sendingOtp ? 'Đang gửi...' : otpCountdown > 0 ? `Gửi lại (${otpCountdown}s)` : otpSent ? 'Gửi lại' : 'Gửi OTP'}
               </button>
@@ -197,31 +197,13 @@ export function AffiliateRegisterForm() {
                 maxLength={6}
                 className={`${inputCls} font-mono tracking-widest text-center text-lg`}
               />
-              <p className="mt-1 text-xs text-green-600">✓ Mã OTP đã gửi đến <strong>{form.email}</strong>, có hiệu lực 10 phút.</p>
+              <p className="mt-1.5 text-xs text-emerald-400">✓ Mã OTP đã gửi đến <strong>{form.email}</strong>, có hiệu lực 10 phút.</p>
             </div>
           )}
         </div>
       </div>
 
-      <div className="border-t pt-4">
-        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Thông tin nhận hoa hồng</p>
-        <div className="space-y-3">
-          <div>
-            <label className={labelCls}>Ngân hàng *</label>
-            <input type="text" value={form.bankName} onChange={set('bankName')} placeholder="Vietcombank / Techcombank / MB Bank..." className={inputCls} />
-          </div>
-          <div>
-            <label className={labelCls}>Số tài khoản *</label>
-            <input type="text" value={form.bankAccount} onChange={set('bankAccount')} placeholder="Số tài khoản ngân hàng" className={inputCls} />
-          </div>
-          <div>
-            <label className={labelCls}>Chủ tài khoản *</label>
-            <input type="text" value={form.bankHolder} onChange={set('bankHolder')} placeholder="Tên chủ tài khoản (viết hoa)" className={inputCls} />
-          </div>
-        </div>
-      </div>
-
-      <div className="border-t pt-4">
+      <div className="border-t border-white/10 pt-5">
         <label className={labelCls}>Mã giới thiệu của bạn * <span className="font-normal normal-case text-gray-400">(tự chọn, VD: NGUYEN2024)</span></label>
         <input
           type="text"
@@ -231,11 +213,18 @@ export function AffiliateRegisterForm() {
           maxLength={20}
           className={`${inputCls} font-mono`}
         />
-        <p className="mt-1 text-xs text-gray-400">Link của bạn sẽ là: store.japanvip.vn?ref={form.refCode || 'MACUABAN'}</p>
+        <p className="mt-1.5 text-xs text-gray-500">Link của bạn sẽ là: <span className="text-amber-300/80">store.japanvip.vn?ref={form.refCode || 'MACUABAN'}</span></p>
+      </div>
+
+      <div className="flex items-start gap-2.5 rounded-lg border border-white/10 bg-white/[0.02] px-4 py-3">
+        <span className="mt-0.5 text-base">🔒</span>
+        <p className="text-xs leading-relaxed text-gray-400">
+          Thông tin tài khoản ngân hàng <strong className="text-gray-300">không cần khai báo lúc này</strong>. Sau khi được duyệt, bạn sẽ cập nhật tài khoản nhận hoa hồng ngay trong trang quản lý đối tác — bảo mật tuyệt đối.
+        </p>
       </div>
 
       {error && (
-        <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+        <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">
           ⚠️ {error}
         </div>
       )}
@@ -243,12 +232,12 @@ export function AffiliateRegisterForm() {
       <button
         type="submit"
         disabled={submitting || !otpSent || form.otp.length < 6}
-        className="w-full rounded-lg bg-red-600 py-3 text-sm font-bold text-white hover:bg-red-500 disabled:opacity-50 transition-colors"
+        className="w-full rounded-lg bg-gradient-to-r from-amber-400 to-amber-500 py-3.5 text-sm font-bold text-gray-900 shadow-[0_4px_24px_rgba(251,191,36,0.25)] transition-all hover:from-amber-300 hover:to-amber-400 hover:shadow-[0_6px_28px_rgba(251,191,36,0.4)] disabled:cursor-not-allowed disabled:from-white/10 disabled:to-white/10 disabled:text-gray-500 disabled:shadow-none"
       >
         {submitting ? 'Đang gửi...' : 'Gửi đơn đăng ký'}
       </button>
       {!otpSent && (
-        <p className="text-center text-xs text-gray-400">Vui lòng xác minh email trước khi gửi đơn</p>
+        <p className="text-center text-xs text-gray-500">Vui lòng xác minh email trước khi gửi đơn</p>
       )}
     </form>
   )

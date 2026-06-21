@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Copy, CheckCircle, Clock, XCircle, DollarSign, Link2 } from 'lucide-react'
+import { Copy, CheckCircle, Clock, XCircle, DollarSign, Link2, Landmark, Pencil } from 'lucide-react'
 
 type Commission = {
   id: string
@@ -51,10 +51,52 @@ export function PartnerCommissionsClient({
   const [copied, setCopied] = useState(false)
   const refLink = `${appUrl}?ref=${partner.refCode}`
 
+  const hasBank = Boolean(partner.bankAccount)
+  const [editingBank, setEditingBank] = useState(false)
+  const [bank, setBank] = useState({
+    bankName: partner.bankName ?? '',
+    bankAccount: partner.bankAccount ?? '',
+    bankHolder: partner.bankHolder ?? '',
+  })
+  const [savedBank, setSavedBank] = useState({
+    bankName: partner.bankName ?? '',
+    bankAccount: partner.bankAccount ?? '',
+    bankHolder: partner.bankHolder ?? '',
+  })
+  const [savingBank, setSavingBank] = useState(false)
+  const [bankError, setBankError] = useState('')
+
   function copyLink() {
     navigator.clipboard.writeText(refLink)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
+  }
+
+  async function saveBank() {
+    setBankError('')
+    if (!bank.bankName || !bank.bankAccount || !bank.bankHolder) {
+      setBankError('Vui lòng điền đầy đủ thông tin ngân hàng')
+      return
+    }
+    setSavingBank(true)
+    try {
+      const res = await fetch('/api/v1/partner/bank', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(bank),
+      })
+      const data = await res.json()
+      if (data.success) {
+        setSavedBank({ ...bank, bankHolder: bank.bankHolder.toUpperCase() })
+        setEditingBank(false)
+      } else {
+        setBankError(data.error ?? 'Có lỗi xảy ra')
+      }
+    } catch {
+      setBankError('Không kết nối được. Vui lòng thử lại.')
+    } finally {
+      setSavingBank(false)
+    }
   }
 
   return (
@@ -103,18 +145,114 @@ export function PartnerCommissionsClient({
             {copied ? <><CheckCircle className="h-4 w-4" /> Đã copy</> : <><Copy className="h-4 w-4" /> Copy</>}
           </button>
         </div>
-        <div className="mt-3 flex gap-3">
-          <div className="rounded-lg bg-gray-50 border px-3 py-2 text-xs">
+        <div className="mt-3">
+          <div className="inline-block rounded-lg bg-gray-50 border px-3 py-2 text-xs">
             <span className="text-gray-500">Mã của bạn:</span>{' '}
             <strong className="font-mono text-gray-900">{partner.refCode}</strong>
           </div>
-          {partner.bankAccount && (
-            <div className="rounded-lg bg-gray-50 border px-3 py-2 text-xs">
-              <span className="text-gray-500">Nhận tiền:</span>{' '}
-              <strong className="text-gray-900">{partner.bankName} — {partner.bankAccount}</strong>
-            </div>
+        </div>
+      </div>
+
+      {/* Bank info */}
+      <div className="rounded-xl border bg-white p-5 shadow-sm">
+        <div className="mb-3 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Landmark className="h-4 w-4 text-red-600" />
+            <h2 className="font-semibold text-gray-900">Thông tin nhận tiền</h2>
+          </div>
+          {hasBank && !editingBank && (
+            <button
+              onClick={() => { setBank(savedBank); setEditingBank(true) }}
+              className="flex items-center gap-1.5 rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50"
+            >
+              <Pencil className="h-3.5 w-3.5" /> Chỉnh sửa
+            </button>
           )}
         </div>
+
+        {!hasBank && !editingBank && (
+          <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3.5">
+            <p className="text-sm text-amber-800">
+              Bạn chưa cập nhật tài khoản ngân hàng. Hãy bổ sung để Japan VIP có thể chuyển hoa hồng cho bạn.
+            </p>
+            <button
+              onClick={() => setEditingBank(true)}
+              className="mt-3 rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-500"
+            >
+              + Thêm tài khoản ngân hàng
+            </button>
+          </div>
+        )}
+
+        {hasBank && !editingBank && (
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <div className="rounded-lg bg-gray-50 border px-3 py-2.5">
+              <p className="text-[11px] uppercase tracking-wide text-gray-400">Ngân hàng</p>
+              <p className="mt-0.5 text-sm font-semibold text-gray-900">{savedBank.bankName}</p>
+            </div>
+            <div className="rounded-lg bg-gray-50 border px-3 py-2.5">
+              <p className="text-[11px] uppercase tracking-wide text-gray-400">Số tài khoản</p>
+              <p className="mt-0.5 font-mono text-sm font-semibold text-gray-900">{savedBank.bankAccount}</p>
+            </div>
+            <div className="rounded-lg bg-gray-50 border px-3 py-2.5">
+              <p className="text-[11px] uppercase tracking-wide text-gray-400">Chủ tài khoản</p>
+              <p className="mt-0.5 text-sm font-semibold text-gray-900">{savedBank.bankHolder}</p>
+            </div>
+          </div>
+        )}
+
+        {editingBank && (
+          <div className="space-y-3">
+            <div>
+              <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-gray-500">Ngân hàng</label>
+              <input
+                type="text"
+                value={bank.bankName}
+                onChange={(e) => setBank((b) => ({ ...b, bankName: e.target.value }))}
+                placeholder="Vietcombank / Techcombank / MB Bank..."
+                className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500/30"
+              />
+            </div>
+            <div>
+              <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-gray-500">Số tài khoản</label>
+              <input
+                type="text"
+                value={bank.bankAccount}
+                onChange={(e) => setBank((b) => ({ ...b, bankAccount: e.target.value.replace(/\D/g, '') }))}
+                placeholder="Số tài khoản ngân hàng"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2.5 font-mono text-sm text-gray-900 placeholder-gray-400 focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500/30"
+              />
+            </div>
+            <div>
+              <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-gray-500">Chủ tài khoản</label>
+              <input
+                type="text"
+                value={bank.bankHolder}
+                onChange={(e) => setBank((b) => ({ ...b, bankHolder: e.target.value }))}
+                placeholder="Tên chủ tài khoản (viết hoa)"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm uppercase text-gray-900 placeholder-gray-400 focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500/30"
+              />
+            </div>
+            {bankError && <p className="text-sm text-red-600">⚠️ {bankError}</p>}
+            <div className="flex gap-2 pt-1">
+              <button
+                onClick={saveBank}
+                disabled={savingBank}
+                className="rounded-lg bg-red-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-red-500 disabled:opacity-50"
+              >
+                {savingBank ? 'Đang lưu...' : 'Lưu thông tin'}
+              </button>
+              {hasBank && (
+                <button
+                  onClick={() => { setEditingBank(false); setBankError('') }}
+                  className="rounded-lg border border-gray-200 px-5 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-50"
+                >
+                  Hủy
+                </button>
+              )}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Commission list */}
