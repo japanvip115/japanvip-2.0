@@ -280,12 +280,36 @@ Xuất JSON duy nhất, đúng format.${VI_ONLY_RULE}${NO_PLACEHOLDER_RULE}${ins
 Tạo SEO metadata cho sản phẩm. Xuất JSON:
 {"title": "...(60 ký tự, chứa từ khóa chính)","description": "...(150-160 ký tự, hấp dẫn, có CTA)","keywords": ["kw1","kw2","kw3","kw4","kw5"],"slug": "..."}${instruction}`
 
+    // 🔒 LOCKED (2026-06) — Văn phong + cấu trúc blog học từ kho đối thủ, đã chốt. Xem CLAUDE.md. KHÔNG tự sửa.
     case 'blog': {
       const blogWords = maxWords ?? 1500
       return `${HTML_ONLY}${base}
-Viết bài blog HTML hoàn chỉnh. Cấu trúc: intro hook → các section <h2> → kết luận + CTA Japan VIP (Hotline: 09.2729.8888).
-Mục tiêu ${blogWords.toLocaleString()} từ. SEO-friendly, tích hợp từ khóa tự nhiên.
-Chỉ đưa số liệu kỹ thuật khi có dữ liệu xác thực. KHÔNG dùng "bảo hành chính hãng".${instruction}`
+Viết bài blog HTML như một biên tập viên đánh giá gia dụng Nhật thực thụ. HỌC VĂN PHONG + CẤU TRÚC từ các bài "TÀI LIỆU THAM KHẢO" ở cuối prompt (style của congnghenhat.com): chi tiết, thực tế, trung thực, đi thẳng vào số liệu — KHÔNG sáo rỗng, KHÔNG công thức.
+
+🏷️ TIÊU ĐỀ BÀI (thẻ <h1> đầu, BẮT BUỘC):
+- TUYỆT ĐỐI KHÔNG "[Tên sản phẩm] là gì?" — sáo rỗng, không ai search.
+- Chọn 1 mẫu tiêu đề như đối thủ hay dùng:
+  · "Đánh giá tổng quan/chi tiết [sản phẩm] nội địa Nhật"
+  · "So sánh [A] và [B]"
+  · "Có nên mua [loại sản phẩm] nội địa Nhật không?"
+  · "Kinh nghiệm chọn mua [loại]"
+  · "[Sản phẩm] — [lợi ích/điểm nổi bật nhất]"
+- Ví dụ tốt: "Đánh giá máy hút bụi cyclone Toshiba VC-C7-R: nhỏ gọn 2,2kg cho căn hộ Việt".
+
+✍️ MỞ BÀI: vào thẳng tình huống/vấn đề thực tế hoặc nêu ngay điểm nổi bật — KHÔNG định nghĩa "X là dòng... thuộc thương hiệu...".
+
+📑 CẤU TRÚC (theo style đối thủ, mỗi mục <h2> — bỏ mục nào thiếu dữ liệu, KHÔNG để trống):
+1. Thiết kế & ngoại hình (kích thước, màu, trọng lượng — số liệu thật)
+2. Công nghệ & tính năng nổi bật (giải thích cơ chế + lợi ích thực tế)
+3. Ưu điểm (bullet ✔)
+4. Nhược điểm cần cân nhắc (THẬT THÀ: điện áp 100V cần biến áp, bảng tiếng Nhật, giá... — KHÔNG giấu)
+5. Trải nghiệm sử dụng thực tế tại Việt Nam
+6. Thông số kỹ thuật (bảng <table>)
+7. Sản phẩm phù hợp với ai
+8. Kết luận + CTA Japan VIP (Hotline: 09.2729.8888)
+
+Mục tiêu ${blogWords.toLocaleString()} từ. SEO tự nhiên. Heading đặt tên tự nhiên theo Ý (vd "Thiết kế & ngoại hình", "Công nghệ lốc xoáy giữ lực hút"), KHÔNG đánh số 1/2/3 vào tiêu đề mục, KHÔNG dùng "[Sản phẩm] là gì?".
+Chỉ đưa số liệu khi có dữ liệu xác thực. KHÔNG dùng "bảo hành chính hãng".${buildImageBlock(images)}${VI_ONLY_RULE}${NO_PLACEHOLDER_RULE}${instruction}`
     }
 
     case 'social':

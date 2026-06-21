@@ -51,8 +51,16 @@ export default async function BlogPostPage({ params }: Props) {
 
   const sidebarProducts = [...randomProducts].sort(() => Math.random() - 0.5).slice(0, 5)
 
+  // 🔒 LOCKED (2026-06) — Render blog đã chốt: CSS bảng/figure, bỏ h1 trùng, gộp <br>, whitelist block,
+  // bỏ ảnh hero. Xem CLAUDE.md. KHÔNG tự sửa.
   // Markdown → HTML with cleanup
   const html = post.content
+    // Bỏ <h1> trong nội dung (trùng tiêu đề bài đã hiển thị ở header)
+    .replace(/<h1[^>]*>[\s\S]*?<\/h1>/gi, '')
+    // Gộp nhiều <br> liên tiếp thành 1 và bỏ <br> sát các block (tránh khoảng trống thừa)
+    .replace(/(?:\s*<br\s*\/?>\s*){2,}/gi, '<br />')
+    .replace(/<br\s*\/?>\s*(?=<(?:table|figure|h[1-6]|ul|ol|blockquote))/gi, '')
+    .replace(/(<\/(?:table|figure|h[1-6]|ul|ol|blockquote)>)\s*<br\s*\/?>/gi, '$1')
     // Remove blog metadata lines (applies to old content already in DB)
     .replace(/^Tác [Gg]iả\s*:.+$/gm, '')
     .replace(/^Danh [Mm]ục\s*:.+$/gm, '')
@@ -89,7 +97,7 @@ export default async function BlogPostPage({ params }: Props) {
     .map(chunk => {
       chunk = chunk.trim()
       if (!chunk) return ''
-      if (/^<(h[1-6]|ul|ol|img|blockquote)/.test(chunk)) return chunk
+      if (/^<(h[1-6]|ul|ol|img|blockquote|table|figure|p|div|section|pre|hr)/i.test(chunk)) return chunk
       return `<p>${chunk.replace(/\n/g, '<br />')}</p>`
     })
     .join('\n')
@@ -111,13 +119,9 @@ export default async function BlogPostPage({ params }: Props) {
         </nav>
 
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_300px]">
-          {/* Article */}
+          {/* Article — KHÔNG hiện ảnh bìa lớn ở đầu bài chi tiết (ảnh đã có trong nội dung).
+              Thẻ ảnh trên trang danh sách /blog vẫn dùng thumbnailUrl. */}
           <article className="rounded-2xl border border-gray-200 bg-white shadow-sm overflow-hidden">
-            {post.thumbnailUrl && (
-              <div className="relative aspect-video">
-                <Image src={post.thumbnailUrl} alt={post.title} fill className="object-cover" priority />
-              </div>
-            )}
             <div className="p-6 md:p-8">
               {post.category && (
                 <span className="inline-block rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-semibold text-blue-700 mb-3">
@@ -142,7 +146,12 @@ export default async function BlogPostPage({ params }: Props) {
                   [&_ol]:my-3 [&_ol]:pl-5 [&_ol]:list-decimal [&_ol]:space-y-1
                   [&_li]:text-[15px]
                   [&_strong]:font-semibold [&_strong]:text-gray-900
-                  [&_img]:rounded-xl [&_img]:my-4 [&_img]:max-w-full
+                  [&_figure]:my-5 [&_figure]:text-center
+                  [&_img]:rounded-xl [&_img]:my-4 [&_img]:mx-auto [&_img]:block [&_img]:max-w-full [&_img]:w-auto [&_img]:max-h-[460px] [&_img]:object-contain
+                  [&_table]:w-full [&_table]:my-5 [&_table]:border-collapse [&_table]:text-[14px] [&_table]:overflow-hidden [&_table]:rounded-lg [&_table]:border [&_table]:border-gray-200
+                  [&_th]:border [&_th]:border-gray-200 [&_th]:bg-gray-50 [&_th]:px-3 [&_th]:py-2 [&_th]:text-left [&_th]:font-semibold [&_th]:text-gray-900
+                  [&_td]:border [&_td]:border-gray-200 [&_td]:px-3 [&_td]:py-2 [&_td]:align-top
+                  [&_tr:nth-child(even)]:bg-gray-50/50
                   [&_a]:text-brand-red [&_a]:underline-offset-2 [&_a]:hover:underline"
                 dangerouslySetInnerHTML={{ __html: html }}
               />

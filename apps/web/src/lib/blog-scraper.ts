@@ -212,8 +212,17 @@ export function scrapeMetadata(html: string) {
 }
 
 const FETCH_HEADERS = {
-  'User-Agent': 'Mozilla/5.0 (compatible; JapanVIPBot/1.0)',
+  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
   'Accept': 'image/webp,image/avif,image/*,*/*;q=0.8',
+}
+
+// Referer giúp tải ảnh từ trang chặn hotlink (Amazon...)
+function refererFor(imageUrl: string): string {
+  try {
+    const h = new URL(imageUrl).hostname
+    if (h.includes('media-amazon') || h.includes('ssl-images-amazon')) return 'https://www.amazon.co.jp/'
+    return `${new URL(imageUrl).origin}/`
+  } catch { return '' }
 }
 
 const MIME_EXT: Record<string, string> = {
@@ -222,7 +231,11 @@ const MIME_EXT: Record<string, string> = {
 }
 
 export async function mirrorImageToR2(imageUrl: string): Promise<string> {
-  const res = await fetch(imageUrl, { headers: FETCH_HEADERS, signal: AbortSignal.timeout(10000) })
+  const ref = refererFor(imageUrl)
+  const res = await fetch(imageUrl, {
+    headers: ref ? { ...FETCH_HEADERS, Referer: ref } : FETCH_HEADERS,
+    signal: AbortSignal.timeout(15000),
+  })
   if (!res.ok) throw new Error(`HTTP ${res.status}`)
 
   const contentType = res.headers.get('content-type')?.split(';')[0]?.trim() ?? 'image/jpeg'
@@ -237,18 +250,22 @@ export async function mirrorImageToR2(imageUrl: string): Promise<string> {
   return await uploadFile('blogs', buffer, mimeToUse, originalName)
 }
 
+// 🔒 LOCKED (2026-06) — Mirror ảnh blog (cả HTML <img>) về R2 + UA/Referer. Xem CLAUDE.md. KHÔNG tự sửa.
 // Replace all external image URLs in markdown content with R2 URLs
 export async function mirrorContentImages(
   markdown: string,
   thumbnailUrl: string,
 ): Promise<{ content: string; thumbnailUrl: string }> {
-  // Collect unique image URLs (markdown images + thumbnail)
-  const imgRe = /!\[([^\]]*)\]\(([^)]+)\)/g
+  // Collect unique image URLs — cả ảnh Markdown ![]() lẫn ảnh HTML <img src="">
   const urlSet = new Set<string>()
   let m: RegExpExecArray | null
-  while ((m = imgRe.exec(markdown)) !== null) {
-    const url = m[2]
-    if (url && url.startsWith('http')) urlSet.add(url)
+  const mdRe = /!\[([^\]]*)\]\(([^)]+)\)/g
+  while ((m = mdRe.exec(markdown)) !== null) {
+    if (m[2]?.startsWith('http')) urlSet.add(m[2])
+  }
+  const htmlImgRe = /<img[^>]+src="([^"]+)"/gi
+  while ((m = htmlImgRe.exec(markdown)) !== null) {
+    if (m[1]?.startsWith('http')) urlSet.add(m[1])
   }
   if (thumbnailUrl?.startsWith('http')) urlSet.add(thumbnailUrl)
 
@@ -265,9 +282,12 @@ export async function mirrorContentImages(
     }),
   )
 
-  // Replace in content
-  const content = markdown.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (full, alt, url) => {
+  // Replace in content — cả Markdown lẫn HTML <img src="">
+  let content = markdown.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (full, alt, url) => {
     return `![${alt}](${map.get(url) ?? url})`
+  })
+  content = content.replace(/(<img[^>]+src=")([^"]+)(")/gi, (full, pre, url, post) => {
+    return `${pre}${map.get(url) ?? url}${post}`
   })
 
   const newThumb = (thumbnailUrl && map.get(thumbnailUrl)) ? map.get(thumbnailUrl)! : thumbnailUrl

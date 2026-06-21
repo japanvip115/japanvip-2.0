@@ -25,8 +25,23 @@
 
 **Lưu ý vận hành:** AI Writer dùng provider **Claude Code Opus 4.8 (miễn phí)** — chỉ chạy LOCAL (Vercel không có CLI). Không dùng Anthropic API (mất phí).
 
+### Blog (AI Content Writer → loại "Bài viết Blog") — đã chốt 2026-06
+
+| Quy tắc đã khoá | File / Vị trí |
+|---|---|
+| Nút "Lưu vào Blog" riêng (KHÔNG nhồi vào sản phẩm); nút Lưu nháp SP chỉ ở tab description/faq/attributes/seo | `apps/web/src/app/admin/content/ai-writer/ai-writer-client.tsx` → `saveBlog`, vùng toolbar |
+| Excerpt = 2 đoạn <p> đầu, ~320 ký tự | cùng file → `extractBlogExcerpt` |
+| Chèn ảnh vào nội dung blog (buildImageBlock) | `generate-content/route.ts` case `blog` |
+| Văn phong học từ kho đối thủ (tiêu đề "Đánh giá/So sánh/Có nên mua", KHÔNG "[Model] là gì?", cấu trúc Thiết kế→...→Phù hợp với ai) | `generate-content/route.ts` case `blog` |
+| Tải ảnh blog (cả HTML `<img>`) về R2 + UA browser + Referer | `apps/web/src/lib/blog-scraper.ts` → `mirrorContentImages`, `mirrorImageToR2` |
+| Render blog: CSS bảng/figure, bỏ `<h1>` trùng, gộp `<br>`, whitelist block (table/figure/p/div), bỏ ảnh hero, thumbnail 144×112 | `apps/web/src/app/(public)/blog/[slug]/page.tsx` + `app/(public)/blog/page.tsx` |
+| Blog API: authorId default = session user | `apps/web/src/app/api/v1/admin/content/blog/route.ts` |
+
 ---
 
 ## Việc đang chờ (chưa làm)
-- Tìm thêm ảnh Google theo Model (Google Custom Search API — cần `GOOGLE_SEARCH_API_KEY` + `GOOGLE_SEARCH_CX`).
-- Exa lookup server-side để tự điền năm sản xuất + đúng loại cảm biến từ trang hãng (cần Exa API key).
+- **Google tìm ảnh** (search-images route + UI ĐÃ build, gated): chờ link billing đúng project chứa `GOOGLE_SEARCH_API_KEY`/`GOOGLE_SEARCH_CX` (xem session-2026-06-22b).
+- Mở rộng văn phong/rule (VI_ONLY + NO_PLACEHOLDER + HTML_ONLY) cho FAQ, SEO, Social, Email, Video, So sánh.
+- Lấy giá Amazon chuẩn: **Amazon PA-API** (scrape tĩnh không chắc vì giá render JS + sponsored).
+- Hỗ trợ amazon.com (US, USD→VNĐ — đụng vùng giá khoá).
+- Exa lookup server-side: năm SX + đúng cảm biến từ trang hãng.

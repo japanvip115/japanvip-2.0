@@ -90,11 +90,11 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
                 <div className="flex gap-5">
                   {p.thumbnailUrl && (
                     <Link href={`/blog/${p.slug}`} className="shrink-0">
-                      <div className="relative h-40 w-52 overflow-hidden rounded-lg bg-gray-100">
+                      <div className="relative h-28 w-36 overflow-hidden rounded-lg bg-gray-100">
                         <Image
                           src={p.thumbnailUrl} alt={p.title} fill
                           className="object-cover hover:scale-105 transition-transform duration-300"
-                          sizes="208px"
+                          sizes="144px"
                         />
                       </div>
                     </Link>

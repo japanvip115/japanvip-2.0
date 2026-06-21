@@ -7,7 +7,7 @@ import { apiSuccess, apiError, handleApiError } from '@/lib/api-response'
 import { mirrorContentImages, findRelatedProducts, appendProductBacklinks, MatchedProduct } from '@/lib/blog-scraper'
 
 const schema = z.object({
-  authorId: z.string().uuid(),
+  authorId: z.string().uuid().optional(),
   title: z.string().min(1).max(500),
   slug: z.string().min(1).max(500).regex(/^[a-z0-9-]+$/),
   excerpt: z.string().optional().nullable(),
@@ -44,6 +44,10 @@ export async function POST(req: NextRequest) {
     const body = await req.json()
     const { relatedProductIds, ...rest } = body
     const data = schema.parse(rest)
+    // Mặc định tác giả = admin đang đăng nhập nếu client không truyền authorId
+    const session = await auth()
+    const authorId = data.authorId ?? (session!.user as any).id
+    if (!authorId) return apiError('Thiếu tác giả', 400)
     const slug = await uniqueSlug(data.slug)
 
     // Use admin-selected products if provided, otherwise auto-match
@@ -71,6 +75,7 @@ export async function POST(req: NextRequest) {
     const post = await prisma.blogPost.create({
       data: {
         ...data,
+        authorId,
         slug,
         content: finalContent,
         thumbnailUrl: finalThumb,

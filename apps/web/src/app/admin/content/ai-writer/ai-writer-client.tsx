@@ -110,6 +110,36 @@ function buildSpecsFromJapan(specs: JapanProduct['specs']): string {
   return specs.map(s => `${s.name}: ${s.value}`).join('\n')
 }
 
+function slugifyVi(str: string): string {
+  return str
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .replace(/đ/g, 'd')
+    .replace(/[^a-z0-9\s-]/g, '')
+    .trim()
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .slice(0, 120)
+}
+
+// Lấy tiêu đề bài blog từ thẻ heading đầu tiên; fallback tên sản phẩm
+function extractBlogTitle(html: string, fallback: string): string {
+  const m = html.match(/<h[12][^>]*>([\s\S]*?)<\/h[12]>/i)
+  const t = m ? m[1]!.replace(/<[^>]+>/g, '').trim() : ''
+  return t || fallback
+}
+
+// Tóm tắt blog = 2 đoạn <p> đầu (bỏ HTML), cắt ~320 ký tự cho thẻ blog đỡ trống
+function extractBlogExcerpt(html: string): string {
+  const paras = [...html.matchAll(/<p[^>]*>([\s\S]*?)<\/p>/gi)]
+    .map(m => m[1]!.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim())
+    .filter(t => t.length > 30)
+  const text = paras.slice(0, 2).join(' ').trim()
+  if (!text) return ''
+  return text.length > 320 ? text.slice(0, 320).replace(/\s+\S*$/, '') + '…' : text
+}
+
 const DRAFT_KEY = 'aiwriter_draft_v2'
 
 type Draft = {
@@ -198,6 +228,9 @@ export function AiWriterClient({ products }: { products: ProductSummary[] }) {
   const [showLockInfo, setShowLockInfo] = useState(false)
   const [scrapeError, setScrapeError] = useState('')
   const [selectedImages, setSelectedImages] = useState<Set<string>>(new Set())
+  const [extraImages, setExtraImages] = useState<string[]>([])
+  const [searchingImages, setSearchingImages] = useState(false)
+  const [searchImagesMsg, setSearchImagesMsg] = useState('')
   const [hasDraft, setHasDraft] = useState(false)
 
   // ── Competitor URL mode state ──
@@ -222,6 +255,8 @@ export function AiWriterClient({ products }: { products: ProductSummary[] }) {
   const [publishStatus, setPublishStatus] = useState<'idle' | 'publishing' | 'done' | 'error'>('idle')
   const [publishedSlug, setPublishedSlug] = useState<string | null>(null)
   const [publishedId, setPublishedId] = useState<string | null>(null)
+  const [blogSaveStatus, setBlogSaveStatus] = useState<'idle' | 'saving' | 'done' | 'error'>('idle')
+  const [blogPostId, setBlogPostId] = useState<string | null>(null)
   const [cpubStatus, setCpubStatus] = useState<'idle' | 'publishing' | 'done' | 'error'>('idle')
   const [cpubSlug, setCpubSlug] = useState<string | null>(null)
   const [cpubId, setCpubId] = useState<string | null>(null)
@@ -354,6 +389,8 @@ export function AiWriterClient({ products }: { products: ProductSummary[] }) {
     setScrapeError('')
     setJapanProduct(null)
     setSelectedImages(new Set())
+    setExtraImages([])
+    setSearchImagesMsg('')
     setOutputs({})
     setSaveStatus('idle')
     setHasDraft(false)
@@ -386,6 +423,40 @@ export function AiWriterClient({ products }: { products: ProductSummary[] }) {
       next.has(url) ? next.delete(url) : next.add(url)
       return next
     })
+  }
+
+  // ── Tìm thêm ảnh qua Google (SafeSearch) theo Model ──
+  async function searchMoreImages() {
+    if (!japanProduct || searchingImages) return
+    setSearchingImages(true)
+    setSearchImagesMsg('')
+    try {
+      const query = [japanProduct.model, japanProduct.name].filter(Boolean).join(' ')
+      const res = await fetch('/api/v1/admin/ai/search-images', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query }),
+      })
+      const data = await res.json()
+      if (!res.ok || !data.success) {
+        setSearchImagesMsg(data.error ?? 'Không tìm được ảnh')
+        return
+      }
+      const existing = new Set([...japanProduct.images, ...extraImages])
+      const fresh = (data.images as { url: string }[])
+        .map(i => i.url)
+        .filter(u => !existing.has(u))
+      if (fresh.length === 0) {
+        setSearchImagesMsg('Không có ảnh mới phù hợp')
+      } else {
+        setExtraImages(prev => [...prev, ...fresh])
+        setSearchImagesMsg(`+${fresh.length} ảnh từ Google`)
+      }
+    } catch {
+      setSearchImagesMsg('Lỗi kết nối')
+    } finally {
+      setSearchingImages(false)
+    }
   }
 
   // ── Tự dịch tên sản phẩm sang tiếng Việt (Loại + Thương hiệu + Model + Dung tích) ──
@@ -520,7 +591,7 @@ export function AiWriterClient({ products }: { products: ProductSummary[] }) {
         productId: sourceMode === 'db' ? selectedProduct?.id : undefined,
         categoryId: sourceMode === 'db' ? selectedProduct?.category?.id : undefined,
         brandId: sourceMode === 'db' ? selectedProduct?.brand?.id : undefined,
-        images: type === 'description'
+        images: (type === 'description' || type === 'blog')
           ? (sourceMode === 'japan' ? [...selectedImages]
             : sourceMode === 'competitor' ? [...selectedCompetitorImages] : [])
           : undefined,
@@ -641,6 +712,46 @@ export function AiWriterClient({ products }: { products: ProductSummary[] }) {
       }
     } catch {
       setPublishStatus('error')
+    }
+  }
+
+  // 🔒 LOCKED (2026-06) — Lưu Blog riêng (KHÔNG nhồi vào sản phẩm) + excerpt. Xem CLAUDE.md. KHÔNG tự sửa.
+  // ── Lưu bài Blog (riêng, KHÔNG tạo sản phẩm) ──
+  async function saveBlog() {
+    const content = outputs['blog']
+    if (!content || blogSaveStatus === 'saving') return
+    setBlogSaveStatus('saving')
+    try {
+      const fallbackName =
+        sourceMode === 'japan' ? (japanVietName.trim() || japanProduct?.name || 'Bài viết')
+        : sourceMode === 'competitor' ? (competitorProduct?.name || 'Bài viết')
+        : (selectedProduct?.name || 'Bài viết')
+      const title = extractBlogTitle(content, fallbackName)
+      const thumb =
+        sourceMode === 'japan' ? [...selectedImages][0]
+        : sourceMode === 'competitor' ? [...selectedCompetitorImages][0]
+        : selectedProduct?.images?.[0]?.url
+      const res = await fetch('/api/v1/admin/content/blog', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title,
+          slug: slugifyVi(title) || `bai-viet-${Date.now()}`,
+          content,
+          excerpt: extractBlogExcerpt(content) || undefined,
+          thumbnailUrl: thumb || undefined,
+          status: 'DRAFT',
+        }),
+      })
+      const data = await res.json()
+      if (!res.ok || !data?.data?.id) {
+        setBlogSaveStatus('error')
+      } else {
+        setBlogSaveStatus('done')
+        setBlogPostId(data.data.id)
+      }
+    } catch {
+      setBlogSaveStatus('error')
     }
   }
 
@@ -1067,17 +1178,35 @@ export function AiWriterClient({ products }: { products: ProductSummary[] }) {
                   )}
 
                   {/* Ảnh sản phẩm — chọn để dùng */}
-                  {japanProduct.images.length > 0 && (
+                  {(japanProduct.images.length > 0 || extraImages.length > 0) && (() => {
+                    const allImages = [...japanProduct.images, ...extraImages]
+                    return (
                     <div>
-                      <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wide mb-1.5">
-                        Ảnh sản phẩm — click để chọn ({selectedImages.size}/{japanProduct.images.length})
-                      </p>
+                      <div className="flex items-center justify-between mb-1.5">
+                        <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wide">
+                          Ảnh sản phẩm — click để chọn ({selectedImages.size}/{allImages.length})
+                        </p>
+                        <div className="flex items-center gap-2">
+                          {searchImagesMsg && <span className="text-[10px] text-emerald-400">{searchImagesMsg}</span>}
+                          <button
+                            type="button"
+                            onClick={searchMoreImages}
+                            disabled={searchingImages}
+                            className="flex items-center gap-1 text-[10px] font-bold text-blue-400 hover:text-blue-300 disabled:text-gray-600 transition"
+                          >
+                            {searchingImages
+                              ? <><Loader2 className="h-3 w-3 animate-spin" /> Đang tìm…</>
+                              : <><Search className="h-3 w-3" /> Tìm thêm ảnh</>}
+                          </button>
+                        </div>
+                      </div>
                       <div className="grid grid-cols-4 gap-1.5">
-                        {japanProduct.images.map((url, i) => {
+                        {allImages.map((url, i) => {
                           const selected = selectedImages.has(url)
+                          const isExtra = i >= japanProduct.images.length
                           return (
                             <button
-                              key={i}
+                              key={url + i}
                               onClick={() => toggleImage(url)}
                               className={`relative rounded-lg overflow-hidden border-2 transition-all aspect-square ${
                                 selected ? 'border-blue-500 ring-1 ring-blue-500/40' : 'border-gray-700 opacity-50 hover:opacity-70'
@@ -1085,6 +1214,9 @@ export function AiWriterClient({ products }: { products: ProductSummary[] }) {
                             >
                               {/* eslint-disable-next-line @next/next/no-img-element */}
                               <img src={proxyImg(url)} alt="" className="h-full w-full object-cover" />
+                              {isExtra && (
+                                <span className="absolute top-0.5 left-0.5 rounded bg-blue-600/90 px-1 text-[8px] font-bold text-white">G</span>
+                              )}
                               {selected && (
                                 <div className="absolute bottom-0.5 right-0.5 h-4 w-4 rounded-full bg-blue-500 flex items-center justify-center">
                                   <CheckCircle2 className="h-2.5 w-2.5 text-white" />
@@ -1095,7 +1227,8 @@ export function AiWriterClient({ products }: { products: ProductSummary[] }) {
                         })}
                       </div>
                     </div>
-                  )}
+                    )
+                  })()}
                 </div>
               )}
             </div>
@@ -1612,7 +1745,8 @@ export function AiWriterClient({ products }: { products: ProductSummary[] }) {
                   <ExternalLink className="h-3.5 w-3.5" /> Mở sản phẩm
                 </a>
               )}
-              {sourceMode === 'japan' && Object.keys(outputs).length > 0 && !loading && publishStatus !== 'done' && (
+              {/* Lưu nháp SẢN PHẨM — chỉ ở các tab nội dung sản phẩm (KHÔNG ở tab Blog/Social/Email/Video/So sánh) */}
+              {sourceMode === 'japan' && ['description', 'faq', 'attributes', 'seo'].includes(activeTab) && Object.keys(outputs).length > 0 && !loading && publishStatus !== 'done' && (
                 <button
                   onClick={publishProduct}
                   disabled={publishStatus === 'publishing'}
@@ -1627,6 +1761,32 @@ export function AiWriterClient({ products }: { products: ProductSummary[] }) {
                   )}
                 </button>
               )}
+
+              {/* Lưu vào BLOG — khi đang ở tab Bài viết Blog (mọi nguồn) */}
+              {activeTab === 'blog' && output && !loading && blogSaveStatus !== 'done' && (
+                <button
+                  onClick={saveBlog}
+                  disabled={blogSaveStatus === 'saving'}
+                  className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold bg-amber-600 text-white hover:bg-amber-700 transition disabled:opacity-50"
+                >
+                  {blogSaveStatus === 'saving' ? (
+                    <><Loader2 className="h-3.5 w-3.5 animate-spin" /> Đang lưu...</>
+                  ) : blogSaveStatus === 'error' ? (
+                    <><Save className="h-3.5 w-3.5" /> Lỗi — Thử lại</>
+                  ) : (
+                    <><Save className="h-3.5 w-3.5" /> Lưu vào Blog</>
+                  )}
+                </button>
+              )}
+              {activeTab === 'blog' && blogSaveStatus === 'done' && blogPostId && (
+                <a
+                  href={`/admin/content/blog/${blogPostId}`}
+                  className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold bg-green-600 text-white hover:bg-green-700 transition"
+                >
+                  <ExternalLink className="h-3.5 w-3.5" /> Mở bài Blog
+                </a>
+              )}
+
               {sourceMode === 'japan' && publishStatus === 'done' && publishedId && (
                 <a
                   href={`/admin/products/${publishedId}`}
