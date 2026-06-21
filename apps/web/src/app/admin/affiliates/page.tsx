@@ -52,6 +52,9 @@ export default async function AdminAffiliatesPage() {
         bankName: p.bankName,
         bankAccount: p.bankAccount,
         bankHolder: p.bankHolder,
+        idCardNumber: p.idCardNumber ?? null,
+        idCardFront: p.idCardFront ?? null,
+        idCardBack: p.idCardBack ?? null,
         pendingAmount: (p.commissions ?? []).filter((c: any) => c.status === 'PENDING').reduce((s: number, c: any) => s + Number(c.commissionAmount), 0),
         approvedAmount: (p.commissions ?? []).filter((c: any) => c.status === 'APPROVED').reduce((s: number, c: any) => s + Number(c.commissionAmount), 0),
       }))}

@@ -6,20 +6,34 @@ import Image from 'next/image'
 
 type Props = {
   logoUrl: string
+  faviconUrl: string
   siteName: string
   taglineJp: string
 }
 
-export function LogoSettingsForm({ logoUrl: initLogoUrl, siteName: initSiteName, taglineJp: initTagline }: Props) {
+export function LogoSettingsForm({ logoUrl: initLogoUrl, faviconUrl: initFaviconUrl, siteName: initSiteName, taglineJp: initTagline }: Props) {
   const router = useRouter()
   const fileRef = useRef<HTMLInputElement>(null)
+  const faviconRef = useRef<HTMLInputElement>(null)
 
   const [logoUrl, setLogoUrl] = useState(initLogoUrl)
+  const [faviconUrl, setFaviconUrl] = useState(initFaviconUrl)
   const [siteName, setSiteName] = useState(initSiteName)
   const [taglineJp, setTaglineJp] = useState(initTagline)
   const [uploading, setUploading] = useState(false)
+  const [uploadingFavicon, setUploadingFavicon] = useState(false)
   const [saving, setSaving] = useState(false)
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null)
+
+  async function uploadFile(file: File): Promise<string> {
+    const fd = new FormData()
+    fd.append('file', file)
+    fd.append('folder', 'settings')
+    const res = await fetch('/api/v1/admin/upload', { method: 'POST', body: fd })
+    const data = await res.json()
+    if (!data.success) throw new Error(data.error)
+    return data.data.publicUrl
+  }
 
   async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
@@ -27,17 +41,25 @@ export function LogoSettingsForm({ logoUrl: initLogoUrl, siteName: initSiteName,
     setUploading(true)
     setMsg(null)
     try {
-      const fd = new FormData()
-      fd.append('file', file)
-      fd.append('folder', 'settings')
-      const res = await fetch('/api/v1/admin/upload', { method: 'POST', body: fd })
-      const data = await res.json()
-      if (!data.success) throw new Error(data.error)
-      setLogoUrl(data.data.publicUrl)
+      setLogoUrl(await uploadFile(file))
     } catch (err) {
       setMsg({ ok: false, text: err instanceof Error ? err.message : 'Upload thất bại' })
     } finally {
       setUploading(false)
+    }
+  }
+
+  async function handleFaviconChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setUploadingFavicon(true)
+    setMsg(null)
+    try {
+      setFaviconUrl(await uploadFile(file))
+    } catch (err) {
+      setMsg({ ok: false, text: err instanceof Error ? err.message : 'Upload thất bại' })
+    } finally {
+      setUploadingFavicon(false)
     }
   }
 
@@ -50,6 +72,7 @@ export function LogoSettingsForm({ logoUrl: initLogoUrl, siteName: initSiteName,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           site_logo_url: logoUrl,
+          site_favicon_url: faviconUrl,
           site_name: siteName,
           site_tagline_jp: taglineJp,
         }),
@@ -114,6 +137,58 @@ export function LogoSettingsForm({ logoUrl: initLogoUrl, siteName: initSiteName,
             type="text"
             value={logoUrl}
             onChange={(e) => setLogoUrl(e.target.value)}
+            placeholder="https://..."
+            className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-brand-red"
+          />
+        </div>
+      </div>
+
+      {/* Favicon upload */}
+      <div className="rounded-xl border bg-white p-6">
+        <h2 className="mb-1 font-semibold text-gray-900">Favicon (icon trên tab trình duyệt)</h2>
+        <p className="mb-4 text-xs text-gray-400">Icon nhỏ hiển thị trên tab trình duyệt và khi lưu bookmark.</p>
+
+        <div className="mb-4 flex items-center gap-4">
+          <div className="flex h-16 w-16 items-center justify-center rounded-lg border-2 border-dashed border-gray-200 bg-gray-50 overflow-hidden">
+            {faviconUrl ? (
+              <Image src={faviconUrl} alt="Favicon" width={64} height={64} className="object-contain" />
+            ) : (
+              <span className="text-center text-[10px] text-gray-400">Chưa có</span>
+            )}
+          </div>
+          <div>
+            <p className="text-sm text-gray-600">Kích thước khuyến nghị: <strong>512×512px</strong> (vuông)</p>
+            <p className="text-xs text-gray-400 mt-0.5">PNG hoặc ICO — nền trong suốt tốt nhất</p>
+          </div>
+        </div>
+
+        <div className="flex gap-3">
+          <button
+            type="button"
+            onClick={() => faviconRef.current?.click()}
+            disabled={uploadingFavicon}
+            className="cursor-pointer rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-60"
+          >
+            {uploadingFavicon ? 'Đang tải lên...' : '📁 Chọn ảnh favicon'}
+          </button>
+          {faviconUrl && (
+            <button
+              type="button"
+              onClick={() => setFaviconUrl('')}
+              className="cursor-pointer rounded-lg border border-red-200 px-3 py-2 text-sm text-red-600 hover:bg-red-50"
+            >
+              Xóa favicon
+            </button>
+          )}
+        </div>
+        <input ref={faviconRef} type="file" accept="image/png,image/x-icon,image/vnd.microsoft.icon,image/svg+xml" className="hidden" onChange={handleFaviconChange} />
+
+        <div className="mt-3">
+          <label className="mb-1 block text-xs text-gray-500">Hoặc nhập URL favicon trực tiếp</label>
+          <input
+            type="text"
+            value={faviconUrl}
+            onChange={(e) => setFaviconUrl(e.target.value)}
             placeholder="https://..."
             className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-brand-red"
           />

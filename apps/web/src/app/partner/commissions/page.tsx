@@ -23,6 +23,9 @@ export default async function PartnerCommissionsPage() {
       bankName: true,
       bankAccount: true,
       bankHolder: true,
+      idCardNumber: true,
+      idCardFront: true,
+      idCardBack: true,
     },
   })
 

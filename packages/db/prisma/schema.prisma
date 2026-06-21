@@ -774,6 +774,10 @@ model PartnerProfile {
   bankName              String?       @map("bank_name") @db.VarChar(255)
   bankAccount           String?       @map("bank_account") @db.VarChar(100)
   bankHolder            String?       @map("bank_holder") @db.VarChar(255)
+  idCardNumber          String?       @map("id_card_number") @db.VarChar(20)
+  idCardFront           String?       @map("id_card_front") @db.VarChar(500)
+  idCardBack            String?       @map("id_card_back") @db.VarChar(500)
+  adminNote             String?       @map("admin_note") @db.Text
   commissionTier        String        @default("DEFAULT") @map("commission_tier") @db.VarChar(50)
   defaultCommissionRate Decimal       @default(0.05) @map("default_commission_rate") @db.Decimal(5, 4)
   refCode               String        @unique @map("ref_code") @db.VarChar(20)

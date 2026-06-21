@@ -43,7 +43,7 @@ export async function PATCH(req: NextRequest) {
     })
     const partner = await prisma.partnerProfile.findUnique({ where: { id: partnerId }, select: { userId: true } })
     if (partner) await prisma.user.update({ where: { id: partner.userId }, data: { role: 'PARTNER' } })
-  } else if (action === 'suspend') {
+  } else if (action === 'suspend' || action === 'reject') {
     await prisma.partnerProfile.update({ where: { id: partnerId }, data: { status: 'SUSPENDED' } })
   } else if (action === 'set_rate' && commissionRate !== undefined) {
     await prisma.partnerProfile.update({ where: { id: partnerId }, data: { defaultCommissionRate: commissionRate } })
