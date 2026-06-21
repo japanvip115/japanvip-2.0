@@ -482,6 +482,107 @@ function AuctionSlider({ auctions, router }: { auctions: AuctionItem[]; router: 
   )
 }
 
+function NewArrivalsSlider({ items, router }: { items: ProductItem[]; router: ReturnType<typeof useRouter> }) {
+  const PER_PAGE = 4
+  const totalPages = Math.ceil(items.length / PER_PAGE)
+  const [page, setPage] = useState(0)
+  const clipRef = useRef<HTMLDivElement>(null)
+
+  const go = (next: number) => {
+    next = Math.max(0, Math.min(totalPages - 1, next))
+    setPage(next)
+    if (clipRef.current) {
+      clipRef.current.scrollTo({ left: next * clipRef.current.offsetWidth, behavior: 'smooth' })
+    }
+  }
+
+  return (
+    <div className="auction-slider-wrap">
+      <div className="auction-slider-clip" ref={clipRef}>
+        {items.map((p, i) => {
+          const price = p.salePrice ?? p.originPrice
+          const old = p.marketPrice ?? (p.salePrice && p.originPrice && p.originPrice > p.salePrice ? p.originPrice : null)
+          return (
+            <div key={p.id} className="product-card auction-slider-card" onClick={() => router.push(`/${p.slug}`)}>
+              <div className="product-img">
+                {p.images[0]
+                  ? <img src={p.images[0].url} alt={p.name} loading="lazy" style={{width:'100%',height:'100%',objectFit:'contain',padding:'12px',background:'#fff'}} />
+                  : <div className="product-img-placeholder" style={{background: CAT_GRADIENTS[i % CAT_GRADIENTS.length]}}><span style={{fontSize:'3rem'}}>{getCatEmoji(p.category?.name ?? p.name)}</span></div>
+                }
+                <div style={{position:'absolute',top:12,left:12,background:'rgba(220,38,38,0.9)',color:'#fff',fontSize:'0.55rem',fontWeight:700,padding:'2px 6px',borderRadius:9999,letterSpacing:'0.08em',zIndex:2}}>MỚI VỀ</div>
+                <div className="product-wishlist">♡</div>
+              </div>
+              <div className="product-body">
+                {p.brand && <div className="product-brand">{p.brand.name}</div>}
+                <h3>{p.name}</h3>
+                <div className="product-origin">🇯🇵 Hàng Nhật Chính Hãng</div>
+                <div className="product-price">
+                  {price
+                    ? <>
+                        <span className="price-main">{price.toLocaleString('vi-VN')}₫</span>
+                        {old && old > price && <span className="price-old" style={{textDecoration:'line-through',color:'#999',fontSize:'0.85em',marginLeft:6}}>{old.toLocaleString('vi-VN')}₫</span>}
+                      </>
+                    : <span className="price-main">Liên hệ</span>}
+                </div>
+                <button className="btn-buy" onClick={(e) => { e.stopPropagation(); router.push(`/${p.slug}`) }}>Mua Ngay</button>
+              </div>
+            </div>
+          )
+        })}
+      </div>
+
+      {totalPages > 1 && (
+        <>
+          <button
+            onClick={() => go(page - 1)}
+            disabled={page === 0}
+            aria-label="Trang trước"
+            style={{
+              position: 'absolute', top: '42%', left: -18, transform: 'translateY(-50%)',
+              width: 36, height: 36, borderRadius: '50%', border: '1px solid #e5e7eb',
+              background: '#fff', cursor: page === 0 ? 'default' : 'pointer',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              boxShadow: '0 2px 6px rgba(0,0,0,0.1)', opacity: page === 0 ? 0.35 : 1, zIndex: 2,
+              transition: 'opacity 0.2s',
+            }}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M15 18l-6-6 6-6"/></svg>
+          </button>
+          <button
+            onClick={() => go(page + 1)}
+            disabled={page === totalPages - 1}
+            aria-label="Trang sau"
+            style={{
+              position: 'absolute', top: '42%', right: -18, transform: 'translateY(-50%)',
+              width: 36, height: 36, borderRadius: '50%', border: '1px solid #e5e7eb',
+              background: '#fff', cursor: page === totalPages - 1 ? 'default' : 'pointer',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              boxShadow: '0 2px 6px rgba(0,0,0,0.1)', opacity: page === totalPages - 1 ? 0.35 : 1, zIndex: 2,
+              transition: 'opacity 0.2s',
+            }}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 18l6-6-6-6"/></svg>
+          </button>
+          <div style={{ display: 'flex', justifyContent: 'center', gap: 6, marginTop: 16 }}>
+            {Array.from({ length: totalPages }).map((_, i) => (
+              <button
+                key={i}
+                onClick={() => go(i)}
+                aria-label={`Trang ${i + 1}`}
+                style={{
+                  width: i === page ? 22 : 8, height: 8, borderRadius: 4, border: 'none', padding: 0,
+                  background: i === page ? '#dc2626' : '#d1d5db', cursor: 'pointer',
+                  transition: 'all 0.25s',
+                }}
+              />
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  )
+}
+
 type HeroBanner = { id: string; title: string; imageUrl: string; linkUrl: string | null }
 
 function isVideo(url: string) {
@@ -636,6 +737,7 @@ export default function HomePageClient({
   categories,
   products,
   orderProducts = [],
+  newArrivals = [],
   auctions,
   content = {},
   heroBanners = [],
@@ -646,6 +748,7 @@ export default function HomePageClient({
   categories: CategoryItem[]
   products: ProductItem[]
   orderProducts?: ProductItem[]
+  newArrivals?: ProductItem[]
   auctions: AuctionItem[]
   content?: Record<string, string>
   heroBanners?: HeroBanner[]
@@ -823,6 +926,18 @@ export default function HomePageClient({
               )}
             </div>
           </section>
+
+          {newArrivals.length > 0 && (
+            <section className="featured-section">
+              <div className="container">
+                <div className="section-header">
+                  <div><span className="section-label">Mới Về</span><h2 style={{fontSize:'1.5rem'}}>Hàng Mới Về</h2></div>
+                  <button onClick={() => router.push('/san-pham')} className="see-all-link">Xem Tất Cả <span>→</span></button>
+                </div>
+                <NewArrivalsSlider items={newArrivals} router={router} />
+              </div>
+            </section>
+          )}
 
           <section className="featured-section">
             <div className="container">

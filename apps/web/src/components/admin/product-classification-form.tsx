@@ -141,7 +141,7 @@ export function ProductClassificationForm({
           <label className={LABEL_CLS}>Nhãn hiển thị (Badge)</label>
           <div className="flex flex-wrap gap-2">
             {([
-              { value: 'NEW_ARRIVAL', label: '🆕 Mới',        cls: 'border-emerald-500 bg-emerald-500/10 text-emerald-400' },
+              { value: 'NEW_ARRIVAL', label: '🆕 Mới Về',     cls: 'border-emerald-500 bg-emerald-500/10 text-emerald-400' },
               { value: 'SOLD_OUT',   label: '✅ Đã Bán',     cls: 'border-blue-500 bg-blue-500/10 text-blue-400' },
               { value: 'ORDER_ONLY', label: '📦 Hàng Order', cls: 'border-amber-500 bg-amber-500/10 text-amber-400' },
             ] as const).map((b) => (

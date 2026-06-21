@@ -25,7 +25,7 @@ export default async function HomePage() {
     images: { where: { isPrimary: true }, take: 1, select: { url: true } },
   } as const
 
-  const [categories, homeProducts, orderProducts, liveAuctions, contentRows, brands, testimonials, heroBanners] = await Promise.all([
+  const [categories, homeProducts, orderProducts, newArrivals, liveAuctions, contentRows, brands, testimonials, heroBanners] = await Promise.all([
     prisma.category.findMany({
       where: { isActive: true, showOnHome: true, parentId: null },
       orderBy: { sortOrder: 'asc' },
@@ -52,6 +52,15 @@ export default async function HomePage() {
       where: { status: 'ACTIVE', badge: 'ORDER_ONLY' },
       orderBy: { createdAt: 'desc' },
       take: 8,
+      select: productSelect,
+    }),
+
+    // Hàng Mới Về — CHỈ sản phẩm admin tick nhãn "Mới Về" (badge NEW_ARRIVAL)
+    // Lấy pool rộng rồi random ở dưới để trang luôn trông tươi mới
+    prisma.product.findMany({
+      where: { status: 'ACTIVE', badge: 'NEW_ARRIVAL' },
+      orderBy: { createdAt: 'desc' },
+      take: 30,
       select: productSelect,
     }),
 
@@ -109,6 +118,9 @@ export default async function HomePage() {
   const content: Record<string, string> = {}
   for (const row of contentRows) content[row.key] = row.value
 
+  // Random hóa Hàng Mới Về — trang luôn trông có sản phẩm mới mỗi lần tải
+  const newArrivalsShuffled = [...newArrivals].sort(() => Math.random() - 0.5).slice(0, 12)
+
   const mapProduct = (p: typeof homeProducts[0]) => ({
     ...p,
     originPrice: p.originPrice ? Number(p.originPrice) : null,
@@ -121,6 +133,7 @@ export default async function HomePage() {
       categories={categories}
       products={homeProducts.map(mapProduct)}
       orderProducts={orderProducts.map(mapProduct)}
+      newArrivals={newArrivalsShuffled.map(mapProduct)}
       auctions={liveAuctions.map((a) => ({
         ...a,
         currentPrice: Number(a.currentPrice),
