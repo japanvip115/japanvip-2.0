@@ -34,6 +34,8 @@ model User {
   role          UserRole   @default(CUSTOMER)
   status        UserStatus @default(PENDING_VERIFY)
   emailVerified      Boolean    @default(false) @map("email_verified")
+  marketingOptIn     Boolean    @default(true) @map("marketing_opt_in")
+  unsubscribeToken   String?    @unique @map("unsubscribe_token") @db.VarChar(64)
   fraudScore         Int        @default(0) @map("fraud_score")
   sessionVersion     Int        @default(0) @map("session_version")
   failedLoginCount   Int        @default(0) @map("failed_login_count")
@@ -1145,6 +1147,20 @@ model BfjShippingTier {
 
   @@index([sortOrder])
   @@map("bfj_shipping_tiers")
+}
+
+// Log email marketing đã gửi — tránh gửi trùng + thống kê
+model EmailLog {
+  id     String   @id @default(uuid()) @db.Uuid
+  email  String   @db.VarChar(255)
+  type   String   @db.VarChar(50) // welcome | winback | digest | abandoned_cart
+  userId String?  @map("user_id") @db.Uuid
+  meta   Json?
+  sentAt DateTime @default(now()) @map("sent_at") @db.Timestamptz
+
+  @@index([email, type])
+  @@index([type, sentAt])
+  @@map("email_logs")
 }
 
 model Testimonial {

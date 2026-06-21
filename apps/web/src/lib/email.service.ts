@@ -113,6 +113,66 @@ function btn(href: string, text: string, style: 'primary' | 'outline' = 'primary
   return `<a href="${href}" style="display:block;text-align:center;padding:14px 24px;border-radius:8px;font-size:15px;font-weight:700;text-decoration:none;color:#fff;background:#b91c1c">${text}</a>`
 }
 
+// Dòng "Hủy đăng ký" cho email marketing (KHÔNG dùng cho email giao dịch)
+function unsubscribeNote(unsubscribeUrl: string): string {
+  return `${divider()}
+    <p style="margin:0;font-size:11px;color:#9ca3af;text-align:center;line-height:1.6">
+      Bạn nhận email này vì đã đăng ký tài khoản Japan VIP.<br/>
+      <a href="${unsubscribeUrl}" style="color:#9ca3af;text-decoration:underline">Hủy đăng ký nhận tin</a>
+    </p>`
+}
+
+// ─── Welcome (chào mừng) ─────────────────────────────────────────────────────
+
+export async function sendWelcomeEmail(opts: { email: string; fullName: string; unsubscribeUrl: string }) {
+  const cfg = await getSmtpConfig()
+  const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://store.japanvip.vn'
+  const { email, fullName, unsubscribeUrl } = opts
+
+  await createTransport(cfg).sendMail({
+    from: cfg.from,
+    to: email,
+    subject: `Chào mừng ${fullName} đến với Japan VIP! 🎌`,
+    html: emailLayout(`
+      <div style="text-align:center;margin-bottom:28px">
+        <p style="margin:0 0 8px;font-size:44px;line-height:1">🎌</p>
+        <p style="margin:0 0 6px;font-size:22px;font-weight:900;color:#111">Chào mừng bạn!</p>
+        <p style="margin:0;font-size:14px;color:#6b7280">Xin chào <strong style="color:#111">${fullName}</strong>, cảm ơn bạn đã tham gia Japan VIP.</p>
+      </div>
+
+      <p style="margin:0 0 16px;font-size:14px;color:#374151;line-height:1.6">
+        Bạn vừa mở khóa cả thế giới hàng gia dụng nội địa Nhật Bản chính hãng. Đây là những gì bạn có thể làm ngay:
+      </p>
+
+      <div style="margin-bottom:24px">
+        <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #f3f4f6">
+          <span style="font-size:22px">🛍️</span>
+          <div><p style="margin:0;font-size:14px;font-weight:700;color:#111">Mua hàng Nhật chính hãng</p><p style="margin:2px 0 0;font-size:13px;color:#6b7280">Mới 100%, nguyên hộp, tem nhập khẩu đầy đủ.</p></div>
+        </div>
+        <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #f3f4f6">
+          <span style="font-size:22px">🔨</span>
+          <div><p style="margin:0;font-size:14px;font-weight:700;color:#111">Săn đấu giá giá hời</p><p style="margin:2px 0 0;font-size:13px;color:#6b7280">Đấu giá minh bạch, real-time, giá tốt bất ngờ.</p></div>
+        </div>
+        <div style="display:flex;gap:12px;padding:12px 0">
+          <span style="font-size:22px">📎</span>
+          <div><p style="margin:0;font-size:14px;font-weight:700;color:#111">Mua hộ từ Amazon JP, Rakuten…</p><p style="margin:2px 0 0;font-size:13px;color:#6b7280">Dán link — nhận báo giá trọn gói trong 30 giây.</p></div>
+        </div>
+      </div>
+
+      ${btn(`${APP_URL}`, 'Khám phá ngay →')}
+
+      ${divider()}
+      <p style="margin:0;font-size:12px;color:#6b7280;text-align:center">
+        Cần hỗ trợ?
+        <a href="tel:0988969896" style="color:#b91c1c;text-decoration:none;font-weight:600">0988.969.896</a>
+        ·
+        <a href="https://zalo.me/0988969896" style="color:#b91c1c;text-decoration:none;font-weight:600">Chat Zalo</a>
+      </p>
+      ${unsubscribeNote(unsubscribeUrl)}
+    `),
+  })
+}
+
 // ─── OTP ─────────────────────────────────────────────────────────────────────
 
 export async function sendOtpEmail(email: string, code: string, fullName?: string) {
