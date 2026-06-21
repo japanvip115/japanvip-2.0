@@ -169,6 +169,12 @@ const HTML_ONLY = `⛔ OUTPUT RULES (BẮT BUỘC, ƯU TIÊN CAO NHẤT):
 
 `
 
+// ══════════════════════════════════════════════════════════════════════════════
+// 🔒 LOCKED (2026-06) — Rule AI Writer Trang Nhật đã chốt với chủ dự án.
+// KHÔNG sửa/xoá VI_ONLY_RULE, NO_PLACEHOLDER_RULE, buildImageBlock, buildProductNamePrompt
+// nếu chưa được chủ dự án yêu cầu rõ. Xem CLAUDE.md (mục LOCKED).
+// ══════════════════════════════════════════════════════════════════════════════
+
 // ── Quy tắc CỨNG luôn áp dụng cho mô tả (không bị Style Editor ghi đè) ────────
 const VI_ONLY_RULE = `\n\n🈲 BẮT BUỘC — NGÔN NGỮ:
 - Toàn bộ bài viết PHẢI bằng tiếng Việt. DỊCH hết nhãn thông số tiếng Nhật/tiếng Anh sang tiếng Việt (vd: 電圧→Điện áp, ワット数→Công suất, 容量→Dung tích).

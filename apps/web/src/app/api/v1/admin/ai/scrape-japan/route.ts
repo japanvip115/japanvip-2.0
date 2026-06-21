@@ -49,6 +49,7 @@ async function scrapeAmazonJP(url: string) {
     $('h1.a-size-large').first().text().trim() ||
     $('meta[property="og:title"]').attr('content') || ''
 
+  // 🔒 LOCKED (2026-06) — Lấy giá đúng biến thể + bắt công suất/điện áp. Xem CLAUDE.md. KHÔNG tự sửa.
   // Giá — ưu tiên giá biến thể đang chọn (buybox/core), fallback sang "from ¥..." trong buying options
   const priceCandidates = [
     $('#corePriceDisplay_desktop_feature_div .a-price .a-offscreen').first().text(),

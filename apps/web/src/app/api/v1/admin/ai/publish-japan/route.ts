@@ -99,6 +99,7 @@ export async function POST(req: NextRequest) {
 
     if (!productName) return apiError('Thiếu tên sản phẩm', 400)
 
+    // 🔒 LOCKED (2026-06) — Quy đổi giá + map ảnh R2 + khối phải admin-only. Xem CLAUDE.md. KHÔNG tự sửa.
     // Giá bán VNĐ: hàng Nhật quy đổi ¥→VNĐ theo tỷ giá; đối thủ đã là VNĐ
     let salePrice: number | null = null
     if (typeof salePriceVnd === 'number' && salePriceVnd > 0) {
