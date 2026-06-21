@@ -5,6 +5,7 @@ import { auth } from '@/lib/auth'
 import { hasRole } from '@/lib/auth-types'
 import { apiError, handleApiError } from '@/lib/api-response'
 import { uploadFile } from '@/lib/r2'
+import { getActiveExchangeRate } from '@/modules/bfj/services/exchange-rate.service'
 
 export const maxDuration = 60
 
@@ -92,9 +93,20 @@ export async function POST(req: NextRequest) {
       faq,
       attributes,
       seo,
+      priceJPY,
+      salePriceVnd,
     } = body
 
     if (!productName) return apiError('Thiếu tên sản phẩm', 400)
+
+    // Giá bán VNĐ: hàng Nhật quy đổi ¥→VNĐ theo tỷ giá; đối thủ đã là VNĐ
+    let salePrice: number | null = null
+    if (typeof salePriceVnd === 'number' && salePriceVnd > 0) {
+      salePrice = Math.round(salePriceVnd)
+    } else if (typeof priceJPY === 'number' && priceJPY > 0) {
+      const { rate } = await getActiveExchangeRate('JPY', 'VND')
+      salePrice = Math.round((priceJPY * rate) / 1000) * 1000
+    }
 
     // 1. Tạo slug duy nhất
     const baseSlug = slugifyVi(productName)
@@ -122,15 +134,36 @@ export async function POST(req: NextRequest) {
       } catch { /* ignore */ }
     }
 
-    // 4. Tạo sản phẩm
+    // 4. Upload ảnh song song lên R2 (làm TRƯỚC để có URL R2 thay vào mô tả)
+    const uploaded = selectedImages.length > 0
+      ? await Promise.all(
+          selectedImages.map((url: string, i: number) =>
+            downloadAndUploadImage(url, originUrl ?? url).then(saved =>
+              saved ? { src: url, url: saved, isPrimary: i === 0, sortOrder: i, altText: productName } : null
+            )
+          )
+        )
+      : []
+    const savedImages = uploaded.filter((x): x is NonNullable<typeof x> => x !== null)
+
+    // 5. Thay URL ảnh nguồn (Amazon...) trong mô tả bằng URL R2 — tránh hotlink/chết ảnh trên trang live
+    let finalDescription: string | null = description || null
+    if (finalDescription) {
+      for (const img of savedImages) {
+        finalDescription = finalDescription.split(img.src).join(img.url)
+      }
+    }
+
+    // 6. Tạo sản phẩm
     const product = await prisma.product.create({
       data: {
         name: productName,
         slug,
-        description: description || null,
+        description: finalDescription,
         status: 'DRAFT',
         condition: 'NEW',
         ownerType: 'JAPANVIP',
+        salePrice: salePrice ?? undefined,
         originUrl: originUrl || null,
         metaTitle,
         metaDesc,
@@ -139,19 +172,11 @@ export async function POST(req: NextRequest) {
       },
     })
 
-    // 5. Upload ảnh song song → gắn vào sản phẩm
-    if (selectedImages.length > 0) {
-      const uploadResults = await Promise.all(
-        selectedImages.map((url: string, i: number) =>
-          downloadAndUploadImage(url, originUrl ?? url).then(saved =>
-            saved ? { url: saved, isPrimary: i === 0, sortOrder: i, altText: productName } : null
-          )
-        )
-      )
-      const saved = uploadResults.filter((x): x is NonNullable<typeof x> => x !== null)
-      if (saved.length > 0) {
-        await prisma.productImage.createMany({ data: saved.map(img => ({ ...img, productId: product.id })) })
-      }
+    // 7. Gắn ảnh gallery vào sản phẩm
+    if (savedImages.length > 0) {
+      await prisma.productImage.createMany({
+        data: savedImages.map(img => ({ url: img.url, isPrimary: img.isPrimary, sortOrder: img.sortOrder, altText: img.altText, productId: product.id })),
+      })
     }
 
     // 6. Lưu attributes (thông số + FAQ + promo)

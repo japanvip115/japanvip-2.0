@@ -83,7 +83,8 @@ export function findRelevantKnowledge(productName: string, maxArticles = 3): str
 
 export function streamWithClaudeCode(
   prompt: string,
-  systemPrompt: string
+  systemPrompt: string,
+  model?: string
 ): ReadableStream<Uint8Array> {
   const encoder = new TextEncoder()
 
@@ -91,13 +92,27 @@ export function streamWithClaudeCode(
     start(controller) {
       // Strip Anthropic API key from env so Claude Code uses Google OAuth session
       const { ANTHROPIC_API_KEY: _removed, ANTHROPIC_AUTH_TOKEN: _removed2, ...cleanEnv } = process.env
-      const child = spawn('claude', [
+      const contentOnlyPrefix = `CRITICAL INSTRUCTION — HIGHEST PRIORITY:
+You are a CONTENT GENERATOR, not a coding agent.
+- Output ONLY the requested content (HTML or JSON). Nothing else.
+- DO NOT create files, DO NOT use tools, DO NOT run commands.
+- DO NOT say "Đã tạo file...", "File lưu tại...", "Bạn có muốn..." or any meta-commentary.
+- DO NOT use markdown backticks (\`\`\`html, \`\`\`json, \`\`\`, etc.).
+- DO NOT explain what you are doing. Start your response immediately with the content.
+- For HTML: start with <p> or <h2>. For JSON: start with {.
+
+`
+
+      const args = [
         '--print',
         '--output-format', 'stream-json',
         '--verbose',
-        '--system-prompt', systemPrompt,
+        '--system-prompt', contentOnlyPrefix + systemPrompt,
         '--dangerously-skip-permissions',
-      ], {
+      ]
+      if (model) args.push('--model', model)
+
+      const child = spawn('claude', args, {
         env: cleanEnv,
       })
 

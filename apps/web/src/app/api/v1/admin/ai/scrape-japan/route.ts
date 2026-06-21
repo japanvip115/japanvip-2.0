@@ -49,14 +49,30 @@ async function scrapeAmazonJP(url: string) {
     $('h1.a-size-large').first().text().trim() ||
     $('meta[property="og:title"]').attr('content') || ''
 
-  // Giá
-  const priceText =
-    $('.a-price .a-offscreen').first().text().trim() ||
-    $('#priceblock_ourprice').first().text().trim() ||
-    $('#priceblock_dealprice').first().text().trim() ||
-    $('.a-price-whole').first().text().trim() ||
-    ''
-  const priceJPY = parseInt(priceText.replace(/[^0-9]/g, ''), 10) || null
+  // Giá — ưu tiên giá biến thể đang chọn (buybox/core), fallback sang "from ¥..." trong buying options
+  const priceCandidates = [
+    $('#corePriceDisplay_desktop_feature_div .a-price .a-offscreen').first().text(),
+    $('#corePrice_feature_div .a-price .a-offscreen').first().text(),
+    $('#apex_desktop .a-price .a-offscreen').first().text(),
+    $('#buybox .a-price .a-offscreen').first().text(),
+    $('.a-price .a-offscreen').first().text(),
+    $('#priceblock_ourprice').first().text(),
+    $('#priceblock_dealprice').first().text(),
+    // "from ¥..." ở vùng tùy chọn mua (khi không có featured offer)
+    $('#unifiedPrice_feature_div .a-price .a-offscreen').first().text(),
+    $('.swatchAvailable .a-price .a-offscreen').first().text(),
+    $('.a-price-whole').first().text(),
+  ]
+  const parsePrice = (t: string): number | null => {
+    const n = parseInt((t || '').replace(/[^0-9]/g, ''), 10)
+    return n && n >= 1000 && n <= 5_000_000 ? n : null
+  }
+  let priceJPY = priceCandidates.map(parsePrice).find((n): n is number => n !== null) ?? null
+  // Last resort: tìm "¥xx,xxx" đầu tiên trong vùng giá nếu các selector trên trượt
+  if (!priceJPY) {
+    const m = html.match(/[¥￥]\s?([0-9]{1,3}(?:,[0-9]{3})+)/)
+    if (m) priceJPY = parsePrice(m[1]!)
+  }
 
   // Model / ASIN
   const asin = url.match(/\/dp\/([A-Z0-9]{10})/)?.[1] ?? ''

@@ -117,6 +117,7 @@ type Draft = {
   // Japan mode
   japanUrl: string
   japanProduct: JapanProduct | null
+  japanVietName: string
   selectedImages: string[]
   // DB mode
   selectedProduct: ProductDetail | null
@@ -163,6 +164,14 @@ export function AiWriterClient({ products }: { products: ProductSummary[] }) {
   // ── AI Provider ──
   const [aiProvider, setAiProvider] = useState<'anthropic' | 'claude-code'>('claude-code')
   const [claudeCodeAvailable, setClaudeCodeAvailable] = useState<boolean | null>(null)
+  const [claudeCodeModel, setClaudeCodeModel] = useState('claude-opus-4-8')
+  const [anthropicEnabled, setAnthropicEnabled] = useState(true)
+
+  useEffect(() => {
+    setAnthropicEnabled(localStorage.getItem('ai_anthropic_enabled') !== 'false')
+    const savedModel = localStorage.getItem('ai_claude_code_model')
+    if (savedModel) setClaudeCodeModel(savedModel)
+  }, [])
 
   useEffect(() => {
     fetch('/api/v1/admin/ai/claude-code-status')
@@ -184,6 +193,8 @@ export function AiWriterClient({ products }: { products: ProductSummary[] }) {
   const [japanUrl, setJapanUrl] = useState('')
   const [scraping, setScraping] = useState(false)
   const [japanProduct, setJapanProduct] = useState<JapanProduct | null>(null)
+  const [japanVietName, setJapanVietName] = useState('')
+  const [translatingName, setTranslatingName] = useState(false)
   const [scrapeError, setScrapeError] = useState('')
   const [selectedImages, setSelectedImages] = useState<Set<string>>(new Set())
   const [hasDraft, setHasDraft] = useState(false)
@@ -255,6 +266,7 @@ export function AiWriterClient({ products }: { products: ProductSummary[] }) {
       setSourceMode('japan')
       setJapanUrl(draft.japanUrl)
       setJapanProduct(draft.japanProduct)
+      if (draft.japanVietName) setJapanVietName(draft.japanVietName)
       setSelectedImages(new Set(draft.selectedImages))
       setOutputs(draft.outputs)
       setSelectedTypes(draft.selectedTypes)
@@ -291,6 +303,7 @@ export function AiWriterClient({ products }: { products: ProductSummary[] }) {
       sourceMode,
       japanUrl,
       japanProduct,
+      japanVietName,
       selectedImages: [...selectedImages],
       selectedProduct,
       competitorUrl,
@@ -299,7 +312,7 @@ export function AiWriterClient({ products }: { products: ProductSummary[] }) {
       outputs,
       selectedTypes,
     })
-  }, [outputs, sourceMode, japanProduct, japanUrl, selectedImages, selectedTypes, selectedProduct, competitorProduct, competitorUrl, selectedCompetitorImages])
+  }, [outputs, sourceMode, japanProduct, japanUrl, japanVietName, selectedImages, selectedTypes, selectedProduct, competitorProduct, competitorUrl, selectedCompetitorImages])
 
   useEffect(() => {
     function handler(e: MouseEvent) {
@@ -374,6 +387,35 @@ export function AiWriterClient({ products }: { products: ProductSummary[] }) {
     })
   }
 
+  // ── Tự dịch tên sản phẩm sang tiếng Việt (Loại + Thương hiệu + Model + Dung tích) ──
+  async function translateName(): Promise<string> {
+    if (!japanProduct || translatingName) return ''
+    setTranslatingName(true)
+    try {
+      const res = await fetch('/api/v1/admin/ai/generate-content', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: 'product_name',
+          productName: japanProduct.name,
+          specs: buildSpecsFromJapan(japanProduct.specs),
+          extra: japanProduct.model ? `Model: ${japanProduct.model}` : '',
+          provider: aiProvider,
+          claudeCodeModel: aiProvider === 'claude-code' ? claudeCodeModel : undefined,
+        }),
+      })
+      if (!res.ok) return ''
+      const raw = await res.text()
+      const name = raw.replace(/<[^>]+>/g, '').replace(/["'`]/g, '').trim().split('\n').map(l => l.trim()).filter(Boolean)[0] ?? ''
+      if (name) setJapanVietName(name)
+      return name
+    } catch {
+      return ''
+    } finally {
+      setTranslatingName(false)
+    }
+  }
+
   // ── Competitor scrape ──
   async function scrapeCompetitor() {
     if (!competitorUrl.trim()) return
@@ -436,10 +478,11 @@ export function AiWriterClient({ products }: { products: ProductSummary[] }) {
         selectedProduct.category ? `Danh mục: ${selectedProduct.category.name}` : '',
       ].filter(Boolean).join('\n')
     } else if (sourceMode === 'japan' && japanProduct) {
-      productName = japanProduct.name
+      productName = japanVietName.trim() || japanProduct.name
       specs = buildSpecsFromJapan(japanProduct.specs)
       extra = [
         japanProduct.model ? `Model: ${japanProduct.model}` : '',
+        japanVietName.trim() && japanProduct.name ? `Tên gốc (tham khảo): ${japanProduct.name}` : '',
         japanProduct.priceJPY ? `Giá tại Nhật: ${japanProduct.priceJPY.toLocaleString('ja-JP')}円` : '',
         `Nguồn: ${japanUrl}`,
       ].filter(Boolean).join('\n')
@@ -472,9 +515,14 @@ export function AiWriterClient({ products }: { products: ProductSummary[] }) {
         maxWords: testMode ? undefined : maxWords,
         testMode,
         provider: aiProvider,
+        claudeCodeModel: aiProvider === 'claude-code' ? claudeCodeModel : undefined,
         productId: sourceMode === 'db' ? selectedProduct?.id : undefined,
         categoryId: sourceMode === 'db' ? selectedProduct?.category?.id : undefined,
         brandId: sourceMode === 'db' ? selectedProduct?.brand?.id : undefined,
+        images: type === 'description'
+          ? (sourceMode === 'japan' ? [...selectedImages]
+            : sourceMode === 'competitor' ? [...selectedCompetitorImages] : [])
+          : undefined,
       }),
     })
     if (!res.ok) throw new Error('API error')
@@ -508,6 +556,11 @@ export function AiWriterClient({ products }: { products: ProductSummary[] }) {
 
   async function generate() {
     if (!hasSource) return
+
+    // Tự dịch tên sang tiếng Việt nếu ô còn trống (mode Trang Nhật)
+    if (sourceMode === 'japan' && japanProduct && !japanVietName.trim()) {
+      await translateName()
+    }
 
     // Chỉ generate các loại chưa có output
     const typesToGenerate = selectedTypes.filter(t => !outputs[t])
@@ -567,8 +620,9 @@ export function AiWriterClient({ products }: { products: ProductSummary[] }) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          productName: japanProduct.name,
+          productName: japanVietName.trim() || japanProduct.name,
           originUrl: japanUrl,
+          priceJPY: japanProduct.priceJPY,
           selectedImages: [...selectedImages],
           description: outputs['description'] ?? null,
           faq: outputs['faq'] ?? null,
@@ -583,8 +637,6 @@ export function AiWriterClient({ products }: { products: ProductSummary[] }) {
         setPublishStatus('done')
         setPublishedSlug(data.slug)
         setPublishedId(data.productId)
-        clearDraft()
-        setHasDraft(false)
       }
     } catch {
       setPublishStatus('error')
@@ -602,6 +654,7 @@ export function AiWriterClient({ products }: { products: ProductSummary[] }) {
         body: JSON.stringify({
           productName: competitorProduct.name,
           originUrl: competitorUrl,
+          salePriceVnd: competitorProduct.price,
           selectedImages: [...selectedCompetitorImages],
           description: outputs['description'] ?? null,
           faq: outputs['faq'] ?? null,
@@ -919,7 +972,7 @@ export function AiWriterClient({ products }: { products: ProductSummary[] }) {
                         <CheckCircle2 className="h-3.5 w-3.5 text-green-400 shrink-0" />
                         <span className="text-[10px] font-bold text-green-400 uppercase tracking-wide">Đã lấy được thông tin</span>
                       </div>
-                      <p className="text-sm font-semibold text-white leading-snug">{japanProduct.name}</p>
+                      <p className="text-xs text-gray-500 leading-snug line-through">{japanProduct.name}</p>
                       <div className="flex flex-wrap gap-1.5 mt-1.5">
                         {japanProduct.model && (
                           <span className="text-[10px] bg-gray-700 text-gray-300 px-1.5 py-0.5 rounded font-mono">{japanProduct.model}</span>
@@ -931,10 +984,34 @@ export function AiWriterClient({ products }: { products: ProductSummary[] }) {
                         )}
                       </div>
                     </div>
-                    <button onClick={() => { setJapanProduct(null); setScrapeError(''); setJapanUrl('') }}
+                    <button onClick={() => { setJapanProduct(null); setScrapeError(''); setJapanUrl(''); setJapanVietName('') }}
                       className="shrink-0 text-gray-500 hover:text-red-400 transition mt-0.5">
                       <X className="h-4 w-4" />
                     </button>
+                  </div>
+
+                  {/* Tên tiếng Việt */}
+                  <div>
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="text-[10px] font-bold text-yellow-400 uppercase tracking-wide block">
+                        Tên sản phẩm tiếng Việt *
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => translateName()}
+                        disabled={translatingName}
+                        className="text-[10px] font-bold text-blue-400 hover:text-blue-300 disabled:text-gray-600 transition"
+                      >
+                        {translatingName ? '⏳ Đang dịch…' : '✨ Dịch tự động'}
+                      </button>
+                    </div>
+                    <input
+                      type="text"
+                      value={japanVietName}
+                      onChange={e => setJapanVietName(e.target.value)}
+                      placeholder="VD: Nồi cơm điện IH Tiger 5.5 cups nội địa Nhật"
+                      className="w-full text-sm bg-gray-800 border border-yellow-700/50 rounded-lg px-3 py-2 text-white placeholder-gray-600 focus:outline-none focus:border-yellow-500"
+                    />
                   </div>
 
                   {/* Thông số */}
@@ -1223,14 +1300,17 @@ export function AiWriterClient({ products }: { products: ProductSummary[] }) {
 
               {/* Anthropic API */}
               <button
-                onClick={() => setAiProvider('anthropic')}
+                onClick={() => { if (anthropicEnabled) setAiProvider('anthropic') }}
+                disabled={!anthropicEnabled}
                 className={`relative flex-1 flex items-center gap-2 rounded-lg border px-2.5 py-2 text-left transition ${
-                  aiProvider === 'anthropic'
-                    ? 'border-purple-500/50 bg-purple-950/50'
-                    : 'border-gray-700 bg-gray-900/40 hover:border-gray-600'
+                  !anthropicEnabled
+                    ? 'border-gray-800 bg-gray-900/20 opacity-40 cursor-not-allowed'
+                    : aiProvider === 'anthropic'
+                      ? 'border-purple-500/50 bg-purple-950/50'
+                      : 'border-gray-700 bg-gray-900/40 hover:border-gray-600'
                 }`}
               >
-                <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded text-xs ${aiProvider === 'anthropic' ? 'bg-purple-500/20' : 'bg-gray-800'}`}>
+                <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded text-xs ${aiProvider === 'anthropic' && anthropicEnabled ? 'bg-purple-500/20' : 'bg-gray-800'}`}>
                   🔑
                 </span>
                 <span className="flex-1 min-w-0">
@@ -1240,14 +1320,44 @@ export function AiWriterClient({ products }: { products: ProductSummary[] }) {
                   </span>
                   <span className="block text-[10px] text-gray-500 leading-none mt-0.5 whitespace-nowrap">Tính phí / token</span>
                 </span>
-                {aiProvider === 'anthropic' && (
+                {aiProvider === 'anthropic' && anthropicEnabled && (
                   <span className="shrink-0 h-1.5 w-1.5 rounded-full bg-purple-400" />
                 )}
               </button>
             </div>
 
+            {/* Toggle bật/tắt Anthropic */}
+            <div className="mt-2 flex items-center justify-between">
+              <span className="text-[10px] text-gray-500">Bật / Tắt Anthropic API</span>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={anthropicEnabled}
+                onClick={() => {
+                  const next = !anthropicEnabled
+                  setAnthropicEnabled(next)
+                  localStorage.setItem('ai_anthropic_enabled', next ? 'true' : 'false')
+                  if (!next && aiProvider === 'anthropic') setAiProvider('claude-code')
+                }}
+                className={`relative inline-flex h-5 w-9 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ${anthropicEnabled ? 'bg-purple-500' : 'bg-gray-600'}`}
+              >
+                <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform duration-200 ${anthropicEnabled ? 'translate-x-4' : 'translate-x-0'}`} />
+              </button>
+            </div>
+
             {claudeCodeAvailable && aiProvider === 'claude-code' && (
-              <p className="mt-2 text-[10px] text-green-600">⚡ Kết nối Google · Không tốn API credit</p>
+              <div className="mt-2 space-y-1.5">
+                <p className="text-[10px] text-green-600">⚡ Kết nối Google · Không tốn API credit</p>
+                <select
+                  value={claudeCodeModel}
+                  onChange={e => { setClaudeCodeModel(e.target.value); localStorage.setItem('ai_claude_code_model', e.target.value) }}
+                  className="w-full px-2 py-1.5 rounded-md bg-gray-900 border border-gray-700 text-gray-200 text-[11px] focus:outline-none focus:border-green-500"
+                >
+                  <option value="claude-opus-4-8">Opus 4.8 (mạnh nhất)</option>
+                  <option value="claude-sonnet-4-6">Sonnet 4.6 (cân bằng)</option>
+                  <option value="claude-haiku-4-5-20251001">Haiku 4.5 (nhanh nhất)</option>
+                </select>
+              </div>
             )}
           </div>
 
@@ -1382,48 +1492,6 @@ export function AiWriterClient({ products }: { products: ProductSummary[] }) {
             </div>
           )}
 
-          {/* Publish button — Japan mode + có ít nhất 1 output */}
-          {sourceMode === 'japan' && Object.keys(outputs).length > 0 && !loading && (
-            <div className="mt-2 space-y-2">
-              {publishStatus !== 'done' ? (
-                <button
-                  onClick={publishProduct}
-                  disabled={publishStatus === 'publishing'}
-                  className="w-full flex items-center justify-center gap-2 rounded-xl border border-blue-500 bg-blue-900/30 py-3 text-sm font-bold text-blue-300 hover:bg-blue-900/60 transition disabled:opacity-40"
-                >
-                  {publishStatus === 'publishing' ? (
-                    <><Loader2 className="h-4 w-4 animate-spin" /> Đang lưu nháp sản phẩm...</>
-                  ) : publishStatus === 'error' ? (
-                    <><PackagePlus className="h-4 w-4" /> Lỗi — Thử lại</>
-                  ) : (
-                    <><PackagePlus className="h-4 w-4" /> Lưu nháp &amp; chuyển sang Admin</>
-                  )}
-                </button>
-              ) : (
-                <div className="rounded-xl border border-green-600/50 bg-green-900/20 p-3 space-y-2">
-                  <p className="text-xs font-bold text-green-400 text-center">✓ Đã lưu nháp thành công!</p>
-                  <p className="text-[11px] text-gray-400 text-center">Chuyển sang trang sản phẩm để kiểm tra và duyệt đăng</p>
-                  {publishedId && (
-                    <a
-                      href={`/admin/products/${publishedId}`}
-                      className="flex items-center justify-center gap-2 w-full rounded-lg bg-green-600 hover:bg-green-700 py-2.5 text-sm font-bold text-white transition"
-                    >
-                      <ExternalLink className="h-4 w-4" /> Mở sản phẩm để duyệt đăng
-                    </a>
-                  )}
-                  {publishedSlug && (
-                    <a
-                      href={`/${publishedSlug}`}
-                      target="_blank"
-                      className="flex items-center justify-center gap-1.5 text-[11px] text-gray-500 hover:text-gray-300 transition"
-                    >
-                      <ExternalLink className="h-3 w-3" /> Xem trước trang sản phẩm
-                    </a>
-                  )}
-                </div>
-              )}
-            </div>
-          )}
         </div>
       </div>
 
@@ -1498,6 +1566,63 @@ export function AiWriterClient({ products }: { products: ProductSummary[] }) {
                   }`}>
                   <Save className="h-3.5 w-3.5" />
                   {saveStatus === 'saving' ? 'Đang lưu...' : saveStatus === 'saved' ? '✓ Đã lưu!' : saveStatus === 'error' ? '✕ Lỗi' : 'Lưu vào sản phẩm'}
+                </button>
+              )}
+              {/* Nút mở sản phẩm — hiện ngay trong toolbar sau khi lưu/publish xong */}
+              {sourceMode === 'db' && selectedProduct && saveStatus === 'saved' && (
+                <a
+                  href={`/admin/products/${selectedProduct.id}`}
+                  className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold bg-green-600 text-white hover:bg-green-700 transition"
+                >
+                  <ExternalLink className="h-3.5 w-3.5" /> Mở sản phẩm
+                </a>
+              )}
+              {sourceMode === 'japan' && Object.keys(outputs).length > 0 && !loading && publishStatus !== 'done' && (
+                <button
+                  onClick={publishProduct}
+                  disabled={publishStatus === 'publishing'}
+                  className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold bg-blue-600 text-white hover:bg-blue-700 transition disabled:opacity-50"
+                >
+                  {publishStatus === 'publishing' ? (
+                    <><Loader2 className="h-3.5 w-3.5 animate-spin" /> Đang lưu...</>
+                  ) : publishStatus === 'error' ? (
+                    <><PackagePlus className="h-3.5 w-3.5" /> Lỗi — Thử lại</>
+                  ) : (
+                    <><PackagePlus className="h-3.5 w-3.5" /> Lưu nháp</>
+                  )}
+                </button>
+              )}
+              {sourceMode === 'japan' && publishStatus === 'done' && publishedId && (
+                <a
+                  href={`/admin/products/${publishedId}`}
+                  className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold bg-green-600 text-white hover:bg-green-700 transition"
+                >
+                  <ExternalLink className="h-3.5 w-3.5" /> Mở sản phẩm
+                </a>
+              )}
+              {sourceMode === 'competitor' && cpubStatus === 'done' && cpubId && (
+                <a
+                  href={`/admin/products/${cpubId}`}
+                  className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold bg-green-600 text-white hover:bg-green-700 transition"
+                >
+                  <ExternalLink className="h-3.5 w-3.5" /> Mở sản phẩm
+                </a>
+              )}
+              {Object.keys(outputs).length > 0 && !loading && (
+                <button
+                  onClick={() => {
+                    clearDraft()
+                    setOutputs({})
+                    setJapanProduct(null); setJapanUrl(''); setJapanVietName('')
+                    setSelectedProduct(null); setSearch('')
+                    setCompetitorProduct(null); setCompetitorUrl('')
+                    setPublishStatus('idle'); setPublishedId(null); setPublishedSlug(null)
+                    setCpubStatus('idle'); setCpubId(null); setCpubSlug(null)
+                    setSaveStatus('idle'); setHasDraft(false)
+                  }}
+                  className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold text-gray-400 hover:text-red-400 hover:bg-red-900/20 border border-gray-700 hover:border-red-800 transition"
+                >
+                  <RefreshCw className="h-3.5 w-3.5" /> Bắt đầu mới
                 </button>
               )}
             </div>

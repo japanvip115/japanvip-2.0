@@ -91,21 +91,23 @@ export async function POST(req: Request) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const { type, productName, specs, keywords, extra, customInstruction, freePrompt, provider = 'anthropic', maxWords, testMode, productId, categoryId, brandId } = await req.json()
+  const { type, productName, specs, keywords, extra, customInstruction, freePrompt, provider = 'anthropic', maxWords, testMode, productId, categoryId, brandId, claudeCodeModel, images = [] } = await req.json()
 
   const systemPrompt = await getContentStyle()
   const userPrompt = freePrompt?.trim()
     ? freePrompt.trim()
-    : testMode
-      ? buildTestPrompt(type, productName, specs)
-      : buildPrompt(type, productName, specs, keywords, extra, customInstruction, maxWords)
+    : type === 'product_name'
+      ? buildProductNamePrompt(productName, specs, extra)
+      : testMode
+        ? buildTestPrompt(type, productName, specs)
+        : buildPrompt(type, productName, specs, keywords, extra, customInstruction, maxWords, images)
 
   // ── Claude Code path (dùng subscription, không cần API key) ─────────────
   if (provider === 'claude-code') {
-    const kb = productName ? findRelevantKnowledge(productName) : ''
+    const kb = productName && type !== 'product_name' ? findRelevantKnowledge(productName) : ''
     const links = type === 'description' ? await buildInternalLinks(productId, categoryId, brandId) : ''
     const fullPrompt = `${userPrompt}${kb}${links}`
-    const readable = streamWithClaudeCode(fullPrompt, systemPrompt)
+    const readable = streamWithClaudeCode(fullPrompt, systemPrompt, claudeCodeModel)
     return new Response(readable, {
       headers: { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-cache' },
     })
@@ -121,7 +123,7 @@ export async function POST(req: Request) {
 
   let stream: Awaited<ReturnType<typeof client.messages.stream>>
   try {
-    const maxTokens = testMode ? 600 : maxWords ? Math.min(Math.ceil(maxWords * 1.5 * 1.2), 8192) : 8192
+    const maxTokens = type === 'product_name' ? 120 : testMode ? 600 : maxWords ? Math.min(Math.ceil(maxWords * 1.5 * 1.2), 8192) : 8192
     stream = client.messages.stream({
       model: 'claude-sonnet-4-6',
       max_tokens: maxTokens,
@@ -159,7 +161,47 @@ export async function POST(req: Request) {
   })
 }
 
-function buildPrompt(type: string, productName: string, specs: string, keywords: string, extra: string, customInstruction?: string, maxWords?: number): string {
+const HTML_ONLY = `⛔ OUTPUT RULES (BẮT BUỘC, ƯU TIÊN CAO NHẤT):
+- Chỉ trả về nội dung yêu cầu. KHÔNG giải thích, KHÔNG ghi chú, KHÔNG commentary.
+- KHÔNG dùng backtick (\`), KHÔNG dùng markdown, KHÔNG bọc trong code block.
+- KHÔNG viết "Đã tạo xong...", "File lưu tại...", "Bạn có muốn..." hay bất kỳ câu meta nào.
+- Bắt đầu ngay bằng thẻ HTML hoặc JSON — không có gì trước đó.
+
+`
+
+// ── Quy tắc CỨNG luôn áp dụng cho mô tả (không bị Style Editor ghi đè) ────────
+const VI_ONLY_RULE = `\n\n🈲 BẮT BUỘC — NGÔN NGỮ:
+- Toàn bộ bài viết PHẢI bằng tiếng Việt. DỊCH hết nhãn thông số tiếng Nhật/tiếng Anh sang tiếng Việt (vd: 電圧→Điện áp, ワット数→Công suất, 容量→Dung tích).
+- KHÔNG để nguyên ký tự tiếng Nhật (kanji/kana) trong bài, trừ khi là tên model/mã sản phẩm.`
+
+function buildImageBlock(images: string[]): string {
+  if (!images?.length) return ''
+  const list = images.map((u, i) => `${i + 1}. ${u}`).join('\n')
+  return `\n\n🖼️ ẢNH SẢN PHẨM — BẮT BUỘC CHÈN VÀO BÀI (admin đã chọn lọc sẵn, không có logo/tiếng Nhật):
+${list}
+
+Quy tắc chèn ảnh:
+- Ảnh số 1 = ẢNH CHÍNH: chèn NGAY SAU đoạn giới thiệu tổng quan (Section 1).
+- Các ảnh còn lại: chèn rải đều, mỗi ảnh đặt ở cuối một section công nghệ / trải nghiệm có ngữ cảnh phù hợp với ảnh đó.
+- Cú pháp DUY NHẤT: <figure><img src="URL" alt="[mô tả tiếng Việt]" loading="lazy" /></figure>
+- PHẢI dùng CHÍNH XÁC từng URL ở trên (copy nguyên văn), đúng thứ tự, KHÔNG bịa URL khác, KHÔNG dùng lại 1 URL hai lần, KHÔNG bỏ sót ảnh nào.`
+}
+
+function buildProductNamePrompt(productName: string, specs: string, extra: string): string {
+  return `Tên gốc (tiếng Nhật/Anh): ${productName}
+${extra ? `${extra}\n` : ''}${specs ? `Thông số:\n${specs}\n` : ''}
+Nhiệm vụ: Tạo TÊN HIỂN THỊ tiếng Việt cho sản phẩm này để đăng lên website japanvip.vn.
+
+QUY TẮC BẮT BUỘC:
+- Định dạng cố định: [Loại sản phẩm tiếng Việt] [Thương hiệu] [Model] [Dung tích]
+- LOẠI BỎ HOÀN TOÀN: ký tự tiếng Nhật (【Amazon.co.jp限定】, (東芝)...), và các từ tiếng Anh dư thừa (Vertical Opening, Compact, For Single Living/Family, Easy Operation, LCD Panel...).
+- CHỈ giữ: loại sản phẩm (dịch sang tiếng Việt) + thương hiệu + model + dung tích (nếu có trong dữ liệu).
+- Ví dụ: "Lò vi sóng hơi nước Toshiba ER-60ZB(K) 23L"
+- Tối đa 90 ký tự. Không dấu nháy, không markdown, không giải thích.
+- Trả về DUY NHẤT tên sản phẩm trên một dòng, bọc trong <h1>...</h1>.`
+}
+
+function buildPrompt(type: string, productName: string, specs: string, keywords: string, extra: string, customInstruction?: string, maxWords?: number, images: string[] = []): string {
   const base = `Sản phẩm: ${productName}\n${specs ? `Thông số kỹ thuật:\n${specs}\n` : ''}${keywords ? `Từ khóa SEO: ${keywords}\n` : ''}${extra ? `Thông tin thêm: ${extra}\n` : ''}`
   const instruction = customInstruction?.trim() ? `\n\n📌 Yêu cầu bổ sung:\n${customInstruction.trim()}` : ''
 
@@ -172,7 +214,7 @@ function buildPrompt(type: string, productName: string, specs: string, keywords:
 
       // Chế độ ngắn gọn khi giới hạn từ thấp
       if (targetWords <= 2000) {
-        return `${base}
+        return `${HTML_ONLY}${base}
 Chế độ: product_html — RÚT GỌN (tối đa ${targetWords.toLocaleString()} từ)
 
 Viết mô tả sản phẩm HTML gồm các phần rút gọn:
@@ -183,12 +225,12 @@ Viết mô tả sản phẩm HTML gồm các phần rút gọn:
 5. Cam kết Japan VIP + CTA — Hotline 09.2729.8888
 
 ⚠️ Chỉ dùng số liệu từ dữ liệu đầu vào. Thiếu thông số ghi [CẦN JAPAN VIP XÁC NHẬN].
-PHẢI hoàn thành trong giới hạn từ, không cắt giữa chừng.${instruction}`
+PHẢI hoàn thành trong giới hạn từ, không cắt giữa chừng.${buildImageBlock(images)}${VI_ONLY_RULE}${instruction}`
       }
 
       // Chế độ đầy đủ 14 section
       const mode = targetWords >= 4000 ? 'PREMIUM FLAGSHIP' : 'STANDARD'
-      return `${base}
+      return `${HTML_ONLY}${base}
 Chế độ: product_html — ${mode} (${range.min.toLocaleString()}–${targetWords.toLocaleString()} từ)
 
 Viết đầy đủ 14 section theo SEO Framework Japan VIP đã được định nghĩa trong system prompt. Tuân thủ đúng:
@@ -197,11 +239,11 @@ Viết đầy đủ 14 section theo SEO Framework Japan VIP đã được địn
 - Bảo hành: dùng "Bảo hành theo chính sách Japan VIP", KHÔNG dùng "bảo hành chính hãng"
 - So sánh model (Section 6): nếu thiếu dữ liệu ghi [CHƯA CÓ DỮ LIỆU SO SÁNH]
 - Thông số (Section 8): trường thiếu ghi "Đang cập nhật theo model thực tế"
-- Phải hoàn thành đủ 14 section, không cắt giữa chừng${instruction}`
+- Phải hoàn thành đủ 14 section, không cắt giữa chừng${buildImageBlock(images)}${VI_ONLY_RULE}${instruction}`
     }
 
     case 'faq':
-      return `${base}
+      return `${HTML_ONLY}${base}
 Chế độ: faq_json
 
 Tạo 10–15 câu HỎI & ĐÁP thực tế nhất khách hàng hay hỏi về sản phẩm này.
@@ -210,7 +252,7 @@ Trả lời chi tiết, thực tế. Chỉ đưa số liệu khi có dữ liệu
 Xuất JSON array duy nhất: [{"name": "Câu hỏi?", "value": "Trả lời..."}]${instruction}`
 
     case 'attributes':
-      return `${base}
+      return `${HTML_ONLY}${base}
 Chế độ: attributes_json
 
 Tạo đầy đủ attributes sản phẩm theo JSON format trong system prompt:
@@ -222,13 +264,13 @@ Tạo đầy đủ attributes sản phẩm theo JSON format trong system prompt:
 Xuất JSON duy nhất, đúng format.${instruction}`
 
     case 'seo':
-      return `${base}
+      return `${HTML_ONLY}${base}
 Tạo SEO metadata cho sản phẩm. Xuất JSON:
 {"title": "...(60 ký tự, chứa từ khóa chính)","description": "...(150-160 ký tự, hấp dẫn, có CTA)","keywords": ["kw1","kw2","kw3","kw4","kw5"],"slug": "..."}${instruction}`
 
     case 'blog': {
       const blogWords = maxWords ?? 1500
-      return `${base}
+      return `${HTML_ONLY}${base}
 Viết bài blog HTML hoàn chỉnh. Cấu trúc: intro hook → các section <h2> → kết luận + CTA Japan VIP (Hotline: 09.2729.8888).
 Mục tiêu ${blogWords.toLocaleString()} từ. SEO-friendly, tích hợp từ khóa tự nhiên.
 Chỉ đưa số liệu kỹ thuật khi có dữ liệu xác thực. KHÔNG dùng "bảo hành chính hãng".${instruction}`
