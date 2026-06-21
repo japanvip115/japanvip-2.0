@@ -3,11 +3,11 @@ import { sendWinbackEmail, sendDigestEmail, sendAbandonedCartEmail } from '@/lib
 import { ensureUnsubscribeToken, buildUnsubscribeUrl } from '@/lib/marketing.service'
 import { getAutomation } from '@/lib/automation-config'
 
-// Batch bảo thủ để tránh timeout (SMTP ~1s/email, Hobby giới hạn thời gian).
-// Danh sách lớn cần Vercel Pro hoặc queue (Upstash QStash) / ESP bulk.
-const WINBACK_BATCH = 25
-const DIGEST_BATCH = 25
-const CART_BATCH = 25
+// SES gửi nhanh (~150ms/email) → 150 email vẫn gọn trong 60s/lần chạy.
+// Gọi endpoint /api/v1/cron/marketing thường xuyên hơn (vd EventBridge mỗi giờ) để drain nhanh.
+const WINBACK_BATCH = 150
+const DIGEST_BATCH = 150
+const CART_BATCH = 150
 
 type Recipient = { id: string; email: string; fullName: string | null }
 type MailProduct = { name: string; slug: string; image: string | null; price: number | null }

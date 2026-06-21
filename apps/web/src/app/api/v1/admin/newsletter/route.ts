@@ -10,7 +10,7 @@ import { ensureUnsubscribeToken, buildUnsubscribeUrl } from '@/lib/marketing.ser
 
 export const maxDuration = 60
 
-const BATCH = 40 // gửi tối đa 40 email/lần gọi để tránh timeout; client gọi lại tới khi hết
+const BATCH = 150 // SES nhanh → 150/lần gọn trong 60s; client gọi lại tới khi hết
 
 const schema = z.object({
   subject: z.string().min(3).max(200),
