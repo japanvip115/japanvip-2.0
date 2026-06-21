@@ -86,6 +86,7 @@ const PROVIDER_GROUPS: { title: string; icon: string; color: string; providers: 
     providers: [
       { id: 'runway', label: 'RunwayML Gen-3', badge: 'Chất lượng cao', desc: 'Tạo video từ ảnh sản phẩm. Dùng cho quảng cáo, reel mạng xã hội.', docsUrl: 'https://app.runwayml.com/settings', placeholder: 'YOUR_API_KEY' },
       { id: 'kling',  label: 'Kling AI',       badge: 'Giá tốt',       desc: 'Video AI từ Trung Quốc, chất lượng cao, giá thấp hơn RunwayML. Hỗ trợ 4K.', docsUrl: 'https://klingai.com', placeholder: 'YOUR_API_KEY' },
+      { id: 'seedance', label: 'Seedance 2.0', badge: 'ByteDance · Audio+Video', desc: 'Model video đa phương thức của ByteDance (qua BytePlus ModelArk). Tạo video 5-10s từ text/ảnh kèm audio đồng bộ, đang dẫn đầu bảng xếp hạng. API dạng task async — lấy ModelArk API Key tại console BytePlus.', docsUrl: 'https://docs.byteplus.com/en/docs/ModelArk/Video_Generation_API', placeholder: 'ModelArk API Key' },
     ],
   },
   {
