@@ -4,6 +4,7 @@ import { auth } from '@/lib/auth'
 import { hasRole } from '@/lib/auth-types'
 import { prisma } from '@japanvip/db'
 import { apiSuccess, apiError, handleApiError } from '@/lib/api-response'
+import { triggerPostPurchaseEmail } from '@/lib/marketing.service'
 import type { QuickOrderStatus } from '@japanvip/db'
 
 const STATUSES: QuickOrderStatus[] = ['PENDING', 'CONTACTED', 'CONFIRMED', 'COMPLETED', 'CANCELLED']
@@ -30,6 +31,11 @@ export async function PATCH(req: NextRequest, { params }: Params) {
         ...(body.adminNotes !== undefined && { adminNotes: body.adminNotes }),
       },
     })
+
+    // Đơn hoàn tất → gửi email sau mua (cảm ơn + hướng dẫn + cross-sell), dedup theo orderRef
+    if (body.status === 'COMPLETED') {
+      triggerPostPurchaseEmail(id).catch(() => {})
+    }
 
     return apiSuccess(order, 'Cập nhật thành công')
   } catch (err) {

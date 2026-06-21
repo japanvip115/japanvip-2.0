@@ -51,6 +51,7 @@ const GROUPS: { title: string; icon: string; items: SettingItem[] }[] = [
     items: [
       { href: '/admin/content/ai-writer',         icon: '📝', title: 'AI Content Writer',          desc: 'Tạo mô tả, FAQ, SEO, blog bằng AI', badge: 'AI', badgeColor: 'purple' },
       { href: '/admin/content/calendar',          icon: '📅', title: 'Content Calendar',            desc: 'Lên lịch tạo nội dung AI tự động', badge: 'Mới', badgeColor: 'blue' },
+      { href: '/admin/settings/newsletter',       icon: '📧', title: 'Email Hàng Loạt',             desc: 'Soạn & gửi tin/khuyến mãi cho khách đã đăng ký', badge: 'Mới', badgeColor: 'blue' },
       { href: '/admin/settings/ai-keys',          icon: '🔐', title: 'AI API Keys',                 desc: 'Claude, GPT, Gemini, Stability, RunwayML…' },
       { href: '/admin/settings/ai-style',         icon: '🎨', title: 'Style Content AI',            desc: 'Tone, cấu trúc HTML, FAQ, attributes cho AI' },
       { href: '/admin/settings/blog-scrape',      icon: '🧹', title: 'Lọc Nội Dung Blog',          desc: 'Tự xoá backlink, SĐT khi scrape bài ngoài' },

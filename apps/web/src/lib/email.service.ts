@@ -196,6 +196,72 @@ function productGrid(products: MailProduct[], appUrl: string): string {
   return `<table width="100%" cellpadding="0" cellspacing="0" style="margin:8px 0 4px">${rows.join('')}</table>`
 }
 
+// ─── Newsletter / Campaign (gửi hàng loạt) ───────────────────────────────────
+
+export async function sendNewsletterEmail(opts: { email: string; fullName: string; subject: string; bodyHtml: string; unsubscribeUrl: string }) {
+  const cfg = await getSmtpConfig()
+  const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://store.japanvip.vn'
+  const { email, fullName, subject, bodyHtml, unsubscribeUrl } = opts
+
+  await createTransport(cfg).sendMail({
+    from: cfg.from,
+    to: email,
+    subject,
+    html: emailLayout(`
+      <p style="margin:0 0 16px;font-size:14px;color:#374151">Xin chào <strong style="color:#111">${fullName}</strong>,</p>
+      <div style="font-size:14px;color:#374151;line-height:1.7">${bodyHtml}</div>
+      <div style="margin-top:24px">${btn(`${APP_URL}`, 'Ghé Japan VIP →')}</div>
+      ${unsubscribeNote(unsubscribeUrl)}
+    `),
+  })
+}
+
+// ─── Post-purchase (cảm ơn + hướng dẫn + cross-sell) ─────────────────────────
+
+export async function sendPostPurchaseEmail(opts: {
+  email: string
+  fullName: string
+  productName: string
+  productSlug: string | null
+  crossSell: MailProduct[]
+  unsubscribeUrl?: string
+}) {
+  const cfg = await getSmtpConfig()
+  const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://store.japanvip.vn'
+  const { email, fullName, productName, productSlug, crossSell, unsubscribeUrl } = opts
+
+  await createTransport(cfg).sendMail({
+    from: cfg.from,
+    to: email,
+    subject: `Cảm ơn bạn đã mua ${productName} 🎉`,
+    html: emailLayout(`
+      <div style="text-align:center;margin-bottom:24px">
+        <p style="margin:0 0 8px;font-size:40px;line-height:1">🎉</p>
+        <p style="margin:0 0 6px;font-size:21px;font-weight:900;color:#111">Cảm ơn ${fullName}!</p>
+        <p style="margin:0;font-size:14px;color:#6b7280">Đơn hàng <strong style="color:#111">${productName}</strong> đã hoàn tất. Chúc bạn dùng sản phẩm thật ưng ý!</p>
+      </div>
+
+      <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:16px 18px;margin-bottom:24px">
+        <p style="margin:0 0 6px;font-size:14px;font-weight:700;color:#1e3a5f">📖 Hướng dẫn sử dụng</p>
+        <p style="margin:0;font-size:13px;color:#374151;line-height:1.6">
+          Xem thông số kỹ thuật & hướng dẫn dùng sản phẩm tại trang sản phẩm.
+          ${productSlug ? `<br/><a href="${APP_URL}/${productSlug}" style="color:#b91c1c;font-weight:600;text-decoration:none">Xem hướng dẫn →</a>` : ''}
+          Cần hỗ trợ lắp đặt/sử dụng, gọi <a href="tel:0988969896" style="color:#b91c1c;font-weight:600;text-decoration:none">0988.969.896</a>.
+        </p>
+      </div>
+
+      ${crossSell.length > 0 ? `<p style="margin:0 0 4px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#9ca3af">Có thể bạn cũng thích</p>${productGrid(crossSell, APP_URL)}` : ''}
+
+      <div style="margin-top:20px">${btn(`${APP_URL}`, 'Tiếp tục mua sắm →')}</div>
+      ${divider()}
+      <p style="margin:0;font-size:12px;color:#6b7280;text-align:center">
+        Hài lòng với sản phẩm? Hãy để lại đánh giá hoặc giới thiệu bạn bè nhé!
+      </p>
+      ${unsubscribeUrl ? unsubscribeNote(unsubscribeUrl) : ''}
+    `),
+  })
+}
+
 // ─── Win-back (kéo khách quay lại) ───────────────────────────────────────────
 
 export async function sendWinbackEmail(opts: { email: string; fullName: string; unsubscribeUrl: string; products: MailProduct[] }) {
