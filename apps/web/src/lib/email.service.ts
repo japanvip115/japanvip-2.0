@@ -173,6 +173,94 @@ export async function sendWelcomeEmail(opts: { email: string; fullName: string; 
   })
 }
 
+type MailProduct = { name: string; slug: string; image: string | null; price: number | null }
+type MailAuction = { title: string; auctionId: string; image: string | null; currentPrice: number; endsAt: string }
+
+function productGrid(products: MailProduct[], appUrl: string): string {
+  if (products.length === 0) return ''
+  const cells = products.slice(0, 4).map((p) => `
+    <td width="50%" style="padding:6px" valign="top">
+      <a href="${appUrl}/${p.slug}" style="display:block;text-decoration:none;border:1px solid #e5e7eb;border-radius:10px;overflow:hidden;background:#fff">
+        ${p.image ? `<img src="${p.image}" alt="" width="100%" style="display:block;width:100%;height:140px;object-fit:contain;background:#fff;padding:8px;box-sizing:border-box"/>` : `<div style="height:140px;background:#f3f4f6"></div>`}
+        <div style="padding:10px 12px">
+          <p style="margin:0 0 4px;font-size:13px;font-weight:600;color:#111;line-height:1.4;height:36px;overflow:hidden">${p.name}</p>
+          <p style="margin:0;font-size:14px;font-weight:800;color:#b91c1c">${p.price ? fmtVND(p.price) : 'Liên hệ'}</p>
+        </div>
+      </a>
+    </td>`)
+  // 2 cột/hàng
+  const rows: string[] = []
+  for (let i = 0; i < cells.length; i += 2) {
+    rows.push(`<tr>${cells[i] ?? ''}${cells[i + 1] ?? '<td width="50%"></td>'}</tr>`)
+  }
+  return `<table width="100%" cellpadding="0" cellspacing="0" style="margin:8px 0 4px">${rows.join('')}</table>`
+}
+
+// ─── Win-back (kéo khách quay lại) ───────────────────────────────────────────
+
+export async function sendWinbackEmail(opts: { email: string; fullName: string; unsubscribeUrl: string; products: MailProduct[] }) {
+  const cfg = await getSmtpConfig()
+  const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://store.japanvip.vn'
+  const { email, fullName, unsubscribeUrl, products } = opts
+
+  await createTransport(cfg).sendMail({
+    from: cfg.from,
+    to: email,
+    subject: `Lâu rồi không gặp ${fullName}! Có gì mới ở Japan VIP? 🎁`,
+    html: emailLayout(`
+      <div style="text-align:center;margin-bottom:24px">
+        <p style="margin:0 0 8px;font-size:40px;line-height:1">👋</p>
+        <p style="margin:0 0 6px;font-size:21px;font-weight:900;color:#111">Lâu rồi không gặp bạn!</p>
+        <p style="margin:0;font-size:14px;color:#6b7280">Xin chào <strong style="color:#111">${fullName}</strong>, Japan VIP có nhiều hàng nội địa Nhật mới về và phiên đấu giá hấp dẫn đang chờ bạn.</p>
+      </div>
+      ${products.length > 0 ? `<p style="margin:0 0 4px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#9ca3af">Gợi ý cho bạn</p>${productGrid(products, APP_URL)}` : ''}
+      <div style="margin-top:20px">${btn(`${APP_URL}`, 'Khám phá hàng mới →')}</div>
+      ${divider()}
+      <p style="margin:0;font-size:12px;color:#6b7280;text-align:center">
+        Cần tư vấn? <a href="tel:0988969896" style="color:#b91c1c;text-decoration:none;font-weight:600">0988.969.896</a> · <a href="https://zalo.me/0988969896" style="color:#b91c1c;text-decoration:none;font-weight:600">Chat Zalo</a>
+      </p>
+      ${unsubscribeNote(unsubscribeUrl)}
+    `),
+  })
+}
+
+// ─── Digest "Hàng mới về" (định kỳ) ──────────────────────────────────────────
+
+export async function sendDigestEmail(opts: { email: string; fullName: string; unsubscribeUrl: string; products: MailProduct[]; auctions: MailAuction[] }) {
+  const cfg = await getSmtpConfig()
+  const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://store.japanvip.vn'
+  const { email, fullName, unsubscribeUrl, products, auctions } = opts
+
+  const auctionRows = auctions.slice(0, 3).map((a) => `
+    <a href="${APP_URL}/dau-gia/${a.auctionId}" style="display:block;text-decoration:none;border:1px solid #e5e7eb;border-radius:10px;overflow:hidden;background:#fff;margin-bottom:10px">
+      <table width="100%" cellpadding="0" cellspacing="0"><tr>
+        ${a.image ? `<td width="80" valign="top"><img src="${a.image}" alt="" width="80" height="80" style="display:block;width:80px;height:80px;object-fit:cover"/></td>` : ''}
+        <td valign="middle" style="padding:10px 14px">
+          <p style="margin:0 0 4px;font-size:13px;font-weight:600;color:#111;line-height:1.4">${a.title}</p>
+          <p style="margin:0;font-size:12px;color:#6b7280">Giá hiện tại: <strong style="color:#b91c1c">${fmtVND(a.currentPrice)}</strong></p>
+        </td>
+      </tr></table>
+    </a>`).join('')
+
+  await createTransport(cfg).sendMail({
+    from: cfg.from,
+    to: email,
+    subject: `🆕 Hàng mới về tuần này — Japan VIP`,
+    html: emailLayout(`
+      <p style="margin:0 0 4px;font-size:22px;font-weight:900;color:#111">Hàng mới về tuần này</p>
+      <p style="margin:0 0 24px;font-size:14px;color:#6b7280">Xin chào <strong style="color:#111">${fullName}</strong>, đây là những sản phẩm Nhật mới nhất và phiên đấu giá đáng chú ý.</p>
+      ${products.length > 0 ? `<p style="margin:0 0 4px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#9ca3af">🆕 Sản phẩm mới</p>${productGrid(products, APP_URL)}` : ''}
+      ${auctions.length > 0 ? `<div style="margin-top:20px"><p style="margin:0 0 8px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#9ca3af">🔨 Đấu giá đang diễn ra</p>${auctionRows}</div>` : ''}
+      <div style="margin-top:20px">${btn(`${APP_URL}`, 'Xem tất cả →')}</div>
+      ${divider()}
+      <p style="margin:0;font-size:12px;color:#6b7280;text-align:center">
+        Hỗ trợ: <a href="tel:0988969896" style="color:#b91c1c;text-decoration:none;font-weight:600">0988.969.896</a> · <a href="https://zalo.me/0988969896" style="color:#b91c1c;text-decoration:none;font-weight:600">Chat Zalo</a>
+      </p>
+      ${unsubscribeNote(unsubscribeUrl)}
+    `),
+  })
+}
+
 // ─── OTP ─────────────────────────────────────────────────────────────────────
 
 export async function sendOtpEmail(email: string, code: string, fullName?: string) {

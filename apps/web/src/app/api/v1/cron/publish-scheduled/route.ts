@@ -5,9 +5,13 @@ import { getAiApiKey } from '@/lib/ai-keys'
 import { sendContentDoneEmail } from '@/lib/email.service'
 import Anthropic from '@anthropic-ai/sdk'
 import { streamWithClaudeCode, findRelevantKnowledge } from '@/lib/claude-code-stream'
+import { runDailyMarketing } from '@/lib/marketing-cron.service'
 
-// Vercel Cron gọi route này mỗi giờ
-// vercel.json: { "crons": [{ "path": "/api/v1/cron/publish-scheduled", "schedule": "0 * * * *" }] }
+export const maxDuration = 60
+
+// Vercel Cron gọi route này 1 lần/ngày lúc 8:00 (Hobby: 1 cron/ngày)
+// vercel.json: { "crons": [{ "path": "/api/v1/cron/publish-scheduled", "schedule": "0 8 * * *" }] }
+// Cron này gánh luôn email marketing (win-back hằng ngày + digest thứ 5).
 
 export async function GET(req: NextRequest) {
   // Bảo vệ: chỉ Vercel Cron hoặc CRON_SECRET mới được gọi
@@ -19,6 +23,9 @@ export async function GET(req: NextRequest) {
 
   const now = new Date()
 
+  // Email marketing (win-back hằng ngày + digest thứ 5) — không chặn việc publish content
+  const marketing = await runDailyMarketing().catch((e) => { console.error('marketing error', e); return { winback: 0, digest: 0 } })
+
   // Lấy tất cả task PENDING đến hạn (scheduledAt <= now)
   const tasks = await prisma.contentTask.findMany({
     where: { status: 'PENDING', scheduledAt: { lte: now } },
@@ -27,7 +34,7 @@ export async function GET(req: NextRequest) {
   })
 
   if (tasks.length === 0) {
-    return Response.json({ processed: 0 })
+    return Response.json({ processed: 0, marketing })
   }
 
   const results: { id: string; status: string; error?: string }[] = []
@@ -87,7 +94,7 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  return Response.json({ processed: results.length, results })
+  return Response.json({ processed: results.length, results, marketing })
 }
 
 async function generateContent(task: {
