@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react'
 import {
   Sparkles, Copy, Save, RefreshCw, Eye, Code2, ChevronRight,
   X, Search, Loader2, AlertCircle, Globe, Database, CheckCircle2,
-  PackagePlus, ExternalLink, Wallet, SlidersHorizontal, Square,
+  PackagePlus, ExternalLink, Wallet, SlidersHorizontal, Square, Lock,
 } from 'lucide-react'
 
 const proxyImg = (url: string) =>
@@ -195,6 +195,7 @@ export function AiWriterClient({ products }: { products: ProductSummary[] }) {
   const [japanProduct, setJapanProduct] = useState<JapanProduct | null>(null)
   const [japanVietName, setJapanVietName] = useState('')
   const [translatingName, setTranslatingName] = useState(false)
+  const [showLockInfo, setShowLockInfo] = useState(false)
   const [scrapeError, setScrapeError] = useState('')
   const [selectedImages, setSelectedImages] = useState<Set<string>>(new Set())
   const [hasDraft, setHasDraft] = useState(false)
@@ -743,6 +744,40 @@ export function AiWriterClient({ products }: { products: ProductSummary[] }) {
           <div className="flex items-center gap-2 mb-3">
             <Sparkles className="h-4 w-4 text-brand-red" />
             <h1 className="text-sm font-bold text-white">AI Content Writer</h1>
+
+            {/* 🔒 Badge trạng thái khoá — rule Trang Nhật đã chốt (xem CLAUDE.md mục LOCKED) */}
+            <div className="relative ml-auto">
+              <button
+                type="button"
+                onClick={() => setShowLockInfo(v => !v)}
+                title="Rule AI Writer Trang Nhật đã được khoá"
+                className="flex items-center gap-1 rounded-full border border-emerald-700/60 bg-emerald-900/30 px-2 py-0.5 text-[10px] font-bold text-emerald-400 hover:bg-emerald-900/50 transition"
+              >
+                <Lock className="h-3 w-3" />
+                Đã khoá
+              </button>
+              {showLockInfo && (
+                <>
+                  <div className="fixed inset-0 z-10" onClick={() => setShowLockInfo(false)} />
+                  <div className="absolute right-0 top-full z-20 mt-1.5 w-72 rounded-lg border border-gray-700 bg-gray-900 p-3 text-[11px] text-gray-300 shadow-xl">
+                    <p className="mb-1.5 flex items-center gap-1 font-bold text-emerald-400">
+                      <Lock className="h-3 w-3" /> Rule đã chốt &amp; khoá (2026-06)
+                    </p>
+                    <ul className="space-y-1 text-gray-400">
+                      <li>✔ Dịch tên VN [Loại][Hãng][Model][Dung tích]</li>
+                      <li>✔ Chèn ảnh theo ngữ cảnh + lưu R2</li>
+                      <li>✔ Quy đổi giá ¥→VNĐ</li>
+                      <li>✔ Bài thuần tiếng Việt, không placeholder máy móc</li>
+                      <li>✔ Khối phải = admin tự thêm (AI không đụng)</li>
+                      <li>✔ Scraper lấy giá + công suất + điện áp</li>
+                    </ul>
+                    <p className="mt-2 border-t border-gray-800 pt-2 text-[10px] text-gray-500">
+                      Khoá thật bằng <span className="text-gray-300">CLAUDE.md</span> + Git — AI phiên sau không được tự sửa/xoá nếu chưa được duyệt.
+                    </p>
+                  </div>
+                </>
+              )}
+            </div>
           </div>
 
           {/* Balance display */}
