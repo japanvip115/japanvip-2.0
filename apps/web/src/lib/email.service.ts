@@ -61,37 +61,38 @@ function emailLayout(content: string): string {
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
 </head>
-<body style="margin:0;padding:0;background:#f4f4f5;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f5;padding:32px 16px">
+<body style="margin:0;padding:0;background:#eef1f4;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#eef1f4;padding:32px 16px">
     <tr><td align="center">
-      <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%">
+      <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#ffffff;border:1px solid #e3e7eb;border-radius:14px;overflow:hidden">
 
         <!-- Header -->
         <tr>
-          <td style="background:#b91c1c;border-radius:12px 12px 0 0;padding:24px 32px;text-align:center">
-            <span style="font-size:26px;font-weight:900;color:#fff;letter-spacing:-0.5px">Japan</span><span style="font-size:26px;font-weight:300;color:#fca5a5;letter-spacing:-0.5px">VIP</span>
-            <p style="margin:4px 0 0;font-size:11px;color:#fca5a5;letter-spacing:1.5px;text-transform:uppercase">Hàng nội địa Nhật Bản chính hãng</p>
+          <td style="background:#232f3e;padding:34px 32px 28px;text-align:center">
+            <span style="font-size:28px;font-weight:700;color:#ffffff;letter-spacing:0.5px;font-family:Georgia,'Times New Roman',serif">Japan</span><span style="font-size:28px;font-weight:400;color:#ff9900;letter-spacing:0.5px;font-family:Georgia,'Times New Roman',serif">VIP</span>
+            <div style="width:46px;height:1px;background:#ff9900;margin:14px auto 12px"></div>
+            <p style="margin:0;font-size:11px;color:#9aa7b5;letter-spacing:3px;text-transform:uppercase">Hàng nội địa Nhật Bản chính hãng</p>
           </td>
         </tr>
 
         <!-- Body -->
         <tr>
-          <td style="background:#ffffff;padding:36px 32px">
+          <td style="background:#ffffff;padding:38px 36px">
             ${content}
           </td>
         </tr>
 
         <!-- Footer -->
         <tr>
-          <td style="background:#f9fafb;border-radius:0 0 12px 12px;border-top:1px solid #e5e7eb;padding:20px 32px;text-align:center">
-            <p style="margin:0 0 8px;font-size:12px;color:#6b7280">
-              <a href="tel:0988969896" style="color:#b91c1c;text-decoration:none;font-weight:600">0988.969.896</a>
+          <td style="background:#f4f6f8;border-top:1px solid #e3e7eb;padding:22px 32px;text-align:center">
+            <p style="margin:0 0 7px;font-size:12px;color:#8a95a1">
+              <a href="tel:0988969896" style="color:#c26b00;text-decoration:none;font-weight:600">0988.969.896</a>
               &nbsp;·&nbsp;
-              <a href="https://zalo.me/0988969896" style="color:#b91c1c;text-decoration:none;font-weight:600">Chat Zalo</a>
+              <a href="https://zalo.me/0988969896" style="color:#c26b00;text-decoration:none;font-weight:600">Chat Zalo</a>
               &nbsp;·&nbsp;
-              <a href="mailto:info@japanvip.vn" style="color:#b91c1c;text-decoration:none;font-weight:600">info@japanvip.vn</a>
+              <a href="mailto:info@japanvip.vn" style="color:#c26b00;text-decoration:none;font-weight:600">info@japanvip.vn</a>
             </p>
-            <p style="margin:0;font-size:11px;color:#9ca3af">Hỗ trợ 08:00–18:30 hằng ngày &nbsp;|&nbsp; 115 Đinh Tiên Hoàng, Hải Phòng</p>
+            <p style="margin:0;font-size:11px;color:#9aa4ae">Hỗ trợ 08:00–18:30 hằng ngày &nbsp;|&nbsp; 115 Đinh Tiên Hoàng, Hải Phòng</p>
           </td>
         </tr>
 
@@ -103,14 +104,14 @@ function emailLayout(content: string): string {
 }
 
 function divider(): string {
-  return `<div style="border-top:1px solid #f3f4f6;margin:24px 0"></div>`
+  return `<div style="border-top:1px solid #eaedf0;margin:26px 0"></div>`
 }
 
 function btn(href: string, text: string, style: 'primary' | 'outline' = 'primary'): string {
   if (style === 'outline') {
-    return `<a href="${href}" style="display:inline-block;padding:11px 24px;border-radius:8px;font-size:14px;font-weight:600;text-decoration:none;color:#b91c1c;border:1.5px solid #b91c1c;background:#fff">${text}</a>`
+    return `<a href="${href}" style="display:inline-block;padding:11px 24px;border-radius:8px;font-size:14px;font-weight:700;letter-spacing:0.5px;text-decoration:none;color:#c26b00;border:1.5px solid #ff9900;background:#fff">${text}</a>`
   }
-  return `<a href="${href}" style="display:block;text-align:center;padding:14px 24px;border-radius:8px;font-size:15px;font-weight:700;text-decoration:none;color:#fff;background:#b91c1c">${text}</a>`
+  return `<a href="${href}" style="display:block;text-align:center;padding:15px 24px;border-radius:8px;font-size:14px;font-weight:700;letter-spacing:1px;text-decoration:none;color:#ff9900;background:#232f3e;border:1px solid #ff9900">${text}</a>`
 }
 
 // Dòng "Hủy đăng ký" cho email marketing (KHÔNG dùng cho email giao dịch)
@@ -164,9 +165,9 @@ export async function sendWelcomeEmail(opts: { email: string; fullName: string; 
       ${divider()}
       <p style="margin:0;font-size:12px;color:#6b7280;text-align:center">
         Cần hỗ trợ?
-        <a href="tel:0988969896" style="color:#b91c1c;text-decoration:none;font-weight:600">0988.969.896</a>
+        <a href="tel:0988969896" style="color:#c26b00;text-decoration:none;font-weight:600">0988.969.896</a>
         ·
-        <a href="https://zalo.me/0988969896" style="color:#b91c1c;text-decoration:none;font-weight:600">Chat Zalo</a>
+        <a href="https://zalo.me/0988969896" style="color:#c26b00;text-decoration:none;font-weight:600">Chat Zalo</a>
       </p>
       ${unsubscribeNote(unsubscribeUrl)}
     `),
@@ -184,7 +185,7 @@ function productGrid(products: MailProduct[], appUrl: string): string {
         ${p.image ? `<img src="${p.image}" alt="" width="100%" style="display:block;width:100%;height:140px;object-fit:contain;background:#fff;padding:8px;box-sizing:border-box"/>` : `<div style="height:140px;background:#f3f4f6"></div>`}
         <div style="padding:10px 12px">
           <p style="margin:0 0 4px;font-size:13px;font-weight:600;color:#111;line-height:1.4;height:36px;overflow:hidden">${p.name}</p>
-          <p style="margin:0;font-size:14px;font-weight:800;color:#b91c1c">${p.price ? fmtVND(p.price) : 'Liên hệ'}</p>
+          <p style="margin:0;font-size:14px;font-weight:800;color:#c26b00">${p.price ? fmtVND(p.price) : 'Liên hệ'}</p>
         </div>
       </a>
     </td>`)
@@ -211,7 +212,7 @@ export async function sendAbandonedCartEmail(opts: { email: string; fullName: st
         ${it.image ? `<td width="72" valign="top"><img src="${it.image}" alt="" width="72" height="72" style="display:block;width:72px;height:72px;object-fit:contain;background:#fff;padding:6px;box-sizing:border-box"/></td>` : ''}
         <td valign="middle" style="padding:10px 14px">
           <p style="margin:0 0 4px;font-size:13px;font-weight:600;color:#111;line-height:1.4">${it.name}</p>
-          <p style="margin:0;font-size:12px;color:#6b7280">SL: ${it.quantity}${it.priceVnd ? ` · <strong style="color:#b91c1c">${fmtVND(it.priceVnd)}</strong>` : ''}</p>
+          <p style="margin:0;font-size:12px;color:#6b7280">SL: ${it.quantity}${it.priceVnd ? ` · <strong style="color:#c26b00">${fmtVND(it.priceVnd)}</strong>` : ''}</p>
         </td>
       </tr></table>
     </a>`).join('')
@@ -230,7 +231,7 @@ export async function sendAbandonedCartEmail(opts: { email: string; fullName: st
       <div style="margin-top:20px">${btn(`${APP_URL}/gio-hang`, 'Hoàn tất đơn hàng →')}</div>
       ${divider()}
       <p style="margin:0;font-size:12px;color:#6b7280;text-align:center">
-        Cần hỗ trợ đặt hàng? <a href="tel:0988969896" style="color:#b91c1c;text-decoration:none;font-weight:600">0988.969.896</a> · <a href="https://zalo.me/0988969896" style="color:#b91c1c;text-decoration:none;font-weight:600">Chat Zalo</a>
+        Cần hỗ trợ đặt hàng? <a href="tel:0988969896" style="color:#c26b00;text-decoration:none;font-weight:600">0988.969.896</a> · <a href="https://zalo.me/0988969896" style="color:#c26b00;text-decoration:none;font-weight:600">Chat Zalo</a>
       </p>
       ${unsubscribeNote(unsubscribeUrl)}
     `),
@@ -286,8 +287,8 @@ export async function sendPostPurchaseEmail(opts: {
         <p style="margin:0 0 6px;font-size:14px;font-weight:700;color:#1e3a5f">📖 Hướng dẫn sử dụng</p>
         <p style="margin:0;font-size:13px;color:#374151;line-height:1.6">
           Xem thông số kỹ thuật & hướng dẫn dùng sản phẩm tại trang sản phẩm.
-          ${productSlug ? `<br/><a href="${APP_URL}/${productSlug}" style="color:#b91c1c;font-weight:600;text-decoration:none">Xem hướng dẫn →</a>` : ''}
-          Cần hỗ trợ lắp đặt/sử dụng, gọi <a href="tel:0988969896" style="color:#b91c1c;font-weight:600;text-decoration:none">0988.969.896</a>.
+          ${productSlug ? `<br/><a href="${APP_URL}/${productSlug}" style="color:#c26b00;font-weight:600;text-decoration:none">Xem hướng dẫn →</a>` : ''}
+          Cần hỗ trợ lắp đặt/sử dụng, gọi <a href="tel:0988969896" style="color:#c26b00;font-weight:600;text-decoration:none">0988.969.896</a>.
         </p>
       </div>
 
@@ -324,7 +325,7 @@ export async function sendWinbackEmail(opts: { email: string; fullName: string; 
       <div style="margin-top:20px">${btn(`${APP_URL}`, 'Khám phá hàng mới →')}</div>
       ${divider()}
       <p style="margin:0;font-size:12px;color:#6b7280;text-align:center">
-        Cần tư vấn? <a href="tel:0988969896" style="color:#b91c1c;text-decoration:none;font-weight:600">0988.969.896</a> · <a href="https://zalo.me/0988969896" style="color:#b91c1c;text-decoration:none;font-weight:600">Chat Zalo</a>
+        Cần tư vấn? <a href="tel:0988969896" style="color:#c26b00;text-decoration:none;font-weight:600">0988.969.896</a> · <a href="https://zalo.me/0988969896" style="color:#c26b00;text-decoration:none;font-weight:600">Chat Zalo</a>
       </p>
       ${unsubscribeNote(unsubscribeUrl)}
     `),
@@ -344,7 +345,7 @@ export async function sendDigestEmail(opts: { email: string; fullName: string; u
         ${a.image ? `<td width="80" valign="top"><img src="${a.image}" alt="" width="80" height="80" style="display:block;width:80px;height:80px;object-fit:cover"/></td>` : ''}
         <td valign="middle" style="padding:10px 14px">
           <p style="margin:0 0 4px;font-size:13px;font-weight:600;color:#111;line-height:1.4">${a.title}</p>
-          <p style="margin:0;font-size:12px;color:#6b7280">Giá hiện tại: <strong style="color:#b91c1c">${fmtVND(a.currentPrice)}</strong></p>
+          <p style="margin:0;font-size:12px;color:#6b7280">Giá hiện tại: <strong style="color:#c26b00">${fmtVND(a.currentPrice)}</strong></p>
         </td>
       </tr></table>
     </a>`).join('')
@@ -361,7 +362,7 @@ export async function sendDigestEmail(opts: { email: string; fullName: string; u
       <div style="margin-top:20px">${btn(`${APP_URL}`, 'Xem tất cả →')}</div>
       ${divider()}
       <p style="margin:0;font-size:12px;color:#6b7280;text-align:center">
-        Hỗ trợ: <a href="tel:0988969896" style="color:#b91c1c;text-decoration:none;font-weight:600">0988.969.896</a> · <a href="https://zalo.me/0988969896" style="color:#b91c1c;text-decoration:none;font-weight:600">Chat Zalo</a>
+        Hỗ trợ: <a href="tel:0988969896" style="color:#c26b00;text-decoration:none;font-weight:600">0988.969.896</a> · <a href="https://zalo.me/0988969896" style="color:#c26b00;text-decoration:none;font-weight:600">Chat Zalo</a>
       </p>
       ${unsubscribeNote(unsubscribeUrl)}
     `),
@@ -382,9 +383,9 @@ export async function sendOtpEmail(email: string, code: string, fullName?: strin
         Xin chào${fullName ? ` <strong style="color:#111">${fullName}</strong>` : ''},<br/>
         Sử dụng mã bên dưới để hoàn tất xác thực. Mã có hiệu lực trong <strong>10 phút</strong>.
       </p>
-      <div style="background:#fef2f2;border:1.5px dashed #fca5a5;border-radius:12px;padding:28px;text-align:center;margin-bottom:28px">
-        <p style="margin:0 0 6px;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#ef4444">Mã xác thực của bạn</p>
-        <span style="font-size:42px;font-weight:900;letter-spacing:14px;color:#b91c1c;font-family:monospace">${code}</span>
+      <div style="background:#fff7ed;border:1.5px dashed #ff9900;border-radius:12px;padding:28px;text-align:center;margin-bottom:28px">
+        <p style="margin:0 0 6px;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#c26b00">Mã xác thực của bạn</p>
+        <span style="font-size:42px;font-weight:900;letter-spacing:14px;color:#232f3e;font-family:monospace">${code}</span>
       </div>
       <p style="margin:0;font-size:12px;color:#9ca3af;text-align:center">
         Nếu bạn không thực hiện yêu cầu này, vui lòng bỏ qua email.
@@ -423,7 +424,7 @@ export async function sendQuoteRequestEmail(opts: {
         ${productImage ? `<img src="${productImage}" alt="" style="width:72px;height:72px;object-fit:contain;float:left;margin:0 14px 8px 0;border-radius:8px;border:1px solid #e5e7eb;background:#fff"/>` : ''}
         <p style="margin:0 0 4px;font-weight:700;font-size:14px;color:#111">${productName}</p>
         ${productModel ? `<p style="margin:0 0 6px;font-family:monospace;font-size:12px;color:#9ca3af">Model: ${productModel}</p>` : ''}
-        <a href="${sourceUrl}" style="font-size:12px;color:#b91c1c;text-decoration:none;font-weight:600">Xem sản phẩm gốc →</a>
+        <a href="${sourceUrl}" style="font-size:12px;color:#c26b00;text-decoration:none;font-weight:600">Xem sản phẩm gốc →</a>
         <div style="clear:both"></div>
       </div>
 
@@ -438,7 +439,7 @@ export async function sendQuoteRequestEmail(opts: {
       ${divider()}
 
       <p style="margin:0;font-size:12px;color:#9ca3af;text-align:center">
-        Quản lý đơn: <a href="${APP_URL}/dashboard/orders" style="color:#b91c1c">${APP_URL}/dashboard/orders</a>
+        Quản lý đơn: <a href="${APP_URL}/dashboard/orders" style="color:#c26b00">${APP_URL}/dashboard/orders</a>
       </p>
     `),
   })
@@ -482,7 +483,7 @@ export async function sendBidConfirmationEmail(opts: {
         <table width="100%" cellpadding="0" cellspacing="0">
           <tr>
             <td style="padding:10px 18px;font-size:13px;color:#6b7280;border-bottom:1px solid #f3f4f6">Giá hiện tại</td>
-            <td style="padding:10px 18px;font-size:13px;font-weight:700;color:#b91c1c;text-align:right;border-bottom:1px solid #f3f4f6">${fmtVND(currentPrice)}</td>
+            <td style="padding:10px 18px;font-size:13px;font-weight:700;color:#c26b00;text-align:right;border-bottom:1px solid #f3f4f6">${fmtVND(currentPrice)}</td>
           </tr>
           <tr>
             <td style="padding:10px 18px;font-size:13px;color:#6b7280">Thời gian kết thúc</td>
@@ -531,7 +532,7 @@ export async function sendAuctionOutbidEmail(opts: {
           <tr>
             <td style="padding:6px 0">
               <p style="margin:0;font-size:12px;color:#ef4444;font-weight:600;text-transform:uppercase;letter-spacing:1px">Giá mới nhất</p>
-              <p style="margin:4px 0 0;font-size:28px;font-weight:900;color:#b91c1c">${fmtVND(newPrice)}</p>
+              <p style="margin:4px 0 0;font-size:28px;font-weight:900;color:#c26b00">${fmtVND(newPrice)}</p>
             </td>
             <td style="text-align:right;padding:6px 0">
               <p style="margin:0;font-size:12px;color:#9ca3af">Giá của bạn</p>
@@ -600,7 +601,7 @@ export async function sendAuctionWinEmail(opts: {
           </tr>` : ''}
           <tr style="background:#fef2f2">
             <td style="padding:14px 18px;font-size:14px;font-weight:700;color:#111">Tổng thanh toán</td>
-            <td style="padding:14px 18px;font-size:18px;font-weight:900;color:#b91c1c;text-align:right">${fmtVND(totalPayable)}</td>
+            <td style="padding:14px 18px;font-size:18px;font-weight:900;color:#c26b00;text-align:right">${fmtVND(totalPayable)}</td>
           </tr>
         </table>
       </div>
@@ -618,9 +619,9 @@ export async function sendAuctionWinEmail(opts: {
       ${divider()}
       <p style="margin:0 0 4px;font-size:12px;color:#6b7280;text-align:center">Cần hỗ trợ thanh toán?</p>
       <p style="margin:0;font-size:12px;text-align:center">
-        <a href="tel:0988969896" style="color:#b91c1c;text-decoration:none;font-weight:600">0988.969.896</a>
+        <a href="tel:0988969896" style="color:#c26b00;text-decoration:none;font-weight:600">0988.969.896</a>
         &nbsp;·&nbsp;
-        <a href="https://zalo.me/0988969896" style="color:#b91c1c;text-decoration:none;font-weight:600">Chat Zalo</a>
+        <a href="https://zalo.me/0988969896" style="color:#c26b00;text-decoration:none;font-weight:600">Chat Zalo</a>
       </p>
     `),
   })
@@ -800,9 +801,9 @@ export async function sendBfjStatusEmail(opts: {
       ${divider()}
       <p style="margin:0;font-size:12px;color:#9ca3af;text-align:center">
         Cần hỗ trợ?
-        <a href="tel:0988969896" style="color:#b91c1c;text-decoration:none;font-weight:600">0988.969.896</a>
+        <a href="tel:0988969896" style="color:#c26b00;text-decoration:none;font-weight:600">0988.969.896</a>
         ·
-        <a href="https://zalo.me/0988969896" style="color:#b91c1c;text-decoration:none;font-weight:600">Chat Zalo</a>
+        <a href="https://zalo.me/0988969896" style="color:#c26b00;text-decoration:none;font-weight:600">Chat Zalo</a>
       </p>
     `),
   })
@@ -831,7 +832,7 @@ export async function sendContentDoneEmail(opts: {
       </div>
       <p style="margin:0 0 8px;font-size:14px;color:#374151">Loại: <strong>${typeLabel[opts.type] ?? opts.type}</strong></p>
       <p style="margin:0 0 24px;font-size:14px;color:#374151">Tiêu đề: <strong>${opts.title}</strong></p>
-      <a href="${opts.viewUrl}" style="background:#b91c1c;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;display:inline-block;font-weight:700;font-size:14px">
+      <a href="${opts.viewUrl}" style="background:#c26b00;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;display:inline-block;font-weight:700;font-size:14px">
         Xem kết quả →
       </a>
     `),
