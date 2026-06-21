@@ -190,8 +190,8 @@ function SocialLinks() {
       {socials.map((s) => (
         <a key={s.href} href={s.href} target="_blank" rel="noopener noreferrer"
           className="group flex items-center gap-3 text-sm text-white transition-all duration-200 hover:-translate-y-0.5">
-          <span className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full text-white transition-all duration-200 group-hover:scale-110"
-            style={{ background: s.color, boxShadow: s.shadow }}>
+          <span className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full text-white opacity-50 transition-all duration-200 group-hover:scale-110 group-hover:opacity-100 group-hover:shadow-[var(--social-glow)]"
+            style={{ background: s.color, ['--social-glow' as string]: s.shadow }}>
             {s.icon}
           </span>
           <span className="text-gray-300 group-hover:text-white transition-colors">{s.label}</span>
