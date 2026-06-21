@@ -1,6 +1,7 @@
 import nodemailer from 'nodemailer'
 import { prisma } from '@japanvip/db'
 import { decryptIfNeeded } from '@/lib/encrypt'
+import { renderCustom } from '@/lib/email-template.service'
 
 type SmtpConfig = {
   host: string
@@ -129,11 +130,8 @@ export async function sendWelcomeEmail(opts: { email: string; fullName: string; 
   const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://store.japanvip.vn'
   const { email, fullName, unsubscribeUrl } = opts
 
-  await createTransport(cfg).sendMail({
-    from: cfg.from,
-    to: email,
-    subject: `Chào mừng ${fullName} đến với Japan VIP! 🎌`,
-    html: emailLayout(`
+  const defaultSubject = `Chào mừng ${fullName} đến với Japan VIP! 🎌`
+  const defaultHtml = emailLayout(`
       <div style="text-align:center;margin-bottom:28px">
         <p style="margin:0 0 8px;font-size:44px;line-height:1">🎌</p>
         <p style="margin:0 0 6px;font-size:22px;font-weight:900;color:#111">Chào mừng bạn!</p>
@@ -169,7 +167,13 @@ export async function sendWelcomeEmail(opts: { email: string; fullName: string; 
         <a href="https://zalo.me/0988969896" style="color:#c26b00;text-decoration:none;font-weight:600">Chat Zalo</a>
       </p>
       ${unsubscribeNote(unsubscribeUrl)}
-    `),
+    `)
+
+  const custom = await renderCustom('welcome', { ten: fullName, unsubscribe: unsubscribeUrl })
+  await createTransport(cfg).sendMail({
+    from: cfg.from, to: email,
+    subject: custom?.subject || defaultSubject,
+    html: custom?.html || defaultHtml,
   })
 }
 
@@ -285,11 +289,12 @@ export async function sendPostPurchaseEmail(opts: {
   const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://store.japanvip.vn'
   const { email, fullName, productName, productSlug, crossSell, unsubscribeUrl } = opts
 
+  const custom = await renderCustom('post_purchase', { ten: fullName, tenSP: productName, link: productSlug ? `${APP_URL}/${productSlug}` : APP_URL, unsubscribe: unsubscribeUrl ?? '' })
   await createTransport(cfg).sendMail({
     from: cfg.from,
     to: email,
-    subject: `Cảm ơn bạn đã mua ${productName} 🎉`,
-    html: emailLayout(`
+    subject: custom?.subject || `Cảm ơn bạn đã mua ${productName} 🎉`,
+    html: custom?.html || emailLayout(`
       <div style="text-align:center;margin-bottom:24px">
         <p style="margin:0 0 8px;font-size:40px;line-height:1">🎉</p>
         <p style="margin:0 0 6px;font-size:21px;font-weight:900;color:#111">Cảm ơn ${fullName}!</p>
@@ -386,11 +391,12 @@ export async function sendDigestEmail(opts: { email: string; fullName: string; u
 
 export async function sendOtpEmail(email: string, code: string, fullName?: string) {
   const cfg = await getSmtpConfig()
+  const custom = await renderCustom('otp', { ten: fullName ?? '', code })
   await createTransport(cfg).sendMail({
     from: cfg.from,
     to: email,
-    subject: `[Japan VIP] Mã xác thực: ${code}`,
-    html: emailLayout(`
+    subject: custom?.subject || `[Japan VIP] Mã xác thực: ${code}`,
+    html: custom?.html || emailLayout(`
       <p style="margin:0 0 6px;font-size:22px;font-weight:800;color:#111">Xác thực tài khoản</p>
       <p style="margin:0 0 28px;font-size:14px;color:#6b7280">
         Xin chào${fullName ? ` <strong style="color:#111">${fullName}</strong>` : ''},<br/>
@@ -422,11 +428,12 @@ export async function sendQuoteRequestEmail(opts: {
   const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://store.japanvip.vn'
   const { email, fullName, productName, productImage, productModel, sourceUrl, notes } = opts
 
+  const custom = await renderCustom('quote_request', { ten: fullName, tenSP: productName, link: sourceUrl })
   await createTransport(cfg).sendMail({
     from: cfg.from,
     to: email,
-    subject: `[Japan VIP] Yêu cầu báo giá đã được tiếp nhận`,
-    html: emailLayout(`
+    subject: custom?.subject || `[Japan VIP] Yêu cầu báo giá đã được tiếp nhận`,
+    html: custom?.html || emailLayout(`
       <p style="margin:0 0 4px;font-size:22px;font-weight:800;color:#111">Yêu cầu đã được ghi nhận</p>
       <p style="margin:0 0 28px;font-size:14px;color:#6b7280">
         Xin chào <strong style="color:#111">${fullName}</strong>,<br/>
@@ -474,11 +481,12 @@ export async function sendBidConfirmationEmail(opts: {
   const { email, fullName, auctionTitle, auctionId, bidAmount, currentPrice, endsAt } = opts
   const endDate = new Date(endsAt).toLocaleString('vi-VN', { dateStyle: 'short', timeStyle: 'short' })
 
+  const custom = await renderCustom('bid_confirmation', { ten: fullName, tieuDe: auctionTitle, giaDat: fmtVND(bidAmount), giaHienTai: fmtVND(currentPrice), ketThuc: endDate, link: `${APP_URL}/dau-gia/${auctionId}` })
   await createTransport(cfg).sendMail({
     from: cfg.from,
     to: email,
-    subject: `[Japan VIP] Đặt giá thành công — ${fmtVND(bidAmount)}`,
-    html: emailLayout(`
+    subject: custom?.subject || `[Japan VIP] Đặt giá thành công — ${fmtVND(bidAmount)}`,
+    html: custom?.html || emailLayout(`
       <p style="margin:0 0 4px;font-size:22px;font-weight:800;color:#111">Đặt giá thành công</p>
       <p style="margin:0 0 28px;font-size:14px;color:#6b7280">
         Xin chào <strong style="color:#111">${fullName}</strong>, bạn đang dẫn đầu phiên đấu giá này.
@@ -529,11 +537,12 @@ export async function sendAuctionOutbidEmail(opts: {
   const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://store.japanvip.vn'
   const { email, fullName, auctionTitle, auctionId, newPrice, yourBid } = opts
 
+  const custom = await renderCustom('auction_outbid', { ten: fullName, tieuDe: auctionTitle, giaMoi: fmtVND(newPrice), giaCuaBan: fmtVND(yourBid), link: `${APP_URL}/dau-gia/${auctionId}` })
   await createTransport(cfg).sendMail({
     from: cfg.from,
     to: email,
-    subject: `[Japan VIP] Bạn vừa bị vượt giá — Đặt lại ngay!`,
-    html: emailLayout(`
+    subject: custom?.subject || `[Japan VIP] Bạn vừa bị vượt giá — Đặt lại ngay!`,
+    html: custom?.html || emailLayout(`
       <p style="margin:0 0 4px;font-size:22px;font-weight:800;color:#111">Bạn vừa bị vượt giá</p>
       <p style="margin:0 0 28px;font-size:14px;color:#6b7280">
         Xin chào <strong style="color:#111">${fullName}</strong>,<br/>
@@ -581,11 +590,12 @@ export async function sendAuctionWinEmail(opts: {
   const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://store.japanvip.vn'
   const { email, fullName, auctionTitle, auctionId, hammerPrice, buyerPremium, totalPayable, settlementDueDays = 3 } = opts
 
+  const custom = await renderCustom('auction_win', { ten: fullName, tieuDe: auctionTitle, giaThang: fmtVND(hammerPrice), tongTien: fmtVND(totalPayable), link: `${APP_URL}/dashboard/auctions` })
   await createTransport(cfg).sendMail({
     from: cfg.from,
     to: email,
-    subject: `[Japan VIP] Chúc mừng! Bạn đã thắng — ${auctionTitle}`,
-    html: emailLayout(`
+    subject: custom?.subject || `[Japan VIP] Chúc mừng! Bạn đã thắng — ${auctionTitle}`,
+    html: custom?.html || emailLayout(`
       <!-- Trophy banner -->
       <div style="background:linear-gradient(135deg,#fef9c3,#fef3c7);border:1px solid #fcd34d;border-radius:12px;padding:28px;text-align:center;margin-bottom:28px">
         <p style="margin:0 0 10px;font-size:48px;line-height:1">🏆</p>
@@ -790,11 +800,12 @@ export async function sendBfjStatusEmail(opts: {
     ? `${divider()}${btn(`${APP_URL}/dashboard/orders`, 'Xem đơn hàng & Đặt cọc →')}`
     : `${divider()}${btn(`${APP_URL}/dashboard/orders`, 'Theo dõi đơn hàng →')}`
 
+  const custom = await renderCustom('bfj_status', { ten: opts.fullName, maDon: opts.orderNumber, tieuDe: config.headline, noiDung: config.message, tracking: opts.trackingVn ?? '', link: `${APP_URL}/dashboard/orders` })
   await createTransport(cfg).sendMail({
     from: cfg.from,
     to: opts.email,
-    subject: `[Japan VIP] ${config.subject} — ${opts.orderNumber}`,
-    html: emailLayout(`
+    subject: custom?.subject || `[Japan VIP] ${config.subject} — ${opts.orderNumber}`,
+    html: custom?.html || emailLayout(`
       <!-- Status banner -->
       <div style="background:${config.bgColor};border:1.5px solid ${config.borderColor};border-radius:12px;padding:20px 24px;margin-bottom:24px;text-align:center">
         <p style="margin:0 0 8px;font-size:36px;line-height:1">${config.icon}</p>

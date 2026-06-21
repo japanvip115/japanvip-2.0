@@ -1165,6 +1165,17 @@ model Cart {
   @@map("carts")
 }
 
+// Template HTML tùy biến cho từng loại email tự động (dán từ builder ngoài)
+model EmailTemplate {
+  key       String   @id @db.VarChar(40) // welcome|otp|bfj_status|...
+  enabled   Boolean  @default(false)
+  subject   String?  @db.VarChar(300) // tùy chọn; rỗng = dùng tiêu đề mặc định
+  html      String   @db.Text
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@map("email_templates")
+}
+
 // Cấu hình bật/tắt + tham số cho từng automation email (config-based)
 model EmailAutomation {
   key       String   @id @db.VarChar(40) // welcome|abandoned_cart|post_purchase|winback|digest
