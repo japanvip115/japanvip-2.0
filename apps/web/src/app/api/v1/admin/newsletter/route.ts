@@ -14,8 +14,9 @@ const BATCH = 150 // SES nhanh → 150/lần gọn trong 60s; client gọi lại
 
 const schema = z.object({
   subject: z.string().min(3).max(200),
-  bodyHtml: z.string().min(3).max(50000),
+  bodyHtml: z.string().min(3).max(200000),
   campaignId: z.string().max(64).optional(),
+  raw: z.boolean().optional(),
 })
 
 type Recipient = { id: string; email: string; fullName: string | null }
@@ -25,7 +26,7 @@ export async function POST(req: NextRequest) {
   if (!session?.user || !hasRole(session.user.role, 'ADMIN')) return apiError('Unauthorized', 401)
 
   try {
-    const { subject, bodyHtml, campaignId: cid } = schema.parse(await req.json())
+    const { subject, bodyHtml, campaignId: cid, raw } = schema.parse(await req.json())
     const campaignId = cid || `nl_${randomBytes(8).toString('hex')}`
 
     const recipients = await prisma.$queryRaw<Recipient[]>`
@@ -44,7 +45,7 @@ export async function POST(req: NextRequest) {
     for (const u of recipients) {
       try {
         const token = await ensureUnsubscribeToken(u.id)
-        await sendNewsletterEmail({ email: u.email, fullName: u.fullName || 'bạn', subject, bodyHtml, unsubscribeUrl: buildUnsubscribeUrl(token) })
+        await sendNewsletterEmail({ email: u.email, fullName: u.fullName || 'bạn', subject, bodyHtml, unsubscribeUrl: buildUnsubscribeUrl(token), raw })
         await prisma.emailLog.create({ data: { email: u.email, type: 'newsletter', userId: u.id, meta: { campaignId } } })
         sent++
       } catch (err) {

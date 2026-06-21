@@ -239,22 +239,36 @@ export async function sendAbandonedCartEmail(opts: { email: string; fullName: st
 
 // ─── Newsletter / Campaign (gửi hàng loạt) ───────────────────────────────────
 
-export async function sendNewsletterEmail(opts: { email: string; fullName: string; subject: string; bodyHtml: string; unsubscribeUrl: string }) {
+// Thay placeholder cho HTML dán từ builder ngoài: {{ten}}, {{unsubscribe}}
+function fillPlaceholders(html: string, vars: { ten: string; unsubscribe: string }): string {
+  return html
+    .replace(/\{\{\s*ten\s*\}\}/gi, vars.ten)
+    .replace(/\{\{\s*name\s*\}\}/gi, vars.ten)
+    .replace(/\{\{\s*unsubscribe\s*\}\}/gi, vars.unsubscribe)
+}
+
+export async function sendNewsletterEmail(opts: { email: string; fullName: string; subject: string; bodyHtml: string; unsubscribeUrl: string; raw?: boolean }) {
   const cfg = await getSmtpConfig()
   const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://store.japanvip.vn'
-  const { email, fullName, subject, bodyHtml, unsubscribeUrl } = opts
+  const { email, fullName, subject, bodyHtml, unsubscribeUrl, raw } = opts
 
-  await createTransport(cfg).sendMail({
-    from: cfg.from,
-    to: email,
-    subject,
-    html: emailLayout(`
+  let html: string
+  if (raw) {
+    // Gửi nguyên HTML dán từ builder; chỉ thay placeholder + đảm bảo có link hủy đăng ký
+    html = fillPlaceholders(bodyHtml, { ten: fullName, unsubscribe: unsubscribeUrl })
+    if (!html.includes(unsubscribeUrl)) {
+      html += `<div style="text-align:center;padding:16px;font-family:Arial,sans-serif;font-size:11px;color:#9aa4ae">Bạn nhận email này vì đã đăng ký Japan VIP. <a href="${unsubscribeUrl}" style="color:#9aa4ae;text-decoration:underline">Hủy đăng ký</a></div>`
+    }
+  } else {
+    html = emailLayout(`
       <p style="margin:0 0 16px;font-size:14px;color:#374151">Xin chào <strong style="color:#111">${fullName}</strong>,</p>
       <div style="font-size:14px;color:#374151;line-height:1.7">${bodyHtml}</div>
       <div style="margin-top:24px">${btn(`${APP_URL}`, 'Ghé Japan VIP →')}</div>
       ${unsubscribeNote(unsubscribeUrl)}
-    `),
-  })
+    `)
+  }
+
+  await createTransport(cfg).sendMail({ from: cfg.from, to: email, subject, html })
 }
 
 // ─── Post-purchase (cảm ơn + hướng dẫn + cross-sell) ─────────────────────────
