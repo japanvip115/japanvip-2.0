@@ -3,9 +3,9 @@
 import { useEffect, useState, useRef } from 'react'
 import { Plus, Pencil, Trash2, Star, GripVertical, Eye, EyeOff, Upload, X } from 'lucide-react'
 
-type T = { id: string; name: string; city: string; photoUrl: string | null; text: string; rating: number; sortOrder: number; isActive: boolean }
+type T = { id: string; name: string; city: string; photoUrl: string | null; text: string; rating: number; type: string; sortOrder: number; isActive: boolean }
 
-const EMPTY: Omit<T, 'id'> = { name: '', city: '', photoUrl: '', text: '', rating: 5, sortOrder: 0, isActive: true }
+const EMPTY: Omit<T, 'id'> = { name: '', city: '', photoUrl: '', text: '', rating: 5, type: 'GENERAL', sortOrder: 0, isActive: true }
 
 export default function TestimonialsAdminPage() {
   const [list, setList] = useState<T[]>([])
@@ -80,6 +80,9 @@ export default function TestimonialsAdminPage() {
                 <span className="font-semibold text-white">{t.name}</span>
                 <span className="text-xs text-gray-500">{t.city}</span>
                 <span className="text-yellow-400 text-xs">{'★'.repeat(t.rating)}</span>
+                {t.type === 'AUCTION' && (
+                  <span className="rounded bg-amber-500/15 px-1.5 py-0.5 text-[10px] font-bold text-amber-400 ring-1 ring-amber-500/30">ĐẤU GIÁ</span>
+                )}
                 <span className="text-xs text-gray-600">#{t.sortOrder}</span>
               </div>
               <p className="text-sm text-gray-400 line-clamp-2">{t.text}</p>
@@ -149,6 +152,25 @@ export default function TestimonialsAdminPage() {
                 <label className="text-xs text-gray-400 mb-1 block">Nội dung đánh giá *</label>
                 <textarea value={editing.text ?? ''} onChange={e => setEditing(p => ({ ...p!, text: e.target.value }))} rows={3}
                   className="w-full rounded-lg bg-gray-800 border border-gray-700 px-3 py-2 text-sm text-white focus:outline-none focus:border-red-500 resize-none" placeholder="Nội dung..." />
+              </div>
+              <div>
+                <label className="text-xs text-gray-400 mb-1 block">Loại đánh giá</label>
+                <div className="flex gap-2">
+                  {([
+                    { value: 'GENERAL', label: '🏠 Chung (trang chủ)' },
+                    { value: 'AUCTION', label: '🔨 Đấu giá' },
+                  ] as const).map(o => (
+                    <button key={o.value} type="button" onClick={() => setEditing(p => ({ ...p!, type: o.value }))}
+                      className={`flex-1 rounded-lg border px-3 py-2 text-xs font-semibold transition-colors ${
+                        (editing.type ?? 'GENERAL') === o.value
+                          ? 'border-red-500 bg-red-500/10 text-red-400'
+                          : 'border-gray-700 bg-gray-800 text-gray-500 hover:border-gray-500 hover:text-gray-300'
+                      }`}>
+                      {o.label}
+                    </button>
+                  ))}
+                </div>
+                <p className="mt-1 text-[11px] text-gray-600">Chung → hiện ở trang chủ. Đấu giá → hiện ở cuối trang chi tiết đấu giá.</p>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>

@@ -100,7 +100,7 @@ export default async function HomePage() {
 
     prisma.$queryRaw<Array<{ id: string; name: string; city: string; photoUrl: string | null; text: string; rating: number }>>`
       SELECT id, name, city, photo_url as "photoUrl", text, rating
-      FROM testimonials WHERE is_active = true ORDER BY sort_order ASC, created_at ASC
+      FROM testimonials WHERE is_active = true AND type = 'GENERAL' ORDER BY sort_order ASC, created_at ASC
     `,
 
     prisma.banner.findMany({

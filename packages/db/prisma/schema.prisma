@@ -1154,12 +1154,14 @@ model Testimonial {
   photoUrl  String?  @map("photo_url")
   text      String   @db.Text
   rating    Int      @default(5)
+  type      String   @default("GENERAL") @db.VarChar(20) // GENERAL | AUCTION
   sortOrder Int      @default(0) @map("sort_order")
   isActive  Boolean  @default(true) @map("is_active")
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
 
   @@index([isActive, sortOrder])
+  @@index([type, isActive])
   @@map("testimonials")
 }
 

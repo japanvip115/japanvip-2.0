@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 import { auth } from '@/lib/auth'
 import { prisma } from '@japanvip/db'
 import { AuctionDetailClient } from '@/components/auction/auction-detail-client'
+import { AuctionReviews } from '@/components/auction/auction-reviews'
 import { ProductGallery } from '@/components/auction/product-gallery'
 import { ProductTabs } from '@/components/auction/product-tabs'
 import Image from 'next/image'
@@ -46,11 +47,15 @@ export const revalidate = 5
 
 export default async function AuctionDetailPage({ params }: Props) {
   const { id } = await params
-  const [auction, session, feeRateRow, shippingRow] = await Promise.all([
+  const [auction, session, feeRateRow, shippingRow, auctionReviews] = await Promise.all([
     getAuctionDetail(id),
     auth(),
     prisma.siteSetting.findUnique({ where: { key: 'auction_fee_rate' } }),
     prisma.siteSetting.findUnique({ where: { key: 'auction_shipping_fee' } }),
+    prisma.$queryRaw<Array<{ id: string; name: string; city: string; photoUrl: string | null; text: string; rating: number }>>`
+      SELECT id, name, city, photo_url as "photoUrl", text, rating
+      FROM testimonials WHERE is_active = true AND type = 'AUCTION' ORDER BY sort_order ASC, created_at ASC
+    `,
   ])
   if (!auction) notFound()
 
@@ -167,6 +172,9 @@ export default async function AuctionDetailPage({ params }: Props) {
           />
         </div>
       </div>
+
+      {/* Đánh giá từ khách đã đấu giá */}
+      <AuctionReviews data={auctionReviews} />
     </div>
   )
 }
