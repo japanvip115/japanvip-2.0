@@ -68,6 +68,7 @@ model User {
   adminTransactions Transaction[]   @relation("TransactionCreatedBy")
   loginHistory    LoginHistory[]
   bidConfirmOtps  BidConfirmOtp[]
+  cart            Cart?
 
   @@index([email])
   @@index([phone])
@@ -1147,6 +1148,31 @@ model BfjShippingTier {
 
   @@index([sortOrder])
   @@map("bfj_shipping_tiers")
+}
+
+// Giỏ hàng server-side cho khách đã đăng nhập — phục vụ email bỏ giỏ hàng
+model Cart {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @unique @map("user_id") @db.Uuid
+  items     Json
+  reminded  Boolean  @default(false) // đã gửi email nhắc bỏ giỏ chưa (reset khi cập nhật giỏ)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([reminded, updatedAt])
+  @@map("carts")
+}
+
+// Cấu hình bật/tắt + tham số cho từng automation email (config-based)
+model EmailAutomation {
+  key       String   @id @db.VarChar(40) // welcome|abandoned_cart|post_purchase|winback|digest
+  enabled   Boolean  @default(true)
+  config    Json     @default("{}") // {hours?, days?, dayOfWeek?, subject?}
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@map("email_automations")
 }
 
 // Log email marketing đã gửi — tránh gửi trùng + thống kê

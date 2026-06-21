@@ -3,6 +3,7 @@ import Image from 'next/image'
 import { auth } from '@/lib/auth'
 import type { SessionUser } from '@/lib/auth-types'
 import { CartButton } from '@/components/cart/cart-button'
+import { CartSync } from '@/components/cart/cart-sync'
 import { UserMenu } from '@/components/layout/user-menu'
 import { prisma } from '@japanvip/db'
 import { HeaderSearch } from '@/components/layout/header-search'
@@ -69,6 +70,7 @@ export async function Header() {
 
           {/* Actions — right */}
           <div className="flex items-center gap-2">
+            <CartSync />
             <CartButton />
             {user ? (
               <UserMenu name={user.name} email={user.email} />

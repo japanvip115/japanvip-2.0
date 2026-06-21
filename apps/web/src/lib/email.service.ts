@@ -196,6 +196,47 @@ function productGrid(products: MailProduct[], appUrl: string): string {
   return `<table width="100%" cellpadding="0" cellspacing="0" style="margin:8px 0 4px">${rows.join('')}</table>`
 }
 
+// ─── Bỏ giỏ hàng (abandoned cart) ────────────────────────────────────────────
+
+type CartLine = { slug: string; name: string; image: string | null; priceVnd: number | null; quantity: number }
+
+export async function sendAbandonedCartEmail(opts: { email: string; fullName: string; items: CartLine[]; unsubscribeUrl: string }) {
+  const cfg = await getSmtpConfig()
+  const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://store.japanvip.vn'
+  const { email, fullName, items, unsubscribeUrl } = opts
+
+  const rows = items.slice(0, 6).map((it) => `
+    <a href="${APP_URL}/${it.slug}" style="display:block;text-decoration:none;border:1px solid #e5e7eb;border-radius:10px;overflow:hidden;background:#fff;margin-bottom:10px">
+      <table width="100%" cellpadding="0" cellspacing="0"><tr>
+        ${it.image ? `<td width="72" valign="top"><img src="${it.image}" alt="" width="72" height="72" style="display:block;width:72px;height:72px;object-fit:contain;background:#fff;padding:6px;box-sizing:border-box"/></td>` : ''}
+        <td valign="middle" style="padding:10px 14px">
+          <p style="margin:0 0 4px;font-size:13px;font-weight:600;color:#111;line-height:1.4">${it.name}</p>
+          <p style="margin:0;font-size:12px;color:#6b7280">SL: ${it.quantity}${it.priceVnd ? ` · <strong style="color:#b91c1c">${fmtVND(it.priceVnd)}</strong>` : ''}</p>
+        </td>
+      </tr></table>
+    </a>`).join('')
+
+  await createTransport(cfg).sendMail({
+    from: cfg.from,
+    to: email,
+    subject: `Bạn để quên giỏ hàng tại Japan VIP 🛒`,
+    html: emailLayout(`
+      <div style="text-align:center;margin-bottom:24px">
+        <p style="margin:0 0 8px;font-size:40px;line-height:1">🛒</p>
+        <p style="margin:0 0 6px;font-size:21px;font-weight:900;color:#111">Giỏ hàng của bạn vẫn đang chờ!</p>
+        <p style="margin:0;font-size:14px;color:#6b7280">Xin chào <strong style="color:#111">${fullName}</strong>, bạn còn sản phẩm chưa đặt. Hoàn tất ngay trước khi hết hàng nhé!</p>
+      </div>
+      ${rows}
+      <div style="margin-top:20px">${btn(`${APP_URL}/gio-hang`, 'Hoàn tất đơn hàng →')}</div>
+      ${divider()}
+      <p style="margin:0;font-size:12px;color:#6b7280;text-align:center">
+        Cần hỗ trợ đặt hàng? <a href="tel:0988969896" style="color:#b91c1c;text-decoration:none;font-weight:600">0988.969.896</a> · <a href="https://zalo.me/0988969896" style="color:#b91c1c;text-decoration:none;font-weight:600">Chat Zalo</a>
+      </p>
+      ${unsubscribeNote(unsubscribeUrl)}
+    `),
+  })
+}
+
 // ─── Newsletter / Campaign (gửi hàng loạt) ───────────────────────────────────
 
 export async function sendNewsletterEmail(opts: { email: string; fullName: string; subject: string; bodyHtml: string; unsubscribeUrl: string }) {

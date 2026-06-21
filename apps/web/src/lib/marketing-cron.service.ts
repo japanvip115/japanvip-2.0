@@ -1,11 +1,13 @@
 import { prisma } from '@japanvip/db'
-import { sendWinbackEmail, sendDigestEmail } from '@/lib/email.service'
+import { sendWinbackEmail, sendDigestEmail, sendAbandonedCartEmail } from '@/lib/email.service'
 import { ensureUnsubscribeToken, buildUnsubscribeUrl } from '@/lib/marketing.service'
+import { getAutomation } from '@/lib/automation-config'
 
 // Batch bảo thủ để tránh timeout (SMTP ~1s/email, Hobby giới hạn thời gian).
 // Danh sách lớn cần Vercel Pro hoặc queue (Upstash QStash) / ESP bulk.
 const WINBACK_BATCH = 25
 const DIGEST_BATCH = 25
+const CART_BATCH = 25
 
 type Recipient = { id: string; email: string; fullName: string | null }
 type MailProduct = { name: string; slug: string; image: string | null; price: number | null }
@@ -28,6 +30,10 @@ async function suggestedProducts(limit: number): Promise<MailProduct[]> {
 // ─── Win-back: khách không hoạt động 60+ ngày ────────────────────────────────
 
 export async function runWinback(): Promise<{ sent: number }> {
+  const auto = await getAutomation('winback')
+  if (!auto.enabled) return { sent: 0 }
+  const days = auto.config.days ?? 60
+
   const candidates = await prisma.$queryRaw<Recipient[]>`
     SELECT u.id, u.email, p.full_name AS "fullName"
     FROM users u
@@ -37,12 +43,12 @@ export async function runWinback(): Promise<{ sent: number }> {
       AND u.role = 'CUSTOMER'
       AND u.status = 'ACTIVE'
       AND u.deleted_at IS NULL
-      AND u.created_at < NOW() - INTERVAL '60 days'
+      AND u.created_at < NOW() - make_interval(days => ${days})
       AND COALESCE(GREATEST(
             (SELECT MAX(created_at) FROM quick_orders WHERE email = u.email),
             (SELECT MAX(created_at) FROM bfj_orders  WHERE customer_id = u.id),
             (SELECT MAX(created_at) FROM bids        WHERE bidder_id = u.id)
-          ), u.created_at) < NOW() - INTERVAL '60 days'
+          ), u.created_at) < NOW() - make_interval(days => ${days})
       AND NOT EXISTS (
             SELECT 1 FROM email_logs el
             WHERE el.email = u.email AND el.type = 'winback' AND el.sent_at > NOW() - INTERVAL '45 days'
@@ -70,9 +76,12 @@ export async function runWinback(): Promise<{ sent: number }> {
 // ─── Digest "Hàng mới về": hằng tuần (thứ 5) ─────────────────────────────────
 
 export async function runNewArrivalsDigest(force = false): Promise<{ sent: number; skipped?: string }> {
-  // Giờ VN = UTC+7. Chỉ gửi vào thứ 5 (getUTCDay: 0=CN..4=T5)
+  const auto = await getAutomation('digest')
+  if (!auto.enabled) return { sent: 0, skipped: 'disabled' }
+  const targetDay = auto.config.dayOfWeek ?? 4
+  // Giờ VN = UTC+7. Chỉ gửi vào ngày cấu hình (getUTCDay: 0=CN..6=T7)
   const vnDay = new Date(Date.now() + 7 * 3600 * 1000).getUTCDay()
-  if (!force && vnDay !== 4) return { sent: 0, skipped: 'not_thursday' }
+  if (!force && vnDay !== targetDay) return { sent: 0, skipped: 'not_target_day' }
 
   const candidates = await prisma.$queryRaw<Recipient[]>`
     SELECT u.id, u.email, p.full_name AS "fullName"
@@ -121,11 +130,55 @@ export async function runNewArrivalsDigest(force = false): Promise<{ sent: numbe
   return { sent }
 }
 
-// Gọi mỗi ngày trong cron 8:00. Win-back chạy mỗi ngày (batch nhỏ), digest chỉ thứ 5.
+// ─── Bỏ giỏ hàng: khách đã đăng nhập, giỏ bỏ quên 6h–14 ngày, chưa nhắc ───────
+
+type CartLine = { slug: string; name: string; image: string | null; priceVnd: number | null; quantity: number }
+
+export async function runAbandonedCart(): Promise<{ sent: number }> {
+  const auto = await getAutomation('abandoned_cart')
+  if (!auto.enabled) return { sent: 0 }
+  const hours = auto.config.hours ?? 6
+
+  const carts = await prisma.cart.findMany({
+    where: {
+      reminded: false,
+      updatedAt: { lt: new Date(Date.now() - hours * 3600 * 1000), gt: new Date(Date.now() - 14 * 86400 * 1000) },
+      user: { marketingOptIn: true, emailVerified: true, status: 'ACTIVE', deletedAt: null },
+    },
+    orderBy: { updatedAt: 'asc' },
+    take: CART_BATCH,
+    select: { id: true, items: true, user: { select: { id: true, email: true, profile: { select: { fullName: true } } } } },
+  })
+  if (carts.length === 0) return { sent: 0 }
+
+  let sent = 0
+  for (const c of carts) {
+    try {
+      const items = (Array.isArray(c.items) ? c.items : []) as unknown as CartLine[]
+      if (items.length === 0) { await prisma.cart.update({ where: { id: c.id }, data: { reminded: true } }); continue }
+      const token = await ensureUnsubscribeToken(c.user.id)
+      await sendAbandonedCartEmail({
+        email: c.user.email,
+        fullName: c.user.profile?.fullName || 'bạn',
+        items,
+        unsubscribeUrl: buildUnsubscribeUrl(token),
+      })
+      await prisma.cart.update({ where: { id: c.id }, data: { reminded: true } })
+      await prisma.emailLog.create({ data: { email: c.user.email, type: 'abandoned_cart', userId: c.user.id } })
+      sent++
+    } catch (err) {
+      console.error('abandoned cart send failed', err)
+    }
+  }
+  return { sent }
+}
+
+// Gọi mỗi ngày trong cron 8:00. Win-back + bỏ giỏ chạy mỗi ngày, digest chỉ thứ 5.
 export async function runDailyMarketing(opts?: { force?: boolean }) {
-  const [winback, digest] = await Promise.all([
+  const [winback, digest, cart] = await Promise.all([
     runWinback().catch((e) => { console.error('runWinback error', e); return { sent: 0 } }),
     runNewArrivalsDigest(opts?.force).catch((e) => { console.error('runDigest error', e); return { sent: 0 } }),
+    runAbandonedCart().catch((e) => { console.error('runAbandonedCart error', e); return { sent: 0 } }),
   ])
-  return { winback: winback.sent, digest: digest.sent }
+  return { winback: winback.sent, digest: digest.sent, abandonedCart: cart.sent }
 }

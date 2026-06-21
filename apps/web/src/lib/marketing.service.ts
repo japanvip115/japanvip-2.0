@@ -1,6 +1,7 @@
 import { randomBytes } from 'crypto'
 import { prisma } from '@japanvip/db'
 import { sendWelcomeEmail, sendPostPurchaseEmail } from '@/lib/email.service'
+import { getAutomation } from '@/lib/automation-config'
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://store.japanvip.vn'
 
@@ -23,6 +24,7 @@ export function buildUnsubscribeUrl(token: string): string {
  */
 export async function triggerWelcomeEmail(email: string): Promise<void> {
   try {
+    if (!(await getAutomation('welcome')).enabled) return
     const user = await prisma.user.findUnique({
       where: { email },
       select: { id: true, email: true, marketingOptIn: true, profile: { select: { fullName: true } } },
@@ -52,6 +54,7 @@ export async function triggerWelcomeEmail(email: string): Promise<void> {
  */
 export async function triggerPostPurchaseEmail(quickOrderId: string): Promise<void> {
   try {
+    if (!(await getAutomation('post_purchase')).enabled) return
     const order = await prisma.quickOrder.findUnique({
       where: { id: quickOrderId },
       select: { orderRef: true, email: true, name: true, status: true, productId: true, productName: true, productSlug: true },
