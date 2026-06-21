@@ -1,9 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useCartStore } from '@/store/cart'
 import { ShoppingCart, Zap, Check } from 'lucide-react'
 import { QuickOrderModal } from './quick-order-modal'
+import { trackFb, CURRENCY } from '@/lib/fbq'
 
 type Props = {
   productId: string
@@ -19,11 +20,39 @@ export function AddToCartButtons({ productId, slug, name, image, priceJpy, price
   const [added, setAdded] = useState(false)
   const [quickOrderOpen, setQuickOrderOpen] = useState(false)
 
+  // Meta Pixel: khách xem chi tiết sản phẩm
+  useEffect(() => {
+    trackFb('ViewContent', {
+      content_ids: [productId],
+      content_name: name,
+      content_type: 'product',
+      ...(priceVnd ? { value: priceVnd, currency: CURRENCY } : {}),
+    })
+  }, [productId, name, priceVnd])
+
   function handleAddToCart() {
     addItem({ productId, slug, name, image, priceJpy, priceVnd })
     setAdded(true)
     setTimeout(() => setAdded(false), 2200)
     window.dispatchEvent(new CustomEvent('cart:open'))
+    trackFb('AddToCart', {
+      content_ids: [productId],
+      content_name: name,
+      content_type: 'product',
+      contents: [{ id: productId, quantity: 1 }],
+      ...(priceVnd ? { value: priceVnd, currency: CURRENCY } : {}),
+    })
+  }
+
+  function handleBuyNow() {
+    setQuickOrderOpen(true)
+    trackFb('InitiateCheckout', {
+      content_ids: [productId],
+      content_name: name,
+      content_type: 'product',
+      num_items: 1,
+      ...(priceVnd ? { value: priceVnd, currency: CURRENCY } : {}),
+    })
   }
 
   return (
@@ -58,7 +87,7 @@ export function AddToCartButtons({ productId, slug, name, image, priceJpy, price
 
         {/* Buy now — opens quick order modal */}
         <button
-          onClick={() => setQuickOrderOpen(true)}
+          onClick={handleBuyNow}
           className="
             group relative flex flex-1 cursor-pointer items-center justify-center gap-2
             overflow-hidden rounded-xl bg-brand-red px-4 py-3.5 text-sm font-bold text-white

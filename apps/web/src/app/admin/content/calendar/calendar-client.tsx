@@ -49,7 +49,7 @@ const EMPTY_FORM = {
   topic: '',
   keywords: '',
   sourceUrl: '',
-  provider: 'anthropic',
+  provider: 'claude-code',
   scheduledAt: '',
 }
 
@@ -310,9 +310,10 @@ export function CalendarClient() {
                 <input
                   value={form.title}
                   onChange={e => setForm(f => ({ ...f, title: e.target.value }))}
-                  placeholder="VD: Nồi cơm điện Tiger JBS-A055KM — đánh giá chi tiết"
+                  placeholder="VD: Nồi cơm điện"
                   className="mt-1.5 w-full rounded-lg border border-gray-600 bg-gray-800 px-3 py-2 text-sm text-white placeholder-gray-500 outline-none focus:border-purple-500"
                 />
+                <p className="mt-1 text-[11px] text-gray-500">💡 Chỉ cần viết chủ đề ngắn — hệ thống tự tìm các sản phẩm thực đang bán (đúng tên + model) để viết bài.</p>
               </div>
 
               <div>
@@ -327,13 +328,14 @@ export function CalendarClient() {
               </div>
 
               <div>
-                <label className="text-xs font-semibold text-gray-400 uppercase tracking-wide">Từ khóa SEO</label>
+                <label className="text-xs font-semibold text-gray-400 uppercase tracking-wide">Từ khóa SEO <span className="normal-case text-gray-500 font-normal">(tự động)</span></label>
                 <input
                   value={form.keywords}
                   onChange={e => setForm(f => ({ ...f, keywords: e.target.value }))}
-                  placeholder="nồi cơm điện tiger, nồi cơm nhật bản..."
+                  placeholder="Để trống → tự lấy từ tiêu đề + tên/model sản phẩm"
                   className="mt-1.5 w-full rounded-lg border border-gray-600 bg-gray-800 px-3 py-2 text-sm text-white placeholder-gray-500 outline-none focus:border-purple-500"
                 />
+                <p className="mt-1 text-[11px] text-gray-500">🔑 Bỏ trống để hệ thống tự sinh từ khóa theo tiêu đề và các sản phẩm liên quan. Chỉ điền nếu muốn ép từ khóa riêng.</p>
               </div>
 
               <div>

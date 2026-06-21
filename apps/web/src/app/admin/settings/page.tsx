@@ -61,6 +61,7 @@ const GROUPS: { title: string; icon: string; items: SettingItem[] }[] = [
     icon: '🔒',
     items: [
       { href: '/admin/settings/oauth',            icon: '🔑', title: 'Google OAuth',               desc: 'Client ID & Secret đăng nhập Google' },
+      { href: '/admin/settings/verification',     icon: '✅', title: 'Xác Minh & Pixel',            desc: 'Mã Google/Bing/Facebook + Meta Pixel remarketing', badge: 'SEO', badgeColor: 'green' },
       { href: '/admin/settings/fraud',            icon: '🛡️', title: 'Chống Gian Lận',             desc: '10 rule fraud, điểm số, ngưỡng khoá' },
       { href: '/admin/settings/blocked-ips',      icon: '🚫', title: 'IP Bị Chặn',                 desc: 'Danh sách IP bị chặn khỏi hệ thống' },
     ],

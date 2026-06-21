@@ -1,11 +1,12 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useCartStore } from '@/store/cart'
 import { formatVND } from '@japanvip/utils'
+import { trackFb, CURRENCY } from '@/lib/fbq'
 
 const FALLBACK_JPY_RATE = 175
 
@@ -32,6 +33,20 @@ export function CartPageClient() {
   }, 0)
 
   const hasUnpricedItems = items.some((i) => !i.priceJpy && !i.priceVnd)
+
+  // Meta Pixel: khách xem giỏ hàng (bắn 1 lần khi có sản phẩm)
+  const viewCartFired = useRef(false)
+  useEffect(() => {
+    if (viewCartFired.current || items.length === 0) return
+    viewCartFired.current = true
+    trackFb('ViewCart', {
+      content_ids: items.map((i) => i.productId),
+      content_type: 'product',
+      contents: items.map((i) => ({ id: i.productId, quantity: i.quantity })),
+      num_items: items.reduce((s, i) => s + i.quantity, 0),
+      ...(totalVnd > 0 ? { value: totalVnd, currency: CURRENCY } : {}),
+    })
+  }, [items, totalVnd])
 
   async function handleOrder() {
     setIsOrdering(true)
@@ -62,6 +77,13 @@ export function CartPageClient() {
       })
       const data = await res.json()
       if (!data.success) throw new Error(data.error ?? 'Đặt hàng thất bại')
+      trackFb('Purchase', {
+        content_ids: items.map((i) => i.productId),
+        content_type: 'product',
+        contents: items.map((i) => ({ id: i.productId, quantity: i.quantity })),
+        num_items: items.reduce((s, i) => s + i.quantity, 0),
+        ...(totalVnd > 0 ? { value: totalVnd, currency: CURRENCY } : { currency: CURRENCY }),
+      })
       clear()
       setOrderSuccess({ orderNumber: data.data.orderNumber, orderId: data.data.id })
     } catch (err) {

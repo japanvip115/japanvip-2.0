@@ -100,12 +100,23 @@ async function generateContent(task: {
 }): Promise<string> {
   const systemPrompt = await getContentStyle()
 
+  // Tự tìm sản phẩm thực trong shop khớp với chủ đề → viết dựa trên SP thật + auto keywords
+  const related = await findRelatedProducts(task.title)
+  const productContext = related.length
+    ? `\nSản phẩm Japan VIP ĐANG BÁN liên quan tới chủ đề này — hãy viết DỰA TRÊN các sản phẩm thực dưới đây, nêu đúng tên + mã model, và chèn link nội bộ tới từng sản phẩm:
+${related.map(p => `- ${p.name}${p.brand?.name ? ` (hãng ${p.brand.name})` : ''} → https://store.japanvip.vn/san-pham/${p.slug}`).join('\n')}`
+    : ''
+
+  // Từ khóa SEO: nếu admin để trống → tự lấy từ tiêu đề + tên/model các sản phẩm liên quan
+  const keywords = (task.keywords ?? '').trim() ||
+    [task.title, ...related.slice(0, 5).map(p => p.name)].join(', ')
+
   let userPrompt = ''
 
   if (task.type === 'BLOG_POST') {
     userPrompt = `Viết bài blog hoàn chỉnh dạng HTML về chủ đề: "${task.title}"
 ${task.topic ? `\nMô tả thêm: ${task.topic}` : ''}
-${task.keywords ? `\nTừ khóa: ${task.keywords}` : ''}
+${`\nTừ khóa: ${keywords}`}${productContext}
 ${task.sourceUrl ? `\nTham khảo: ${task.sourceUrl}` : ''}
 
 Yêu cầu:
@@ -117,7 +128,7 @@ Yêu cầu:
   } else if (task.type === 'PRODUCT_DESCRIPTION') {
     userPrompt = `Viết mô tả sản phẩm hoàn chỉnh dạng HTML cho: "${task.title}"
 ${task.topic ? `\nThông tin sản phẩm: ${task.topic}` : ''}
-${task.keywords ? `\nTừ khóa SEO: ${task.keywords}` : ''}
+${`\nTừ khóa SEO: ${keywords}`}${productContext}
 
 Yêu cầu:
 - Viết bằng TIẾNG VIỆT hoàn toàn
@@ -125,10 +136,11 @@ Yêu cầu:
 - Trả về HTML thuần túy`
   } else if (task.type === 'FAQ') {
     userPrompt = `Tạo 10–15 câu FAQ tiếng Việt cho: "${task.title}"
-${task.topic ? `\nThông tin: ${task.topic}` : ''}
+${task.topic ? `\nThông tin: ${task.topic}` : ''}${productContext}
 Xuất ra JSON array: [{"name": "Câu hỏi?", "value": "Trả lời..."}]`
   } else {
     userPrompt = `Tạo SEO meta tiếng Việt cho: "${task.title}"
+Từ khóa gợi ý: ${keywords}
 Xuất ra JSON: {"title": "...", "description": "...", "keywords": [...], "slug": "..."}`
   }
 
@@ -163,6 +175,27 @@ Xuất ra JSON: {"title": "...", "description": "...", "keywords": [...], "slug"
   return (msg.content[0] as any).text ?? ''
 }
 
+
+// Tìm sản phẩm ACTIVE khớp với chủ đề (vd "Nồi cơm điện" → mọi nồi cơm điện đang bán)
+async function findRelatedProducts(title: string) {
+  const q = title.trim()
+  if (!q) return []
+  // Khớp cả cụm chủ đề lẫn từng từ chính (bỏ từ ngắn) để bắt rộng hơn
+  const words = q.split(/\s+/).filter(w => w.length >= 2)
+  const products = await prisma.product.findMany({
+    where: {
+      status: 'ACTIVE',
+      OR: [
+        { name: { contains: q, mode: 'insensitive' } },
+        ...(words.length > 1 ? [{ AND: words.map(w => ({ name: { contains: w, mode: 'insensitive' as const } })) }] : []),
+      ],
+    },
+    select: { name: true, slug: true, brand: { select: { name: true } } },
+    orderBy: { showOnHome: 'desc' },
+    take: 8,
+  })
+  return products
+}
 
 function slugify(text: string): string {
   return text
