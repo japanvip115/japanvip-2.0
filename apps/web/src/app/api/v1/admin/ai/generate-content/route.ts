@@ -174,6 +174,12 @@ const VI_ONLY_RULE = `\n\n🈲 BẮT BUỘC — NGÔN NGỮ:
 - Toàn bộ bài viết PHẢI bằng tiếng Việt. DỊCH hết nhãn thông số tiếng Nhật/tiếng Anh sang tiếng Việt (vd: 電圧→Điện áp, ワット数→Công suất, 容量→Dung tích).
 - KHÔNG để nguyên ký tự tiếng Nhật (kanji/kana) trong bài, trừ khi là tên model/mã sản phẩm.`
 
+// 🔒 Không để placeholder lộ "máy móc" trong thông số hiển thị cho khách. Rule đã chốt với chủ dự án 2026-06.
+const NO_PLACEHOLDER_RULE = `\n\n🚫 BẮT BUỘC — THÔNG SỐ SẠCH (khách đọc):
+- TUYỆT ĐỐI KHÔNG ghi các câu placeholder như: "Đang cập nhật theo model thực tế", "Cần Japan VIP xác nhận", "[ĐANG CẬP NHẬT]", "[CẦN JAPAN VIP XÁC NHẬN]", "đang cập nhật"...
+- Trường thông số nào KHÔNG có dữ liệu xác thực thì BỎ HẲN dòng/mục đó — không liệt kê ra.
+- Chỉ hiển thị các thông số có giá trị thật. Bảng thông số phải gọn, sạch, như do người biên tập viết.`
+
 function buildImageBlock(images: string[]): string {
   if (!images?.length) return ''
   const list = images.map((u, i) => `${i + 1}. ${u}`).join('\n')
@@ -224,8 +230,8 @@ Viết mô tả sản phẩm HTML gồm các phần rút gọn:
 4. Bảng thông số kỹ thuật — <table> HTML (chỉ điền trường có dữ liệu)
 5. Cam kết Japan VIP + CTA — Hotline 09.2729.8888
 
-⚠️ Chỉ dùng số liệu từ dữ liệu đầu vào. Thiếu thông số ghi [CẦN JAPAN VIP XÁC NHẬN].
-PHẢI hoàn thành trong giới hạn từ, không cắt giữa chừng.${buildImageBlock(images)}${VI_ONLY_RULE}${instruction}`
+⚠️ Chỉ dùng số liệu từ dữ liệu đầu vào. Thiếu thông số thì BỎ HẲN dòng đó, KHÔNG ghi placeholder.
+PHẢI hoàn thành trong giới hạn từ, không cắt giữa chừng.${buildImageBlock(images)}${VI_ONLY_RULE}${NO_PLACEHOLDER_RULE}${instruction}`
       }
 
       // Chế độ đầy đủ 14 section
@@ -237,9 +243,9 @@ Viết đầy đủ 14 section theo SEO Framework Japan VIP đã được địn
 - Cấu trúc heading: <h2> cho section, <h3> cho công nghệ và câu hỏi bên trong
 - Quy tắc dữ liệu: KHÔNG tự tạo số liệu dB, kWh, °C, % nếu không có trong dữ liệu đầu vào
 - Bảo hành: dùng "Bảo hành theo chính sách Japan VIP", KHÔNG dùng "bảo hành chính hãng"
-- So sánh model (Section 6): nếu thiếu dữ liệu ghi [CHƯA CÓ DỮ LIỆU SO SÁNH]
-- Thông số (Section 8): trường thiếu ghi "Đang cập nhật theo model thực tế"
-- Phải hoàn thành đủ 14 section, không cắt giữa chừng${buildImageBlock(images)}${VI_ONLY_RULE}${instruction}`
+- So sánh model (Section 6): nếu thiếu dữ liệu, BỎ section hoặc chỉ nêu định tính — KHÔNG ghi placeholder lộ máy móc
+- Thông số (Section 8): trường thiếu thì BỎ HẲN dòng đó, KHÔNG ghi "Đang cập nhật"
+- Phải hoàn thành đủ 14 section, không cắt giữa chừng${buildImageBlock(images)}${VI_ONLY_RULE}${NO_PLACEHOLDER_RULE}${instruction}`
     }
 
     case 'faq':
@@ -259,9 +265,9 @@ Tạo đầy đủ attributes sản phẩm theo JSON format trong system prompt:
 - quick: 6–8 thông số nhanh (chỉ điền trường có dữ liệu xác thực)
 - promo: 5–7 tính năng nổi bật
 - warranty: thông tin bảo hành (dùng "Bảo hành theo chính sách Japan VIP" nếu không có dữ liệu cụ thể)
-- specs: toàn bộ thông số kỹ thuật theo nhóm (trường thiếu ghi "Đang cập nhật")
+- specs: toàn bộ thông số kỹ thuật theo nhóm (trường thiếu thì BỎ HẲN, không thêm vào JSON)
 - faq: 5 câu hỏi thường gặp nhất
-Xuất JSON duy nhất, đúng format.${instruction}`
+Xuất JSON duy nhất, đúng format.${VI_ONLY_RULE}${NO_PLACEHOLDER_RULE}${instruction}`
 
     case 'seo':
       return `${HTML_ONLY}${base}

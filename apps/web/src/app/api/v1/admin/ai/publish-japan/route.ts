@@ -179,7 +179,9 @@ export async function POST(req: NextRequest) {
       })
     }
 
-    // 6. Lưu attributes (thông số + FAQ + promo)
+    // 6. Lưu attributes — CHỈ lưu thông số kỹ thuật (tab) + FAQ.
+    // 🔒 Khối bên PHẢI ([quick], [promo] "Tính năng nổi bật", [warranty]) do ADMIN tự thêm nội dung cứng —
+    // AI KHÔNG được tự điền (tránh phá bố cục trang). Rule đã chốt với chủ dự án 2026-06.
     const attrRows: Array<{ productId: string; name: string; value: string }> = []
 
     if (attributes) {
@@ -188,19 +190,7 @@ export async function POST(req: NextRequest) {
           ? JSON.parse(attributes.match(/```json\s*([\s\S]*?)```/)?.[1] ?? attributes)
           : attributes
 
-        // quick specs
-        for (const item of raw.quick ?? []) {
-          attrRows.push({ productId: product.id, name: `[quick]${item.name}`, value: item.value })
-        }
-        // promo
-        for (const item of raw.promo ?? []) {
-          attrRows.push({ productId: product.id, name: `[promo]${item.name ?? 'item'}`, value: item.value })
-        }
-        // warranty
-        for (const item of raw.warranty ?? []) {
-          attrRows.push({ productId: product.id, name: `[warranty]${item.name ?? 'item'}`, value: item.value })
-        }
-        // specs (grouped)
+        // specs (grouped) → tab "Thông số kỹ thuật". Bỏ qua quick/promo/warranty (khối phải = admin).
         for (const item of raw.specs ?? []) {
           const group = item.group ? `[group:${item.group}]` : ''
           attrRows.push({ productId: product.id, name: `${group}${item.name}`, value: item.value })

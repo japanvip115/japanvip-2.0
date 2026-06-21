@@ -114,6 +114,16 @@ async function scrapeAmazonJP(url: string) {
     if (key && val && !seen.has(key)) { seen.add(key); specs.push({ name: key, value: val }) }
   })
 
+  // Mọi bảng key-value của Amazon ("Product information" / 商品の情報) — chứa ワット数, 電圧,
+  // 定格消費電力, 周波数, Wattage, Voltage... (nguồn công suất + điện áp)
+  $('table.a-keyvalue tr, table.prodDetTable tr').each((_, tr) => {
+    const $tr = $(tr)
+    const key = ($tr.find('th').first().text() || $tr.find('td').first().text()).replace(/\s+/g, ' ').trim()
+    const tds = $tr.find('td')
+    const val = (tds.length > 1 ? tds.last() : tds.first()).text().replace(/\s+/g, ' ').trim()
+    if (key && val && key !== val && !seen.has(key)) { seen.add(key); specs.push({ name: key, value: val }) }
+  })
+
   // Ảnh sản phẩm — Amazon dùng JS để load ảnh, lấy từ data JSON trong script
   const images: string[] = []
 
