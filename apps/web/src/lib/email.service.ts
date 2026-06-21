@@ -68,10 +68,9 @@ function emailLayout(content: string): string {
 
         <!-- Header -->
         <tr>
-          <td style="background:#232f3e;padding:34px 32px 28px;text-align:center">
-            <span style="font-size:28px;font-weight:700;color:#ffffff;letter-spacing:0.5px;font-family:Georgia,'Times New Roman',serif">Japan</span><span style="font-size:28px;font-weight:400;color:#ff9900;letter-spacing:0.5px;font-family:Georgia,'Times New Roman',serif">VIP</span>
-            <div style="width:46px;height:1px;background:#ff9900;margin:14px auto 12px"></div>
-            <p style="margin:0;font-size:11px;color:#9aa7b5;letter-spacing:3px;text-transform:uppercase">Hàng nội địa Nhật Bản chính hãng</p>
+          <td style="background:#ffffff;padding:28px 32px 22px;text-align:center;border-bottom:1px solid #eceef1">
+            <img src="https://japanvip.vn/media/banner/logo_LOGO-&amp;-SLOGAN-.jpg" alt="Japan VIP — Hàng nội địa Nhật Bản chính hãng" width="210" style="display:inline-block;width:210px;max-width:70%;height:auto;border:0"/>
+            <div style="width:46px;height:1px;background:#ff9900;margin:16px auto 0"></div>
           </td>
         </tr>
 
