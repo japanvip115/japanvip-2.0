@@ -20,6 +20,11 @@ const ROLE_LEVEL: Record<string, number> = {
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl
 
+  // Affiliate attribution: ?ref=CODE → lưu cookie 30 ngày (last-click).
+  // Đơn hàng (quick/bfj) đọc cookie này để gán hoa hồng cho CTV.
+  const refParam = req.nextUrl.searchParams.get('ref')
+  const validRef = refParam && /^[A-Z0-9_-]{3,20}$/i.test(refParam) ? refParam.toUpperCase() : null
+
   for (const route of PROTECTED) {
     if (!route.pattern.test(pathname)) continue
 
@@ -56,14 +61,23 @@ export async function middleware(req: NextRequest) {
     }
   }
 
-  return NextResponse.next()
+  const res = NextResponse.next()
+  if (validRef) {
+    res.cookies.set('ref', validRef, {
+      maxAge: 60 * 60 * 24 * 30, // 30 ngày
+      httpOnly: true,
+      sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production',
+      path: '/',
+    })
+  }
+  return res
 }
 
 export const config = {
+  // Chạy trên mọi trang (để bắt ?ref= trên trang sản phẩm public) trừ asset tĩnh.
+  // RBAC vẫn chỉ áp dụng cho các prefix trong PROTECTED nên public page không tốn getToken.
   matcher: [
-    '/dashboard/:path*',
-    '/partner/:path*',
-    '/admin/:path*',
-    '/api/v1/:path*',
+    '/((?!_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|.*\\.[^/]+$).*)',
   ],
 }

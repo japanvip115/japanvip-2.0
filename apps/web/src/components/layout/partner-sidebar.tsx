@@ -8,6 +8,7 @@ const NAV_ITEMS = [
   { href: '/partner', label: 'Tổng Quan', icon: LayoutDashboard, exact: true },
   { href: '/partner/products', label: 'Sản Phẩm', icon: Package },
   { href: '/partner/auctions', label: 'Phiên Đấu Giá', icon: Gavel },
+  { href: '/partner/links', label: 'Link Giới Thiệu', icon: Link2 },
   { href: '/partner/commissions', label: 'Hoa Hồng', icon: Gift },
   { href: '/partner/revenue', label: 'Doanh Thu', icon: DollarSign },
 ]

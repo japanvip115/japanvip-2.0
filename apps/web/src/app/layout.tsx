@@ -4,6 +4,7 @@ import { getAllFontVariableClasses, getFontCssVar } from '@/lib/fonts'
 import { getActiveFont } from '@/lib/font-settings'
 import { ContentProtection } from '@/components/content-protection'
 import { Providers } from '@/components/providers'
+import { AffiliateClickTracker } from '@/components/affiliate/affiliate-click-tracker'
 import { prisma } from '@japanvip/db'
 
 // Reads site verification codes (Google / Bing / Facebook) from DB and injects meta tags
@@ -116,6 +117,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           </noscript>
         )}
         <ContentProtection enabled={contentProtectionEnabled} />
+        <AffiliateClickTracker />
         <Providers>{children}</Providers>
       </body>
     </html>
