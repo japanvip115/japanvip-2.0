@@ -20,13 +20,6 @@ const CONDITION_LABELS: Record<ProductCondition, string> = {
   NEW: 'Mới 100%', LIKE_NEW: 'Như mới', GOOD: 'Tốt', FAIR: 'Khá',
 }
 
-const CONDITION_COLORS: Record<ProductCondition, string> = {
-  NEW: 'bg-green-100 text-green-700',
-  LIKE_NEW: 'bg-blue-100 text-blue-700',
-  GOOD: 'bg-yellow-100 text-yellow-700',
-  FAIR: 'bg-gray-100 text-gray-600',
-}
-
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
   const product = await prisma.product.findUnique({
@@ -168,7 +161,7 @@ export default async function ProductDetailPage({ params }: Props) {
         </div>
       )}
 
-      <div className="grid grid-cols-1 gap-10 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:items-start">
         {/* Gallery */}
         <div className="mt-6">
           <ProductGallery
@@ -206,9 +199,6 @@ export default async function ProductDetailPage({ params }: Props) {
                 )}
               </Link>
             )}
-            <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${CONDITION_COLORS[product.condition as ProductCondition]}`}>
-              {CONDITION_LABELS[product.condition as ProductCondition]}
-            </span>
           </div>
 
           {/* Price */}
@@ -248,9 +238,28 @@ export default async function ProductDetailPage({ params }: Props) {
             ) : (
               <div>
                 <p className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Giá bán</p>
-                <span className="text-2xl font-bold text-brand-red">Liên hệ để biết giá</span>
+                <span className="text-sm font-bold text-brand-red">Liên hệ để biết giá</span>
               </div>
             )}
+          </div>
+
+          {/* Xuất xứ + Tình trạng — ngay dưới giá để khẳng định hàng mới */}
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-1.5 text-sm">
+            <div className="flex items-center gap-1.5">
+              <span className="font-semibold text-gray-600">Xuất xứ:</span>
+              <span className="font-medium text-gray-800">Nhật Bản</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <span className="font-semibold text-gray-600">Tình trạng:</span>
+              {product.condition === 'NEW' ? (
+                <span className="inline-flex items-center gap-1 font-bold text-emerald-600">
+                  <span className="text-emerald-500">✓</span>
+                  {CONDITION_LABELS[product.condition as ProductCondition]}
+                </span>
+              ) : (
+                <span className="font-medium text-gray-800">{CONDITION_LABELS[product.condition as ProductCondition]}</span>
+              )}
+            </div>
           </div>
 
           {/* Star rating */}
@@ -329,14 +338,6 @@ export default async function ProductDetailPage({ params }: Props) {
 
           {/* Product info summary */}
           <div className="rounded-xl border border-gray-100 bg-gray-50 divide-y divide-gray-100 text-sm">
-            <div className="flex gap-2 px-4 py-2.5">
-              <span className="w-28 shrink-0 font-semibold text-gray-600">Xuất xứ:</span>
-              <span className="text-gray-800">Nhật Bản</span>
-            </div>
-            <div className="flex gap-2 px-4 py-2.5">
-              <span className="w-28 shrink-0 font-semibold text-gray-600">Tình trạng:</span>
-              <span className="text-gray-800">{CONDITION_LABELS[product.condition as ProductCondition]}</span>
-            </div>
             {quickItems.filter(q => q.name.toLowerCase().includes('điện áp') || q.name.toLowerCase().includes('dien ap')).map(q => (
               <div key={q.id} className="flex gap-2 px-4 py-2.5">
                 <span className="w-28 shrink-0 font-semibold text-gray-600">Điện áp:</span>
@@ -367,16 +368,15 @@ export default async function ProductDetailPage({ params }: Props) {
                 * Bảo hành trực tiếp tại nhà – khu vực Hà Nội và TP. Hồ Chí Minh
               </div>
             )}
-          </div>
-
-          {/* Giao hàng */}
-          <div className="flex items-start gap-3 rounded-xl border border-gray-100 bg-gray-50 px-4 py-3">
-            <span className="text-3xl shrink-0">🚚</span>
-            <ul className="space-y-1 text-sm text-gray-700">
-              <li className="flex items-center gap-1.5"><span className="text-blue-400">✔</span> Giao hàng trong 2 giờ (HN &amp; TP. HCM)</li>
-              <li className="flex items-center gap-1.5"><span className="text-blue-400">✔</span> Miễn phí ship toàn quốc</li>
-              <li className="flex items-center gap-1.5"><span className="text-blue-400">✔</span> Hướng dẫn sử dụng sản phẩm tại nhà</li>
-            </ul>
+            {/* Giao hàng — gộp chung ô */}
+            <div className="flex items-start gap-3 px-4 py-3">
+              <span className="text-3xl shrink-0">🚚</span>
+              <ul className="space-y-1 text-sm text-gray-700">
+                <li className="flex items-center gap-1.5"><span className="text-blue-400">✔</span> Giao hàng trong 2 giờ (HN &amp; TP. HCM)</li>
+                <li className="flex items-center gap-1.5"><span className="text-blue-400">✔</span> Miễn phí ship toàn quốc</li>
+                <li className="flex items-center gap-1.5"><span className="text-blue-400">✔</span> Hướng dẫn sử dụng sản phẩm tại nhà</li>
+              </ul>
+            </div>
           </div>
 
           {/* CTA buttons */}
@@ -411,7 +411,7 @@ export default async function ProductDetailPage({ params }: Props) {
             >
               <svg className="h-5 w-5 shrink-0 text-brand-red" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M2 6.5C2 14.508 9.492 22 17.5 22c.98 0 1.863-.14 2.668-.386a1 1 0 00.63-.593l1.5-4a1 1 0 00-.298-1.1l-2.5-2a1 1 0 00-1.173-.044l-1.5 1A9.956 9.956 0 0111.12 9.12l1-1.5a1 1 0 00-.044-1.173l-2-2.5a1 1 0 00-1.1-.298l-4 1.5a1 1 0 00-.593.63C2.14 6.637 2 7.52 2 6.5z"/></svg>
               <div className="flex items-center gap-2">
-                <p className="text-xs font-semibold text-gray-500">Hotline tư vấn:</p>
+                <p className="text-xs font-semibold text-gray-500">Hotline:</p>
                 <p className="text-base font-bold text-gray-900 group-hover:text-brand-red transition">0988.969.896</p>
               </div>
             </a>
@@ -419,33 +419,56 @@ export default async function ProductDetailPage({ params }: Props) {
             {/* Divider */}
             <div className="text-gray-200 text-lg select-none">|</div>
 
-            {/* Share */}
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-gray-400 shrink-0">Chia sẻ:</span>
+            {/* Share — kiểu Shopee */}
+            <div className="flex items-center gap-1.5 shrink-0">
+              <span className="text-sm text-gray-500 shrink-0">Chia sẻ:</span>
+              {/* Messenger */}
+              <a
+                href={`fb-messenger://share/?link=${encodeURIComponent(`https://store.japanvip.vn/${product.slug}`)}`}
+                target="_blank" rel="noopener noreferrer" title="Chia sẻ Messenger"
+                className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-[#00B2FF] to-[#006AFF] text-white hover:opacity-90 transition"
+              >
+                <svg className="h-4 w-4 fill-current" viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.14 2 11.25c0 2.88 1.4 5.45 3.6 7.13V22l3.3-1.81c.88.24 1.82.37 2.8.37 5.5 0 10-4.14 10-9.25S17.5 2 12 2zm1 12.46l-2.55-2.72-4.97 2.72 5.47-5.81 2.61 2.72 4.91-2.72-5.47 5.81z"/></svg>
+              </a>
+              {/* Facebook */}
               <a
                 href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(`https://store.japanvip.vn/${product.slug}`)}`}
-                target="_blank" rel="noopener noreferrer"
-                title="Chia sẻ Facebook"
-                className="flex h-9 w-9 items-center justify-center rounded-full bg-[#1877F2] text-white hover:opacity-90 transition shadow-sm"
+                target="_blank" rel="noopener noreferrer" title="Chia sẻ Facebook"
+                className="flex h-7 w-7 items-center justify-center rounded-full bg-[#1877F2] text-white hover:opacity-90 transition"
               >
                 <svg className="h-4 w-4 fill-current" viewBox="0 0 24 24"><path d="M24 12.073C24 5.404 18.627 0 12 0S0 5.404 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.41c0-3.025 1.791-4.697 4.533-4.697 1.313 0 2.686.235 2.686.235v2.97h-1.514c-1.491 0-1.956.93-1.956 1.874v2.25h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/></svg>
               </a>
+              {/* Pinterest */}
               <a
-                href="https://zalo.me/0988969896"
-                target="_blank" rel="noopener noreferrer"
-                title="Liên hệ Zalo"
-                className="flex h-9 w-9 items-center justify-center rounded-full bg-[#0068FF] text-white hover:opacity-90 transition shadow-sm text-xs font-extrabold tracking-tight"
+                href={`https://pinterest.com/pin/create/button/?url=${encodeURIComponent(`https://store.japanvip.vn/${product.slug}`)}&media=${encodeURIComponent(product.images[0]?.url ?? '')}&description=${encodeURIComponent(product.name)}`}
+                target="_blank" rel="noopener noreferrer" title="Chia sẻ Pinterest"
+                className="flex h-7 w-7 items-center justify-center rounded-full bg-[#E60023] text-white hover:opacity-90 transition"
               >
-                Zalo
+                <svg className="h-4 w-4 fill-current" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12c0 4.24 2.64 7.86 6.36 9.32-.09-.79-.17-2.01.03-2.88.18-.78 1.17-4.97 1.17-4.97s-.3-.6-.3-1.48c0-1.39.81-2.43 1.81-2.43.85 0 1.27.64 1.27 1.41 0 .86-.55 2.14-.83 3.33-.24 1 .5 1.81 1.48 1.81 1.78 0 3.15-1.88 3.15-4.58 0-2.4-1.72-4.07-4.18-4.07-2.85 0-4.52 2.13-4.52 4.34 0 .86.33 1.78.74 2.28.08.1.09.19.07.29-.08.31-.25.99-.28 1.13-.04.18-.15.22-.34.13-1.25-.58-2.03-2.4-2.03-3.87 0-3.15 2.29-6.04 6.6-6.04 3.47 0 6.16 2.47 6.16 5.77 0 3.45-2.17 6.22-5.19 6.22-1.01 0-1.97-.53-2.29-1.15l-.62 2.37c-.23.86-.83 1.95-1.24 2.61.93.29 1.92.44 2.95.44 5.52 0 10-4.48 10-10S17.52 2 12 2z"/></svg>
               </a>
+              {/* X */}
+              <a
+                href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(`https://store.japanvip.vn/${product.slug}`)}&text=${encodeURIComponent(product.name)}`}
+                target="_blank" rel="noopener noreferrer" title="Chia sẻ X (Twitter)"
+                className="flex h-7 w-7 items-center justify-center rounded-full bg-black text-white hover:opacity-90 transition"
+              >
+                <svg className="h-3.5 w-3.5 fill-current" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+              </a>
+              {/* Divider */}
+              <div className="mx-1 h-5 w-px bg-gray-200" />
+              {/* Yêu thích */}
+              <span className="flex items-center gap-1 text-sm text-gray-500">
+                <svg className="h-4 w-4 fill-none stroke-current text-brand-red" strokeWidth="2" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                Yêu thích
+              </span>
             </div>
           </div>
+
         </div>
       </div>
 
       {/* Content + Sidebar layout */}
-      <div className="mt-12 grid grid-cols-1 gap-8 lg:grid-cols-[1fr_300px] lg:items-start">
-
+      <div className="-mt-8 grid grid-cols-1 gap-8 lg:grid-cols-[1fr_300px] lg:items-start">
         {/* Main content: Tabs */}
         <div className="min-w-0">
           <ProductTabs
@@ -459,41 +482,8 @@ export default async function ProductDetailPage({ params }: Props) {
           />
         </div>
 
-        {/* Sidebar */}
-        <aside className="space-y-4 lg:sticky lg:top-24">
-
-          {/* Liên hệ */}
-          <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm space-y-3">
-            <p className="text-xs font-bold uppercase tracking-widest text-gray-400">Liên hệ tư vấn</p>
-            <a href="tel:09272988888" className="flex items-center gap-3 group">
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-50 text-brand-red">
-                <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M2 6.5C2 14.508 9.492 22 17.5 22c.98 0 1.863-.14 2.668-.386a1 1 0 00.63-.593l1.5-4a1 1 0 00-.298-1.1l-2.5-2a1 1 0 00-1.173-.044l-1.5 1A9.956 9.956 0 0111.12 9.12l1-1.5a1 1 0 00-.044-1.173l-2-2.5a1 1 0 00-1.1-.298l-4 1.5a1 1 0 00-.593.63C2.14 6.637 2 7.52 2 6.5z"/></svg>
-              </span>
-              <div>
-                <p className="text-xs text-gray-400">Hotline</p>
-                <p className="text-base font-bold text-gray-900 group-hover:text-brand-red transition">09.2729.8888</p>
-              </div>
-            </a>
-            <a href="tel:0988969896" className="flex items-center gap-3 group">
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-50 text-brand-red">
-                <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M2 6.5C2 14.508 9.492 22 17.5 22c.98 0 1.863-.14 2.668-.386a1 1 0 00.63-.593l1.5-4a1 1 0 00-.298-1.1l-2.5-2a1 1 0 00-1.173-.044l-1.5 1A9.956 9.956 0 0111.12 9.12l1-1.5a1 1 0 00-.044-1.173l-2-2.5a1 1 0 00-1.1-.298l-4 1.5a1 1 0 00-.593.63C2.14 6.637 2 7.52 2 6.5z"/></svg>
-              </span>
-              <div>
-                <p className="text-xs text-gray-400">Di động</p>
-                <p className="text-base font-bold text-gray-900 group-hover:text-brand-red transition">0988.969.896</p>
-              </div>
-            </a>
-            <div className="flex gap-2 pt-1">
-              <a href="https://zalo.me/0988969896" target="_blank" rel="noopener noreferrer"
-                className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-[#0068FF] py-2.5 text-sm font-bold text-white hover:opacity-90 transition">
-                Zalo
-              </a>
-              <a href="https://www.facebook.com/japanvip" target="_blank" rel="noopener noreferrer"
-                className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-[#1877F2] py-2.5 text-sm font-bold text-white hover:opacity-90 transition">
-                Facebook
-              </a>
-            </div>
-          </div>
+        {/* Sidebar — chính sách + showroom + sản phẩm liên quan */}
+        <aside className="space-y-4 lg:mt-12 lg:sticky lg:top-24">
 
           {/* Chính sách bán hàng */}
           <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
@@ -534,7 +524,7 @@ export default async function ProductDetailPage({ params }: Props) {
             </div>
           </div>
 
-          {/* Placeholder sản phẩm — sẽ thêm sau */}
+          {/* Sản phẩm liên quan */}
           {relatedProducts.length > 0 && (
             <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
               <p className="mb-3 text-xs font-bold uppercase tracking-widest text-gray-400">Sản phẩm liên quan</p>
