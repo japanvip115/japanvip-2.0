@@ -10,7 +10,7 @@ type ProductWithRelations = Product & {
 }
 
 const BADGE_CONFIG: Record<string, { label: string; cls: string }> = {
-  NEW_ARRIVAL: { label: '🆕 Mới',        cls: 'bg-red-600 text-white' },
+  NEW_ARRIVAL: { label: 'Mới Về',        cls: 'bg-red-600 text-white' },
   SOLD_OUT:    { label: 'Hết Hàng',      cls: 'bg-gray-600 text-white' },
   ORDER_ONLY:  { label: '📦 Hàng Order', cls: 'bg-amber-500 text-white' },
 }
@@ -36,7 +36,7 @@ export function ProductCard({ product }: { product: ProductWithRelations }) {
             <div className="flex h-full items-center justify-center text-5xl text-gray-200">📦</div>
           )}
           {badge && (
-            <span className={`absolute left-2 top-2 rounded-full px-2.5 py-0.5 text-xs font-semibold shadow-sm ${badge.cls}`}>
+            <span className={`absolute left-3 top-3 rounded-full px-1.5 py-[2px] text-[0.55rem] font-bold uppercase tracking-[0.08em] ${badge.cls}`}>
               {badge.label}
             </span>
           )}

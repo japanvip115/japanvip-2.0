@@ -43,8 +43,8 @@ export function ProductGallery({ images, productName }: { images: GalleryImage[]
             <button
               key={img.id}
               onClick={() => setActive(img)}
-              className={`relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg border-2 transition ${
-                active?.id === img.id ? 'border-brand-red' : 'border-gray-200 hover:border-gray-400'
+              className={`relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg border-2 border-solid bg-gray-50 shadow-sm transition ${
+                active?.id === img.id ? 'border-brand-red' : 'border-red-200 hover:border-brand-red'
               }`}
             >
               <Image src={img.url} alt={img.altText ?? ''} fill className="object-cover" sizes="64px" />

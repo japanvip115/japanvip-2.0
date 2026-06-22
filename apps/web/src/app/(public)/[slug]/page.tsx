@@ -11,6 +11,8 @@ import { RelatedProducts } from '@/components/product/related-products'
 import { RecentlyViewed } from '@/components/product/recently-viewed'
 import { AuctionCard } from '@/components/auction/auction-card'
 import { AddToCartButtons } from '@/components/product/add-to-cart-buttons'
+import { PreOrderLeadCapture } from '@/components/product/pre-order-lead-capture'
+import { getActiveExchangeRate } from '@/modules/bfj/services/exchange-rate.service'
 import type { ProductCondition } from '@japanvip/db'
 import { formatVND } from '@japanvip/utils'
 
@@ -82,6 +84,27 @@ export default async function ProductDetailPage({ params }: Props) {
   if (!product) notFound()
 
   const liveAuction = product.auctions.find((a) => a.status === 'LIVE')
+
+  // Nội dung khối phải (admin tự sửa: Cài đặt → Nội dung trang sản phẩm)
+  const contentSettings = await prisma.siteSetting.findMany({ where: { key: { in: ['product.commitments', 'product.shipping_notes'] } } })
+  const splitLines = (s: string | undefined, fallback: string) => (s ?? fallback).split('\n').map((l) => l.trim()).filter(Boolean)
+  const commitmentLines = splitLines(contentSettings.find((r) => r.key === 'product.commitments')?.value, 'Hàng nội địa Nhật Bản mới 100%, nguyên hộp\nNhập khẩu trực tiếp, có tem nhập khẩu đầy đủ\nMiễn phí vận chuyển toàn quốc')
+  const shippingLines = splitLines(contentSettings.find((r) => r.key === 'product.shipping_notes')?.value, 'Giao hàng trong 2 giờ (HN & TP. HCM)\nMiễn phí ship toàn quốc\nHướng dẫn sử dụng sản phẩm tại nhà')
+
+  // ── Pre Order (lead-gen): hàng ORDER_ONLY hiện giá Nhật, ẩn giá VN tới khi khách đăng nhập ──
+  const isLoggedIn = !!session?.user
+  const isPreOrder = product.badge === 'ORDER_ONLY'
+  const japanPriceJpy = (() => {
+    const raw = product.attributes.find((a) => a.name === '[japan_price]')?.value
+    const n = raw ? parseInt(raw.replace(/[^0-9]/g, ''), 10) : NaN
+    return Number.isFinite(n) && n > 0 ? n : null
+  })()
+  let japanPriceVnd: number | null = null
+  if (isPreOrder && japanPriceJpy && !isLoggedIn) {
+    const rate = await getActiveExchangeRate()
+    japanPriceVnd = Math.round(japanPriceJpy * rate.rate)
+  }
+  const showPreOrderGate = isPreOrder && !isLoggedIn && !!japanPriceJpy
 
   // Fetch related products: same category first, fallback to other active products
   const relatedSelect = {
@@ -202,6 +225,7 @@ export default async function ProductDetailPage({ params }: Props) {
           </div>
 
           {/* Price */}
+          {isPreOrder && isLoggedIn && <PreOrderLeadCapture />}
           <div className="py-3 border-y border-gray-100">
             {liveAuction ? (
               <div>
@@ -214,6 +238,21 @@ export default async function ProductDetailPage({ params }: Props) {
                   </span>
                 </div>
                 <p className="mt-1 text-xs text-gray-400">{liveAuction.bidCount} lượt đặt giá</p>
+              </div>
+            ) : showPreOrderGate ? (
+              <div>
+                <p className="mb-1 text-xs font-bold uppercase tracking-wide text-gray-500">Giá tham khảo tại Nhật</p>
+                <div className="flex items-baseline gap-2">
+                  <span className="text-3xl font-bold text-gray-700">¥{japanPriceJpy!.toLocaleString('ja-JP')}</span>
+                  {japanPriceVnd && <span className="text-base text-gray-400">(~{formatVND(japanPriceVnd)})</span>}
+                </div>
+                <Link
+                  href={`/login?callbackUrl=${encodeURIComponent('/' + product.slug)}`}
+                  className="mt-3 inline-flex items-center gap-2 rounded-xl bg-brand-red px-5 py-2.5 text-sm font-bold text-white transition hover:bg-red-600"
+                >
+                  🔓 Đăng nhập để xem giá tại Việt Nam
+                </Link>
+                <p className="mt-2 text-xs text-gray-400">Giá tại VN đã gồm thuế nhập khẩu, vận chuyển &amp; bảo hành chính hãng.</p>
               </div>
             ) : product.salePrice ? (
               <div>
@@ -294,20 +333,14 @@ export default async function ProductDetailPage({ params }: Props) {
             </div>
           )}
 
-          {/* Short bullets */}
+          {/* Short bullets — admin sửa ở Cài đặt → Nội dung trang sản phẩm */}
           <ul className="space-y-1.5 text-sm font-semibold text-gray-700">
-            <li className="flex items-start gap-2">
-              <span className="mt-0.5 text-green-500">✓</span>
-              Hàng nội địa Nhật Bản mới 100%, nguyên hộp
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="mt-0.5 text-green-500">✓</span>
-              Nhập khẩu trực tiếp, có tem nhập khẩu đầy đủ
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="mt-0.5 text-green-500">✓</span>
-              Miễn phí vận chuyển toàn quốc
-            </li>
+            {commitmentLines.map((line, i) => (
+              <li key={i} className="flex items-start gap-2">
+                <span className="mt-0.5 text-green-500">✓</span>
+                {line}
+              </li>
+            ))}
           </ul>
 
           {/* Quà tặng box */}
@@ -372,9 +405,9 @@ export default async function ProductDetailPage({ params }: Props) {
             <div className="flex items-start gap-3 px-4 py-3">
               <span className="text-3xl shrink-0">🚚</span>
               <ul className="space-y-1 text-sm text-gray-700">
-                <li className="flex items-center gap-1.5"><span className="text-blue-400">✔</span> Giao hàng trong 2 giờ (HN &amp; TP. HCM)</li>
-                <li className="flex items-center gap-1.5"><span className="text-blue-400">✔</span> Miễn phí ship toàn quốc</li>
-                <li className="flex items-center gap-1.5"><span className="text-blue-400">✔</span> Hướng dẫn sử dụng sản phẩm tại nhà</li>
+                {shippingLines.map((line, i) => (
+                  <li key={i} className="flex items-center gap-1.5"><span className="text-blue-400">✔</span> {line}</li>
+                ))}
               </ul>
             </div>
           </div>

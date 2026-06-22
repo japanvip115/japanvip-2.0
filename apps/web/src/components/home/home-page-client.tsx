@@ -258,7 +258,7 @@ function MixedSlider({
               onClick={() => router.push(`/${p.slug}`)}
             >
               {p.badge === 'ORDER_ONLY' && <div className="auction-badge-live" style={{fontSize:'0.55rem', padding:'2px 6px'}}>PRE ORDER</div>}
-              {p.badge === 'NEW_ARRIVAL' && <div className="auction-badge-live" style={{fontSize:'0.55rem', padding:'2px 6px', background:'rgba(220,38,38,0.9)'}}>MỚI</div>}
+              {p.badge === 'NEW_ARRIVAL' && <div className="auction-badge-live" style={{fontSize:'0.55rem', fontWeight:700, padding:'2px 6px', background:'rgba(220,38,38,0.9)', letterSpacing:'0.08em'}}>MỚI VỀ</div>}
               {p.badge === 'SOLD_OUT' && <div className="auction-badge-live" style={{fontSize:'0.55rem', padding:'2px 6px', background:'#6b7280'}}>ĐÃ BÁN</div>}
               <div className="auction-img">
                 {p.images[0]

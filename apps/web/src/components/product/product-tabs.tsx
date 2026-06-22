@@ -224,6 +224,13 @@ function SpecsTable({ attributes, specGroups }: { attributes: Attribute[]; specG
 
 // ── Videos Section ────────────────────────────────────────────────────────────
 function VideosSection({ items }: { items: Attribute[] }) {
+  if (items.length === 0) {
+    return (
+      <div className="p-8 text-center text-sm text-gray-400">
+        Chưa có video thực tế cho sản phẩm này.
+      </div>
+    )
+  }
   return (
     <div className="p-6 lg:p-8">
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
@@ -284,7 +291,7 @@ export function ProductTabs({
   const tabs: { key: TabKey; label: string; show: boolean }[] = [
     { key: 'desc',   label: 'Mô tả sản phẩm',       show: hasDesc },
     { key: 'specs',  label: 'Thông số kỹ thuật',     show: true },
-    { key: 'videos', label: `Video (${videoItems.length})`, show: hasVideos },
+    { key: 'videos', label: 'Video thực tế', show: true },
     { key: 'faq',    label: `Hỏi & Đáp (${faqItems.length})`, show: hasFaq },
   ]
 
@@ -314,7 +321,7 @@ export function ProductTabs({
         {/* Tab content */}
         {tab === 'desc'   && hasDesc   && <ProductDescription description={description!} />}
         {tab === 'specs'  && <SpecsTable attributes={attributes} specGroups={specGroups} />}
-        {tab === 'videos' && hasVideos && <VideosSection items={videoItems} />}
+        {tab === 'videos' && <VideosSection items={videoItems} />}
         {tab === 'faq'    && hasFaq    && (
           <div className="py-2">
             <FaqAccordion items={faqItems} />

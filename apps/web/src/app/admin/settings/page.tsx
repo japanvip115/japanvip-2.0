@@ -23,6 +23,7 @@ const GROUPS: { title: string; icon: string; items: SettingItem[] }[] = [
       { href: '/admin/settings/typography',       icon: '🔤', title: 'Typography & Font',         desc: 'Chọn font chữ toàn trang' },
       { href: '/admin/settings/homepage',         icon: '🏠', title: 'Nội Dung Trang Chủ',        desc: 'Tiêu đề, mô tả, nút CTA trang chủ' },
       { href: '/admin/settings/products-banner',  icon: '🖼️', title: 'Banner Sản Phẩm',           desc: 'Banner đầu trang /san-pham' },
+      { href: '/admin/settings/product-content',  icon: '📄', title: 'Nội Dung Trang Sản Phẩm',   desc: 'Dòng cam kết + ô giao hàng bên phải trang SP', badge: 'Mới', badgeColor: 'blue' },
       { href: '/admin/settings/testimonials',     icon: '⭐', title: 'Đánh Giá Khách Hàng',      desc: 'Thêm, sửa, ẩn/hiện đánh giá trang chủ' },
       { href: '/admin/settings/logo-templates',   icon: '🎭', title: 'Logo Templates',             desc: 'Mẫu logo & watermark sản phẩm' },
     ],
