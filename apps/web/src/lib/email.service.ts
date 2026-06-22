@@ -53,6 +53,31 @@ function createTransport(cfg: SmtpConfig) {
   })
 }
 
+// ── Kill-switch email tự động/hàng loạt ───────────────────────────────────────
+// Công tắc tổng (Admin → Subscriber). Khi TẮT: chặn welcome/newsletter/win-back/digest/
+// bỏ giỏ hàng/post-purchase — TRÁNH lỡ gửi hàng loạt khi test/lỗi hệ thống.
+// KHÔNG chặn email giao dịch (OTP đăng nhập, xác nhận đơn/đấu giá, báo giá) → khách vẫn dùng được.
+export const EMAIL_AUTOSEND_KEY = 'email_auto_send_enabled'
+let _autoSendCache: { val: boolean; at: number } | null = null
+export async function isAutoSendEnabled(): Promise<boolean> {
+  const now = Date.now()
+  if (_autoSendCache && now - _autoSendCache.at < 5000) return _autoSendCache.val
+  try {
+    const s = await prisma.siteSetting.findUnique({ where: { key: EMAIL_AUTOSEND_KEY } })
+    const val = s?.value !== 'false' // mặc định BẬT; chỉ TẮT khi value === 'false'
+    _autoSendCache = { val, at: now }
+    return val
+  } catch {
+    return true // lỗi đọc setting → mặc định cho gửi (không chặn nhầm giao dịch)
+  }
+}
+// Gọi đầu mỗi hàm gửi tự động/hàng loạt: trả true nếu BỊ CHẶN (nên dừng, không gửi).
+async function autoSendBlocked(label: string): Promise<boolean> {
+  if (await isAutoSendEnabled()) return false
+  console.warn(`[email] auto-send OFF — bỏ qua "${label}"`)
+  return true
+}
+
 const fmtVND = (n: number) => n.toLocaleString('vi-VN') + '&#8363;'
 
 const BRAND_RED = '#e60012'
@@ -144,6 +169,7 @@ function unsubscribeNote(unsubscribeUrl: string): string {
 // ─── Welcome (chào mừng) ─────────────────────────────────────────────────────
 
 export async function sendWelcomeEmail(opts: { email: string; fullName: string; unsubscribeUrl: string }) {
+  if (await autoSendBlocked('welcome')) return
   const cfg = await getSmtpConfig()
   const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://store.japanvip.vn'
   const { email, fullName, unsubscribeUrl } = opts
@@ -223,6 +249,7 @@ function productGrid(products: MailProduct[], appUrl: string): string {
 type CartLine = { slug: string; name: string; image: string | null; priceVnd: number | null; quantity: number }
 
 export async function sendAbandonedCartEmail(opts: { email: string; fullName: string; items: CartLine[]; unsubscribeUrl: string }) {
+  if (await autoSendBlocked('abandoned-cart')) return
   const cfg = await getSmtpConfig()
   const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://store.japanvip.vn'
   const { email, fullName, items, unsubscribeUrl } = opts
@@ -270,6 +297,7 @@ function fillPlaceholders(html: string, vars: { ten: string; unsubscribe: string
 }
 
 export async function sendNewsletterEmail(opts: { email: string; fullName: string; subject: string; bodyHtml: string; unsubscribeUrl: string; raw?: boolean }) {
+  if (await autoSendBlocked('newsletter')) return
   const cfg = await getSmtpConfig()
   const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://store.japanvip.vn'
   const { email, fullName, subject, bodyHtml, unsubscribeUrl, raw } = opts
@@ -303,6 +331,7 @@ export async function sendPostPurchaseEmail(opts: {
   crossSell: MailProduct[]
   unsubscribeUrl?: string
 }) {
+  if (await autoSendBlocked('post-purchase')) return
   const cfg = await getSmtpConfig()
   const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://store.japanvip.vn'
   const { email, fullName, productName, productSlug, crossSell, unsubscribeUrl } = opts
@@ -343,6 +372,7 @@ export async function sendPostPurchaseEmail(opts: {
 // ─── Win-back (kéo khách quay lại) ───────────────────────────────────────────
 
 export async function sendWinbackEmail(opts: { email: string; fullName: string; unsubscribeUrl: string; products: MailProduct[] }) {
+  if (await autoSendBlocked('win-back')) return
   const cfg = await getSmtpConfig()
   const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://store.japanvip.vn'
   const { email, fullName, unsubscribeUrl, products } = opts
@@ -371,6 +401,7 @@ export async function sendWinbackEmail(opts: { email: string; fullName: string; 
 // ─── Digest "Hàng mới về" (định kỳ) ──────────────────────────────────────────
 
 export async function sendDigestEmail(opts: { email: string; fullName: string; unsubscribeUrl: string; products: MailProduct[]; auctions: MailAuction[] }) {
+  if (await autoSendBlocked('digest')) return
   const cfg = await getSmtpConfig()
   const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://store.japanvip.vn'
   const { email, fullName, unsubscribeUrl, products, auctions } = opts

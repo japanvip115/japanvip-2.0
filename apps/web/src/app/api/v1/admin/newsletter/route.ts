@@ -5,7 +5,7 @@ import { prisma } from '@japanvip/db'
 import { auth } from '@/lib/auth'
 import { hasRole } from '@/lib/auth-types'
 import { apiSuccess, apiError, handleApiError } from '@/lib/api-response'
-import { sendNewsletterEmail } from '@/lib/email.service'
+import { sendNewsletterEmail, isAutoSendEnabled } from '@/lib/email.service'
 import { ensureUnsubscribeToken, buildUnsubscribeUrl } from '@/lib/marketing.service'
 
 export const maxDuration = 60
@@ -26,6 +26,11 @@ type Recipient = { id: string | null; email: string; fullName: string | null; ty
 export async function POST(req: NextRequest) {
   const session = await auth()
   if (!session?.user || !hasRole((session.user as any).role, 'ADMIN')) return apiError('Unauthorized', 401)
+
+  // Kill-switch: chặn gửi hàng loạt khi đang test/lỗi
+  if (!(await isAutoSendEnabled())) {
+    return apiError('🔴 Email tự động đang TẮT. Bật lại ở trang Subscriber để gửi newsletter.', 423)
+  }
 
   try {
     const { subject, bodyHtml, campaignId: cid, raw, audience = 'all' } = schema.parse(await req.json())

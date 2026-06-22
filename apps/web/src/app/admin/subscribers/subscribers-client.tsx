@@ -45,6 +45,35 @@ export function SubscribersClient() {
   const [addLoading, setAddLoading] = useState(false)
   const [addError, setAddError] = useState('')
 
+  // Công tắc tổng email tự động/hàng loạt (chặn welcome/newsletter/win-back... khi test/lỗi)
+  const [autoSend, setAutoSend] = useState<boolean | null>(null)
+  const [togglingAutoSend, setTogglingAutoSend] = useState(false)
+
+  useEffect(() => {
+    fetch('/api/v1/admin/settings/email-auto-send')
+      .then((r) => r.json())
+      .then((j) => { if (j.success) setAutoSend(j.data.enabled) })
+      .catch(() => {})
+  }, [])
+
+  async function toggleAutoSend() {
+    if (autoSend === null || togglingAutoSend) return
+    const next = !autoSend
+    if (next && !confirm('Bật lại GỬI EMAIL TỰ ĐỘNG? Hệ thống sẽ được phép gửi welcome/newsletter/win-back... cho subscriber.')) return
+    setTogglingAutoSend(true)
+    try {
+      const res = await fetch('/api/v1/admin/settings/email-auto-send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ enabled: next }),
+      })
+      const j = await res.json()
+      if (j.success) setAutoSend(j.data.enabled)
+    } finally {
+      setTogglingAutoSend(false)
+    }
+  }
+
   const fetchData = useCallback(async () => {
     setLoading(true)
     try {
@@ -160,6 +189,46 @@ export function SubscribersClient() {
           </button>
         </div>
       </div>
+
+      {/* Công tắc tổng email tự động/hàng loạt */}
+      {autoSend !== null && (
+        <div
+          className={`rounded-xl border p-4 flex items-center justify-between gap-4 flex-wrap ${
+            autoSend
+              ? 'border-green-500/30 bg-green-500/10'
+              : 'border-red-500/40 bg-red-500/15'
+          }`}
+        >
+          <div className="flex items-start gap-3">
+            <span className="text-2xl leading-none">{autoSend ? '📧' : '🔴'}</span>
+            <div>
+              <p className={`text-sm font-bold ${autoSend ? 'text-green-300' : 'text-red-300'}`}>
+                {autoSend ? 'Email tự động: ĐANG BẬT' : 'Email tự động: ĐÃ TẮT (an toàn)'}
+              </p>
+              <p className="text-xs text-gray-400 mt-0.5 max-w-xl">
+                {autoSend
+                  ? 'Hệ thống được phép tự gửi welcome / newsletter / win-back / digest cho subscriber. Tắt khi đang test hoặc nghi lỗi để tránh gửi nhầm hàng loạt.'
+                  : 'Mọi email tự động/hàng loạt đang bị chặn — an toàn để test. (OTP đăng nhập & xác nhận đơn vẫn chạy bình thường.)'}
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={toggleAutoSend}
+            disabled={togglingAutoSend}
+            className={`relative inline-flex h-8 w-14 shrink-0 items-center rounded-full transition-colors disabled:opacity-50 ${
+              autoSend ? 'bg-green-500' : 'bg-gray-600'
+            }`}
+            aria-label="Bật/tắt email tự động"
+            title={autoSend ? 'Tắt email tự động' : 'Bật email tự động'}
+          >
+            <span
+              className={`inline-block h-6 w-6 transform rounded-full bg-white shadow transition-transform ${
+                autoSend ? 'translate-x-7' : 'translate-x-1'
+              }`}
+            />
+          </button>
+        </div>
+      )}
 
       {/* Import result banner */}
       {importResult && (
