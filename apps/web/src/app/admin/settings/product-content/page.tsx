@@ -1,8 +1,9 @@
 import { prisma } from '@japanvip/db'
 import { ProductContentSettings } from '@/components/admin/product-content-settings'
 
-export const DEFAULT_COMMITMENTS = 'Hàng nội địa Nhật Bản mới 100%, nguyên hộp\nNhập khẩu trực tiếp, có tem nhập khẩu đầy đủ\nMiễn phí vận chuyển toàn quốc'
-export const DEFAULT_SHIPPING = 'Giao hàng trong 2 giờ (HN & TP. HCM)\nMiễn phí ship toàn quốc\nHướng dẫn sử dụng sản phẩm tại nhà'
+// Next.js page.tsx KHÔNG được export biến thường (chỉ default + metadata...) → để const cục bộ
+const DEFAULT_COMMITMENTS = 'Hàng nội địa Nhật Bản mới 100%, nguyên hộp\nNhập khẩu trực tiếp, có tem nhập khẩu đầy đủ\nMiễn phí vận chuyển toàn quốc'
+const DEFAULT_SHIPPING = 'Giao hàng trong 2 giờ (HN & TP. HCM)\nMiễn phí ship toàn quốc\nHướng dẫn sử dụng sản phẩm tại nhà'
 
 export default async function ProductContentSettingsPage() {
   const rows = await prisma.siteSetting.findMany({ where: { key: { in: ['product.commitments', 'product.shipping_notes'] } } })
