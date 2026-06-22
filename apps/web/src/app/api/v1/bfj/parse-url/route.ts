@@ -12,6 +12,7 @@ const schema = z.object({
   refresh: z.boolean().optional(), // true = bỏ qua cache, parse lại
 })
 
+// 🔒 LOCKED (2026-06) — Cache parse Mua Hộ. KHÔNG sửa nếu chưa được chủ dự án yêu cầu (xem CLAUDE.md → LOCKED → Mua Hộ).
 // Cache kết quả parse theo ASIN/URL chuẩn hoá để lần sau khỏi load lại (specs/ảnh/tên/cân nặng hiếm khi đổi).
 const PARSE_CACHE_TTL = 86400 // 24h
 function parseCacheKey(url: string): string {

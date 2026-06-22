@@ -117,6 +117,7 @@ export function BfjUrlForm({ fees }: { fees: StaticFees }) {
   const [isQuoting, setIsQuoting] = useState(false)
   const [quoteSuccess, setQuoteSuccess] = useState(false)
 
+  // 🔒 LOCKED (2026-06) — Luồng parse Mua Hộ: cache (refresh), pre-fill giá "từ"/cân nặng. Xem CLAUDE.md → LOCKED → Mua Hộ.
   async function handleParse(overrideUrl?: string, refresh = false) {
     const raw = (overrideUrl ?? url).trim()
     if (!raw) return

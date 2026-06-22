@@ -13,6 +13,7 @@ function toCanonicalUrl(url: string): string {
   }
 }
 
+// 🔒 LOCKED (2026-06) — Tự lấy cân nặng Mua Hộ (đơn vị JP/EN, ưu tiên cân SP, fallback HTML). Xem CLAUDE.md → LOCKED → Mua Hộ.
 function weightFromValue(v: string): number | null {
   // "2.8 kg" / "2.8Kg" / "2.8 キログラム" / "2.8キロ"
   const kgMatch = v.match(/(\d+\.?\d*)\s*(?:kg|キログラム|キロ(?!カロリー))/i)
