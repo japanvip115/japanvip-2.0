@@ -41,6 +41,18 @@
 | Render blog: CSS bảng/figure, bỏ `<h1>` trùng, gộp `<br>`, whitelist block (table/figure/p/div), bỏ ảnh hero, thumbnail 144×112 | `apps/web/src/app/(public)/blog/[slug]/page.tsx` + `app/(public)/blog/page.tsx` |
 | Blog API: authorId default = session user | `apps/web/src/app/api/v1/admin/content/blog/route.ts` |
 
+### Mua Hộ (BFJ) — Amazon JP (parse URL → tên/giá/biến thể) — đã chốt 2026-06
+
+| Quy tắc đã khoá | File / Vị trí |
+|---|---|
+| Lấy TÊN: `#productTitle` → fallback thẻ `<title>` (bỏ "Amazon.co.jp:") khi trang rút gọn | `apps/web/src/modules/bfj/url-parser/amazon-jp.parser.ts` (mục Product name) |
+| Lấy GIÁ: JSON-LD → buybox DOM → **quét `.a-offscreen`** khi buybox ẩn ("cannot ship"); nhiều biến thể → `priceOptionsJpy` (khoảng giá tham khảo, KHÔNG auto lấy min) | cùng file (mục Price) |
+| Brand: **KHÔNG để 'Amazon' trong danh sách brand** (Amazon là sàn) → ra đúng hãng (Philips...) | `apps/web/src/modules/bfj/services/translate.service.ts` (mảng BRAND_PATTERNS) |
+| Lọc spec rác: strip `<script>/<style>` trong cell; bỏ value dính code JS, >300 ký tự, nhãn review/ranking | `amazon-jp.parser.ts` (mục Specifications, `isJunkSpec`) |
+| Biến thể màu: lấy ảnh+tên từ swatch + **ASIN từ twister JSON** → `colorVariants` (name, image, url). UI bấm ô màu → re-parse đúng biến thể | `amazon-jp.parser.ts` (`colorVariants`) + UI `bfj-url-form.tsx` (gallery bấm được + `handleParse(url)`) |
+| Dịch thông số + tên màu JP→VI (google-free), giữ brand/model/số; cleanup token "§§"/"củ A" | `translate.service.ts` → `translateSpecs` + `parse-url/route.ts` |
+| **Giá Amazon ẩn/lazy-load → nhập tay là đúng** (không cố auto, không sửa thành min). Khách bấm màu = chọn đúng biến thể, mua đúng link đã dán | luồng tổng |
+
 ---
 
 ## Việc đang chờ (chưa làm)

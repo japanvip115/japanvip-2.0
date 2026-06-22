@@ -67,6 +67,8 @@ async function fetchAmazonPage(url: string): Promise<string> {
   return res.text()
 }
 
+// 🔒 LOCKED (2026-06) — Mua Hộ Amazon JP đã chốt & khoá (tên/giá/biến thể/lọc spec).
+// KHÔNG sửa nếu chưa được chủ dự án yêu cầu rõ. Xem CLAUDE.md (mục LOCKED → Mua Hộ).
 export async function parseAmazonJp(url: string): Promise<ParsedProduct> {
   const fetchUrl = toCanonicalUrl(url)
   const asin = fetchUrl.match(/\/dp\/([A-Z0-9]{10})/)?.[1] ?? ''

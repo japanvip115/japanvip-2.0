@@ -561,6 +561,7 @@ export function BfjUrlForm({ fees }: { fees: StaticFees }) {
                       <p className="text-sm font-semibold text-amber-700">⚠ Không lấy được giá tự động</p>
                       <p className="text-xs text-amber-600 mt-0.5">Sản phẩm này ẩn giá — bạn có thể nhập thủ công</p>
                     </div>
+                    {/* 🔒 LOCKED (2026-06) — Biến thể màu bấm-chọn đã chốt. KHÔNG sửa nếu chưa được yêu cầu. Xem CLAUDE.md. */}
                     {((result.colorVariants && result.colorVariants.length > 0) || (result.priceOptionsJpy && result.priceOptionsJpy.length > 1)) && (
                       <div className="space-y-2 rounded-lg border border-amber-300 bg-amber-100/60 p-3">
                         <p className="text-xs font-bold text-amber-800">⚠ Sản phẩm nhiều màu/cấu hình — bấm chọn đúng màu bạn muốn</p>

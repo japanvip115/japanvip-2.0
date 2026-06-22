@@ -603,6 +603,7 @@ export async function translateProductName(
 }
 
 /**
+ * 🔒 LOCKED (2026-06) — Mua Hộ Amazon đã chốt. KHÔNG sửa nếu chưa được chủ dự án yêu cầu. Xem CLAUDE.md.
  * Dịch nhãn + giá trị thông số JP→VI. Giữ nguyên brand/model/số (text không có chữ Nhật bỏ qua).
  */
 export async function translateSpecs(
