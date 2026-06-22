@@ -268,12 +268,21 @@ export async function parseAmazonJp(url: string): Promise<ParsedProduct> {
     '#detailBullets_feature_div li',
   ].join(', ')
 
+  // Lọc spec rác: giá trị dính code JS (widget đánh giá), quá dài, hoặc nhãn review/ranking (không phải thông số)
+  const isJunkSpec = (label: string, value: string): boolean => {
+    if (value.length > 300) return true
+    if (/function\s*\(|P\.when|\.execute\(|ue\.count|\.declarative|window\.ue|var\s+dp|!==\s*true|===\s*true/.test(value)) return true
+    if (/レビュー|ランキング|おすすめ度|売れ筋|Customer Reviews|Best Sellers|Boutique/i.test(label)) return true
+    return false
+  }
+
   $(specSelectors).each((_, el) => {
     const $el = $(el)
+    $el.find('script, style').remove() // tránh nuốt JS của widget vào value
     if ($el.is('tr')) {
       const label = $el.find('th').text().trim()
       const value = $el.find('td').text().trim().replace(/\s+/g, ' ')
-      if (label && value && !seenSpecLabels.has(label)) {
+      if (label && value && !seenSpecLabels.has(label) && !isJunkSpec(label, value)) {
         seenSpecLabels.add(label)
         specifications.push({ label, value })
       }
@@ -283,7 +292,7 @@ export async function parseAmazonJp(url: string): Promise<ParsedProduct> {
       if (parts.length >= 2) {
         const label = (parts[0] ?? '').trim()
         const value = parts.slice(1).join(':').trim()
-        if (label && value && label.length < 60 && !seenSpecLabels.has(label)) {
+        if (label && value && label.length < 60 && !seenSpecLabels.has(label) && !isJunkSpec(label, value)) {
           seenSpecLabels.add(label)
           specifications.push({ label, value })
         }

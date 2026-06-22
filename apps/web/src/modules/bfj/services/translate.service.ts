@@ -610,8 +610,13 @@ export async function translateSpecs(
 ): Promise<{ label: string; value: string }[]> {
   if (!specs?.length) return specs
   const hasJp = (s: string) => /[぀-ヿ㐀-鿿]/.test(s)
-  // Sửa lỗi vặt của bản dịch free: "の" (sở hữu) hay ra "củ A" thay vì "của"
-  const clean = (t: string) => t.replace(/\bcủ A\b/g, 'của').replace(/\s{2,}/g, ' ').trim()
+  // Sửa lỗi vặt bản dịch free: token bảo vệ "§§N§§" bị chèn space làm hỏng; "の"→"củ A"→"của"
+  const clean = (t: string) => t
+    .replace(/§\s*§\s*\d+\s*§\s*§/g, '')
+    .replace(/\bcủ A\b/g, 'của')
+    .replace(/\(\s*\)/g, '')
+    .replace(/\s{2,}/g, ' ')
+    .trim()
   const tr = async (t: string): Promise<string> => {
     if (!t || !hasJp(t)) return t
     try { return clean(await translateViaGoogleFree(t)) } catch { return t }
