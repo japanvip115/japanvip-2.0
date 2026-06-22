@@ -134,7 +134,7 @@ export function NavLinks({ blogCategories = [], productCategories = [] }: { blog
       {/* Trang Chủ */}
       <Link
         href="/"
-        className={`rounded-md px-3 py-1.5 text-[15px] font-medium transition-all duration-200 border-b-2
+        className={`rounded-md px-3 py-1.5 text-[15px] font-medium uppercase transition-all duration-200 border-b-2
           ${isActive('/') ? 'border-white text-white' : 'border-transparent text-white/80 hover:text-white hover:border-white/60'}`}
       >
         Trang Chủ
@@ -144,7 +144,7 @@ export function NavLinks({ blogCategories = [], productCategories = [] }: { blog
       <div className="group relative">
         <Link
           href="/san-pham"
-          className={`flex items-center gap-1 rounded-md px-3 py-1.5 text-[15px] font-medium transition-all duration-200 border-b-2
+          className={`flex items-center gap-1 rounded-md px-3 py-1.5 text-[15px] font-medium uppercase transition-all duration-200 border-b-2
             ${isActive('/san-pham') ? 'border-white text-white' : 'border-transparent text-white/80 hover:text-white hover:border-white/60'}`}
         >
           Sản Phẩm
@@ -159,7 +159,7 @@ export function NavLinks({ blogCategories = [], productCategories = [] }: { blog
           <div key={item.href} className="group relative">
             <Link
               href={item.href}
-              className={`flex items-center gap-1 rounded-md px-3 py-1.5 text-[15px] font-medium transition-all duration-200 border-b-2
+              className={`flex items-center gap-1 rounded-md px-3 py-1.5 text-[15px] font-medium uppercase transition-all duration-200 border-b-2
                 ${isActive(item.href) ? 'border-white text-white' : 'border-transparent text-white/80 hover:text-white hover:border-white/60'}`}
             >
               {item.label}
@@ -188,7 +188,7 @@ export function NavLinks({ blogCategories = [], productCategories = [] }: { blog
           <Link
             key={item.href}
             href={item.href}
-            className={`rounded-md px-3 py-1.5 text-[15px] font-medium transition-all duration-200 border-b-2
+            className={`rounded-md px-3 py-1.5 text-[15px] font-medium uppercase transition-all duration-200 border-b-2
               ${isActive(item.href) ? 'border-white text-white' : 'border-transparent text-white/80 hover:text-white hover:border-white/60'}`}
           >
             {item.label}
@@ -242,7 +242,7 @@ export function MobileMenuButton({ blogCategories = [], productCategories = [] }
                   <div key={item.href}>
                     <button
                       onClick={() => setExpandedMobile(expandedMobile === item.href ? null : item.href)}
-                      className="flex w-full items-center justify-between px-5 py-3.5 text-sm font-semibold text-gray-800 hover:bg-gray-50 transition-colors"
+                      className="flex w-full items-center justify-between px-5 py-3.5 text-sm font-semibold uppercase text-gray-800 hover:bg-gray-50 transition-colors"
                     >
                       {item.label}
                       <ChevronDown className={`h-4 w-4 text-gray-400 transition-transform duration-200 ${expandedMobile === item.href ? 'rotate-180' : ''}`} />
@@ -292,7 +292,7 @@ export function MobileMenuButton({ blogCategories = [], productCategories = [] }
                     key={item.href}
                     href={item.href}
                     onClick={() => setOpen(false)}
-                    className={`flex items-center px-5 py-3.5 text-sm font-semibold transition-colors
+                    className={`flex items-center px-5 py-3.5 text-sm font-semibold uppercase transition-colors
                       ${isActive(item.href) ? 'text-brand-red bg-red-50 border-l-4 border-brand-red' : 'text-gray-800 hover:bg-gray-50'}`}
                   >
                     {item.label}
