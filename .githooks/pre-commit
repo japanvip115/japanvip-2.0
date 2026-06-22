@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+# 🔒 Bảo vệ vùng code đã khoá.
+# Chặn commit đụng file có dấu "🔒 LOCKED" cho tới khi gõ ĐÚNG câu xác nhận.
+# Bỏ qua tự động (commit không có terminal): LOCK_CONFIRM="<câu>" git commit ...
+
+PHRASE="TOI DONG Y SUA VUNG KHOA"
+
+# File staged (Added/Copied/Modified/Renamed)
+staged="$(git diff --cached --name-only --diff-filter=ACMR)"
+[ -z "$staged" ] && exit 0
+
+locked=""
+while IFS= read -r f; do
+  [ -z "$f" ] && continue
+  # Bỏ qua chính thư mục hook (file hook cũng chứa chữ "🔒 LOCKED")
+  case "$f" in .githooks/*) continue;; esac
+  # Coi là KHOÁ nếu bản đã stage của file có dấu 🔒 LOCKED
+  if git show ":$f" 2>/dev/null | grep -q "🔒 LOCKED"; then
+    locked="$locked  • $f
+"
+  fi
+done <<EOF
+$staged
+EOF
+
+[ -z "$locked" ] && exit 0
+
+printf '\n'
+printf '╔══════════════════════════════════════════════════════════════╗\n'
+printf '║   ⚠️  CẢNH BÁO: COMMIT NÀY ĐỘNG VÀO VÙNG CODE ĐÃ KHOÁ  🔒     ║\n'
+printf '╚══════════════════════════════════════════════════════════════╝\n'
+printf '\nCác file ĐÃ KHOÁ trong commit này:\n%s\n' "$locked"
+printf 'Vùng khoá đã được chủ dự án duyệt — chỉ sửa khi THỰC SỰ cần.\n'
+printf 'Để tiếp tục, gõ CHÍNH XÁC câu sau (không dấu, viết HOA):\n\n    %s\n\n' "$PHRASE"
+
+# Cách 1: xác nhận qua biến môi trường (commit tự động / không có terminal)
+if [ "${LOCK_CONFIRM:-}" = "$PHRASE" ]; then
+  printf '✅ Đã xác nhận qua LOCK_CONFIRM — cho phép commit.\n\n'
+  exit 0
+fi
+
+# Cách 2: hỏi trực tiếp trên terminal (chỉ khi đọc được tty)
+if [ -e /dev/tty ] && printf 'Nhập câu xác nhận: ' && IFS= read -r answer < /dev/tty 2>/dev/null; then
+  if [ "$answer" = "$PHRASE" ]; then
+    printf '✅ Xác nhận đúng — cho phép commit.\n\n'
+    exit 0
+  fi
+  printf '❌ Sai câu xác nhận — ĐÃ HUỶ commit.\n\n'
+  exit 1
+fi
+
+printf '\n❌ Không có terminal để xác nhận — ĐÃ HUỶ commit.\n'
+printf '   Chạy lại với:  LOCK_CONFIRM="%s" git commit ...\n\n' "$PHRASE"
+exit 1
