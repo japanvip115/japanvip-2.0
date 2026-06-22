@@ -8,7 +8,7 @@ import {
   LayoutDashboard, Package, Gavel, Users, ShoppingBag,
   DollarSign, FileText, Settings, FolderOpen, Layers,
   ChevronRight, ChevronDown, ShieldAlert, Ban, LogOut, ExternalLink,
-  Home, ClipboardList, Gift,
+  Home, ClipboardList, Gift, Mail, Sparkles,
 } from 'lucide-react'
 
 const NAV_SECTIONS = [
@@ -27,6 +27,7 @@ const NAV_SECTIONS = [
       { href: '/admin/finance', label: 'Tài Chính', icon: DollarSign },
       { href: '/admin/affiliates', label: 'Hoa Hồng CTV', icon: Gift },
       { href: '/admin/users', label: 'Người Dùng', icon: Users },
+      { href: '/admin/subscribers', label: 'Subscriber Email', icon: Mail },
     ],
   },
   {
@@ -40,6 +41,7 @@ const NAV_SECTIONS = [
   {
     label: 'Nội dung & Cài đặt',
     items: [
+      { href: '/admin/content/ai-writer', label: 'AI Content Writer', icon: Sparkles },
       { href: '/admin/content', label: 'Nội Dung', icon: FileText },
       {
         href: '/admin/settings', label: 'Cài Đặt', icon: Settings, exact: true,

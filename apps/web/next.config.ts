@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
     serverActions: { bodySizeLimit: '100mb' },
   },
   typedRoutes: false,
-  serverExternalPackages: ['@prisma/client', '@japanvip/db'],
+  serverExternalPackages: ['@prisma/client', '@japanvip/db', 'xlsx'],
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: 'img.vietqr.io' },

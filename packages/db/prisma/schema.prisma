@@ -1275,3 +1275,29 @@ model BfjFreightRate {
   @@index([sortOrder])
   @@map("bfj_freight_rates")
 }
+
+// ─────────────────────────────────────────
+// DOMAIN: SUBSCRIBER (Email Marketing List)
+// ─────────────────────────────────────────
+
+enum SubscriberStatus {
+  ACTIVE
+  UNSUBSCRIBED
+  BOUNCED
+}
+
+model Subscriber {
+  id               Int              @id @default(autoincrement())
+  email            String           @unique @db.VarChar(255)
+  name             String?          @db.VarChar(255)
+  phone            String?          @db.VarChar(30)
+  city             String?          @db.VarChar(100)
+  status           SubscriberStatus @default(ACTIVE)
+  source           String?          @db.VarChar(100) // getresponse | manual | import | website
+  unsubscribeToken String?          @unique @map("unsubscribe_token") @db.VarChar(100)
+  createdAt        DateTime         @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt        DateTime         @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@index([status])
+  @@map("subscribers")
+}
