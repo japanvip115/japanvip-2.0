@@ -82,7 +82,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       style={{ '--font-sans': `var(${activeFontVar})` } as React.CSSProperties}
     >
       <head>
-        <link rel="stylesheet" href="/style.css" />
+        {/* ?v=N — cache-bust: bump version mỗi khi sửa style.css để trình duyệt tải bản mới ngay (tránh kẹt cache 4h) */}
+        <link rel="stylesheet" href="/style.css?v=20260623" />
         {facebookVerify && (
           <meta name="facebook-domain-verification" content={facebookVerify} />
         )}
