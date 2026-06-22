@@ -140,7 +140,9 @@ export function BfjUrlForm({ fees }: { fees: StaticFees }) {
       const product: ParsedProduct = parseData.data
       // Pre-fill ô cân nặng + giá từ dữ liệu lấy được (tự điền, khỏi gõ tay)
       setManualWeightKg(product.weightKg != null ? String(product.weightKg) : '')
-      setManualPriceJpy(product.unitPriceJpy != null ? String(product.unitPriceJpy) : '')
+      // Giá: ưu tiên giá buybox; nếu ẩn nhưng có dải giá Amazon → điền giá THẤP NHẤT ("từ") để khách xác nhận/sửa
+      const autoPrice = product.unitPriceJpy ?? (product.priceOptionsJpy?.length ? Math.min(...product.priceOptionsJpy) : null)
+      setManualPriceJpy(autoPrice != null ? String(autoPrice) : '')
 
       let estimate: CostEstimate | undefined
       if (product.unitPriceJpy) {
@@ -631,7 +633,11 @@ export function BfjUrlForm({ fees }: { fees: StaticFees }) {
                         </button>
                       </div>
                       <p className="mt-1 text-[10px] text-amber-600">
-                        Mở <a href={result?.sourceUrl} target="_blank" rel="noopener noreferrer" className="underline font-medium">trang sản phẩm</a> → xem giá → nhập vào đây
+                        {result.unitPriceJpy == null && result.priceOptionsJpy?.length ? (
+                          <>✅ Tự lấy giá <b>từ ¥{Math.min(...result.priceOptionsJpy).toLocaleString('ja-JP')}</b> (mức thấp nhất). Kiểm tra & sửa nếu bạn chọn biến thể/cấu hình đắt hơn.</>
+                        ) : (
+                          <>Mở <a href={result?.sourceUrl} target="_blank" rel="noopener noreferrer" className="underline font-medium">trang sản phẩm</a> → xem giá → nhập vào đây</>
+                        )}
                       </p>
                     </div>
                     <div>
