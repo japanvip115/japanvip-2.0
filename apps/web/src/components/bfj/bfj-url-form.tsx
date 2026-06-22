@@ -108,6 +108,7 @@ export function BfjUrlForm({ fees }: { fees: StaticFees }) {
 
   // Manual price input (no-price path)
   const [manualPriceJpy, setManualPriceJpy] = useState('')
+  const [manualWeightKg, setManualWeightKg] = useState('')
   const [isCalculatingManual, setIsCalculatingManual] = useState(false)
 
   // Quote request states (no-price path)
@@ -227,6 +228,7 @@ export function BfjUrlForm({ fees }: { fees: StaticFees }) {
   async function handleManualCalculate() {
     const price = parseInt(manualPriceJpy.replace(/[^0-9]/g, ''), 10)
     if (!price || price <= 0 || !result) return
+    const weightKg = parseFloat(manualWeightKg.replace(',', '.')) || result.weightKg || undefined
     setIsCalculatingManual(true)
     try {
       const estRes = await fetch('/api/v1/bfj/estimate', {
@@ -235,7 +237,7 @@ export function BfjUrlForm({ fees }: { fees: StaticFees }) {
         body: JSON.stringify({
           unitPriceJpy: price,
           quantity,
-          ...(result.weightKg != null ? { estimatedWeightKg: result.weightKg } : {}),
+          ...(weightKg != null ? { estimatedWeightKg: weightKg } : {}),
         }),
       })
       const estData = await estRes.json()
@@ -620,6 +622,26 @@ export function BfjUrlForm({ fees }: { fees: StaticFees }) {
                         Mở <a href={result?.sourceUrl} target="_blank" rel="noopener noreferrer" className="underline font-medium">trang sản phẩm</a> → xem giá → nhập vào đây
                       </p>
                     </div>
+                    <div>
+                      <label className="mb-1.5 block text-xs font-semibold text-amber-700">Cân nặng sản phẩm <span className="font-normal text-amber-500">— để tính phí ship</span></label>
+                      <div className="flex items-center gap-1.5 rounded-lg border border-amber-300 bg-white px-3 py-2 focus-within:border-amber-500">
+                        <span className="text-sm font-bold text-amber-600">⚖</span>
+                        <input
+                          type="text"
+                          inputMode="decimal"
+                          value={manualWeightKg}
+                          onChange={(e) => setManualWeightKg(e.target.value.replace(/[^0-9.,]/g, ''))}
+                          onKeyDown={(e) => e.key === 'Enter' && handleManualCalculate()}
+                          placeholder={result.weightKg ? `${result.weightKg}` : 'vd: 0.5'}
+                          className="flex-1 bg-transparent text-sm text-gray-800 outline-none placeholder:text-gray-400"
+                        />
+                        <span className="text-xs text-gray-400">kg</span>
+                      </div>
+                      <p className="mt-1 text-[10px] text-amber-600">
+                        Ship hàng không JP→VN tính theo cân nặng (~160.000đ/kg).{' '}
+                        {result.weightKg ? `Tự lấy ${result.weightKg}kg từ Amazon — sửa nếu cần.` : 'Nhập cân nặng để tính chính xác.'}
+                      </p>
+                    </div>
                   </div>
 
                   {quoteSuccess ? (
@@ -695,32 +717,7 @@ export function BfjUrlForm({ fees }: { fees: StaticFees }) {
                 </div>
               </div>
 
-              {/* Fee table below no-price panel */}
-              <div className="rounded-2xl border bg-white p-5 shadow-sm">
-                <h4 className="mb-4 font-bold text-gray-900">💰 Bảng Phí Dịch Vụ</h4>
-                <div className="space-y-3 text-sm">
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-600">Phí dịch vụ Japan VIP</span>
-                    <span className="font-bold text-brand-red">{(fees.serviceFeeRate * 100).toFixed(0)}%</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-600">Phí kiểm tra & đóng gói</span>
-                    <span className="font-bold text-brand-red">{(fees.surchargeRate * 100).toFixed(0)}%</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-600">Ship nội địa Nhật</span>
-                    <span className="font-bold text-gray-800">¥{fees.domesticShippingJpy.toLocaleString()}</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-600">Ship quốc tế JP → VN</span>
-                    <span className="font-bold text-gray-800">{fees.shippingLabel}</span>
-                  </div>
-                  <div className="flex items-center justify-between border-t pt-3">
-                    <span className="text-gray-600">Đặt cọc</span>
-                    <span className="font-bold text-brand-red">{(fees.depositRate * 100).toFixed(0)}%</span>
-                  </div>
-                </div>
-              </div>
+              {/* Bảng phí tĩnh đã ẩn — chỉ hiện bảng BÁO GIÁ sau khi tính (state result.estimate) */}
             </div>
           </>
         ) : step === 'preview' && result?.estimate ? (
@@ -1053,33 +1050,13 @@ export function BfjUrlForm({ fees }: { fees: StaticFees }) {
           </>
         ) : (
           <>
-            {/* Fee table — always visible */}
-            <div className="rounded-2xl border bg-white p-5 shadow-sm">
-                <h4 className="mb-4 font-bold text-gray-900">💰 Bảng Phí Dịch Vụ</h4>
-                <div className="space-y-3 text-sm">
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-500">Phí dịch vụ Japan VIP</span>
-                    <span className="font-semibold text-gray-400">—</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-500">Ship nội địa Nhật</span>
-                    <span className="font-semibold text-gray-400">—</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-500">Phí kiểm tra & đóng gói</span>
-                    <span className="font-semibold text-gray-400">—</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-500">Ship quốc tế JP → VN</span>
-                    <span className="font-semibold text-gray-400">—</span>
-                  </div>
-                  <div className="flex items-center justify-between border-t pt-3 text-gray-400">
-                    <span className="font-semibold">Đặt cọc tối thiểu</span>
-                    <span className="font-bold">—</span>
-                  </div>
-                  <p className="pt-1 text-center text-xs text-gray-400">Nhập URL sản phẩm để xem chi phí</p>
-                </div>
-              </div>
+            {/* Bảng phí tĩnh đã ẩn — chỉ hiện BÁO GIÁ sau khi tính (state result.estimate) */}
+            <div className="rounded-2xl border border-dashed bg-gray-50 p-5 text-center">
+              <p className="text-sm text-gray-500">
+                Dán link sản phẩm Nhật để nhận{' '}
+                <span className="font-semibold text-gray-700">báo giá chi tiết</span> — giá gốc + phí dịch vụ + ship về VN theo cân nặng.
+              </p>
+            </div>
 
             <div className="rounded-2xl border bg-gray-900 p-5 text-white">
               <h4 className="mb-1 text-sm font-semibold">💬 Cần Hỗ Trợ?</h4>
