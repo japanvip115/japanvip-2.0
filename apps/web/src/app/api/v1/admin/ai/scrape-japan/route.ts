@@ -378,6 +378,7 @@ async function scrapeKakaku(url: string) {
     } catch { /* ignore */ }
   })
 
+  // 🔒 LOCKED (2026-06) — Trang Nhật đã chốt & khoá. KHÔNG sửa nếu chưa được chủ dự án yêu cầu rõ. Xem CLAUDE.md.
   // Ảnh sản phẩm chính thức kakaku: /productimage/{size}/{ID}.jpg (nền trắng sạch).
   // Nâng các bản nhỏ (m/s/l/mid) → fullscale để lấy ảnh chất lượng cao nhất.
   const itemId = (url.match(/\/item\/(K\d+)/i) || [])[1] ?? ''

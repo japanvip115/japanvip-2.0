@@ -16,6 +16,7 @@ function isSafeUrl(raw: string): boolean {
   } catch { return false }
 }
 
+// 🔒 LOCKED (2026-06) — Trang Nhật đã chốt & khoá. KHÔNG sửa nếu chưa được chủ dự án yêu cầu rõ. Xem CLAUDE.md.
 // Lấy ảnh giới thiệu tính năng từ TRANG CHÍNH HÃNG (site render JS) bằng Playwright + Chrome local.
 // Chỉ chạy ở máy local có Google Chrome — trên Vercel (không có Chrome) sẽ trả lỗi 503 gọn gàng.
 export async function POST(req: NextRequest) {

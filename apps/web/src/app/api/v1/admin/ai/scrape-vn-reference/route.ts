@@ -17,7 +17,8 @@ function isSafeUrl(raw: string): boolean {
   } catch { return false }
 }
 
-// Lấy NỘI DUNG + BẢNG THÔNG SỐ tiếng Việt từ trang bán/review tại VN (viết kỹ hơn trang Nhật)
+// 🔒 LOCKED (2026-06) — Trang Nhật đã chốt & khoá. KHÔNG sửa nếu chưa được chủ dự án yêu cầu rõ. Xem CLAUDE.md.
+// Lấy NỘI DUNG + BẢNG THÔNG SỐ + ảnh ngữ cảnh tiếng Việt từ trang bán/review tại VN (viết kỹ hơn trang Nhật)
 // để nạp vào AI làm tư liệu tham khảo. Trang VN thường không chặn bot → fetch tĩnh.
 export async function POST(req: NextRequest) {
   const session = await auth()

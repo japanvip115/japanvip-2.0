@@ -84,6 +84,7 @@ async function buildInternalLinks(productId?: string, categoryId?: string, brand
   return `\n\n---\n🔗 INTERNAL LINKS — Chèn tự nhiên vào bài viết (KHÔNG liệt kê thành danh sách riêng, PHẢI dùng thẻ <a href="URL">tên sản phẩm</a> nhúng vào câu văn):\n${lines}\n---\n`
 }
 
+// 🔒 LOCKED (2026-06) — Trang Nhật đã chốt & khoá. KHÔNG sửa nếu chưa được chủ dự án yêu cầu rõ. Xem CLAUDE.md.
 // ── Tư liệu tham khảo tiếng Việt (từ trang VN, viết kỹ hơn trang Nhật) ─────────
 function buildVnReferenceBlock(vn: { content?: string; specs?: Array<{ name: string; value: string }> } | undefined): string {
   if (!vn) return ''

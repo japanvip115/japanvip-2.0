@@ -94,6 +94,7 @@ function FaqAccordion({ items }: { items: Attribute[] }) {
 }
 
 // ── Specs Table ───────────────────────────────────────────────────────────────
+// 🔒 LOCKED (2026-06) — Trang Nhật đã chốt & khoá. KHÔNG sửa nếu chưa được chủ dự án yêu cầu rõ. Xem CLAUDE.md.
 // Thứ tự nhóm thông số cố định TOÀN SITE: Thông tin chung → Thông số kỹ thuật → Phụ kiện → Kích thước & Trọng lượng → Vận hành.
 // Nhóm khác (công nghệ/tính năng...) xếp sau Thông số kỹ thuật. Sort stable: nhóm cùng hạng giữ thứ tự gốc.
 function groupRank(g: string): number {
