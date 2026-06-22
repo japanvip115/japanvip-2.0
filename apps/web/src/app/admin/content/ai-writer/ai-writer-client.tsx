@@ -235,6 +235,10 @@ export function AiWriterClient({ products }: { products: ProductSummary[] }) {
   const [pasteImageUrl, setPasteImageUrl] = useState('')
   const [scrapingFeature, setScrapingFeature] = useState(false)
   const [featureMsg, setFeatureMsg] = useState('')
+  const [vnRefUrl, setVnRefUrl] = useState('')
+  const [vnReference, setVnReference] = useState<{ title: string; content: string; specs: { name: string; value: string }[] } | null>(null)
+  const [scrapingVn, setScrapingVn] = useState(false)
+  const [vnMsg, setVnMsg] = useState('')
   const [hasDraft, setHasDraft] = useState(false)
 
   // ── Competitor URL mode state ──
@@ -398,6 +402,9 @@ export function AiWriterClient({ products }: { products: ProductSummary[] }) {
     setFeaturePageUrl('')
     setPasteImageUrl('')
     setFeatureMsg('')
+    setVnRefUrl('')
+    setVnReference(null)
+    setVnMsg('')
     setOutputs({})
     setSaveStatus('idle')
     setHasDraft(false)
@@ -507,6 +514,29 @@ export function AiWriterClient({ products }: { products: ProductSummary[] }) {
       setFeatureMsg('Lỗi kết nối')
     } finally {
       setScrapingFeature(false)
+    }
+  }
+
+  // ── Lấy nội dung + bảng thông số từ TRANG VN tham khảo (viết kỹ hơn trang Nhật) ──
+  async function scrapeVnReference() {
+    const url = vnRefUrl.trim()
+    if (!/^https?:\/\//i.test(url) || scrapingVn) { setVnMsg('Dán URL trang VN hợp lệ'); return }
+    setScrapingVn(true)
+    setVnMsg('')
+    try {
+      const res = await fetch('/api/v1/admin/ai/scrape-vn-reference', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url }),
+      })
+      const data = await res.json()
+      if (!res.ok || !data.success) { setVnMsg(data.error ?? 'Không lấy được nội dung'); return }
+      setVnReference({ title: data.title ?? '', content: data.content ?? '', specs: data.specs ?? [] })
+      setVnMsg(`✓ ${data.specs?.length ?? 0} thông số + ${(data.content?.length ?? 0).toLocaleString()} ký tự — sẽ nạp vào AI`)
+    } catch {
+      setVnMsg('Lỗi kết nối')
+    } finally {
+      setScrapingVn(false)
     }
   }
 
@@ -646,6 +676,7 @@ export function AiWriterClient({ products }: { products: ProductSummary[] }) {
           ? (sourceMode === 'japan' ? [...selectedImages]
             : sourceMode === 'competitor' ? [...selectedCompetitorImages] : [])
           : undefined,
+        vnReference: sourceMode === 'japan' ? vnReference : undefined,
       }),
     })
     if (!res.ok) throw new Error('API error')
@@ -1227,6 +1258,33 @@ export function AiWriterClient({ products }: { products: ProductSummary[] }) {
                       </div>
                     </div>
                   )}
+
+                  {/* Tư liệu tham khảo từ trang VN (nội dung + thông số kỹ hơn trang Nhật) */}
+                  <div className="mb-2 rounded-lg border border-amber-700/40 bg-amber-900/10 p-2 space-y-1.5">
+                    <p className="text-[10px] font-bold text-amber-400 uppercase tracking-wide">📚 Tư liệu trang Việt Nam (tuỳ chọn)</p>
+                    <div className="flex items-center gap-1.5">
+                      <input
+                        type="url"
+                        value={vnRefUrl}
+                        onChange={e => setVnRefUrl(e.target.value)}
+                        placeholder="URL trang VN (bài review/trang bán có nội dung kỹ)…"
+                        className="flex-1 rounded bg-gray-800 border border-gray-700 px-2 py-1 text-[11px] text-gray-200 outline-none focus:border-amber-500"
+                      />
+                      <button
+                        type="button"
+                        onClick={scrapeVnReference}
+                        disabled={scrapingVn}
+                        className="flex items-center gap-1 rounded bg-amber-600/90 hover:bg-amber-600 disabled:bg-gray-700 px-2 py-1 text-[10px] font-bold text-white transition whitespace-nowrap"
+                      >
+                        {scrapingVn ? <><Loader2 className="h-3 w-3 animate-spin" /> Đang lấy…</> : <>Lấy tư liệu VN</>}
+                      </button>
+                    </div>
+                    {vnMsg && <p className="text-[10px] text-emerald-400">{vnMsg}</p>}
+                    {vnReference && (
+                      <button type="button" onClick={() => { setVnReference(null); setVnMsg(''); setVnRefUrl('') }} className="text-[10px] text-gray-400 hover:text-red-400 transition">✕ Bỏ tư liệu VN</button>
+                    )}
+                    <p className="text-[9px] text-gray-500">Nạp nội dung + bảng thông số VN làm tư liệu để AI viết kỹ hơn. AI ưu tiên dữ liệu gốc Nhật khi mâu thuẫn.</p>
+                  </div>
 
                   {/* Ảnh sản phẩm — chọn để dùng */}
                   {(japanProduct.images.length > 0 || extraImages.length > 0) && (() => {

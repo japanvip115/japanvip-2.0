@@ -25,6 +25,7 @@
 | Scraper lấy giá đúng biến thể + bắt công suất/điện áp (`table.a-keyvalue`/`.prodDetTable`) | `apps/web/src/app/api/v1/admin/ai/scrape-japan/route.ts` |
 | Scraper kakaku.com: chỉ lấy ảnh sản phẩm chính thức `/productimage/fullscale/{ID}.jpg` (nền trắng sạch), nâng size m/s/l→fullscale, ưu tiên itemId đang xem, loại rác shopicon/logo/btn | cùng file → `scrapeKakaku` |
 | Lấy ảnh giới thiệu tính năng từ TRANG CHÍNH HÃNG (site render JS) bằng Playwright + Chrome local; lọc ảnh ≥300×200, bỏ logo/icon/nav. CHỈ chạy local (Vercel không có Chrome → 503). Kèm ô dán URL ảnh thủ công | `apps/web/src/app/api/v1/admin/ai/scrape-feature-images/route.ts` + UI `ai-writer-client.tsx` (`scrapeFeatureImages`, `addPastedImages`) |
+| Tư liệu tham khảo trang VN: lấy nội dung + bảng thông số tiếng Việt (trang VN viết kỹ hơn trang Nhật), nạp vào prompt AI (cả Claude Code + API) để viết kỹ hơn. AI ưu tiên dữ liệu gốc Nhật khi mâu thuẫn. Hiện admin dán URL thủ công (auto-search gated chờ Google CSE) | `apps/web/src/app/api/v1/admin/ai/scrape-vn-reference/route.ts` + `generate-content/route.ts` → `buildVnReferenceBlock` + UI `scrapeVnReference` |
 
 **Lưu ý vận hành:** AI Writer dùng provider **Claude Code Opus 4.8 (miễn phí)** — chỉ chạy LOCAL (Vercel không có CLI). Không dùng Anthropic API (mất phí).
 
@@ -47,3 +48,4 @@
 - Lấy giá Amazon chuẩn: **Amazon PA-API** (scrape tĩnh không chắc vì giá render JS + sponsored).
 - Hỗ trợ amazon.com (US, USD→VNĐ — đụng vùng giá khoá).
 - Exa lookup server-side: năm SX + đúng cảm biến từ trang hãng.
+- **Auto-tìm trang VN theo model** cho tư liệu VN: hiện admin dán URL thủ công (đã chạy). Phần auto cần Google CSE web search (CX mới "tìm toàn web") — gated chờ CSE kích hoạt giống Google tìm ảnh.

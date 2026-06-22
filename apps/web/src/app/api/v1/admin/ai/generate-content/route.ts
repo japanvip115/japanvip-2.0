@@ -84,6 +84,18 @@ async function buildInternalLinks(productId?: string, categoryId?: string, brand
   return `\n\n---\n🔗 INTERNAL LINKS — Chèn tự nhiên vào bài viết (KHÔNG liệt kê thành danh sách riêng, PHẢI dùng thẻ <a href="URL">tên sản phẩm</a> nhúng vào câu văn):\n${lines}\n---\n`
 }
 
+// ── Tư liệu tham khảo tiếng Việt (từ trang VN, viết kỹ hơn trang Nhật) ─────────
+function buildVnReferenceBlock(vn: { content?: string; specs?: Array<{ name: string; value: string }> } | undefined): string {
+  if (!vn) return ''
+  const specsText = (vn.specs ?? []).slice(0, 40).map(s => `- ${s.name}: ${s.value}`).join('\n')
+  const content = (vn.content ?? '').slice(0, 5000).trim()
+  if (!specsText && !content) return ''
+  return `\n\n---\n📚 TƯ LIỆU THAM KHẢO TIẾNG VIỆT (từ trang VN — dùng để BỔ SUNG thông tin/thông số còn thiếu và học cách diễn đạt tự nhiên cho người Việt):
+${specsText ? `\nThông số tham khảo:\n${specsText}\n` : ''}${content ? `\nNội dung tham khảo:\n${content}\n` : ''}
+⚠️ CHỈ dùng thông tin KHỚP với sản phẩm đang viết. KHÔNG copy nguyên văn, KHÔNG bịa. Nếu số liệu mâu thuẫn với dữ liệu gốc Nhật, ƯU TIÊN dữ liệu gốc Nhật.
+---\n`
+}
+
 // ── Route handler ─────────────────────────────────────────────────────────────
 export async function POST(req: Request) {
   const session = await auth()
@@ -91,7 +103,7 @@ export async function POST(req: Request) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const { type, productName, specs, keywords, extra, customInstruction, freePrompt, provider = 'anthropic', maxWords, testMode, productId, categoryId, brandId, claudeCodeModel, images = [] } = await req.json()
+  const { type, productName, specs, keywords, extra, customInstruction, freePrompt, provider = 'anthropic', maxWords, testMode, productId, categoryId, brandId, claudeCodeModel, images = [], vnReference } = await req.json()
 
   const systemPrompt = await getContentStyle()
   const userPrompt = freePrompt?.trim()
@@ -102,11 +114,13 @@ export async function POST(req: Request) {
         ? buildTestPrompt(type, productName, specs)
         : buildPrompt(type, productName, specs, keywords, extra, customInstruction, maxWords, images)
 
+  const vnBlock = type !== 'product_name' && !freePrompt?.trim() ? buildVnReferenceBlock(vnReference) : ''
+
   // ── Claude Code path (dùng subscription, không cần API key) ─────────────
   if (provider === 'claude-code') {
     const kb = productName && type !== 'product_name' ? findRelevantKnowledge(productName) : ''
     const links = type === 'description' ? await buildInternalLinks(productId, categoryId, brandId) : ''
-    const fullPrompt = `${userPrompt}${kb}${links}`
+    const fullPrompt = `${userPrompt}${vnBlock}${kb}${links}`
     const readable = streamWithClaudeCode(fullPrompt, systemPrompt, claudeCodeModel)
     return new Response(readable, {
       headers: { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-cache' },
@@ -128,7 +142,7 @@ export async function POST(req: Request) {
       model: 'claude-sonnet-4-6',
       max_tokens: maxTokens,
       system: systemPrompt,
-      messages: [{ role: 'user', content: userPrompt }],
+      messages: [{ role: 'user', content: `${userPrompt}${vnBlock}` }],
     })
   } catch (err) {
     const msg = err instanceof Error ? err.message : 'Lỗi khởi tạo AI'
