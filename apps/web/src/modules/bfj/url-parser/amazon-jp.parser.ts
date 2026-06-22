@@ -209,7 +209,8 @@ export async function parseAmazonJp(url: string): Promise<ParsedProduct> {
     return null
   }
 
-  // Strategy 3: Offer listing page (separate fetch — only used when both above fail)
+  // 🔒 LOCKED (2026-06) — Strategy 3: offer-listing THẬT. Hàng cannot-ship → trang này redirect về dp,
+  // .a-offscreen = giá sims rác → guard #productTitle + chỉ đọc hàng offer thật. Xem CLAUDE.md → LOCKED → Mua Hộ.
   const fetchOfferListingPrice = async (): Promise<number | null> => {
     try {
       const offerUrl = `https://www.amazon.co.jp/gp/offer-listing/${asin}/`
@@ -228,6 +229,7 @@ export async function parseAmazonJp(url: string): Promise<ParsedProduct> {
     }
   }
 
+  // 🔒 LOCKED (2026-06) — Quy tắc giá Mua Hộ. Xem CLAUDE.md → LOCKED → Mua Hộ.
   // ⚠️ KHÔNG dùng .a-offscreen làm giá: khi buybox ẩn ("cannot ship"), các .a-offscreen còn lại
   // CHỈ là giá widget "sản phẩm liên quan/gợi ý/mua kèm" (vd giá đỡ ¥6.979) → luôn sai cho máy chính,
   // và DOM Amazon đổi mỗi lần fetch nên không lọc tin cậy được. Giá ẩn → để khách NHẬP TAY (đúng luật gốc).
