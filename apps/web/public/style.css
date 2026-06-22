@@ -1495,7 +1495,8 @@ ul, ol { list-style: none; }
   .hero-title { font-size: 1.7rem; }
   .hero-actions { flex-direction: column; }
   .auction-grid, .auction-grid-full { grid-template-columns: 1fr; }
-  .products-grid { grid-template-columns: 1fr; }
+  /* Sản phẩm bán chạy: 2 sản phẩm / hàng trên mobile (yêu cầu chủ dự án) */
+  .products-grid { grid-template-columns: repeat(2, 1fr); }
   /* categories-grid inherits horizontal scroll from 768px breakpoint */
   .cat-card, .cat-card.cat-large { width: 88px; }
   .why-stats-grid { grid-template-columns: 1fr 1fr; }

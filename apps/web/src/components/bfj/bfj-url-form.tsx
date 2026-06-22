@@ -367,7 +367,7 @@ export function BfjUrlForm({ fees }: { fees: StaticFees }) {
           <button
             onClick={() => handleParse()}
             disabled={step === 'loading' || !url.trim()}
-            className="mt-3 mx-auto flex w-96 cursor-pointer items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold transition disabled:opacity-60"
+            className="mt-3 mx-auto flex w-full max-w-sm cursor-pointer items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold transition disabled:opacity-60"
             style={{background:'transparent', color:'#c41e3a', border:'2px solid #fecaca'}}
             onMouseEnter={e => { if (!e.currentTarget.disabled) { e.currentTarget.style.background='#c41e3a'; e.currentTarget.style.color='white'; e.currentTarget.style.border='2px solid #c41e3a' }}}
             onMouseLeave={e => { e.currentTarget.style.background='transparent'; e.currentTarget.style.color='#c41e3a'; e.currentTarget.style.border='2px solid #fecaca' }}

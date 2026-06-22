@@ -112,6 +112,12 @@
     @apply bg-background text-foreground;
     font-family: var(--font-sans), system-ui, sans-serif;
     font-feature-settings: "rlig" 1, "calt" 1, "kern" 1;
+    /* Chặn tràn ngang trên mobile (drawer/menu off-screen, phần tử rộng quá khổ) */
+    overflow-x: hidden;
+  }
+
+  html {
+    overflow-x: hidden;
   }
 }
 
