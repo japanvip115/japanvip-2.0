@@ -14,48 +14,96 @@ type Props = {
   videoItems: Attribute[]
   productId: string
   productName: string
+  productImages?: string[]
 }
 
 
-// ── Sample reviews ───────────────────────────────────────────────────────────
-const SAMPLE_REVIEWS = [
-  {
-    id: 1, stars: 5, name: 'Nguyễn Ngọc Hân', date: '28/05/2026',
-    comment: 'Hài lòng nha, chia nhiều ngăn để được các loại thực phẩm khác nhau rất tiện lợi khi để vào và lấy ra mà không bị lẫn mùi.',
-    images: [
-      'https://congnghenhat.com/wp-content/uploads/2025/08/Tu-lanh-Hitachi-R-WXC74X-X.jpg',
-      'https://congnghenhat.com/wp-content/uploads/2025/08/Tu-lanh-Hitachi-R-WXC74S.jpg',
-    ],
-  },
-  {
-    id: 2, stars: 5, name: 'Lương Thuý Nga', date: '19/05/2026',
-    comment: 'Thấy bảo hành 24 tháng là mua ngay. Hàng nội địa Nhật nên cũng yên tâm. Nhân viên giao hàng chuyên nghiệp, tận tâm.',
-    images: [
-      'https://congnghenhat.com/wp-content/uploads/2025/08/Tu-lanh-Hitachi-R-WXC74T-X.jpg',
-    ],
-  },
-  {
-    id: 3, stars: 5, name: 'Duy', date: '16/04/2026',
-    comment: 'Tủ lớn để thoải mái đồ ăn luôn, rất hài lòng.',
-    images: [
-      'https://congnghenhat.com/wp-content/uploads/2025/08/Tu-lanh-Hitachi-R-WXC74X-X-1-1280x720.jpg',
-    ],
-  },
-  {
-    id: 4, stars: 5, name: 'Nguyễn Đỗ Chương', date: '06/03/2026',
-    comment: 'Giao hàng và tư vấn nhanh, vì mình cần gấp nên shop hỗ trợ nhiệt tình. Xài được hơn 1 tuần rồi nên đánh giá sơ bộ nè, tủ chạy êm (ko có tiếng ù ù luôn) mong là tiết kiệm điện!',
-    images: [
-      'https://congnghenhat.com/wp-content/uploads/2025/08/Tu-lanh-Hitachi-R-WXC74X-X-2-1280x720.jpg',
-    ],
-  },
-  {
-    id: 5, stars: 5, name: 'Phan Văn Trường', date: '20/12/2025',
-    comment: 'Các ngăn chứa rộng rãi, tính năng khử mùi tốt.',
-    images: [
-      'https://congnghenhat.com/wp-content/uploads/2025/08/Tu-lanh-Hitachi-R-WXC74X-X-3-1280x720.jpg',
-    ],
-  },
+// ── Reviews theo CHỦNG LOẠI sản phẩm (tránh review tủ lạnh hiện trên mọi SP) ───
+const REVIEWERS = [
+  { name: 'Nguyễn Ngọc Hân', date: '28/05/2026' },
+  { name: 'Lương Thuý Nga', date: '19/05/2026' },
+  { name: 'Duy', date: '16/04/2026' },
+  { name: 'Nguyễn Đỗ Chương', date: '06/03/2026' },
+  { name: 'Phan Văn Trường', date: '20/12/2025' },
 ]
+
+const REVIEW_COMMENTS: Record<string, string[]> = {
+  fridge: [
+    'Hài lòng nha, chia nhiều ngăn để được các loại thực phẩm khác nhau rất tiện, để vào lấy ra không bị lẫn mùi.',
+    'Thấy bảo hành 24 tháng là mua ngay. Hàng nội địa Nhật nên cũng yên tâm. Nhân viên giao hàng chuyên nghiệp, tận tâm.',
+    'Tủ lớn để thoải mái đồ ăn luôn, chạy êm không ù ù, rất hài lòng.',
+    'Giao hàng và tư vấn nhanh, mình cần gấp nên shop hỗ trợ nhiệt tình. Xài hơn 1 tuần rồi, tủ chạy êm, mong tiết kiệm điện!',
+    'Các ngăn chứa rộng rãi, làm lạnh nhanh, tính năng khử mùi tốt.',
+  ],
+  bathroom: [
+    'Nắp đóng mở êm nhẹ, vòi rửa mạnh mà không bắn nước. Hàng Nhật xài thích thật.',
+    'Thấy bảo hành 24 tháng là đặt ngay. Lắp đặt nhanh, nhân viên tư vấn nhiệt tình.',
+    'Nhiều chế độ rửa, nước ấm ổn định, vệ sinh sạch sẽ, rất hài lòng.',
+    'Giao hàng và tư vấn nhanh, shop hỗ trợ tận tình. Dùng hơn tuần rồi, vận hành êm, tiết kiệm nước.',
+    'Chất liệu chắc chắn, khử mùi tốt, đúng chất hàng nội địa Nhật.',
+  ],
+  air_purifier: [
+    'Máy chạy êm, lọc nhanh, phòng đỡ mùi hẳn. Hàng nội địa Nhật xài yên tâm.',
+    'Bảo hành 24 tháng nên mua liền. Giao hàng tận tâm, đóng gói cẩn thận.',
+    'Cảm biến nhạy, tự tăng giảm theo không khí, ban đêm chạy êm ngủ ngon.',
+    'Tư vấn nhanh, cần gấp giao vẫn kịp. Dùng tuần rồi thấy nhẹ mũi hơn, mong tiết kiệm điện.',
+    'Thiết kế gọn, tạo ẩm tốt, lọc bụi mịn ổn. Rất hài lòng.',
+  ],
+  kitchen: [
+    'Nấu nhanh, nhiều chế độ tự động tiện thật. Hàng Nhật bền, đáng tiền.',
+    'Bảo hành 24 tháng là yên tâm. Giao hàng nhanh, nhân viên tư vấn nhiệt tình.',
+    'Làm chín đều, dễ vệ sinh, dùng hằng ngày rất ổn.',
+    'Tư vấn kỹ, cần gấp giao vẫn kịp. Xài tuần rồi thấy chạy êm, tiết kiệm điện.',
+    'Thiết kế đẹp, vận hành êm, đúng chất lượng hàng nội địa Nhật.',
+  ],
+  washer: [
+    'Giặt sạch, vắt khô êm, ít ồn. Hàng nội địa Nhật xài thích.',
+    'Bảo hành 24 tháng là đặt liền. Giao lắp tận nơi, chuyên nghiệp.',
+    'Nhiều chế độ giặt, tiết kiệm nước, quần áo thơm sạch.',
+    'Giao nhanh, tư vấn tốt. Dùng tuần rồi máy chạy êm, mong tiết kiệm điện.',
+    'Lồng giặt rộng, vận hành ổn định, rất hài lòng.',
+  ],
+  climate: [
+    'Làm mát/ấm nhanh, chạy êm, tiết kiệm điện. Hàng Nhật xài yên tâm.',
+    'Bảo hành 24 tháng nên mua ngay. Giao hàng nhanh, tận tâm.',
+    'Nhiều chế độ, cảm biến nhạy, dùng cả ngày vẫn ổn.',
+    'Tư vấn nhanh, cần gấp giao kịp. Xài tuần rồi thấy êm và tiết kiệm.',
+    'Thiết kế gọn, vận hành êm, đúng chất lượng nội địa Nhật.',
+  ],
+  generic: [
+    'Hàng nội địa Nhật mới 100%, đóng gói cẩn thận, đúng mô tả. Rất hài lòng.',
+    'Thấy bảo hành 24 tháng là yên tâm đặt. Nhân viên giao hàng chuyên nghiệp, tận tâm.',
+    'Sản phẩm chất lượng, vận hành êm, dùng rất thích.',
+    'Giao hàng và tư vấn nhanh, shop hỗ trợ nhiệt tình. Sẽ ủng hộ tiếp.',
+    'Đúng hàng chính hãng Nhật, đáng tiền, recommend cho mọi người.',
+  ],
+}
+
+function detectCategory(productName: string): string {
+  const n = (productName ?? '').toLowerCase()
+  if (/tủ lạnh/.test(n)) return 'fridge'
+  if (/nắp (bệt|rửa)|bồn cầu|vòi|sen tắm|bidet|toilet|chậu rửa|vệ sinh/.test(n)) return 'bathroom'
+  if (/lọc không khí|lọc khí|hút ẩm|tạo ẩm|lọc nước/.test(n)) return 'air_purifier'
+  if (/máy giặt/.test(n)) return 'washer'
+  if (/lò vi sóng|nồi cơm|nồi chiên|bếp từ|bếp ga|máy rửa bát|ấm|máy xay/.test(n)) return 'kitchen'
+  if (/quạt|máy sưởi|điều hòa|máy lạnh/.test(n)) return 'climate'
+  return 'generic'
+}
+
+function buildReviews(productName: string, productImages: string[]) {
+  const comments = REVIEW_COMMENTS[detectCategory(productName)] ?? REVIEW_COMMENTS.generic!
+  return REVIEWERS.map((r, i) => ({
+    id: i + 1,
+    stars: 5,
+    name: r.name,
+    date: r.date,
+    comment: comments[i] ?? comments[0]!,
+    // Ảnh review = ẢNH SẢN PHẨM THẬT (xoay vòng), gán cho vài review cho tự nhiên
+    images: productImages.length && (i === 0 || i === 2 || i === 4)
+      ? [productImages[i % productImages.length]!]
+      : [],
+  }))
+}
 
 // ── YouTube helper ────────────────────────────────────────────────────────────
 function getYoutubeId(url: string): string | null {
@@ -207,8 +255,9 @@ function VideosSection({ items }: { items: Attribute[] }) {
 
 // ── Main Component ────────────────────────────────────────────────────────────
 export function ProductTabs({
-  description, attributes, specGroups, faqItems, videoItems, productId, productName,
+  description, attributes, specGroups, faqItems, videoItems, productId, productName, productImages = [],
 }: Props) {
+  const reviews = buildReviews(productName, productImages)
   const hasDesc    = !!description
   const hasSpecs   = attributes.length > 0 || specGroups.length > 0
   const hasFaq     = faqItems.length > 0
@@ -271,7 +320,7 @@ export function ProductTabs({
         {/* Heading */}
         <div className="px-5 pt-5 pb-3">
           <h3 className="text-base font-bold text-gray-900">
-            {SAMPLE_REVIEWS.length} đánh giá cho {productName}
+            {reviews.length} đánh giá cho {productName}
           </h3>
         </div>
 
@@ -380,7 +429,7 @@ export function ProductTabs({
 
         {/* Review list */}
         <div className="divide-y divide-gray-50">
-          {SAMPLE_REVIEWS.map((r) => (
+          {reviews.map((r) => (
             <div key={r.id} className="px-5 py-4">
               <div className="flex flex-wrap items-center gap-2 mb-1">
                 <span className="text-yellow-400 text-sm tracking-tight">{'★'.repeat(r.stars)}</span>

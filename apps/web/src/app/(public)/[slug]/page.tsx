@@ -479,6 +479,7 @@ export default async function ProductDetailPage({ params }: Props) {
             videoItems={videoItems}
             productId={product.id}
             productName={product.name}
+            productImages={product.images.map((img) => img.url)}
           />
         </div>
 
