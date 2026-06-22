@@ -35,6 +35,11 @@ export async function POST(req: NextRequest) {
     if (result.specifications?.length) {
       result.specifications = await translateSpecs(result.specifications)
     }
+    // Dịch tên màu biến thể sang tiếng Việt
+    if (result.colorVariants?.length) {
+      const tr = await translateSpecs(result.colorVariants.map((c) => ({ label: '', value: c.name })))
+      result.colorVariants = result.colorVariants.map((c, i) => ({ ...c, name: tr[i]?.value || c.name }))
+    }
 
     return apiSuccess(result, undefined, 200)
   } catch (err) {

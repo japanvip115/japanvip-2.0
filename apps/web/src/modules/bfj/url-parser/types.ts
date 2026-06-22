@@ -7,7 +7,8 @@ export type ParsedProduct = {
   productImage: string | null
   images: string[]
   unitPriceJpy: number | null
-  priceOptionsJpy?: number[]      // Nhiều biến thể (khác màu) → danh sách giá để admin chọn
+  priceOptionsJpy?: number[]      // Nhiều biến thể (khác màu) → danh sách giá tham khảo (khoảng giá)
+  colorVariants?: { name: string; image: string }[]  // Biến thể màu: ảnh + tên (khách biết có màu gì)
   weightKg: number | null         // Product weight in kg for shipping tier
   variations: string[]
   available: boolean

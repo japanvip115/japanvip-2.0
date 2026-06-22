@@ -560,21 +560,24 @@ export function BfjUrlForm({ fees }: { fees: StaticFees }) {
                       <p className="text-sm font-semibold text-amber-700">⚠ Không lấy được giá tự động</p>
                       <p className="text-xs text-amber-600 mt-0.5">Sản phẩm này ẩn giá — bạn có thể nhập thủ công</p>
                     </div>
-                    {result.priceOptionsJpy && result.priceOptionsJpy.length > 0 && (
-                      <div>
-                        <p className="mb-1.5 text-xs font-semibold text-amber-700">Sản phẩm nhiều biến thể — chọn giá đúng màu/cấu hình:</p>
-                        <div className="flex flex-wrap gap-2">
-                          {result.priceOptionsJpy.map((po) => (
-                            <button
-                              key={po}
-                              type="button"
-                              onClick={() => setManualPriceJpy(String(po))}
-                              className={`rounded-lg border px-3 py-1.5 text-sm font-bold transition cursor-pointer ${manualPriceJpy === String(po) ? 'border-amber-500 bg-amber-500 text-white' : 'border-amber-300 bg-white text-amber-700 hover:border-amber-500'}`}
-                            >
-                              ¥{po.toLocaleString('ja-JP')}
-                            </button>
-                          ))}
-                        </div>
+                    {((result.colorVariants && result.colorVariants.length > 0) || (result.priceOptionsJpy && result.priceOptionsJpy.length > 1)) && (
+                      <div className="space-y-2 rounded-lg border border-amber-300 bg-amber-100/60 p-3">
+                        <p className="text-xs font-bold text-amber-800">⚠ Sản phẩm nhiều màu/cấu hình — giá khác nhau</p>
+                        {result.colorVariants && result.colorVariants.length > 0 && (
+                          <div className="flex flex-wrap gap-2">
+                            {result.colorVariants.map((cv) => (
+                              <div key={cv.name + cv.image} className="flex w-16 flex-col items-center">
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img src={cv.image} alt={cv.name} className="h-12 w-12 rounded-lg border border-amber-200 bg-white object-contain" />
+                                <span className="mt-0.5 line-clamp-2 text-center text-[10px] leading-tight text-amber-800">{cv.name}</span>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                        {result.priceOptionsJpy && result.priceOptionsJpy.length > 1 && (
+                          <p className="text-xs text-amber-700">Giá tham khảo: <b>¥{Math.min(...result.priceOptionsJpy).toLocaleString('ja-JP')} – ¥{Math.max(...result.priceOptionsJpy).toLocaleString('ja-JP')}</b> (tuỳ màu/cấu hình)</p>
+                        )}
+                        <p className="text-[11px] leading-relaxed text-amber-800">👉 Để đặt <b>ĐÚNG sản phẩm</b>: mở <a href={result?.sourceUrl} target="_blank" rel="noopener noreferrer" className="font-semibold underline">trang Amazon</a> → chọn đúng màu/cấu hình → copy link → dán lại. JapanVIP sẽ mua đúng link bạn dán.</p>
                       </div>
                     )}
                     <div>

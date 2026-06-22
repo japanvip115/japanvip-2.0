@@ -317,6 +317,19 @@ export async function parseAmazonJp(url: string): Promise<ParsedProduct> {
     if (v) variations.push(`Size: ${v}`)
   })
 
+  // ── Biến thể màu (ảnh + tên) — để khách biết có những màu gì, tránh đặt nhầm biến thể ──
+  const colorVariants: { name: string; image: string }[] = []
+  const seenColorVar = new Set<string>()
+  $('[id*="twister"] li img, [class*="swatch"] li img, [class*="dimension"] li img, #inline-twister-card li img').each((_, el) => {
+    const name = ($(el).attr('alt') ?? '').trim()
+    let img = $(el).attr('src') ?? ''
+    if (!name || name.length > 40 || /利用可能なオプション|See available|表示|options/i.test(name)) return
+    if (img.startsWith('//')) img = 'https:' + img
+    if (!img.startsWith('http') || seenColorVar.has(name)) return
+    seenColorVar.add(name)
+    colorVariants.push({ name, image: img })
+  })
+
   // ── Availability ──────────────────────────────────────────────────────────
   // #outOfStock is always in DOM (hidden via JS when in-stock) — can't trust it in static HTML
   // Rely on explicit out-of-stock text signals instead
@@ -347,6 +360,7 @@ export async function parseAmazonJp(url: string): Promise<ParsedProduct> {
     images,
     unitPriceJpy,
     priceOptionsJpy,
+    colorVariants: colorVariants.length > 0 ? colorVariants : undefined,
     weightKg,
     variations,
     available,
