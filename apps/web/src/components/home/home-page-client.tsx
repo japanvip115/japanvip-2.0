@@ -70,6 +70,7 @@ export type CategoryItem = {
   description: string | null
   icon: string | null
   _count: { products: number }
+  children?: { _count: { products: number } }[]
 }
 
 export type ProductItem = {
@@ -900,7 +901,7 @@ export default function HomePageClient({
                     <div className="cat-info">
                       <h3 style={{textTransform:'uppercase'}}>{cat.name}</h3>
                       {cat.description && <span>{cat.description}</span>}
-                      <div className="cat-count">{cat._count.products} sản phẩm</div>
+                      <div className="cat-count">{cat._count.products + (cat.children?.reduce((s, c) => s + c._count.products, 0) ?? 0)} sản phẩm</div>
                     </div>
                   </div>
                 ))}

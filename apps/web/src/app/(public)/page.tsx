@@ -36,6 +36,7 @@ export default async function HomePage() {
         description: true,
         icon: true,
         _count: { select: { products: true } },
+        children: { select: { _count: { select: { products: true } } } },
       },
     }),
 
