@@ -233,10 +233,17 @@ export async function parseAmazonJp(url: string): Promise<ParsedProduct> {
   // ⚠️ KHÔNG dùng .a-offscreen làm giá: khi buybox ẩn ("cannot ship"), các .a-offscreen còn lại
   // CHỈ là giá widget "sản phẩm liên quan/gợi ý/mua kèm" (vd giá đỡ ¥6.979) → luôn sai cho máy chính,
   // và DOM Amazon đổi mỗi lần fetch nên không lọc tin cậy được. Giá ẩn → để khách NHẬP TAY (đúng luật gốc).
-  const jsonLdPrice = extractPriceFromJsonLd()
-  const domPrice = extractPriceFromDom()
+  //
+  // Loại giá thấp bất thường (parse nhầm điểm thưởng / số review / chữ số rác — vd "¥17" cho hàng vật lý).
+  // Áp dụng cho TỪNG nguồn để một giá rác không che mất giá đúng từ nguồn khác trong chuỗi ?? bên dưới.
+  const MIN_PRICE_JPY = 100
+  const sanePrice = (n: number | null): number | null =>
+    n !== null && n >= MIN_PRICE_JPY ? n : null
+
+  const jsonLdPrice = sanePrice(extractPriceFromJsonLd())
+  const domPrice = sanePrice(extractPriceFromDom())
   // Offer-listing = giá thật của CÙNG ASIN từ người bán khác → đáng tin; chỉ gọi khi buybox ẩn.
-  const offerPrice = (!jsonLdPrice && !domPrice) ? await fetchOfferListingPrice() : null
+  const offerPrice = (!jsonLdPrice && !domPrice) ? sanePrice(await fetchOfferListingPrice()) : null
 
   const unitPriceJpy = jsonLdPrice ?? domPrice ?? offerPrice
   // Bỏ "dải giá tham khảo": nguồn cũ (.a-offscreen) là giá widget hàng liên quan → sai. Khi giá ẩn = nhập tay.
