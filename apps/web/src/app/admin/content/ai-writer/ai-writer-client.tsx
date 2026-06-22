@@ -231,6 +231,10 @@ export function AiWriterClient({ products }: { products: ProductSummary[] }) {
   const [extraImages, setExtraImages] = useState<string[]>([])
   const [searchingImages, setSearchingImages] = useState(false)
   const [searchImagesMsg, setSearchImagesMsg] = useState('')
+  const [featurePageUrl, setFeaturePageUrl] = useState('')
+  const [pasteImageUrl, setPasteImageUrl] = useState('')
+  const [scrapingFeature, setScrapingFeature] = useState(false)
+  const [featureMsg, setFeatureMsg] = useState('')
   const [hasDraft, setHasDraft] = useState(false)
 
   // ── Competitor URL mode state ──
@@ -391,6 +395,9 @@ export function AiWriterClient({ products }: { products: ProductSummary[] }) {
     setSelectedImages(new Set())
     setExtraImages([])
     setSearchImagesMsg('')
+    setFeaturePageUrl('')
+    setPasteImageUrl('')
+    setFeatureMsg('')
     setOutputs({})
     setSaveStatus('idle')
     setHasDraft(false)
@@ -459,7 +466,51 @@ export function AiWriterClient({ products }: { products: ProductSummary[] }) {
     }
   }
 
-  // ── Tự dịch tên sản phẩm sang tiếng Việt (Loại + Thương hiệu + Model + Dung tích) ──
+  // ── Dán URL ảnh trực tiếp (1 hoặc nhiều dòng) → thêm vào kho ảnh để chọn ──
+  function addPastedImages() {
+    const urls = pasteImageUrl
+      .split(/[\s\n,]+/)
+      .map(u => u.trim())
+      .filter(u => /^https?:\/\//i.test(u))
+    if (urls.length === 0) { setFeatureMsg('Chưa có URL ảnh hợp lệ'); return }
+    const existing = new Set([...(japanProduct?.images ?? []), ...extraImages])
+    const fresh = urls.filter(u => !existing.has(u))
+    if (fresh.length === 0) { setFeatureMsg('Ảnh đã có trong danh sách'); return }
+    setExtraImages(prev => [...prev, ...fresh])
+    setPasteImageUrl('')
+    setFeatureMsg(`+${fresh.length} ảnh đã thêm`)
+  }
+
+  // ── Lấy ảnh giới thiệu tính năng từ TRANG CHÍNH HÃNG (Playwright render JS, chạy local) ──
+  async function scrapeFeatureImages() {
+    const url = featurePageUrl.trim()
+    if (!/^https?:\/\//i.test(url) || scrapingFeature) { setFeatureMsg('Dán URL trang hãng hợp lệ'); return }
+    setScrapingFeature(true)
+    setFeatureMsg('')
+    try {
+      const res = await fetch('/api/v1/admin/ai/scrape-feature-images', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url }),
+      })
+      const data = await res.json()
+      if (!res.ok || !data.success) {
+        setFeatureMsg(data.error ?? 'Không lấy được ảnh')
+        return
+      }
+      const existing = new Set([...(japanProduct?.images ?? []), ...extraImages])
+      const fresh = (data.images as string[]).filter(u => !existing.has(u))
+      if (fresh.length === 0) { setFeatureMsg('Không có ảnh mới'); return }
+      setExtraImages(prev => [...prev, ...fresh])
+      setFeatureMsg(`+${fresh.length} ảnh tính năng từ trang hãng`)
+    } catch {
+      setFeatureMsg('Lỗi kết nối')
+    } finally {
+      setScrapingFeature(false)
+    }
+  }
+
+  // ── Tự dịch tên sản phẩm sang tiếng Việt (Loại cốt lõi + Hãng + Model + Tính năng phụ + Thông số) ──
   async function translateName(): Promise<string> {
     if (!japanProduct || translatingName) return ''
     setTranslatingName(true)
@@ -875,7 +926,7 @@ export function AiWriterClient({ products }: { products: ProductSummary[] }) {
                       <Lock className="h-3 w-3" /> Rule đã chốt &amp; khoá (2026-06)
                     </p>
                     <ul className="space-y-1 text-gray-400">
-                      <li>✔ Dịch tên VN [Loại][Hãng][Model][Dung tích]</li>
+                      <li>✔ Dịch tên VN [Loại][Hãng][Model][Tính năng][Thông số]</li>
                       <li>✔ Chèn ảnh theo ngữ cảnh + lưu R2</li>
                       <li>✔ Quy đổi giá ¥→VNĐ</li>
                       <li>✔ Bài thuần tiếng Việt, không placeholder máy móc</li>
@@ -1199,6 +1250,44 @@ export function AiWriterClient({ products }: { products: ProductSummary[] }) {
                               : <><Search className="h-3 w-3" /> Tìm thêm ảnh</>}
                           </button>
                         </div>
+                      </div>
+                      {/* Lấy ảnh tính năng từ trang chính hãng (Playwright, local) + dán URL ảnh thủ công */}
+                      <div className="mb-2 space-y-1.5 rounded-lg border border-gray-700 bg-gray-900/40 p-2">
+                        <div className="flex items-center gap-1.5">
+                          <input
+                            type="url"
+                            value={featurePageUrl}
+                            onChange={e => setFeaturePageUrl(e.target.value)}
+                            placeholder="URL trang chính hãng (ảnh giới thiệu tính năng)…"
+                            className="flex-1 rounded bg-gray-800 border border-gray-700 px-2 py-1 text-[11px] text-gray-200 outline-none focus:border-blue-500"
+                          />
+                          <button
+                            type="button"
+                            onClick={scrapeFeatureImages}
+                            disabled={scrapingFeature}
+                            className="flex items-center gap-1 rounded bg-blue-600/90 hover:bg-blue-600 disabled:bg-gray-700 px-2 py-1 text-[10px] font-bold text-white transition whitespace-nowrap"
+                          >
+                            {scrapingFeature ? <><Loader2 className="h-3 w-3 animate-spin" /> Đang lấy…</> : <>Lấy ảnh trang hãng</>}
+                          </button>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <input
+                            type="url"
+                            value={pasteImageUrl}
+                            onChange={e => setPasteImageUrl(e.target.value)}
+                            placeholder="Dán URL ảnh trực tiếp (nhiều ảnh cách nhau bằng xuống dòng/dấu phẩy)…"
+                            className="flex-1 rounded bg-gray-800 border border-gray-700 px-2 py-1 text-[11px] text-gray-200 outline-none focus:border-blue-500"
+                          />
+                          <button
+                            type="button"
+                            onClick={addPastedImages}
+                            className="rounded bg-gray-700 hover:bg-gray-600 px-2 py-1 text-[10px] font-bold text-white transition whitespace-nowrap"
+                          >
+                            Thêm URL
+                          </button>
+                        </div>
+                        {featureMsg && <p className="text-[10px] text-emerald-400">{featureMsg}</p>}
+                        <p className="text-[9px] text-gray-500">⚙️ “Lấy ảnh trang hãng” chỉ chạy ở máy local (cần Chrome). Ảnh lấy về sẽ hiện bên dưới để chọn.</p>
                       </div>
                       <div className="grid grid-cols-4 gap-1.5">
                         {allImages.map((url, i) => {

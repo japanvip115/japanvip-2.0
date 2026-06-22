@@ -35,11 +35,35 @@ async function downloadAndUploadImage(imageUrl: string, referer: string): Promis
     const mime = contentType.split(';')[0]?.trim() ?? 'image/jpeg'
     const allowed = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/avif']
     const safeMime = allowed.includes(mime) ? mime : 'image/jpeg'
-    const buffer = Buffer.from(await res.arrayBuffer())
-    if (buffer.byteLength > 10 * 1024 * 1024) return null
-    const ext = safeMime.split('/')[1] ?? 'jpg'
+    const rawBuffer = Buffer.from(await res.arrayBuffer())
+    if (rawBuffer.byteLength > 10 * 1024 * 1024) return null
+
+    // 🔒 Chuẩn hoá ảnh, GIỮ NGUYÊN tỉ lệ, KHÔNG phóng to, KHÔNG méo, KHÔNG cắt:
+    //  • Ảnh NGANG (tỉ lệ ≥1.3 — banner/giới thiệu tính năng = ẢNH NỘI DUNG) → tối đa 1200×650.
+    //  • Ảnh vuông/đứng (ẢNH SẢN PHẨM nền trắng) → tối đa 850×850.
+    let outBuffer: Buffer = rawBuffer
+    let outMime = safeMime
+    let ext = safeMime.split('/')[1] ?? 'jpg'
+    try {
+      const sharpModule = require('sharp')
+      const meta = await sharpModule(rawBuffer).metadata()
+      const mw = meta.width ?? 0
+      const mh = meta.height ?? 0
+      const isContent = mw > 0 && mh > 0 && mw / mh >= 1.3
+      const box = isContent ? { w: 1200, h: 650 } : { w: 850, h: 850 }
+      outBuffer = await sharpModule(rawBuffer)
+        .resize(box.w, box.h, { fit: 'inside', withoutEnlargement: true })
+        .flatten({ background: { r: 255, g: 255, b: 255 } })
+        .jpeg({ quality: 90 })
+        .toBuffer()
+      outMime = 'image/jpeg'
+      ext = 'jpg'
+    } catch {
+      // sharp lỗi → giữ ảnh gốc, vẫn upload (không chặn publish)
+    }
+
     const filename = `japan-${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
-    return await uploadFile('products', buffer, safeMime, filename)
+    return await uploadFile('products', outBuffer, outMime, filename)
   } catch {
     return null
   }

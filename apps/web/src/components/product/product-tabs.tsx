@@ -94,9 +94,22 @@ function FaqAccordion({ items }: { items: Attribute[] }) {
 }
 
 // ── Specs Table ───────────────────────────────────────────────────────────────
+// Thứ tự nhóm thông số cố định TOÀN SITE: Thông tin chung → Thông số kỹ thuật → Phụ kiện → Kích thước & Trọng lượng → Vận hành.
+// Nhóm khác (công nghệ/tính năng...) xếp sau Thông số kỹ thuật. Sort stable: nhóm cùng hạng giữ thứ tự gốc.
+function groupRank(g: string): number {
+  const s = g.toLowerCase()
+  if (s.includes('thông tin')) return 1
+  if (s.includes('thông số')) return 2
+  if (s.includes('phụ kiện')) return 3
+  if (s.includes('kích thước') || s.includes('trọng lượng')) return 4
+  if (s.includes('vận hành')) return 5
+  return 2.5
+}
+
 function SpecsTable({ attributes, specGroups }: { attributes: Attribute[]; specGroups: SpecGroup[] }) {
   const hasGroups = specGroups.length > 0
   const hasFlat = attributes.length > 0
+  const orderedGroups = [...specGroups].sort((a, b) => groupRank(a.group) - groupRank(b.group))
 
   if (!hasGroups && !hasFlat) {
     return (
@@ -132,8 +145,8 @@ function SpecsTable({ attributes, specGroups }: { attributes: Attribute[]; specG
               ))
             })()}
 
-            {/* Grouped specs */}
-            {specGroups.map((grp) => (
+            {/* Grouped specs (thứ tự cố định toàn site) */}
+            {orderedGroups.map((grp) => (
               <React.Fragment key={`grp-${grp.group}`}>
                 <tr className="bg-brand-red/5">
                   <td colSpan={2} className="px-5 py-2 text-xs font-bold uppercase tracking-wider text-brand-red">

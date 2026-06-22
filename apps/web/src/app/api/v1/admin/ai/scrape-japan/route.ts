@@ -378,30 +378,25 @@ async function scrapeKakaku(url: string) {
     } catch { /* ignore */ }
   })
 
-  // Gallery images
-  for (const sel of [
-    '.itemImage img', '.mainImage img', '[class*="Gallery"] img',
-    '[class*="itemImg"] img', '#imgBox img', '.img-gallery img',
-    '[class*="productImage"] img',
-  ]) {
-    $(sel).each((_, el) => {
-      const src = $(el).attr('data-src') || $(el).attr('data-lazy') || $(el).attr('src') || ''
-      const resolved = resolveUrl(src, base)
-      if (resolved && !images.includes(resolved) && resolved.startsWith('http')) images.push(resolved)
-    })
-    if (images.length >= 8) break
-  }
+  // Ảnh sản phẩm chính thức kakaku: /productimage/{size}/{ID}.jpg (nền trắng sạch).
+  // Nâng các bản nhỏ (m/s/l/mid) → fullscale để lấy ảnh chất lượng cao nhất.
+  const itemId = (url.match(/\/item\/(K\d+)/i) || [])[1] ?? ''
+  $('img').each((_, el) => {
+    let src = $(el).attr('data-src') || $(el).attr('data-lazy') || $(el).attr('src') || ''
+    if (!/\/productimage\//i.test(src)) return
+    src = src.replace(/\/productimage\/(m|s|l|mid)\//i, '/productimage/fullscale/')
+    const resolved = resolveUrl(src, base)
+    if (resolved && resolved.startsWith('http') && !images.includes(resolved)) images.push(resolved)
+  })
+  // Ưu tiên ảnh đúng item đang xem (itemId) lên đầu, biến thể màu khác xếp sau
+  if (itemId) images.sort((a, b) => (b.includes(itemId) ? 1 : 0) - (a.includes(itemId) ? 1 : 0))
 
-  // OG image fallback
-  const ogImg = $('meta[property="og:image"]').attr('content') ?? ''
-  if (ogImg && !images.includes(ogImg)) images.unshift(resolveUrl(ogImg, base))
-
+  // Chỉ giữ ảnh sản phẩm chính thức — loại bỏ shopicon/logo/btn/balloon/icon trang
   const cleanImages = [...new Set(images)]
     .filter(src =>
       src.startsWith('http') &&
-      !src.match(/\/(logo|icon|sprite|avatar|blank|placeholder)\b/i) &&
-      !src.match(/\.(svg|gif)$/i) &&
-      !src.match(/\d{1,2}x\d{1,2}\./)
+      /\/productimage\//i.test(src) &&
+      !src.match(/\.(svg|gif)$/i)
     )
     .slice(0, 10)
 

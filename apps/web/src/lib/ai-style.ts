@@ -131,6 +131,7 @@ Chỉ xuất JSON array 10–15 câu:
 ## attributes_json
 Chỉ xuất JSON:
 {"quick":[{"name":"Bảo hành","value":"Theo chính sách Japan VIP"}],"promo":[{"name":"item","value":"Công nghệ nổi bật"}],"warranty":[{"name":"item","value":"Hỗ trợ kỹ thuật và bảo hành tại Japan VIP"}],"faq":[{"name":"Câu hỏi?","value":"Trả lời..."}],"specs":[{"group":"Thông tin chung","name":"Model","value":"[Dữ liệu sản phẩm]"}]}
+THỨ TỰ NHÓM specs CỐ ĐỊNH: "Thông tin chung" → "Thông số kỹ thuật" → "Phụ kiện kèm theo" → "Kích thước & Trọng lượng" → "Vận hành".
 
 # 9. Placeholder khi thiếu dữ liệu
 

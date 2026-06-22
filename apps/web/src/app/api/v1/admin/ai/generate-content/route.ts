@@ -205,10 +205,13 @@ ${extra ? `${extra}\n` : ''}${specs ? `Thông số:\n${specs}\n` : ''}
 Nhiệm vụ: Tạo TÊN HIỂN THỊ tiếng Việt cho sản phẩm này để đăng lên website japanvip.vn.
 
 QUY TẮC BẮT BUỘC:
-- Định dạng cố định: [Loại sản phẩm tiếng Việt] [Thương hiệu] [Model] [Dung tích]
+- Định dạng cố định: [Loại sản phẩm cốt lõi tiếng Việt] [Thương hiệu] [Model] [Tính năng phụ] [Thông số đo]
+  · Loại cốt lõi = danh từ loại sản phẩm chính (vd "Máy lọc không khí", "Lò vi sóng", "Nồi cơm điện").
+  · Tính năng phụ = chức năng/đặc tính bổ sung, đặt NGAY SAU model (vd "tạo ẩm", "hơi nước", "không dầu", "cao tần"). Không có thì bỏ.
+  · Thông số đo = dung tích/diện tích/công suất nếu có (vd "41m²", "23L"). GIỮ NGUYÊN đơn vị (m², L...) kể cả dấu ².
+- Thương hiệu + Model phải đứng NGAY SAU loại cốt lõi — TUYỆT ĐỐI KHÔNG chèn tính năng phụ vào giữa loại và thương hiệu.
 - LOẠI BỎ HOÀN TOÀN: ký tự tiếng Nhật (【Amazon.co.jp限定】, (東芝)...), và các từ tiếng Anh dư thừa (Vertical Opening, Compact, For Single Living/Family, Easy Operation, LCD Panel...).
-- CHỈ giữ: loại sản phẩm (dịch sang tiếng Việt) + thương hiệu + model + dung tích (nếu có trong dữ liệu).
-- Ví dụ: "Lò vi sóng hơi nước Toshiba ER-60ZB(K) 23L"
+- Ví dụ: "Máy lọc không khí Daikin MCK556A-T tạo ẩm 41m²", "Lò vi sóng Toshiba ER-60ZB(K) hơi nước 23L"
 - Tối đa 90 ký tự. Không dấu nháy, không markdown, không giải thích.
 - Trả về DUY NHẤT tên sản phẩm trên một dòng, bọc trong <h1>...</h1>.`
 }
@@ -261,7 +264,7 @@ Chế độ: faq_json
 Tạo 10–15 câu HỎI & ĐÁP thực tế nhất khách hàng hay hỏi về sản phẩm này.
 Ưu tiên: điện áp 100V, biến áp, bảo hành tại Japan VIP, vận chuyển, lắp đặt, so sánh model, chi phí điện, vệ sinh bảo trì.
 Trả lời chi tiết, thực tế. Chỉ đưa số liệu khi có dữ liệu xác thực.
-Xuất JSON array duy nhất: [{"name": "Câu hỏi?", "value": "Trả lời..."}]${instruction}`
+Xuất JSON array duy nhất: [{"name": "Câu hỏi?", "value": "Trả lời..."}]${VI_ONLY_RULE}${NO_PLACEHOLDER_RULE}${instruction}`
 
     case 'attributes':
       return `${HTML_ONLY}${base}
@@ -271,14 +274,14 @@ Tạo đầy đủ attributes sản phẩm theo JSON format trong system prompt:
 - quick: 6–8 thông số nhanh (chỉ điền trường có dữ liệu xác thực)
 - promo: 5–7 tính năng nổi bật
 - warranty: thông tin bảo hành (dùng "Bảo hành theo chính sách Japan VIP" nếu không có dữ liệu cụ thể)
-- specs: toàn bộ thông số kỹ thuật theo nhóm (trường thiếu thì BỎ HẲN, không thêm vào JSON)
+- specs: toàn bộ thông số kỹ thuật theo nhóm. THỨ TỰ NHÓM CỐ ĐỊNH (đúng từng chữ): "Thông tin chung" (Thương hiệu/Model/Màu sắc/Xuất xứ) → "Thông số kỹ thuật" → "Phụ kiện kèm theo" → "Kích thước & Trọng lượng" → "Vận hành". Trường thiếu thì BỎ HẲN, không thêm vào JSON.
 - faq: 5 câu hỏi thường gặp nhất
 Xuất JSON duy nhất, đúng format.${VI_ONLY_RULE}${NO_PLACEHOLDER_RULE}${instruction}`
 
     case 'seo':
       return `${HTML_ONLY}${base}
 Tạo SEO metadata cho sản phẩm. Xuất JSON:
-{"title": "...(60 ký tự, chứa từ khóa chính)","description": "...(150-160 ký tự, hấp dẫn, có CTA)","keywords": ["kw1","kw2","kw3","kw4","kw5"],"slug": "..."}${instruction}`
+{"title": "...(60 ký tự, chứa từ khóa chính)","description": "...(150-160 ký tự, hấp dẫn, có CTA)","keywords": ["kw1","kw2","kw3","kw4","kw5"],"slug": "..."}${VI_ONLY_RULE}${NO_PLACEHOLDER_RULE}${instruction}`
 
     // 🔒 LOCKED (2026-06) — Văn phong + cấu trúc blog học từ kho đối thủ, đã chốt. Xem CLAUDE.md. KHÔNG tự sửa.
     case 'blog': {
@@ -313,7 +316,7 @@ Chỉ đưa số liệu khi có dữ liệu xác thực. KHÔNG dùng "bảo hà
     }
 
     case 'social':
-      return `${base}
+      return `${HTML_ONLY}${base}
 Hãy tạo BỘ NỘI DUNG SOCIAL MEDIA cho sản phẩm này, dạng HTML. Bao gồm:
 
 **1. Facebook Post (dài — trang thương mại)**
@@ -342,10 +345,10 @@ Hãy tạo BỘ NỘI DUNG SOCIAL MEDIA cho sản phẩm này, dạng HTML. Bao 
 - Hashtag trend + branded (10–15 hashtag)
 - Độ dài: 80–120 từ
 
-Dùng thẻ <h3> cho từng loại post. Giữ giọng văn nhiệt tình, tin cậy, phù hợp thương hiệu hàng Nhật cao cấp.${instruction}`
+Dùng thẻ <h3> cho từng loại post. Giữ giọng văn nhiệt tình, tin cậy, phù hợp thương hiệu hàng Nhật cao cấp.${VI_ONLY_RULE}${NO_PLACEHOLDER_RULE}${instruction}`
 
     case 'email':
-      return `${base}
+      return `${HTML_ONLY}${base}
 Hãy tạo BỘ EMAIL MARKETING dạng HTML cho sản phẩm này. Bao gồm:
 
 **1. Email Giới thiệu sản phẩm mới (Product Launch)**
@@ -372,10 +375,10 @@ Hãy tạo BỘ EMAIL MARKETING dạng HTML cho sản phẩm này. Bao gồm:
 - Upsell nhẹ: phụ kiện hoặc sản phẩm liên quan
 - Độ dài: 150–200 từ
 
-Dùng thẻ <h2> phân cách 3 email. Viết bằng tiếng Việt, tone chuyên nghiệp nhưng thân thiện.${instruction}`
+Dùng thẻ <h2> phân cách 3 email. Viết bằng tiếng Việt, tone chuyên nghiệp nhưng thân thiện.${VI_ONLY_RULE}${NO_PLACEHOLDER_RULE}${instruction}`
 
     case 'video_script':
-      return `${base}
+      return `${HTML_ONLY}${base}
 Hãy viết KỊCH BẢN VIDEO đầy đủ dạng HTML cho sản phẩm này. Bao gồm:
 
 **1. Kịch bản YouTube Review (7–10 phút)**
@@ -405,10 +408,10 @@ Ghi rõ: cảnh quay gợi ý, text overlay, nhạc nền
 - Description đầy đủ: intro → timestamp → thông tin Japan VIP → hashtag
 - Tags (20 tags)
 
-Dùng thẻ <h2> phân cách 3 phần. Lời thoại tự nhiên, tiếng Việt gần gũi.${instruction}`
+Dùng thẻ <h2> phân cách 3 phần. Lời thoại tự nhiên, tiếng Việt gần gũi.${VI_ONLY_RULE}${NO_PLACEHOLDER_RULE}${instruction}`
 
     case 'comparison':
-      return `${base}
+      return `${HTML_ONLY}${base}
 Hãy viết BÀI SO SÁNH SẢN PHẨM hoàn chỉnh dạng HTML. Cấu trúc:
 
 **1. Giới thiệu (100–150 từ)**
@@ -437,7 +440,7 @@ Tạo bảng HTML 4–5 cột:
 - Lý do chọn Japan VIP
 - CTA: Hotline 09.2729.8888, website japanvip.vn
 
-Viết thành thật, khách quan — thừa nhận điểm yếu nếu có để tăng độ tin cậy.${instruction}`
+Viết thành thật, khách quan — thừa nhận điểm yếu nếu có để tăng độ tin cậy.${VI_ONLY_RULE}${NO_PLACEHOLDER_RULE}${instruction}`
 
     default:
       return `${base}${instruction}`
