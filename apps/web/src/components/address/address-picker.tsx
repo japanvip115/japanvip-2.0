@@ -79,7 +79,7 @@ export function AddressPicker({ selectedId, onSelect }: Props) {
             <span className="text-sm text-gray-500">{selectedAddr.phone}</span>
           </div>
           <p className="mt-0.5 truncate text-xs text-gray-500">
-            {selectedAddr.street}, {selectedAddr.ward}, {selectedAddr.district}, {selectedAddr.province}
+            {[selectedAddr.street, selectedAddr.ward, selectedAddr.district, selectedAddr.province].filter(Boolean).join(', ')}
           </p>
         </div>
         <button
@@ -127,7 +127,7 @@ export function AddressPicker({ selectedId, onSelect }: Props) {
               )}
             </div>
             <p className="text-xs text-gray-500 mt-0.5">
-              {addr.street}, {addr.ward}, {addr.district}, {addr.province}
+              {[addr.street, addr.ward, addr.district, addr.province].filter(Boolean).join(', ')}
             </p>
           </div>
         </label>

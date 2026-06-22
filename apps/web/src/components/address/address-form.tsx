@@ -49,12 +49,20 @@ export function AddressForm({ initial, onSave, onCancel }: Props) {
       .catch(() => {})
   }, [initial?.recipientName, initial?.phone])
 
+  // Dữ liệu hành chính 2025 (2 cấp: Tỉnh/Thành → Phường/Xã), nhúng tĩnh
+  const [vn, setVn] = useState<{ n: string; w: string[] }[]>([])
+  useEffect(() => {
+    fetch('/data/vn-admin-2025.json').then((r) => r.json()).then(setVn).catch(() => {})
+  }, [])
+  const provinceOptions = vn.map((p) => p.n)
+  const wardOptions = vn.find((p) => p.n === form.province)?.w ?? []
+
   const set = (k: keyof AddressData, v: string | boolean) =>
     setForm((prev) => ({ ...prev, [k]: v }))
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!form.recipientName || !form.phone || !form.province || !form.district || !form.ward || !form.street) {
+    if (!form.recipientName || !form.phone || !form.province || !form.ward || !form.street) {
       setError('Vui lòng điền đầy đủ thông tin bắt buộc')
       return
     }
@@ -74,18 +82,6 @@ export function AddressForm({ initial, onSave, onCancel }: Props) {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="grid grid-cols-2 gap-3">
-        <div className="col-span-2">
-          <label className="mb-1 block text-xs font-semibold text-gray-600">
-            Nhãn địa chỉ <span className="font-normal text-gray-400">(tuỳ chọn, VD: Nhà, Cơ quan)</span>
-          </label>
-          <input
-            type="text"
-            value={form.label ?? ''}
-            onChange={(e) => set('label', e.target.value)}
-            placeholder="Nhà riêng"
-            className={inputCls}
-          />
-        </div>
         <div>
           <label className="mb-1 block text-xs font-semibold text-gray-600">Người nhận *</label>
           <input
@@ -110,38 +106,40 @@ export function AddressForm({ initial, onSave, onCancel }: Props) {
         </div>
         <div>
           <label className="mb-1 block text-xs font-semibold text-gray-600">Tỉnh / Thành phố *</label>
-          <input
-            type="text"
+          <select
             value={form.province}
-            onChange={(e) => set('province', e.target.value)}
-            placeholder="Hà Nội"
+            onChange={(e) => { set('province', e.target.value); set('ward', '') }}
             required
-            className={inputCls}
-          />
-        </div>
-        <div>
-          <label className="mb-1 block text-xs font-semibold text-gray-600">Quận / Huyện *</label>
-          <input
-            type="text"
-            value={form.district}
-            onChange={(e) => set('district', e.target.value)}
-            placeholder="Cầu Giấy"
-            required
-            className={inputCls}
-          />
+            className={`${inputCls} bg-white`}
+          >
+            <option value="">— Chọn Tỉnh / Thành —</option>
+            {form.province && !provinceOptions.includes(form.province) && (
+              <option value={form.province}>{form.province}</option>
+            )}
+            {provinceOptions.map((p) => (
+              <option key={p} value={p}>{p}</option>
+            ))}
+          </select>
         </div>
         <div>
           <label className="mb-1 block text-xs font-semibold text-gray-600">Phường / Xã *</label>
-          <input
-            type="text"
+          <select
             value={form.ward}
             onChange={(e) => set('ward', e.target.value)}
-            placeholder="Dịch Vọng"
             required
-            className={inputCls}
-          />
+            disabled={!form.province}
+            className={`${inputCls} bg-white disabled:bg-gray-100 disabled:text-gray-400`}
+          >
+            <option value="">{form.province ? '— Chọn Phường / Xã —' : 'Chọn Tỉnh trước'}</option>
+            {form.ward && !wardOptions.includes(form.ward) && (
+              <option value={form.ward}>{form.ward}</option>
+            )}
+            {wardOptions.map((w) => (
+              <option key={w} value={w}>{w}</option>
+            ))}
+          </select>
         </div>
-        <div>
+        <div className="col-span-2">
           <label className="mb-1 block text-xs font-semibold text-gray-600">Số nhà, tên đường *</label>
           <input
             type="text"

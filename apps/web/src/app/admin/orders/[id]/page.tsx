@@ -200,7 +200,7 @@ export default async function AdminOrderDetailPage({ params }: Props) {
                 <p className="text-xs font-semibold text-gray-500 mb-1.5">Địa chỉ giao hàng</p>
                 <p className="text-sm text-gray-300">{order.address.recipientName} · {order.address.phone}</p>
                 <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">
-                  {order.address.street}, {order.address.ward}, {order.address.district}, {order.address.province}
+                  {[order.address.street, order.address.ward, order.address.district, order.address.province].filter(Boolean).join(', ')}
                 </p>
               </div>
             )}

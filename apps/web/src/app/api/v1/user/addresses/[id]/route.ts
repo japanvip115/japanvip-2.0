@@ -8,7 +8,7 @@ const updateSchema = z.object({
   recipientName: z.string().min(1).max(255).optional(),
   phone: z.string().min(9).max(20).optional(),
   province: z.string().min(1).max(100).optional(),
-  district: z.string().min(1).max(100).optional(),
+  district: z.string().max(100).optional(),
   ward: z.string().min(1).max(100).optional(),
   street: z.string().min(1).optional(),
   isDefault: z.boolean().optional(),

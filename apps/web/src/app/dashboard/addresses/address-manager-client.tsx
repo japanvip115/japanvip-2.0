@@ -111,7 +111,7 @@ export function AddressManagerClient({ initialAddresses }: { initialAddresses: A
                   )}
                 </div>
                 <p className="text-sm text-gray-600">
-                  {addr.street}, {addr.ward}, {addr.district}, {addr.province}
+                  {[addr.street, addr.ward, addr.district, addr.province].filter(Boolean).join(', ')}
                 </p>
               </div>
               <div className="flex items-center gap-2 flex-shrink-0">

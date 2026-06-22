@@ -8,7 +8,8 @@ const addressSchema = z.object({
   recipientName: z.string().min(1).max(255),
   phone: z.string().min(9).max(20),
   province: z.string().min(1).max(100),
-  district: z.string().min(1).max(100),
+  // Cải cách hành chính 2025: bỏ cấp Quận/Huyện → district không còn bắt buộc (gửi rỗng)
+  district: z.string().max(100).optional().default(''),
   ward: z.string().min(1).max(100),
   street: z.string().min(1),
   isDefault: z.boolean().optional(),
