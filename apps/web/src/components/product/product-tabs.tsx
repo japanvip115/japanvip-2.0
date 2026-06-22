@@ -92,11 +92,13 @@ function detectCategory(productName: string): string {
 
 function buildReviews(productName: string, productImages: string[]) {
   const comments = REVIEW_COMMENTS[detectCategory(productName)] ?? REVIEW_COMMENTS.generic!
+  // Mỗi ảnh chỉ gán cho 1 review (KHÔNG lặp ảnh → tránh trông giả). Rải ở review 1/3/5;
+  // hết ảnh khác nhau thì review để text-only (tự nhiên hơn là lặp cùng 1 ảnh).
+  const unique = [...new Set(productImages.filter(Boolean))]
   let imgIdx = 0
-  // Ảnh review = ẢNH SẢN PHẨM THẬT, gán cho review 1/3/5 và XOAY VÒNG (mỗi review 1 ảnh khác nhau)
   return REVIEWERS.map((r, i) => {
-    const withImage = productImages.length > 0 && (i === 0 || i === 2 || i === 4)
-    const img = withImage ? productImages[imgIdx++ % productImages.length]! : null
+    const wantImage = i === 0 || i === 2 || i === 4
+    const img = wantImage && imgIdx < unique.length ? unique[imgIdx++]! : null
     return {
       id: i + 1,
       stars: 5,
