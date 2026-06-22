@@ -98,6 +98,11 @@ export async function parseAmazonJp(url: string): Promise<ParsedProduct> {
     $('h1.a-size-large').first().text().trim() ||
     $('[data-feature-name="title"] h1').first().text().trim() ||
     $('h1#title').first().text().trim() ||
+    // Fallback: thẻ <title> (có cả khi trang bị rút gọn) — bỏ tiền tố "Amazon.co.jp:"
+    (() => {
+      const t = $('title').text().trim().replace(/^Amazon\.co\.jp\s*[：:]\s*/i, '').trim()
+      return t.length > 5 ? t : ''
+    })() ||
     null
 
   // ── Price ─────────────────────────────────────────────────────────────────
@@ -190,12 +195,29 @@ export async function parseAmazonJp(url: string): Promise<ParsedProduct> {
     }
   }
 
+  // Strategy 2.5: quét .a-offscreen trong vùng sản phẩm — bắt giá "từ ¥X" khi buybox ẩn
+  // (vd hàng "cannot ship to location": chỉ hiện các tuỳ chọn biến thể "X options from ¥Y").
+  // Trang Amazon fetch tĩnh: khu gợi ý/sponsored lazy-load (vắng mặt), nên .a-offscreen chủ yếu là
+  // giá SP chính + các biến thể. Trả DANH SÁCH giá (distinct, tăng dần) để admin tự chọn đúng màu.
+  const extractOffscreenPrices = (): number[] => {
+    const set = new Set<number>()
+    $('.a-offscreen').each((_, el) => {
+      const n = parseInt($(el).text().replace(/[^0-9]/g, ''), 10)
+      if (Number.isFinite(n) && n >= 1000) set.add(n)
+    })
+    return [...set].sort((a, b) => a - b)
+  }
+
   const jsonLdPrice = extractPriceFromJsonLd()
   const domPrice = extractPriceFromDom()
-  // Fetch offer listing only when both local strategies miss
-  const offerPrice = (!jsonLdPrice && !domPrice) ? await fetchOfferListingPrice() : null
+  const offscreenPrices = (!jsonLdPrice && !domPrice) ? extractOffscreenPrices() : []
+  const singleOffscreen = offscreenPrices.length === 1 ? offscreenPrices[0]! : null
+  // Fetch offer listing only when ALL local strategies miss
+  const offerPrice = (!jsonLdPrice && !domPrice && offscreenPrices.length === 0) ? await fetchOfferListingPrice() : null
 
-  const unitPriceJpy = jsonLdPrice ?? domPrice ?? offerPrice
+  const unitPriceJpy = jsonLdPrice ?? domPrice ?? singleOffscreen ?? offerPrice
+  // Nhiều biến thể (khác màu/cấu hình) → KHÔNG auto lấy min, để admin chọn giá đúng từ danh sách
+  const priceOptionsJpy = offscreenPrices.length > 1 ? offscreenPrices : undefined
 
   // ── Images — parse hiRes JSON from script ─────────────────────────────────
   const imgScript = $('script').filter((_, el) => {
@@ -315,6 +337,7 @@ export async function parseAmazonJp(url: string): Promise<ParsedProduct> {
     productImage,
     images,
     unitPriceJpy,
+    priceOptionsJpy,
     weightKg,
     variations,
     available,

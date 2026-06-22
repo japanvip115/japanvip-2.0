@@ -560,6 +560,23 @@ export function BfjUrlForm({ fees }: { fees: StaticFees }) {
                       <p className="text-sm font-semibold text-amber-700">⚠ Không lấy được giá tự động</p>
                       <p className="text-xs text-amber-600 mt-0.5">Sản phẩm này ẩn giá — bạn có thể nhập thủ công</p>
                     </div>
+                    {result.priceOptionsJpy && result.priceOptionsJpy.length > 0 && (
+                      <div>
+                        <p className="mb-1.5 text-xs font-semibold text-amber-700">Sản phẩm nhiều biến thể — chọn giá đúng màu/cấu hình:</p>
+                        <div className="flex flex-wrap gap-2">
+                          {result.priceOptionsJpy.map((po) => (
+                            <button
+                              key={po}
+                              type="button"
+                              onClick={() => setManualPriceJpy(String(po))}
+                              className={`rounded-lg border px-3 py-1.5 text-sm font-bold transition cursor-pointer ${manualPriceJpy === String(po) ? 'border-amber-500 bg-amber-500 text-white' : 'border-amber-300 bg-white text-amber-700 hover:border-amber-500'}`}
+                            >
+                              ¥{po.toLocaleString('ja-JP')}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                     <div>
                       <label className="block text-xs font-semibold text-amber-700 mb-1.5">Nhập giá từ Amazon JP (¥)</label>
                       <div className="flex gap-2">

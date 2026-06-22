@@ -165,7 +165,7 @@ const BRAND_PATTERNS = [
   'Tiger', 'Zojirushi', 'Aroma', 'Cuckoo',
   'Makita', 'Hikoki', 'Bosch', 'Dewalt',
   'Muji', 'Cainz', 'Nitori',
-  'Amazon', 'Apple', 'Samsung', 'LG', 'Philips', 'Dyson', 'Roomba', 'iRobot',
+  'Apple', 'Samsung', 'LG', 'Philips', 'Dyson', 'Roomba', 'iRobot',
   'Braun', 'Oral-B', 'Gillette',
 ]
 
