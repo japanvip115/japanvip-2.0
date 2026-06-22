@@ -29,10 +29,33 @@ export function UserActions({
   const [role, setRole] = useState<UserRole>(currentRole)
   const [status, setStatus] = useState<UserStatus>(currentStatus)
   const [saving, setSaving] = useState(false)
+  const [deleting, setDeleting] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
 
   const hasChanges = role !== currentRole || status !== currentStatus
+  const canDelete = currentRole !== 'SUPER_ADMIN'
+
+  async function handleDelete() {
+    if (!confirm('Xoá người dùng này? Tài khoản sẽ bị ẩn khỏi danh sách và đình chỉ (giữ lịch sử đơn hàng/đấu giá, có thể khôi phục sau).')) return
+    setDeleting(true)
+    setError('')
+    setSuccess('')
+    try {
+      const res = await fetch(`/api/v1/admin/users/${userId}`, { method: 'DELETE' })
+      const data = await res.json()
+      if (data.success) {
+        router.push('/admin/users')
+        router.refresh()
+      } else {
+        setError(data.error ?? 'Không thể xoá người dùng')
+        setDeleting(false)
+      }
+    } catch {
+      setError('Không thể kết nối')
+      setDeleting(false)
+    }
+  }
 
   async function handleSave() {
     if (!confirm('Xác nhận thay đổi thông tin người dùng?')) return
@@ -90,6 +113,15 @@ export function UserActions({
           {saving ? 'Đang lưu...' : 'Lưu'}
         </button>
       </div>
+      {canDelete && (
+        <button
+          onClick={handleDelete}
+          disabled={deleting || saving}
+          className="rounded-lg border border-red-600/60 px-4 py-2 text-sm font-semibold text-red-400 transition-colors hover:bg-red-600 hover:text-white disabled:opacity-40 cursor-pointer"
+        >
+          {deleting ? 'Đang xoá...' : '🗑 Xoá người dùng'}
+        </button>
+      )}
       {error && <p className="text-xs text-red-400">{error}</p>}
       {success && <p className="text-xs text-green-400">{success}</p>}
     </div>

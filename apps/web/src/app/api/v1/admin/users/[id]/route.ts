@@ -38,6 +38,32 @@ export async function GET(_req: NextRequest, { params }: Params) {
   }
 }
 
+// Xoá MỀM (soft-delete): set deletedAt + đình chỉ. Giữ liên kết đơn/đấu giá/ví → không vỡ DB, có thể khôi phục.
+export async function DELETE(_req: NextRequest, { params }: Params) {
+  const session = await auth()
+  if (!session) return apiError('Unauthorized', 401)
+  if (!hasRole(session.user!.role, 'ADMIN')) return apiError('Forbidden', 403)
+
+  const { id } = await params
+
+  if (session.user!.id === id) return apiError('Không thể tự xoá tài khoản của chính bạn', 400)
+
+  const target = await prisma.user.findUnique({ where: { id }, select: { role: true, deletedAt: true } })
+  if (!target) return apiError('Không tìm thấy người dùng', 404)
+  if (target.role === 'SUPER_ADMIN') return apiError('Không thể xoá Super Admin', 403)
+  if (target.deletedAt) return apiError('Người dùng đã bị xoá', 400)
+
+  try {
+    await prisma.user.update({
+      where: { id },
+      data: { deletedAt: new Date(), status: 'SUSPENDED' },
+    })
+    return apiSuccess({ id, deleted: true })
+  } catch (err) {
+    return handleApiError(err)
+  }
+}
+
 export async function PATCH(req: NextRequest, { params }: Params) {
   const session = await auth()
   if (!session) return apiError('Unauthorized', 401)
