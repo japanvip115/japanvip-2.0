@@ -898,7 +898,7 @@ export default function HomePageClient({
                         : (cat.icon || getCatEmoji(cat.name))}
                     </div>
                     <div className="cat-info">
-                      <h3>{cat.name}</h3>
+                      <h3 style={{textTransform:'uppercase'}}>{cat.name}</h3>
                       {cat.description && <span>{cat.description}</span>}
                       <div className="cat-count">{cat._count.products} sản phẩm</div>
                     </div>
