@@ -52,6 +52,9 @@
 | Biến thể màu: lấy ảnh+tên từ swatch + **ASIN từ twister JSON** → `colorVariants` (name, image, url). UI bấm ô màu → re-parse đúng biến thể | `amazon-jp.parser.ts` (`colorVariants`) + UI `bfj-url-form.tsx` (gallery bấm được + `handleParse(url)`) |
 | Dịch thông số + tên màu JP→VI (google-free), giữ brand/model/số; cleanup token "§§"/"củ A" | `translate.service.ts` → `translateSpecs` + `parse-url/route.ts` |
 | **Giá Amazon ẩn/lazy-load → nhập tay là đúng** (không cố auto, không sửa thành min). Khách bấm màu = chọn đúng biến thể, mua đúng link đã dán | luồng tổng |
+| Cache kết quả parse vào Redis theo ASIN (`bfj:parse:asin:{ASIN}`, TTL 24h), bỏ `rawHtml` trước khi cache; lần sau khỏi load lại (5.8s→0.37s). Có cờ `refresh:true` + nút "🔄 Tải lại mới" để bỏ cache | `parse-url/route.ts` (`parseCacheKey`, `getCached/setCached`) + UI `bfj-url-form.tsx` (`handleParse(url, refresh)`) |
+| Tự lấy cân nặng: `parseWeightKg` nhận nhãn JP/EN (重量/重さ/質量/item weight…), đơn vị JP (キログラム/グラム/ポンド) + latin, ưu tiên cân SP hơn cân kiện hàng (梱包/パッケージ), fallback quét rawHtml. Pre-fill ô kg | `amazon-jp.parser.ts` (`parseWeightKg`, `weightFromValue`) |
+| Ẩn bảng "Bảng Phí Dịch Vụ" tĩnh — chỉ hiện bảng BÁO GIÁ sau khi tính; thêm ô nhập cân nặng (kg) để tính phí ship JP→VN (~160k/kg theo cân) | `bfj-url-form.tsx` (`manualWeightKg`, `handleManualCalculate`) |
 
 ---
 

@@ -13,24 +13,50 @@ function toCanonicalUrl(url: string): string {
   }
 }
 
-function parseWeightKg(specs: { label: string; value: string }[]): number | null {
-  const weightSpec = specs.find((s) =>
-    /item weight|product weight|重量|重さ/i.test(s.label)
-  )
-  if (!weightSpec) return null
-
-  const v = weightSpec.value
-  // "2.8 kg" or "2.8Kg"
-  const kgMatch = v.match(/(\d+\.?\d*)\s*kg/i)
+function weightFromValue(v: string): number | null {
+  // "2.8 kg" / "2.8Kg" / "2.8 キログラム" / "2.8キロ"
+  const kgMatch = v.match(/(\d+\.?\d*)\s*(?:kg|キログラム|キロ(?!カロリー))/i)
   if (kgMatch) return Math.round(parseFloat(kgMatch[1]!) * 100) / 100
 
-  // "6.1 lbs" or "(6.1 lbs)"
-  const lbsMatch = v.match(/(\d+\.?\d*)\s*lbs?/i)
+  // "6.1 lbs" / "6.1 ポンド"
+  const lbsMatch = v.match(/(\d+\.?\d*)\s*(?:lbs?|ポンド)/i)
   if (lbsMatch) return Math.round(parseFloat(lbsMatch[1]!) * 0.453592 * 100) / 100
 
-  // "280 g" but not "280 ml"
-  const gMatch = v.match(/(\d+\.?\d*)\s*g(?!\s*al|\s*all?\b|\s*old\b)/i)
+  // "280 g" / "280 グラム" (but not "280 ml")
+  const gMatch = v.match(/(\d+\.?\d*)\s*(?:グラム|g(?!\s*al|\s*all?\b|\s*old\b))/i)
   if (gMatch) return Math.round((parseFloat(gMatch[1]!) / 1000) * 100) / 100
+
+  return null
+}
+
+// 商品の重量 / 梱包重量 / パッケージ重量 / 本体重量 / 発送重量 ... — nhãn cân nặng JP/EN thường gặp
+const WEIGHT_LABEL_RE = /item weight|product weight|package weight|shipping weight|重量|重さ|質量/i
+
+function parseWeightKg(
+  specs: { label: string; value: string }[],
+  rawHtml?: string
+): number | null {
+  // Ưu tiên cân nặng SẢN PHẨM (本体/商品) hơn cân nặng kiện hàng (梱包/パッケージ/発送)
+  const productFirst = [...specs].sort((a, b) => {
+    const pa = /梱包|パッケージ|package|shipping|発送/i.test(a.label) ? 1 : 0
+    const pb = /梱包|パッケージ|package|shipping|発送/i.test(b.label) ? 1 : 0
+    return pa - pb
+  })
+  for (const s of productFirst) {
+    if (WEIGHT_LABEL_RE.test(s.label)) {
+      const kg = weightFromValue(s.value)
+      if (kg) return kg
+    }
+  }
+
+  // Fallback: quét HTML thô tìm cụm "重量 ... <số> kg/g" khi specs không bắt được nhãn
+  if (rawHtml) {
+    const m = rawHtml.match(/(?:重量|重さ|質量|weight)[^0-9<]{0,40}?(\d+\.?\d*)\s*(kg|g|キログラム|グラム|キロ)/i)
+    if (m) {
+      const kg = weightFromValue(`${m[1]} ${m[2]}`)
+      if (kg) return kg
+    }
+  }
 
   return null
 }
@@ -303,7 +329,7 @@ export async function parseAmazonJp(url: string): Promise<ParsedProduct> {
   })
 
   // ── Weight ────────────────────────────────────────────────────────────────
-  const weightKg = parseWeightKg(specifications)
+  const weightKg = parseWeightKg(specifications, html)
 
   // ── Model code ────────────────────────────────────────────────────────────
   const productModel = extractModel(asin, specifications)

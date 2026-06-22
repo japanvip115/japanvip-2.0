@@ -117,7 +117,7 @@ export function BfjUrlForm({ fees }: { fees: StaticFees }) {
   const [isQuoting, setIsQuoting] = useState(false)
   const [quoteSuccess, setQuoteSuccess] = useState(false)
 
-  async function handleParse(overrideUrl?: string) {
+  async function handleParse(overrideUrl?: string, refresh = false) {
     const raw = (overrideUrl ?? url).trim()
     if (!raw) return
     const normalizedUrl = raw.startsWith('http') ? raw : `https://${raw}`
@@ -132,12 +132,15 @@ export function BfjUrlForm({ fees }: { fees: StaticFees }) {
       const parseRes = await fetch('/api/v1/bfj/parse-url', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url: normalizedUrl }),
+        body: JSON.stringify({ url: normalizedUrl, refresh }),
       })
       const parseData = await parseRes.json()
       if (!parseData.success) throw new Error(parseData.error)
 
       const product: ParsedProduct = parseData.data
+      // Pre-fill ô cân nặng + giá từ dữ liệu lấy được (tự điền, khỏi gõ tay)
+      setManualWeightKg(product.weightKg != null ? String(product.weightKg) : '')
+      setManualPriceJpy(product.unitPriceJpy != null ? String(product.unitPriceJpy) : '')
 
       let estimate: CostEstimate | undefined
       if (product.unitPriceJpy) {
@@ -437,10 +440,19 @@ export function BfjUrlForm({ fees }: { fees: StaticFees }) {
                 <h3 className="text-xl font-bold text-gray-900 leading-snug">
                   {result.productNameVi ?? result.productName ?? 'Không lấy được tên sản phẩm'}
                 </h3>
-                {/* Model code */}
-                {result.productModel && (
-                  <p className="mt-1 font-mono text-xs text-gray-400">Mã: {result.productModel}</p>
-                )}
+                {/* Model code + force refresh (bỏ qua cache) */}
+                <div className="mt-1 flex items-center gap-3">
+                  {result.productModel && (
+                    <p className="font-mono text-xs text-gray-400">Mã: {result.productModel}</p>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => handleParse(result.sourceUrl, true)}
+                    className="text-xs text-gray-400 underline hover:text-brand-red"
+                  >
+                    🔄 Tải lại mới
+                  </button>
+                </div>
                 {/* English original name (collapsible reference) */}
                 {result.productNameVi && result.productName && result.productNameVi !== result.productName && (
                   <p className="mt-1 text-xs text-gray-400 line-clamp-1" title={result.productName}>

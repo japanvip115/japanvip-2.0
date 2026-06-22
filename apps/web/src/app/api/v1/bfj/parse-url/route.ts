@@ -5,10 +5,20 @@ import { parseProductUrl, validateUrl } from '@/modules/bfj/url-parser/parser.fa
 import { translateProductName, translateSpecs } from '@/modules/bfj/services/translate.service'
 import { apiSuccess, apiError, handleApiError } from '@/lib/api-response'
 import { rateLimit } from '@/lib/rate-limit'
+import { getCached, setCached } from '@/lib/redis'
 
 const schema = z.object({
   url: z.string().url('URL không hợp lệ'),
+  refresh: z.boolean().optional(), // true = bỏ qua cache, parse lại
 })
+
+// Cache kết quả parse theo ASIN/URL chuẩn hoá để lần sau khỏi load lại (specs/ảnh/tên/cân nặng hiếm khi đổi).
+const PARSE_CACHE_TTL = 86400 // 24h
+function parseCacheKey(url: string): string {
+  const m = url.match(/\/(?:dp|gp\/product|gp\/aw\/d)\/([A-Z0-9]{10})/i)
+  const asin = m?.[1]?.toUpperCase()
+  return asin ? `bfj:parse:asin:${asin}` : `bfj:parse:url:${url}`
+}
 
 export async function POST(req: NextRequest) {
   // Public endpoint — auth not required to view product info
@@ -26,6 +36,12 @@ export async function POST(req: NextRequest) {
       )
     }
 
+    const cacheKey = parseCacheKey(body.url)
+    if (!body.refresh) {
+      const cached = await getCached(cacheKey)
+      if (cached) return apiSuccess(cached, undefined, 200)
+    }
+
     const result = await parseProductUrl(body.url)
 
     // Dịch tên (dùng specs gốc tiếng Nhật để trích cấu trúc), RỒI dịch thông số sang tiếng Việt để hiển thị
@@ -39,6 +55,12 @@ export async function POST(req: NextRequest) {
     if (result.colorVariants?.length) {
       const tr = await translateSpecs(result.colorVariants.map((c) => ({ label: '', value: c.name })))
       result.colorVariants = result.colorVariants.map((c, i) => ({ ...c, name: tr[i]?.value || c.name }))
+    }
+
+    // Bỏ rawHtml (nặng) trước khi cache; chỉ cache khi parse có nội dung hữu ích
+    const { rawHtml: _rawHtml, ...cacheable } = result
+    if (result.productName) {
+      await setCached(cacheKey, cacheable, PARSE_CACHE_TTL)
     }
 
     return apiSuccess(result, undefined, 200)
