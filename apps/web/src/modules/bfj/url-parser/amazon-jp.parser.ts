@@ -181,6 +181,12 @@ export async function parseAmazonJp(url: string): Promise<ParsedProduct> {
       })()
     if (priceText) return parseInt(priceText, 10)
 
+    // 🔒 LOCKED (2026-06) — Twister price CHỈ đáng tin khi CÓ buybox (mua được).
+    // Hàng cannot-ship/ẩn giá (không có nút mua) → twister "SELECTED" thường là giá biến thể/from
+    // khác (vd ¥2.690 cho cân Anker giá thật cao hơn nhiều) → bỏ qua, để khách NHẬP TAY.
+    const hasBuyBox = $('#add-to-cart-button, #buy-now-button, #add-to-cart-button-ubb, #one-click-button').length > 0
+    if (!hasBuyBox) return null
+
     // Variation/twister tiles: price lives in a JSON a-state script inside #twister_feature_div
     // e.g. {"dimensionValueState":"SELECTED","slots":[{"displayData":{"priceWithoutCurrencySymbol":"39402"}}]}
     try {

@@ -16,7 +16,7 @@ const schema = z.object({
 // Cache kết quả parse theo ASIN/URL chuẩn hoá để lần sau khỏi load lại (specs/ảnh/tên/cân nặng hiếm khi đổi).
 const PARSE_CACHE_TTL = 86400 // 24h
 // v2: bỏ cache cũ nhiễm giá rác .a-offscreen (priceOptionsJpy/unitPriceJpy sai từ widget hàng liên quan)
-const PARSE_CACHE_VER = 'v3'
+const PARSE_CACHE_VER = 'v4'
 function parseCacheKey(url: string): string {
   const m = url.match(/\/(?:dp|gp\/product|gp\/aw\/d)\/([A-Z0-9]{10})/i)
   const asin = m?.[1]?.toUpperCase()
