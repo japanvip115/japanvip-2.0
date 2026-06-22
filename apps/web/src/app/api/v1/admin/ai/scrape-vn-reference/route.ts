@@ -64,11 +64,42 @@ export async function POST(req: NextRequest) {
     if (content.length < 200) content = $('body').text().replace(/\s+/g, ' ').trim()
     content = content.slice(0, 6000)
 
-    if (specs.length === 0 && content.length < 200) {
+    // Ảnh ngữ cảnh từ bài viết VN (lifestyle/chi tiết) — lọc rác theo URL, dedup biến thể size WordPress.
+    // LƯU Ý: logo/watermark in chìm trong pixel KHÔNG nhận diện được — admin tự nhìn chọn ảnh sạch.
+    const base = new URL(target)
+    const resolveUrl = (s: string): string => {
+      if (!s) return ''
+      if (s.startsWith('http')) return s
+      if (s.startsWith('//')) return base.protocol + s
+      if (s.startsWith('/')) return `${base.protocol}//${base.host}${s}`
+      return ''
+    }
+    let $content: cheerio.Cheerio<never> | null = null
+    let maxLen = 0
+    for (const sel of ['.product-detail', '.product-content', '.product-description', '.description', '.entry-content', '.post-content', 'article', '.content', '#content', 'main']) {
+      const el = $(sel).first()
+      const len = el.text().length
+      if (len > maxLen) { maxLen = len; $content = el as unknown as cheerio.Cheerio<never> }
+    }
+    const seenImg = new Set<string>()
+    const images: string[] = []
+    ;($content ?? $('body')).find('img').each((_, el) => {
+      const s = $(el).attr('data-src') || $(el).attr('data-lazy-src') || $(el).attr('src') || ''
+      let r = resolveUrl(s)
+      if (!r || !/\.(jpe?g|png|webp)(\?|$)/i.test(r)) return
+      if (/(logo|icon|sprite|banner|avatar|placeholder|thumb|loading|flag|payment|zalo|facebook|qr|button)/i.test(r)) return
+      r = r.replace(/-\d{2,4}x\d{2,4}(\.[a-z]+)(\?|$)/i, '$1$2') // bỏ hậu tố size → bản full
+      if (seenImg.has(r)) return
+      seenImg.add(r)
+      images.push(r)
+    })
+    const cleanImages = images.slice(0, 15)
+
+    if (specs.length === 0 && content.length < 200 && cleanImages.length === 0) {
       return apiError('Không trích được nội dung từ trang này', 422)
     }
 
-    return apiSuccess({ title, content, specs }, `Lấy ${specs.length} thông số + ${content.length} ký tự nội dung`)
+    return apiSuccess({ title, content, specs, images: cleanImages }, `Lấy ${specs.length} thông số + ${content.length} ký tự + ${cleanImages.length} ảnh ngữ cảnh`)
   } catch (err) {
     return handleApiError(err)
   }

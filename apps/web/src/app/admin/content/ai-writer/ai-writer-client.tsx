@@ -532,7 +532,15 @@ export function AiWriterClient({ products }: { products: ProductSummary[] }) {
       const data = await res.json()
       if (!res.ok || !data.success) { setVnMsg(data.error ?? 'Không lấy được nội dung'); return }
       setVnReference({ title: data.title ?? '', content: data.content ?? '', specs: data.specs ?? [] })
-      setVnMsg(`✓ ${data.specs?.length ?? 0} thông số + ${(data.content?.length ?? 0).toLocaleString()} ký tự — sẽ nạp vào AI`)
+      // Thêm ảnh ngữ cảnh VN vào kho chọn ảnh (admin tự nhìn chọn ảnh sạch, không dính logo)
+      const vnImages = (data.images as string[] | undefined) ?? []
+      let added = 0
+      if (vnImages.length) {
+        const existing = new Set([...(japanProduct?.images ?? []), ...extraImages])
+        const fresh = vnImages.filter(u => !existing.has(u))
+        if (fresh.length) { setExtraImages(prev => [...prev, ...fresh]); added = fresh.length }
+      }
+      setVnMsg(`✓ ${data.specs?.length ?? 0} thông số + ${(data.content?.length ?? 0).toLocaleString()} ký tự${added ? ` + ${added} ảnh ngữ cảnh` : ''} — nạp vào AI`)
     } catch {
       setVnMsg('Lỗi kết nối')
     } finally {
