@@ -116,9 +116,10 @@ export function BfjUrlForm({ fees }: { fees: StaticFees }) {
   const [isQuoting, setIsQuoting] = useState(false)
   const [quoteSuccess, setQuoteSuccess] = useState(false)
 
-  async function handleParse() {
-    if (!url.trim()) return
-    const normalizedUrl = url.trim().startsWith('http') ? url.trim() : `https://${url.trim()}`
+  async function handleParse(overrideUrl?: string) {
+    const raw = (overrideUrl ?? url).trim()
+    if (!raw) return
+    const normalizedUrl = raw.startsWith('http') ? raw : `https://${raw}`
     setUrl(normalizedUrl)
     setStep('loading')
     setErrorMsg('')
@@ -355,7 +356,7 @@ export function BfjUrlForm({ fees }: { fees: StaticFees }) {
           </div>
 
           <button
-            onClick={handleParse}
+            onClick={() => handleParse()}
             disabled={step === 'loading' || !url.trim()}
             className="mt-3 mx-auto flex w-96 cursor-pointer items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold transition disabled:opacity-60"
             style={{background:'transparent', color:'#c41e3a', border:'2px solid #fecaca'}}
@@ -562,22 +563,29 @@ export function BfjUrlForm({ fees }: { fees: StaticFees }) {
                     </div>
                     {((result.colorVariants && result.colorVariants.length > 0) || (result.priceOptionsJpy && result.priceOptionsJpy.length > 1)) && (
                       <div className="space-y-2 rounded-lg border border-amber-300 bg-amber-100/60 p-3">
-                        <p className="text-xs font-bold text-amber-800">⚠ Sản phẩm nhiều màu/cấu hình — giá khác nhau</p>
+                        <p className="text-xs font-bold text-amber-800">⚠ Sản phẩm nhiều màu/cấu hình — bấm chọn đúng màu bạn muốn</p>
                         {result.colorVariants && result.colorVariants.length > 0 && (
                           <div className="flex flex-wrap gap-2">
                             {result.colorVariants.map((cv) => (
-                              <div key={cv.name + cv.image} className="flex w-16 flex-col items-center">
+                              <button
+                                key={cv.name + cv.image}
+                                type="button"
+                                onClick={() => cv.url && handleParse(cv.url)}
+                                disabled={!cv.url}
+                                title={cv.url ? 'Bấm để xem biến thể này' : undefined}
+                                className="group flex w-16 flex-col items-center disabled:cursor-default"
+                              >
                                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                                <img src={cv.image} alt={cv.name} className="h-12 w-12 rounded-lg border border-amber-200 bg-white object-contain" />
-                                <span className="mt-0.5 line-clamp-2 text-center text-[10px] leading-tight text-amber-800">{cv.name}</span>
-                              </div>
+                                <img src={cv.image} alt={cv.name} className={`h-12 w-12 rounded-lg border-2 border-amber-200 bg-white object-contain transition ${cv.url ? 'cursor-pointer group-hover:border-amber-500 group-hover:shadow' : ''}`} />
+                                <span className="mt-0.5 line-clamp-2 text-center text-[10px] leading-tight text-amber-800 group-hover:text-amber-900">{cv.name}</span>
+                              </button>
                             ))}
                           </div>
                         )}
                         {result.priceOptionsJpy && result.priceOptionsJpy.length > 1 && (
                           <p className="text-xs text-amber-700">Giá tham khảo: <b>¥{Math.min(...result.priceOptionsJpy).toLocaleString('ja-JP')} – ¥{Math.max(...result.priceOptionsJpy).toLocaleString('ja-JP')}</b> (tuỳ màu/cấu hình)</p>
                         )}
-                        <p className="text-[11px] leading-relaxed text-amber-800">👉 Để đặt <b>ĐÚNG sản phẩm</b>: mở <a href={result?.sourceUrl} target="_blank" rel="noopener noreferrer" className="font-semibold underline">trang Amazon</a> → chọn đúng màu/cấu hình → copy link → dán lại. JapanVIP sẽ mua đúng link bạn dán.</p>
+                        <p className="text-[11px] leading-relaxed text-amber-800">👉 <b>Bấm vào màu</b> để xem đúng biến thể (ảnh + link tự đổi), hoặc mở <a href={result?.sourceUrl} target="_blank" rel="noopener noreferrer" className="font-semibold underline">trang Amazon</a> → chọn → copy link → dán lại. JapanVIP mua đúng link bạn dán.</p>
                       </div>
                     )}
                     <div>

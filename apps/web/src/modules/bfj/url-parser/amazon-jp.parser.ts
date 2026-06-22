@@ -317,8 +317,21 @@ export async function parseAmazonJp(url: string): Promise<ParsedProduct> {
     if (v) variations.push(`Size: ${v}`)
   })
 
-  // ── Biến thể màu (ảnh + tên) — để khách biết có những màu gì, tránh đặt nhầm biến thể ──
-  const colorVariants: { name: string; image: string }[] = []
+  // ── Biến thể màu (ảnh + tên + link để bấm chọn) — tránh khách đặt nhầm biến thể ──
+  // Map tên màu (JP) → ASIN từ twister JSON để dựng link biến thể chính xác
+  const colorAsinMap: Record<string, string> = {}
+  try {
+    const twJson = $('script[type="a-state"]').filter((_, e) => ($(e).attr('data-a-state') ?? '').includes('twister-sort-filter')).first().html()
+    if (twJson) {
+      const tw = JSON.parse(twJson)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      for (const v of (tw?.sortedDimValuesForAllDims?.color_name ?? []) as any[]) {
+        if (v?.dimensionValueDisplayText && v?.defaultAsin) colorAsinMap[v.dimensionValueDisplayText] = v.defaultAsin
+      }
+    }
+  } catch { /* ignore */ }
+
+  const colorVariants: { name: string; image: string; url?: string }[] = []
   const seenColorVar = new Set<string>()
   $('[id*="twister"] li img, [class*="swatch"] li img, [class*="dimension"] li img, #inline-twister-card li img').each((_, el) => {
     const name = ($(el).attr('alt') ?? '').trim()
@@ -327,7 +340,8 @@ export async function parseAmazonJp(url: string): Promise<ParsedProduct> {
     if (img.startsWith('//')) img = 'https:' + img
     if (!img.startsWith('http') || seenColorVar.has(name)) return
     seenColorVar.add(name)
-    colorVariants.push({ name, image: img })
+    const vAsin = colorAsinMap[name]
+    colorVariants.push({ name, image: img, url: vAsin ? `https://www.amazon.co.jp/dp/${vAsin}/` : undefined })
   })
 
   // ── Availability ──────────────────────────────────────────────────────────
