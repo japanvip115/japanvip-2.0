@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 type AddressData = {
   label?: string | null
@@ -32,6 +32,22 @@ export function AddressForm({ initial, onSave, onCancel }: Props) {
   })
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
+
+  // Tự điền Tên + SĐT từ tài khoản khi THÊM MỚI (chưa có initial) và ô còn trống
+  useEffect(() => {
+    if (initial?.recipientName || initial?.phone) return
+    fetch('/api/v1/users/me/contact')
+      .then((r) => r.json())
+      .then((d) => {
+        if (!d.success) return
+        setForm((prev) => ({
+          ...prev,
+          recipientName: prev.recipientName || d.data.fullName || '',
+          phone: prev.phone || d.data.phone || '',
+        }))
+      })
+      .catch(() => {})
+  }, [initial?.recipientName, initial?.phone])
 
   const set = (k: keyof AddressData, v: string | boolean) =>
     setForm((prev) => ({ ...prev, [k]: v }))

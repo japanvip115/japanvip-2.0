@@ -24,6 +24,7 @@ export function AddressPicker({ selectedId, onSelect }: Props) {
   const [addresses, setAddresses] = useState<Address[]>([])
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
+  const [expanded, setExpanded] = useState(false)
 
   useEffect(() => {
     fetch('/api/v1/user/addresses')
@@ -66,6 +67,32 @@ export function AddressPicker({ selectedId, onSelect }: Props) {
     return <div className="text-sm text-gray-400 py-2">Đang tải địa chỉ...</div>
   }
 
+  const selectedAddr = addresses.find((a) => a.id === selectedId)
+
+  // Gọn: đã có địa chỉ chọn → hiện tóm tắt 1 dòng + nút "Đổi" (form ngắn gọn)
+  if (selectedAddr && !expanded && !showForm) {
+    return (
+      <div className="flex items-start justify-between gap-3 rounded-lg border border-brand-red bg-red-50 p-3">
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-semibold text-gray-900">{selectedAddr.recipientName}</span>
+            <span className="text-sm text-gray-500">{selectedAddr.phone}</span>
+          </div>
+          <p className="mt-0.5 truncate text-xs text-gray-500">
+            {selectedAddr.street}, {selectedAddr.ward}, {selectedAddr.district}, {selectedAddr.province}
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={() => setExpanded(true)}
+          className="shrink-0 text-xs font-semibold text-brand-red hover:underline"
+        >
+          Đổi
+        </button>
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-2">
       {addresses.map((addr) => (
@@ -81,7 +108,7 @@ export function AddressPicker({ selectedId, onSelect }: Props) {
             type="radio"
             name="address"
             checked={selectedId === addr.id}
-            onChange={() => onSelect(addr)}
+            onChange={() => { onSelect(addr); setExpanded(false) }}
             className="mt-0.5 accent-brand-red"
           />
           <div className="flex-1 min-w-0">

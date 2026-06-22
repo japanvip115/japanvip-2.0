@@ -89,6 +89,7 @@ export function BfjUrlForm({ fees }: { fees: StaticFees }) {
   // Inline order flow states
   const [showOrderForm, setShowOrderForm] = useState(false)
   const [orderNotes, setOrderNotes] = useState('')
+  const [showNotes, setShowNotes] = useState(false)
   const [agreedTerms, setAgreedTerms] = useState(false)
   const [isOrdering, setIsOrdering] = useState(false)
   const [orderResult, setOrderResult] = useState<{ orderNumber: string; orderId: string; depositAmount?: number } | null>(null)
@@ -202,7 +203,7 @@ export function BfjUrlForm({ fees }: { fees: StaticFees }) {
   }
 
   async function handleConfirmOrder() {
-    if (!result || !agreedTerms) return
+    if (!result) return
     setIsOrdering(true)
     try {
       const res = await fetch('/api/v1/bfj/orders', {
@@ -1000,45 +1001,47 @@ export function BfjUrlForm({ fees }: { fees: StaticFees }) {
                         onSelect={setSelectedAddress}
                       />
                     </div>
-                    <div>
-                      <label className="block text-xs font-medium text-gray-500 mb-1">Ghi chú (tùy chọn)</label>
-                      <textarea
-                        value={orderNotes}
-                        onChange={(e) => setOrderNotes(e.target.value)}
-                        rows={3}
-                        placeholder="Màu sắc, kích cỡ, yêu cầu đặc biệt..."
-                        className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-800 outline-none focus:border-brand-red resize-none"
-                      />
-                    </div>
-                    <label className="flex items-start gap-2 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={agreedTerms}
-                        onChange={(e) => setAgreedTerms(e.target.checked)}
-                        className="mt-0.5 cursor-pointer accent-brand-red"
-                      />
-                      <span className="text-xs text-gray-600">
-                        Tôi đồng ý với{' '}
-                        <a href="/chinh-sach" target="_blank" className="text-brand-red underline">điều khoản dịch vụ</a>
-                        {' '}và xác nhận đặt cọc{' '}
-                        <strong>{formatVND(result.estimate.depositAmountVnd)}</strong>
-                      </span>
-                    </label>
+                    {/* Ghi chú — ẩn sau link cho gọn */}
+                    {showNotes ? (
+                      <div>
+                        <label className="block text-xs font-medium text-gray-500 mb-1">Ghi chú</label>
+                        <textarea
+                          value={orderNotes}
+                          onChange={(e) => setOrderNotes(e.target.value)}
+                          rows={2}
+                          autoFocus
+                          placeholder="Màu sắc, kích cỡ, yêu cầu đặc biệt..."
+                          className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-800 outline-none focus:border-brand-red resize-none"
+                        />
+                      </div>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => setShowNotes(true)}
+                        className="text-xs font-medium text-gray-400 hover:text-brand-red"
+                      >
+                        + Thêm ghi chú (tùy chọn)
+                      </button>
+                    )}
                     <div className="flex gap-2">
                       <button
                         onClick={handleConfirmOrder}
-                        disabled={!agreedTerms || isOrdering}
-                        className="flex-1 cursor-pointer rounded-lg bg-brand-red py-2.5 text-sm font-bold text-white transition hover:bg-brand-red-dark disabled:opacity-50"
+                        disabled={isOrdering}
+                        className="flex-1 cursor-pointer rounded-lg bg-brand-red py-3 text-sm font-bold text-white transition hover:bg-brand-red-dark disabled:opacity-50"
                       >
-                        {isOrdering ? 'Đang xử lý...' : `Xác Nhận — ${formatVND(result.estimate.depositAmountVnd)}`}
+                        {isOrdering ? 'Đang xử lý...' : `Xác Nhận Đặt Cọc — ${formatVND(result.estimate.depositAmountVnd)}`}
                       </button>
                       <button
                         onClick={() => setShowOrderForm(false)}
-                        className="rounded-lg border border-gray-300 px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-100 cursor-pointer"
+                        className="rounded-lg border border-gray-300 px-4 py-3 text-sm text-gray-600 hover:bg-gray-100 cursor-pointer"
                       >
                         Hủy
                       </button>
                     </div>
+                    <p className="text-center text-[11px] text-gray-400">
+                      Nhấn <strong>Xác Nhận Đặt Cọc</strong> tức là bạn đồng ý với{' '}
+                      <a href="/chinh-sach" target="_blank" className="text-gray-500 underline">điều khoản dịch vụ</a>
+                    </p>
                   </div>
                 )}
               </div>
