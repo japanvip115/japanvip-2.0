@@ -603,6 +603,25 @@ export async function translateProductName(
 }
 
 /**
+ * Dịch nhãn + giá trị thông số JP→VI. Giữ nguyên brand/model/số (text không có chữ Nhật bỏ qua).
+ */
+export async function translateSpecs(
+  specs: { label: string; value: string }[] = [],
+): Promise<{ label: string; value: string }[]> {
+  if (!specs?.length) return specs
+  const hasJp = (s: string) => /[぀-ヿ㐀-鿿]/.test(s)
+  // Sửa lỗi vặt của bản dịch free: "の" (sở hữu) hay ra "củ A" thay vì "của"
+  const clean = (t: string) => t.replace(/\bcủ A\b/g, 'của').replace(/\s{2,}/g, ' ').trim()
+  const tr = async (t: string): Promise<string> => {
+    if (!t || !hasJp(t)) return t
+    try { return clean(await translateViaGoogleFree(t)) } catch { return t }
+  }
+  return Promise.all(
+    specs.slice(0, 25).map(async (s) => ({ label: await tr(s.label), value: await tr(s.value) })),
+  )
+}
+
+/**
  * Translate a block of HTML description — preserves HTML tags, only translates text nodes
  */
 export async function translateDescription(html: string): Promise<string> {

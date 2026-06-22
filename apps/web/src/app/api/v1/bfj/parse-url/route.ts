@@ -2,7 +2,7 @@ import { NextRequest } from 'next/server'
 import { z } from 'zod'
 import { auth } from '@/lib/auth'
 import { parseProductUrl, validateUrl } from '@/modules/bfj/url-parser/parser.factory'
-import { translateProductName } from '@/modules/bfj/services/translate.service'
+import { translateProductName, translateSpecs } from '@/modules/bfj/services/translate.service'
 import { apiSuccess, apiError, handleApiError } from '@/lib/api-response'
 import { rateLimit } from '@/lib/rate-limit'
 
@@ -28,9 +28,12 @@ export async function POST(req: NextRequest) {
 
     const result = await parseProductUrl(body.url)
 
-    // Translate product name only — description kept in original JP (free translation quality too low)
+    // Dịch tên (dùng specs gốc tiếng Nhật để trích cấu trúc), RỒI dịch thông số sang tiếng Việt để hiển thị
     if (result.productName) {
       result.productNameVi = await translateProductName(result.productName, result.specifications ?? [])
+    }
+    if (result.specifications?.length) {
+      result.specifications = await translateSpecs(result.specifications)
     }
 
     return apiSuccess(result, undefined, 200)
