@@ -15,10 +15,12 @@ const schema = z.object({
 // 🔒 LOCKED (2026-06) — Cache parse Mua Hộ. KHÔNG sửa nếu chưa được chủ dự án yêu cầu (xem CLAUDE.md → LOCKED → Mua Hộ).
 // Cache kết quả parse theo ASIN/URL chuẩn hoá để lần sau khỏi load lại (specs/ảnh/tên/cân nặng hiếm khi đổi).
 const PARSE_CACHE_TTL = 86400 // 24h
+// v2: bỏ cache cũ nhiễm giá rác .a-offscreen (priceOptionsJpy/unitPriceJpy sai từ widget hàng liên quan)
+const PARSE_CACHE_VER = 'v3'
 function parseCacheKey(url: string): string {
   const m = url.match(/\/(?:dp|gp\/product|gp\/aw\/d)\/([A-Z0-9]{10})/i)
   const asin = m?.[1]?.toUpperCase()
-  return asin ? `bfj:parse:asin:${asin}` : `bfj:parse:url:${url}`
+  return asin ? `bfj:parse:${PARSE_CACHE_VER}:asin:${asin}` : `bfj:parse:${PARSE_CACHE_VER}:url:${url}`
 }
 
 export async function POST(req: NextRequest) {

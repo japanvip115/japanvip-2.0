@@ -217,36 +217,28 @@ export async function parseAmazonJp(url: string): Promise<ParsedProduct> {
       // Bail out if we hit captcha/bot check on the offer page too
       if (offerHtml.includes('validateCaptcha') || offerHtml.includes('Type the characters')) return null
       const $o = cheerio.load(offerHtml)
-      const priceText = $o('.a-price .a-offscreen').first().text().replace(/[^0-9]/g, '')
+      // Hàng "cannot ship" → /gp/offer-listing/ bị redirect về TRANG DP đầy đủ (có #productTitle).
+      // Khi đó .a-offscreen là giá widget hàng liên quan (sims) → rác. Chỉ đọc giá từ HÀNG OFFER THẬT.
+      if ($o('#productTitle').length > 0) return null
+      const priceText = $o('#aod-offer .a-price .a-offscreen, .aod-offer .a-price .a-offscreen, #olpOfferList .a-price .a-offscreen, .olpOffer .a-price .a-offscreen, [id^="aod-offer"] .a-price .a-offscreen')
+        .first().text().replace(/[^0-9]/g, '')
       return priceText && priceText.length >= 3 ? parseInt(priceText, 10) : null
     } catch {
       return null
     }
   }
 
-  // Strategy 2.5: quét .a-offscreen trong vùng sản phẩm — bắt giá "từ ¥X" khi buybox ẩn
-  // (vd hàng "cannot ship to location": chỉ hiện các tuỳ chọn biến thể "X options from ¥Y").
-  // Trang Amazon fetch tĩnh: khu gợi ý/sponsored lazy-load (vắng mặt), nên .a-offscreen chủ yếu là
-  // giá SP chính + các biến thể. Trả DANH SÁCH giá (distinct, tăng dần) để admin tự chọn đúng màu.
-  const extractOffscreenPrices = (): number[] => {
-    const set = new Set<number>()
-    $('.a-offscreen').each((_, el) => {
-      const n = parseInt($(el).text().replace(/[^0-9]/g, ''), 10)
-      if (Number.isFinite(n) && n >= 1000) set.add(n)
-    })
-    return [...set].sort((a, b) => a - b)
-  }
-
+  // ⚠️ KHÔNG dùng .a-offscreen làm giá: khi buybox ẩn ("cannot ship"), các .a-offscreen còn lại
+  // CHỈ là giá widget "sản phẩm liên quan/gợi ý/mua kèm" (vd giá đỡ ¥6.979) → luôn sai cho máy chính,
+  // và DOM Amazon đổi mỗi lần fetch nên không lọc tin cậy được. Giá ẩn → để khách NHẬP TAY (đúng luật gốc).
   const jsonLdPrice = extractPriceFromJsonLd()
   const domPrice = extractPriceFromDom()
-  const offscreenPrices = (!jsonLdPrice && !domPrice) ? extractOffscreenPrices() : []
-  const singleOffscreen = offscreenPrices.length === 1 ? offscreenPrices[0]! : null
-  // Fetch offer listing only when ALL local strategies miss
-  const offerPrice = (!jsonLdPrice && !domPrice && offscreenPrices.length === 0) ? await fetchOfferListingPrice() : null
+  // Offer-listing = giá thật của CÙNG ASIN từ người bán khác → đáng tin; chỉ gọi khi buybox ẩn.
+  const offerPrice = (!jsonLdPrice && !domPrice) ? await fetchOfferListingPrice() : null
 
-  const unitPriceJpy = jsonLdPrice ?? domPrice ?? singleOffscreen ?? offerPrice
-  // Nhiều biến thể (khác màu/cấu hình) → KHÔNG auto lấy min, để admin chọn giá đúng từ danh sách
-  const priceOptionsJpy = offscreenPrices.length > 1 ? offscreenPrices : undefined
+  const unitPriceJpy = jsonLdPrice ?? domPrice ?? offerPrice
+  // Bỏ "dải giá tham khảo": nguồn cũ (.a-offscreen) là giá widget hàng liên quan → sai. Khi giá ẩn = nhập tay.
+  const priceOptionsJpy = undefined
 
   // ── Images — parse hiRes JSON from script ─────────────────────────────────
   const imgScript = $('script').filter((_, el) => {
