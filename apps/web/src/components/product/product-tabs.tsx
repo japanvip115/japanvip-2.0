@@ -92,17 +92,20 @@ function detectCategory(productName: string): string {
 
 function buildReviews(productName: string, productImages: string[]) {
   const comments = REVIEW_COMMENTS[detectCategory(productName)] ?? REVIEW_COMMENTS.generic!
-  return REVIEWERS.map((r, i) => ({
-    id: i + 1,
-    stars: 5,
-    name: r.name,
-    date: r.date,
-    comment: comments[i] ?? comments[0]!,
-    // Ảnh review = ẢNH SẢN PHẨM THẬT (xoay vòng), gán cho vài review cho tự nhiên
-    images: productImages.length && (i === 0 || i === 2 || i === 4)
-      ? [productImages[i % productImages.length]!]
-      : [],
-  }))
+  let imgIdx = 0
+  // Ảnh review = ẢNH SẢN PHẨM THẬT, gán cho review 1/3/5 và XOAY VÒNG (mỗi review 1 ảnh khác nhau)
+  return REVIEWERS.map((r, i) => {
+    const withImage = productImages.length > 0 && (i === 0 || i === 2 || i === 4)
+    const img = withImage ? productImages[imgIdx++ % productImages.length]! : null
+    return {
+      id: i + 1,
+      stars: 5,
+      name: r.name,
+      date: r.date,
+      comment: comments[i] ?? comments[0]!,
+      images: img ? [img] : [],
+    }
+  })
 }
 
 // ── YouTube helper ────────────────────────────────────────────────────────────
@@ -258,6 +261,8 @@ export function ProductTabs({
   description, attributes, specGroups, faqItems, videoItems, productId, productName, productImages = [],
 }: Props) {
   const reviews = buildReviews(productName, productImages)
+  const [showAllReviews, setShowAllReviews] = useState(false)
+  const visibleReviews = showAllReviews ? reviews : reviews.slice(0, 3)
   const hasDesc    = !!description
   const hasSpecs   = attributes.length > 0 || specGroups.length > 0
   const hasFaq     = faqItems.length > 0
@@ -429,7 +434,7 @@ export function ProductTabs({
 
         {/* Review list */}
         <div className="divide-y divide-gray-50">
-          {reviews.map((r) => (
+          {visibleReviews.map((r) => (
             <div key={r.id} className="px-5 py-4">
               <div className="flex flex-wrap items-center gap-2 mb-1">
                 <span className="text-yellow-400 text-sm tracking-tight">{'★'.repeat(r.stars)}</span>
@@ -456,6 +461,18 @@ export function ProductTabs({
             </div>
           ))}
         </div>
+
+        {reviews.length > 3 && (
+          <div className="px-5 py-4 border-t border-gray-50 text-center">
+            <button
+              type="button"
+              onClick={() => setShowAllReviews((v) => !v)}
+              className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-red hover:underline"
+            >
+              {showAllReviews ? 'Thu gọn ▲' : `Xem thêm ${reviews.length - 3} đánh giá ▼`}
+            </button>
+          </div>
+        )}
       </div>
     </section>
   )
