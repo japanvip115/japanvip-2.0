@@ -4,6 +4,8 @@ import { hasRole } from '@/lib/auth-types'
 import { prisma } from '@japanvip/db'
 import { apiError, apiSuccess, handleApiError } from '@/lib/api-response'
 import { streamWithClaudeCode } from '@/lib/claude-code-stream'
+import { getAnthropicApiKey } from '@/lib/ai-keys'
+import Anthropic from '@anthropic-ai/sdk'
 
 export const maxDuration = 120
 
@@ -33,6 +35,39 @@ const ANGLE_PROMPT: Record<string, string> = {
 
 function collectStream(stream: ReadableStream<Uint8Array>): Promise<string> {
   return new Response(stream).text()
+}
+
+const clean = (s: string) => s.replace(/```/g, '').trim()
+
+/**
+ * Sinh nội dung: Vercel (production) → Claude API trả phí; local → thử Claude Code (free)
+ * trước, fallback Claude API nếu có key. Trả '' nếu không có cách nào.
+ */
+async function generateContent(system: string, prompt: string): Promise<{ message: string; source: string }> {
+  const onVercel = !!process.env.VERCEL
+
+  if (!onVercel) {
+    try {
+      const local = clean(await collectStream(streamWithClaudeCode(prompt, system)))
+      if (local && !local.startsWith('❌') && !/Lỗi khởi động Claude Code/.test(local)) {
+        return { message: local, source: 'claude-code' }
+      }
+    } catch { /* rơi xuống dùng API */ }
+  }
+
+  const apiKey = await getAnthropicApiKey()
+  if (!apiKey) return { message: '', source: 'none' }
+
+  const client = new Anthropic({ apiKey })
+  const msg = await client.messages.create({
+    model: 'claude-sonnet-4-6',
+    max_tokens: 1200,
+    system,
+    messages: [{ role: 'user', content: prompt }],
+  })
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const text = (msg.content.find((c: any) => c.type === 'text') as any)?.text ?? ''
+  return { message: clean(text), source: 'anthropic-api' }
 }
 
 export async function POST(req: NextRequest) {
@@ -69,14 +104,13 @@ QUY TẮC ĐẦU RA:
 
     const prompt = `${anglePrompt}${productBlock}`
 
-    const text = await collectStream(streamWithClaudeCode(prompt, system))
-    const message = text.replace(/```/g, '').trim()
+    const { message, source } = await generateContent(system, prompt)
 
     if (!message || message.startsWith('❌')) {
-      return apiError(message || 'Không sinh được nội dung. Đảm bảo Claude Code đang chạy local.', 502)
+      return apiError('Không sinh được nội dung. Bật Claude API (Cài Đặt → AI API Keys) hoặc chạy Claude Code ở máy local.', 502)
     }
 
-    return apiSuccess({ message })
+    return apiSuccess({ message, source })
   } catch (err) {
     return handleApiError(err)
   }
