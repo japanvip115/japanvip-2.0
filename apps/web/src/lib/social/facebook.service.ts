@@ -71,3 +71,25 @@ export async function publishPost(opts: { message: string; imageUrl?: string; li
   if (opts.imageUrl) return publishPhotoPost(opts.message, opts.imageUrl)
   return publishTextPost(opts.message, opts.link)
 }
+
+export type PostEngagement = { reactions: number; comments: number; shares: number }
+
+/** Đọc tương tác 1 bài (reaction/comment/share). Cần pages_read_engagement. null nếu lỗi. */
+export async function getPostEngagement(fbPostId: string): Promise<PostEngagement | null> {
+  const cfg = await getFacebookConfig()
+  if (!cfg) return null
+  try {
+    const fields = 'reactions.summary(total_count).limit(0),comments.summary(total_count).limit(0),shares'
+    const url = `${GRAPH}/${fbPostId}?fields=${fields}&access_token=${encodeURIComponent(cfg.accessToken)}`
+    const res = await fetch(url, { signal: AbortSignal.timeout(10000) })
+    const d = await res.json()
+    if (d.error) return null
+    return {
+      reactions: d.reactions?.summary?.total_count ?? 0,
+      comments: d.comments?.summary?.total_count ?? 0,
+      shares: d.shares?.count ?? 0,
+    }
+  } catch {
+    return null
+  }
+}

@@ -1,10 +1,10 @@
 'use client'
 
-import { useEffect, useState, useCallback, useMemo } from 'react'
+import React, { useEffect, useState, useCallback, useMemo } from 'react'
 import {
   Sparkles, Send, CalendarClock, FileText, Trash2, Loader2, ExternalLink,
   Image as ImageIcon, Settings, CheckCircle2, AlertTriangle, Globe,
-  ThumbsUp, MessageCircle, Share2, X,
+  ThumbsUp, MessageCircle, Share2, X, BarChart3,
 } from 'lucide-react'
 import Link from 'next/link'
 
@@ -14,6 +14,8 @@ type Post = {
   errorMessage: string | null; createdAt: string
 }
 type FbStatus = { pageId: string; hasToken: boolean; enabled: boolean; pageName: string }
+type Engagement = { reactions: number; comments: number; shares: number }
+type Insights = { byPost: Record<string, Engagement>; totals: { reactions: number; comments: number; shares: number; engagement: number; postCount: number } }
 
 const ANGLES = [
   { key: 'product', label: 'Sản phẩm' },
@@ -45,6 +47,7 @@ function nowLocal(): string {
 export function FacebookContentClient() {
   const [posts, setPosts] = useState<Post[]>([])
   const [status, setStatus] = useState<FbStatus | null>(null)
+  const [insights, setInsights] = useState<Insights | null>(null)
   const [loading, setLoading] = useState(true)
   const [angle, setAngle] = useState('product')
   const [topic, setTopic] = useState('')
@@ -66,6 +69,11 @@ export function FacebookContentClient() {
     if (pRes.ok) { const d = await pRes.json(); setPosts(d.data?.posts ?? []) }
     if (sRes.ok) setStatus(await sRes.json())
     setLoading(false)
+    // Số liệu tương tác (không chặn render — gọi Graph có thể chậm)
+    fetch('/api/v1/admin/content/facebook/insights')
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => { if (d?.success) setInsights(d.data) })
+      .catch(() => {})
   }, [])
   useEffect(() => { load() }, [load])
 
@@ -274,6 +282,13 @@ export function FacebookContentClient() {
                           )}
                         </div>
                         <p className="line-clamp-2 whitespace-pre-wrap text-sm text-gray-700">{p.message}</p>
+                        {p.status === 'PUBLISHED' && insights?.byPost[p.id] && (
+                          <div className="mt-1.5 flex items-center gap-3 text-xs text-gray-500">
+                            <span className="flex items-center gap-1"><ThumbsUp className="h-3 w-3" /> {insights.byPost[p.id]!.reactions}</span>
+                            <span className="flex items-center gap-1"><MessageCircle className="h-3 w-3" /> {insights.byPost[p.id]!.comments}</span>
+                            <span className="flex items-center gap-1"><Share2 className="h-3 w-3" /> {insights.byPost[p.id]!.shares}</span>
+                          </div>
+                        )}
                         {p.status === 'FAILED' && p.errorMessage && <p className="mt-1 text-xs text-red-500">❌ {p.errorMessage}</p>}
                       </div>
                       <div className="flex flex-shrink-0 items-start gap-2">
@@ -300,8 +315,25 @@ export function FacebookContentClient() {
           </div>
         </div>
 
-        {/* Live preview — sticky */}
+        {/* Analytics + Live preview — sticky */}
         <div className="space-y-4 lg:sticky lg:top-6 lg:self-start">
+          {insights && insights.totals.postCount > 0 && (
+            <div className="rounded-xl border bg-white p-4 shadow-sm">
+              <p className="mb-3 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-gray-400">
+                <BarChart3 className="h-3.5 w-3.5" /> Tương tác ({insights.totals.postCount} bài gần đây)
+              </p>
+              <div className="grid grid-cols-3 gap-2 text-center">
+                <Stat icon={<ThumbsUp className="h-4 w-4" />} value={insights.totals.reactions} label="Cảm xúc" />
+                <Stat icon={<MessageCircle className="h-4 w-4" />} value={insights.totals.comments} label="Bình luận" />
+                <Stat icon={<Share2 className="h-4 w-4" />} value={insights.totals.shares} label="Chia sẻ" />
+              </div>
+              <div className="mt-3 rounded-lg bg-brand-red/5 px-3 py-2 text-center">
+                <p className="text-xl font-black text-brand-red">{insights.totals.engagement.toLocaleString('vi-VN')}</p>
+                <p className="text-[11px] text-gray-500">tổng tương tác</p>
+              </div>
+            </div>
+          )}
+
           <p className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-gray-400">
             <Globe className="h-3.5 w-3.5" /> Xem trước trên Facebook
           </p>
@@ -333,6 +365,16 @@ export function FacebookContentClient() {
           </div>
         </div>
       )}
+    </div>
+  )
+}
+
+function Stat({ icon, value, label }: { icon: React.ReactNode; value: number; label: string }) {
+  return (
+    <div className="rounded-lg bg-gray-50 py-2">
+      <div className="flex items-center justify-center gap-1 text-gray-400">{icon}</div>
+      <p className="mt-0.5 text-base font-bold text-gray-900">{value.toLocaleString('vi-VN')}</p>
+      <p className="text-[10px] text-gray-500">{label}</p>
     </div>
   )
 }
