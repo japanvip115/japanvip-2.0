@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 export function RegisterForm() {
   const [fullName, setFullName] = useState('')
@@ -8,8 +8,23 @@ export function RegisterForm() {
   const [phone, setPhone] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
+  const [referralCode, setReferralCode] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+
+  // Tự điền mã giới thiệu từ link ?ref=CODE
+  useEffect(() => {
+    const ref = new URLSearchParams(window.location.search).get('ref')
+    if (ref) {
+      setReferralCode(ref.trim().toUpperCase())
+      try { sessionStorage.setItem('referralCode', ref.trim().toUpperCase()) } catch { /* ignore */ }
+    } else {
+      try {
+        const saved = sessionStorage.getItem('referralCode')
+        if (saved) setReferralCode(saved)
+      } catch { /* ignore */ }
+    }
+  }, [])
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -24,7 +39,7 @@ export function RegisterForm() {
       const res = await fetch('/api/v1/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ fullName, email: email.trim().toLowerCase(), phone, password }),
+        body: JSON.stringify({ fullName, email: email.trim().toLowerCase(), phone, password, referralCode: referralCode.trim() || undefined }),
       })
       const data = await res.json()
       if (!data.success) { setError(data.error ?? 'Đăng ký thất bại'); setLoading(false); return }
@@ -109,6 +124,22 @@ export function RegisterForm() {
           required
           className="w-full rounded-lg border px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-red"
         />
+      </div>
+
+      <div>
+        <label className="mb-1.5 block text-sm font-medium text-gray-700">
+          Mã giới thiệu <span className="text-gray-400">(nếu có)</span>
+        </label>
+        <input
+          type="text"
+          value={referralCode}
+          onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
+          placeholder="Nhập mã của người giới thiệu"
+          className="w-full rounded-lg border px-3 py-2.5 text-sm uppercase tracking-wider focus:outline-none focus:ring-2 focus:ring-brand-red"
+        />
+        {referralCode && (
+          <p className="mt-1 text-xs text-emerald-600">🎁 Bạn sẽ nhận điểm thưởng chào mừng sau lần đặt giá đầu tiên.</p>
+        )}
       </div>
 
       {error && (

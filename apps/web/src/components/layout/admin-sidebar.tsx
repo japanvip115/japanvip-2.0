@@ -26,6 +26,7 @@ const NAV_SECTIONS = [
       { href: '/admin/auctions', label: 'Đấu Giá', icon: Gavel },
       { href: '/admin/finance', label: 'Tài Chính', icon: DollarSign },
       { href: '/admin/affiliates', label: 'Hoa Hồng CTV', icon: Gift },
+      { href: '/admin/referrals', label: 'Giới Thiệu Bạn Bè', icon: Sparkles },
       { href: '/admin/users', label: 'Người Dùng', icon: Users },
       { href: '/admin/subscribers', label: 'Subscriber Email', icon: Mail },
     ],

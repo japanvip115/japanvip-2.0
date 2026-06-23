@@ -11,6 +11,7 @@ import { isFraudRuleEnabled, getFraudSetting, writeAuditLog } from '@/lib/fraud-
 import { validateFingerprintServer } from '@/lib/device-fingerprint'
 import { getClientIp } from '@/lib/get-client-ip'
 import { checkBidLiability } from '@/modules/auction/services/liability.service'
+import { processFirstBidReferral } from '@/lib/referral.service'
 
 type Params = { params: Promise<{ id: string }> }
 
@@ -306,6 +307,9 @@ export async function POST(req: NextRequest, { params }: Params) {
         data: { deviceFingerprint },
       }).catch(() => {})
     }
+
+    // Referral — thưởng điểm 2 chiều khi người được mời đặt giá lần đầu (idempotent, no-op nếu không có)
+    processFirstBidReferral(userId).catch(() => {})
 
     // Cache idempotency response (5 phút)
     const responsePayload = { success: true, data: result, message: 'Đặt giá thành công' }

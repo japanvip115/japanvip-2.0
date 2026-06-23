@@ -5,12 +5,14 @@ import bcrypt from 'bcryptjs'
 import { apiSuccess, apiError, handleApiError } from '@/lib/api-response'
 import { rateLimit } from '@/lib/rate-limit'
 import { createAndSendOtp } from '@/lib/otp.service'
+import { applyReferralCode } from '@/lib/referral.service'
 
 const schema = z.object({
   fullName: z.string().min(2).max(100).trim(),
   email: z.string().email().toLowerCase().trim(),
   phone: z.string().max(20).trim().optional(),
   password: z.string().min(8).max(128),
+  referralCode: z.string().max(20).trim().optional(),
 })
 
 export async function POST(req: NextRequest) {
@@ -19,7 +21,7 @@ export async function POST(req: NextRequest) {
     if (!limited.allowed) return apiError('Quá nhiều yêu cầu. Vui lòng thử lại sau.', 429)
 
     const body = await req.json()
-    const { fullName, email, phone, password } = schema.parse(body)
+    const { fullName, email, phone, password, referralCode } = schema.parse(body)
 
     const existing = await prisma.user.findUnique({ where: { email }, select: { id: true, emailVerified: true } })
     if (existing) {
@@ -31,7 +33,7 @@ export async function POST(req: NextRequest) {
 
     const passwordHash = await bcrypt.hash(password, 12)
 
-    await prisma.user.create({
+    const newUser = await prisma.user.create({
       data: {
         email,
         phone: phone || null,
@@ -43,7 +45,13 @@ export async function POST(req: NextRequest) {
           create: { fullName },
         },
       },
+      select: { id: true },
     })
+
+    // Gắn quan hệ giới thiệu nếu có mã (âm thầm bỏ qua nếu mã sai)
+    if (referralCode) {
+      await applyReferralCode(newUser.id, referralCode).catch(() => {})
+    }
 
     await createAndSendOtp(email, 'verify_email', fullName)
 

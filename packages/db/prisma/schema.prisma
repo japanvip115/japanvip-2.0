@@ -40,6 +40,8 @@ model User {
   sessionVersion     Int        @default(0) @map("session_version")
   failedLoginCount   Int        @default(0) @map("failed_login_count")
   lockedUntil        DateTime?  @map("locked_until") @db.Timestamptz
+  referralCode       String?    @unique @map("referral_code") @db.VarChar(20)
+  pointsBalance      Int        @default(0) @map("points_balance")
   createdAt          DateTime   @default(now()) @map("created_at") @db.Timestamptz
   updatedAt          DateTime   @updatedAt @map("updated_at") @db.Timestamptz
   deletedAt          DateTime?  @map("deleted_at") @db.Timestamptz
@@ -69,6 +71,9 @@ model User {
   loginHistory    LoginHistory[]
   bidConfirmOtps  BidConfirmOtp[]
   cart            Cart?
+  pointTxns       PointTransaction[]
+  referralsMade   Referral[]        @relation("ReferralReferrer")
+  referralReceived Referral?        @relation("ReferralReferee")
 
   @@index([email])
   @@index([phone])
@@ -758,6 +763,64 @@ model Transaction {
   @@index([type])
   @@index([referenceType, referenceId])
   @@map("transactions")
+}
+
+// ─────────────────────────────────────────
+// DOMAIN 5b: REFERRAL & LOYALTY POINTS
+// (khách thường giới thiệu bạn bè — KHÁC với CTV/Partner)
+// ─────────────────────────────────────────
+
+enum ReferralStatus {
+  PENDING    // người được mời đã đăng ký qua mã, chưa đặt giá
+  REWARDED   // người được mời đã đặt giá lần đầu → đã thưởng 2 chiều
+  CANCELLED  // huỷ do gian lận / admin thu hồi
+}
+
+model Referral {
+  id             String         @id @default(uuid()) @db.Uuid
+  referrerId     String         @map("referrer_id") @db.Uuid
+  refereeId      String         @unique @map("referee_id") @db.Uuid
+  code           String         @db.VarChar(20)
+  status         ReferralStatus @default(PENDING)
+  referrerPoints Int            @default(0) @map("referrer_points")
+  refereePoints  Int            @default(0) @map("referee_points")
+  qualifiedAt    DateTime?      @map("qualified_at") @db.Timestamptz
+  createdAt      DateTime       @default(now()) @map("created_at") @db.Timestamptz
+
+  referrer User @relation("ReferralReferrer", fields: [referrerId], references: [id])
+  referee  User @relation("ReferralReferee", fields: [refereeId], references: [id])
+
+  @@index([referrerId])
+  @@index([status])
+  @@map("referrals")
+}
+
+enum PointTransactionType {
+  REFERRAL_REFERRER  // điểm cho người đi mời
+  REFERRAL_REFEREE   // điểm chào mừng cho người được mời
+  REDEEM_AUCTION     // dùng điểm giảm giá phiên đấu giá
+  REDEEM_ORDER       // dùng điểm giảm giá đơn hàng
+  ADMIN_ADJUST       // admin điều chỉnh thủ công
+  REFUND             // hoàn điểm khi huỷ đơn
+}
+
+model PointTransaction {
+  id            String               @id @default(uuid()) @db.Uuid
+  userId        String               @map("user_id") @db.Uuid
+  type          PointTransactionType
+  amount        Int                  // +cộng / -trừ
+  balanceBefore Int                  @map("balance_before")
+  balanceAfter  Int                  @map("balance_after")
+  referenceType String?              @map("reference_type") @db.VarChar(50)
+  referenceId   String?              @map("reference_id") @db.Uuid
+  note          String?
+  createdAt     DateTime             @default(now()) @map("created_at") @db.Timestamptz
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([type])
+  @@map("point_transactions")
 }
 
 // ─────────────────────────────────────────
