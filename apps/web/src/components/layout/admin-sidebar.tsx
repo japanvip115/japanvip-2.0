@@ -8,7 +8,7 @@ import {
   LayoutDashboard, Package, Gavel, Users, ShoppingBag,
   DollarSign, FileText, Settings, FolderOpen, Layers,
   ChevronRight, ChevronDown, ShieldAlert, Ban, LogOut, ExternalLink,
-  Home, ClipboardList, Gift, Mail, Sparkles,
+  Home, ClipboardList, Gift, Mail, Sparkles, Megaphone,
 } from 'lucide-react'
 
 const NAV_SECTIONS = [
@@ -47,6 +47,7 @@ const NAV_SECTIONS = [
       {
         href: '/admin/settings', label: 'Cài Đặt', icon: Settings, exact: true,
         children: [
+          { href: '/admin/settings/facebook', label: 'Facebook Marketing', icon: Megaphone, exact: true },
           { href: '/admin/settings/logo-templates', label: 'Logo Templates', icon: Layers, exact: true },
           { href: '/admin/settings/fraud', label: 'Chống Gian Lận', icon: ShieldAlert, exact: true },
           { href: '/admin/settings/blocked-ips', label: 'IP Bị Chặn', icon: Ban, exact: true },
