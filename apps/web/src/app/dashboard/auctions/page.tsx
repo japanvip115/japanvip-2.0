@@ -4,6 +4,7 @@ import { prisma } from '@japanvip/db'
 import { formatVND } from '@japanvip/utils'
 import { AUCTION_STATUS_LABELS, AUCTION_STATUS_COLORS } from '@/lib/auction-status'
 import { getWalletBalance } from '@/modules/payment/wallet.service'
+import { getReferralPoints } from '@/lib/referral-settings'
 import Link from 'next/link'
 import Image from 'next/image'
 import { PayWithVnpayButton } from '@/components/payment/pay-with-vnpay-button'
@@ -48,6 +49,12 @@ export default async function DashboardAuctionsPage() {
     }),
     getWalletBalance(userId),
   ])
+
+  const [pointsUser, referralReward] = await Promise.all([
+    prisma.user.findUnique({ where: { id: userId }, select: { pointsBalance: true } }),
+    getReferralPoints(),
+  ])
+  const pointsBalance = pointsUser?.pointsBalance ?? 0
 
   const auctionIds = bids.map((b) => b.auctionId)
   const winningBids = await prisma.bid.findMany({
@@ -144,7 +151,7 @@ export default async function DashboardAuctionsPage() {
                   Tổng phải trả: <strong className="text-brand-red">{formatVND(Number(s.totalPayable))}</strong> · thanh toán trong 3 ngày
                 </p>
                 <div className="mt-3 max-w-xs">
-                  <PayWithVnpayButton purpose="AUCTION_SETTLEMENT" referenceId={s.id} amount={Number(s.totalPayable)} />
+                  <PayWithVnpayButton purpose="AUCTION_SETTLEMENT" referenceId={s.id} amount={Number(s.totalPayable)} pointsBalance={pointsBalance} maxRedeemPercent={referralReward.maxRedeemPercent} />
                 </div>
               </div>
             ))}

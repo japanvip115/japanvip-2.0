@@ -10,7 +10,7 @@
  */
 
 import { prisma, type PointTransactionType, type Prisma } from '@japanvip/db'
-import { getReferralPoints, isReferralEnabled } from './referral-settings'
+import { getReferralPoints, getReferralSetting, isReferralEnabled } from './referral-settings'
 
 // Bỏ ký tự dễ nhầm (0/O, 1/I/L) để khách đọc/gõ tay không sai
 const CODE_ALPHABET = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789'
@@ -114,6 +114,45 @@ export async function recordPointTxn(
   })
 
   return after
+}
+
+/**
+ * Tính số điểm tối đa được dùng để giảm cho một khoản thanh toán `amount` (₫).
+ * = min(số dư điểm, amount × MAX_REDEEM_PERCENT%). Trả 0 nếu chương trình tắt.
+ */
+export async function computeRedeemable(userId: string, amount: number): Promise<number> {
+  if (!(await isReferralEnabled())) return 0
+  if (amount <= 0) return 0
+
+  const [user, pctRaw] = await Promise.all([
+    prisma.user.findUnique({ where: { id: userId }, select: { pointsBalance: true } }),
+    getReferralSetting('MAX_REDEEM_PERCENT'),
+  ])
+  const balance = user?.pointsBalance ?? 0
+  if (balance <= 0) return 0
+
+  const pct = parseInt(pctRaw, 10) || 0
+  const maxByPercent = Math.floor((amount * pct) / 100)
+  return Math.max(0, Math.min(balance, maxByPercent))
+}
+
+/** Hoàn lại điểm đã trừ (khi thanh toán thất bại / huỷ intent). Chạy trong transaction. */
+export async function refundPoints(
+  tx: Prisma.TransactionClient,
+  userId: string,
+  amount: number,
+  referenceId: string,
+  note = 'Hoàn điểm do thanh toán không hoàn tất'
+): Promise<void> {
+  if (amount <= 0) return
+  await recordPointTxn(tx, {
+    userId,
+    amount, // dương = cộng lại
+    type: 'REFUND',
+    referenceType: 'payment_intent',
+    referenceId,
+    note,
+  })
 }
 
 /**

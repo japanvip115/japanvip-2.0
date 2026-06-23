@@ -7,6 +7,8 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { DepositProofForm } from '@/components/order/deposit-proof-form'
 import { PayWithVnpayButton } from '@/components/payment/pay-with-vnpay-button'
+import { prisma } from '@japanvip/db'
+import { getReferralPoints } from '@/lib/referral-settings'
 
 type Props = { params: Promise<{ id: string }> }
 
@@ -20,6 +22,12 @@ export default async function OrderDetailPage({ params }: Props) {
   const { id } = await params
   const order = await getBfjOrderDetail(id, session!.user!.id)
   if (!order) notFound()
+
+  const [pointsUser, referralReward] = await Promise.all([
+    prisma.user.findUnique({ where: { id: session!.user!.id }, select: { pointsBalance: true } }),
+    getReferralPoints(),
+  ])
+  const pointsBalance = pointsUser?.pointsBalance ?? 0
 
   const progress = BFJ_STATUS_PROGRESS[order.status]
   const effectiveDeposit = order.depositAmount
@@ -194,7 +202,7 @@ export default async function OrderDetailPage({ params }: Props) {
           <h2 className="mb-4 font-bold text-gray-900">Đặt Cọc</h2>
           {!order.depositPaid && (
             <div className="mb-4">
-              <PayWithVnpayButton purpose="BFJ_DEPOSIT" referenceId={order.id} amount={effectiveDeposit} />
+              <PayWithVnpayButton purpose="BFJ_DEPOSIT" referenceId={order.id} amount={effectiveDeposit} pointsBalance={pointsBalance} maxRedeemPercent={referralReward.maxRedeemPercent} />
               <p className="mt-2 text-center text-xs text-gray-400">Hoặc chuyển khoản thủ công bên dưới</p>
             </div>
           )}

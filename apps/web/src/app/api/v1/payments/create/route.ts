@@ -7,10 +7,12 @@ import { rateLimit } from '@/lib/rate-limit'
 import { getClientIp } from '@/lib/get-client-ip'
 import { getVnpayConfig } from '@/lib/payments/vnpay-config'
 import { buildPaymentUrl, vnpDate } from '@/lib/payments/vnpay'
+import { computeRedeemable, recordPointTxn, refundPoints } from '@/lib/referral.service'
 
 const schema = z.object({
   purpose: z.enum(['AUCTION_SETTLEMENT', 'BFJ_DEPOSIT']),
   referenceId: z.string().uuid(),
+  usePoints: z.boolean().optional(),
 })
 
 export async function POST(req: NextRequest) {
@@ -63,21 +65,61 @@ export async function POST(req: NextRequest) {
 
     if (amount < 1000) return apiError('Số tiền thanh toán không hợp lệ.', 400)
 
+    const fullAmount = amount
+    const redeemType = body.purpose === 'AUCTION_SETTLEMENT' ? 'REDEEM_AUCTION' : 'REDEEM_ORDER'
+
+    // Áp điểm thưởng để giảm giá (nếu khách chọn)
+    let pointsUsed = 0
+    if (body.usePoints) {
+      pointsUsed = await computeRedeemable(userId, fullAmount)
+      // Giữ lại tối thiểu 1.000₫ để VNPay vẫn có khoản thực thu
+      pointsUsed = Math.min(pointsUsed, fullAmount - 1000)
+      if (pointsUsed < 0) pointsUsed = 0
+    }
+
     // Mã giao dịch nội bộ (vnp_TxnRef) — duy nhất
     const code = `VNP${Date.now().toString(36).toUpperCase()}${Math.floor(Math.random() * 1e4).toString().padStart(4, '0')}`
 
-    await prisma.paymentIntent.create({
-      data: {
-        code,
-        provider: 'VNPAY',
-        purpose: body.purpose,
-        userId,
-        amount,
-        status: 'PENDING',
-        referenceType,
-        referenceId: body.referenceId,
-      },
+    await prisma.$transaction(async (tx) => {
+      // Hoàn điểm cho các intent PENDING cũ cùng tham chiếu (khách bấm thanh toán lại) — tránh khoá điểm trùng
+      const stale = await tx.paymentIntent.findMany({
+        where: { userId, referenceId: body.referenceId, status: 'PENDING', pointsUsed: { gt: 0 } },
+        select: { id: true, pointsUsed: true },
+      })
+      for (const s of stale) {
+        await tx.paymentIntent.update({ where: { id: s.id }, data: { status: 'EXPIRED' } })
+        await refundPoints(tx, userId, s.pointsUsed, s.id, 'Hoàn điểm — tạo lại giao dịch thanh toán')
+      }
+
+      const intent = await tx.paymentIntent.create({
+        data: {
+          code,
+          provider: 'VNPAY',
+          purpose: body.purpose,
+          userId,
+          amount: fullAmount - pointsUsed,
+          originalAmount: pointsUsed > 0 ? fullAmount : null,
+          pointsUsed,
+          status: 'PENDING',
+          referenceType,
+          referenceId: body.referenceId,
+        },
+      })
+
+      // Trừ điểm ngay khi tạo intent (sẽ hoàn nếu thanh toán thất bại)
+      if (pointsUsed > 0) {
+        await recordPointTxn(tx, {
+          userId,
+          amount: -pointsUsed,
+          type: redeemType,
+          referenceType: 'payment_intent',
+          referenceId: intent.id,
+          note: `Dùng điểm giảm giá ${redeemType === 'REDEEM_AUCTION' ? 'đấu giá' : 'đơn hàng'}`,
+        })
+      }
     })
+
+    amount = fullAmount - pointsUsed
 
     const now = new Date()
     const expire = new Date(now.getTime() + 15 * 60 * 1000) // hết hạn sau 15 phút

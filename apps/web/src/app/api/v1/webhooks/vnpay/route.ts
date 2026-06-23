@@ -3,6 +3,7 @@ import { prisma } from '@japanvip/db'
 import { getVnpayConfig } from '@/lib/payments/vnpay-config'
 import { verifySignature } from '@/lib/payments/vnpay'
 import { notifyUser } from '@/modules/notification/notification.service'
+import { refundPoints } from '@/lib/referral.service'
 
 function ipnResponse(code: string, message: string) {
   return NextResponse.json({ RspCode: code, Message: message })
@@ -39,9 +40,15 @@ export async function GET(req: NextRequest) {
   const success = query.vnp_ResponseCode === '00' && query.vnp_TransactionStatus === '00'
 
   if (!success) {
-    await prisma.paymentIntent.update({
-      where: { id: intent.id },
-      data: { status: 'FAILED', providerData: query, providerRef: query.vnp_TransactionNo ?? null },
+    // Idempotent: chỉ claim PENDING→FAILED một lần, và hoàn điểm đúng một lần
+    await prisma.$transaction(async (tx) => {
+      const claim = await tx.paymentIntent.updateMany({
+        where: { id: intent.id, status: 'PENDING' },
+        data: { status: 'FAILED', providerData: query, providerRef: query.vnp_TransactionNo ?? null },
+      })
+      if (claim.count === 1 && intent.pointsUsed > 0) {
+        await refundPoints(tx, intent.userId, intent.pointsUsed, intent.id, 'Hoàn điểm — thanh toán VNPay thất bại')
+      }
     })
     return ipnResponse('00', 'Confirm Success') // đã ghi nhận kết quả (thất bại)
   }

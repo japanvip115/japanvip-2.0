@@ -675,6 +675,8 @@ model PaymentIntent {
   purpose       PaymentPurpose
   userId        String              @map("user_id") @db.Uuid
   amount        Decimal             @db.Decimal(20, 2)
+  originalAmount Decimal?           @map("original_amount") @db.Decimal(20, 2)
+  pointsUsed    Int                 @default(0) @map("points_used")
   status        PaymentIntentStatus @default(PENDING)
   referenceType String              @map("reference_type") @db.VarChar(40)
   referenceId   String              @map("reference_id") @db.Uuid
