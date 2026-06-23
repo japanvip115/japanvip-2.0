@@ -52,6 +52,8 @@ const GROUPS: { title: string; icon: string; items: SettingItem[] }[] = [
     items: [
       { href: '/admin/content/ai-writer',         icon: '📝', title: 'AI Content Writer',          desc: 'Tạo mô tả, FAQ, SEO, blog bằng AI', badge: 'AI', badgeColor: 'purple' },
       { href: '/admin/content/calendar',          icon: '📅', title: 'Content Calendar',            desc: 'Lên lịch tạo nội dung AI tự động', badge: 'Mới', badgeColor: 'blue' },
+      { href: '/admin/content/facebook',          icon: '📘', title: 'Bài đăng Facebook',           desc: 'Soạn/AI tạo + đăng ngay hoặc lên lịch auto-đăng fanpage', badge: 'Mới', badgeColor: 'blue' },
+      { href: '/admin/settings/facebook',         icon: '🔗', title: 'Kết Nối Facebook',            desc: 'Page ID + token để đăng tự động lên fanpage' },
       { href: '/admin/settings/newsletter',       icon: '📧', title: 'Email Hàng Loạt',             desc: 'Soạn & gửi tin/khuyến mãi cho khách đã đăng ký', badge: 'Mới', badgeColor: 'blue' },
       { href: '/admin/settings/automations',      icon: '⚙️', title: 'Tự Động Hóa Email',           desc: 'Bật/tắt & tinh chỉnh welcome, win-back, bỏ giỏ, digest…', badge: 'Mới', badgeColor: 'blue' },
       { href: '/admin/settings/email-templates',  icon: '✉️', title: 'Mẫu Email (HTML)',             desc: 'Dán HTML tự thiết kế ghi đè email tự động (Stripo/BeeFree…)', badge: 'Mới', badgeColor: 'blue' },
