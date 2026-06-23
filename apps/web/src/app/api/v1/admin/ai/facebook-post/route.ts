@@ -39,14 +39,40 @@ function collectStream(stream: ReadableStream<Uint8Array>): Promise<string> {
 
 const clean = (s: string) => s.replace(/```/g, '').trim()
 
-/**
- * Sinh nội dung: Vercel (production) → Claude API trả phí; local → thử Claude Code (free)
- * trước, fallback Claude API nếu có key. Trả '' nếu không có cách nào.
- */
-async function generateContent(system: string, prompt: string): Promise<{ message: string; source: string }> {
-  const onVercel = !!process.env.VERCEL
+// Model cho phép chọn từ UI (whitelist chống injection)
+const API_MODELS: Record<string, string> = {
+  'claude-opus-4-8': 'claude-opus-4-8',
+  'claude-sonnet-4-6': 'claude-sonnet-4-6',
+}
 
-  if (!onVercel) {
+async function generateWithApi(system: string, prompt: string, model: string): Promise<{ message: string; source: string }> {
+  const apiKey = await getAnthropicApiKey()
+  if (!apiKey) return { message: '', source: 'none' }
+  const client = new Anthropic({ apiKey })
+  const msg = await client.messages.create({
+    model,
+    max_tokens: 1500,
+    system,
+    messages: [{ role: 'user', content: prompt }],
+  })
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const text = (msg.content.find((c: any) => c.type === 'text') as any)?.text ?? ''
+  return { message: clean(text), source: model }
+}
+
+/**
+ * Sinh nội dung theo lựa chọn model:
+ *  - 'auto' (mặc định): local thử Claude Code (free) → fallback API Sonnet
+ *  - 'claude-opus-4-8' / 'claude-sonnet-4-6': gọi thẳng Anthropic API model đó
+ */
+async function generateContent(system: string, prompt: string, model?: string): Promise<{ message: string; source: string }> {
+  // Chọn model API cụ thể → dùng API luôn
+  if (model && API_MODELS[model]) {
+    return generateWithApi(system, prompt, API_MODELS[model]!)
+  }
+
+  // Auto: local thử Claude Code trước (free)
+  if (!process.env.VERCEL) {
     try {
       const local = clean(await collectStream(streamWithClaudeCode(prompt, system)))
       if (local && !local.startsWith('❌') && !/Lỗi khởi động Claude Code/.test(local)) {
@@ -54,20 +80,7 @@ async function generateContent(system: string, prompt: string): Promise<{ messag
       }
     } catch { /* rơi xuống dùng API */ }
   }
-
-  const apiKey = await getAnthropicApiKey()
-  if (!apiKey) return { message: '', source: 'none' }
-
-  const client = new Anthropic({ apiKey })
-  const msg = await client.messages.create({
-    model: 'claude-sonnet-4-6',
-    max_tokens: 1200,
-    system,
-    messages: [{ role: 'user', content: prompt }],
-  })
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const text = (msg.content.find((c: any) => c.type === 'text') as any)?.text ?? ''
-  return { message: clean(text), source: 'anthropic-api' }
+  return generateWithApi(system, prompt, 'claude-sonnet-4-6')
 }
 
 export async function POST(req: NextRequest) {
@@ -76,7 +89,7 @@ export async function POST(req: NextRequest) {
   if (!hasRole((session?.user as any)?.role, 'ADMIN')) return apiError('Unauthorized', 401)
 
   try {
-    const { angle, productId, topic } = await req.json()
+    const { angle, productId, topic, model } = await req.json()
     const a = (angle ?? 'product').toString()
     const anglePrompt = ANGLE_PROMPT[a] ?? ANGLE_PROMPT.product
 
@@ -104,7 +117,7 @@ QUY TẮC ĐẦU RA:
 
     const prompt = `${anglePrompt}${productBlock}`
 
-    const { message, source } = await generateContent(system, prompt)
+    const { message, source } = await generateContent(system, prompt, model ? String(model) : undefined)
 
     if (!message || message.startsWith('❌')) {
       return apiError('Không sinh được nội dung. Bật Claude API (Cài Đặt → AI API Keys) hoặc chạy Claude Code ở máy local.', 502)

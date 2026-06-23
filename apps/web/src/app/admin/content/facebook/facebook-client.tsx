@@ -50,6 +50,7 @@ export function FacebookContentClient() {
   const [insights, setInsights] = useState<Insights | null>(null)
   const [loading, setLoading] = useState(true)
   const [angle, setAngle] = useState('product')
+  const [aiModel, setAiModel] = useState('auto')
   const [topic, setTopic] = useState('')
   const [message, setMessage] = useState('')
   const [imageUrl, setImageUrl] = useState('')
@@ -91,7 +92,7 @@ export function FacebookContentClient() {
     try {
       const res = await fetch('/api/v1/admin/ai/facebook-post', {
         method: 'POST', headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ angle, topic }),
+        body: JSON.stringify({ angle, topic, model: aiModel }),
       })
       const d = await res.json()
       if (d.success) setMessage(d.data.message)
@@ -189,13 +190,21 @@ export function FacebookContentClient() {
               ))}
             </div>
 
-            <div className="flex gap-2">
+            <div className="space-y-2">
               <input value={topic} onChange={(e) => setTopic(e.target.value)} placeholder="Gợi ý cho AI (vd: tên sản phẩm, chương trình, chủ đề mẹo...)"
-                className="flex-1 rounded-lg border px-3 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-red" />
-              <button onClick={generate} disabled={generating}
-                className="flex items-center gap-1.5 rounded-lg bg-purple-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-purple-700 disabled:opacity-60 whitespace-nowrap">
-                {generating ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />} AI tạo
-              </button>
+                className="w-full rounded-lg border px-3 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-red" />
+              <div className="flex gap-2">
+                <select value={aiModel} onChange={(e) => setAiModel(e.target.value)}
+                  className="flex-1 rounded-lg border bg-white px-3 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-brand-red">
+                  <option value="auto">⚡ Tự động (free khi chạy local)</option>
+                  <option value="claude-opus-4-8">💎 Opus 4.8 · API (chất lượng cao nhất)</option>
+                  <option value="claude-sonnet-4-6">🚀 Sonnet 4.6 · API (nhanh, tiết kiệm)</option>
+                </select>
+                <button onClick={generate} disabled={generating}
+                  className="flex items-center gap-1.5 rounded-lg bg-purple-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-purple-700 disabled:opacity-60 whitespace-nowrap">
+                  {generating ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />} AI tạo
+                </button>
+              </div>
             </div>
 
             <div>
