@@ -27,6 +27,7 @@ export function encrypt(plaintext: string): string {
 export function decrypt(ciphertext: string): string {
   const secret = getSecret()
   const parts = ciphertext.split(':')
+  if (parts.length === 3) return decryptLegacy(ciphertext) // định dạng cũ iv:tag:data
   if (parts.length !== 4) throw new Error('Invalid ciphertext format')
   const key = scryptSync(secret, Buffer.from(parts[0]!, 'hex'), 32)
   const iv = Buffer.from(parts[1]!, 'hex')
