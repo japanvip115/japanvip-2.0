@@ -141,7 +141,7 @@ export function FacebookContentClient() {
 
         <div className="flex gap-2">
           <input value={topic} onChange={(e) => setTopic(e.target.value)} placeholder="Gợi ý cho AI (vd: tên sản phẩm, chương trình, chủ đề mẹo...)"
-            className="flex-1 rounded-lg border px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-red" />
+            className="flex-1 rounded-lg border px-3 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-red" />
           <button onClick={generate} disabled={generating}
             className="flex items-center gap-1.5 rounded-lg bg-purple-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-purple-700 disabled:opacity-60 whitespace-nowrap">
             {generating ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />} AI tạo
@@ -149,18 +149,18 @@ export function FacebookContentClient() {
         </div>
 
         <textarea value={message} onChange={(e) => setMessage(e.target.value)} rows={8} placeholder="Nội dung bài đăng Facebook..."
-          className="w-full rounded-lg border px-3 py-2.5 text-sm leading-relaxed focus:outline-none focus:ring-2 focus:ring-brand-red" />
+          className="w-full rounded-lg border px-3 py-2.5 text-sm leading-relaxed text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-red" />
 
         <div className="grid gap-3 sm:grid-cols-2">
           <div className="flex items-center gap-2 rounded-lg border px-3">
             <ImageIcon className="h-4 w-4 flex-shrink-0 text-gray-400" />
             <input value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} placeholder="URL ảnh (tùy chọn)"
-              className="flex-1 py-2.5 text-sm outline-none" />
+              className="flex-1 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 outline-none" />
           </div>
           <div className="flex items-center gap-2 rounded-lg border px-3">
             <ExternalLink className="h-4 w-4 flex-shrink-0 text-gray-400" />
             <input value={linkUrl} onChange={(e) => setLinkUrl(e.target.value)} placeholder="Link đính kèm (tùy chọn)"
-              className="flex-1 py-2.5 text-sm outline-none" />
+              className="flex-1 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 outline-none" />
           </div>
         </div>
 
@@ -178,7 +178,7 @@ export function FacebookContentClient() {
 
           <div className="flex items-center gap-2">
             <input type="datetime-local" value={scheduledAt} onChange={(e) => setScheduledAt(e.target.value)}
-              className="rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-red" />
+              className="rounded-lg border px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-brand-red" />
             <button onClick={schedule} disabled={!!busy}
               className="flex items-center gap-1.5 rounded-lg border-2 border-solid border-brand-red bg-white px-4 py-2.5 text-sm font-semibold text-brand-red hover:bg-brand-red hover:text-white transition-colors disabled:opacity-60">
               {busy === 'schedule' ? <Loader2 className="h-4 w-4 animate-spin" /> : <CalendarClock className="h-4 w-4" />} Lên lịch
