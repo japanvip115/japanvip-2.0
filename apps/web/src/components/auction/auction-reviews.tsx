@@ -28,19 +28,28 @@ export function AuctionReviews({ data }: { data: ReviewItem[] }) {
         </div>
 
         <div className="testimonials-grid" style={{ minHeight: 220 }}>
-          {visible.map((t, i) => (
+          {visible.map((t, i) => {
+            const initials = t.name.split(' ').map((w) => w[0]).filter(Boolean).slice(-2).join('')
+            return (
             <div key={page + '-' + i} className={`testimonial-card${i === 1 ? ' featured-test' : ''}`}
               style={{ animation: 'fadeInUp 0.4s ease both', animationDelay: `${i * 0.08}s` }}>
               <div className="test-stars">{'★'.repeat(t.rating ?? 5)}</div>
               <p>&ldquo;{t.text}&rdquo;</p>
               <div className="test-author">
-                <img src={t.photoUrl ?? ''} alt={t.name} className="test-avatar-img"
-                  onError={(e) => { e.currentTarget.style.display = 'none'; (e.currentTarget.nextElementSibling as HTMLElement).style.display = 'flex' }} />
-                <div className="test-avatar" style={{ display: 'none' }}>{t.name.split(' ').map((w) => w[0]).slice(-2).join('')}</div>
+                {t.photoUrl ? (
+                  <>
+                    <img src={t.photoUrl} alt={t.name} className="test-avatar-img"
+                      onError={(e) => { e.currentTarget.style.display = 'none'; (e.currentTarget.nextElementSibling as HTMLElement).style.display = 'flex' }} />
+                    <div className="test-avatar" style={{ display: 'none' }}>{initials}</div>
+                  </>
+                ) : (
+                  <div className="test-avatar">{initials}</div>
+                )}
                 <div><strong>{t.name}</strong><span>{t.city}</span></div>
               </div>
             </div>
-          ))}
+            )
+          })}
         </div>
 
         {total > 1 && (
