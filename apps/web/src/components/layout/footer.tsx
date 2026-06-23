@@ -1,12 +1,11 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { prisma } from '@japanvip/db'
+import { getNavData } from '@/lib/nav-data'
 
 const BASE = 'mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8'
 
 export async function Footer() {
-  const logoRow = await prisma.siteSetting.findUnique({ where: { key: 'site_logo_url' } })
-  const logoUrl = logoRow?.value ?? ''
+  const { logoUrl } = await getNavData()
 
   return (
     <footer className="bg-gray-900 text-gray-300">

@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
+import { useSession } from 'next-auth/react'
 import Script from 'next/script'
 import Image from 'next/image'
 import { QuickOrderModal } from '@/components/product/quick-order-modal'
@@ -746,7 +747,6 @@ export default function HomePageClient({
   heroBanners = [],
   brands = [],
   testimonials = [],
-  isAdmin = false,
 }: {
   categories: CategoryItem[]
   products: ProductItem[]
@@ -757,9 +757,12 @@ export default function HomePageClient({
   heroBanners?: HeroBanner[]
   brands?: BrandItem[]
   testimonials?: TestimonialItem[]
-  isAdmin?: boolean
 }) {
   const router = useRouter()
+  // isAdmin lấy client-side để trang chủ render TĨNH (CDN) — admin thấy nút sửa sau khi hydrate
+  const { data: session } = useSession()
+  const role = (session?.user as { role?: string } | undefined)?.role
+  const isAdmin = role === 'ADMIN' || role === 'SUPER_ADMIN'
   const nav = (page: string) => (window as any).navigate?.(page)
   const t = (key: string) => content[key] || DEFAULTS[key] || ''
 

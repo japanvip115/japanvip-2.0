@@ -1,18 +1,19 @@
 import type { Metadata } from 'next'
+import { unstable_cache } from 'next/cache'
 import './globals.css'
 import { getAllFontVariableClasses, getFontCssVar } from '@/lib/fonts'
 import { getActiveFont } from '@/lib/font-settings'
+
+// Bọc cache để lệnh Redis (fetch no-store) không ép cả site render động
+const getActiveFontCached = unstable_cache(getActiveFont, ['active-font-v1'], { revalidate: 300, tags: ['site-config'] })
 import { ContentProtection } from '@/components/content-protection'
 import { Providers } from '@/components/providers'
 import { AffiliateClickTracker } from '@/components/affiliate/affiliate-click-tracker'
-import { prisma } from '@japanvip/db'
+import { getSiteConfig } from '@/lib/site-config'
 
 // Reads site verification codes (Google / Bing / Facebook) from DB and injects meta tags
 export async function generateMetadata(): Promise<Metadata> {
-  const rows = await prisma.siteSetting
-    .findMany({ where: { key: { in: ['site_favicon_url', 'site_google_verification', 'site_bing_verification', 'site_facebook_verification'] } } })
-    .catch(() => [] as { key: string; value: string }[])
-  const map = Object.fromEntries(rows.map(r => [r.key, r.value?.trim()]))
+  const map = await getSiteConfig()
   const faviconUrl = map['site_favicon_url']
   const googleVerify = map['site_google_verification']
   const bingVerify = map['site_bing_verification']
@@ -60,19 +61,12 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const [activeFont, protectionSetting, layoutSettings] = await Promise.all([
-    getActiveFont(),
-    prisma.siteSetting.findUnique({ where: { key: 'content_protection_enabled' } }).catch(() => null),
-    prisma.siteSetting
-      .findMany({ where: { key: { in: ['site_facebook_verification', 'site_facebook_pixel_id', 'site_ga4_id'] } } })
-      .catch(() => [] as { key: string; value: string }[]),
-  ])
+  const [activeFont, cfg] = await Promise.all([getActiveFontCached(), getSiteConfig()])
   const activeFontVar = getFontCssVar(activeFont)
-  const contentProtectionEnabled = protectionSetting?.value !== 'false'
-  const layoutMap = Object.fromEntries(layoutSettings.map(r => [r.key, r.value?.trim()]))
-  const facebookVerify = layoutMap['site_facebook_verification']
-  const fbPixelId = layoutMap['site_facebook_pixel_id']
-  const ga4Id = layoutMap['site_ga4_id']
+  const contentProtectionEnabled = cfg['content_protection_enabled'] !== 'false'
+  const facebookVerify = cfg['site_facebook_verification']
+  const fbPixelId = cfg['site_facebook_pixel_id']
+  const ga4Id = cfg['site_ga4_id']
 
   return (
     <html

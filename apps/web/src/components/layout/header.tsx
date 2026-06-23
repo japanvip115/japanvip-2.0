@@ -1,25 +1,14 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { auth } from '@/lib/auth'
-import type { SessionUser } from '@/lib/auth-types'
 import { CartButton } from '@/components/cart/cart-button'
 import { CartSync } from '@/components/cart/cart-sync'
-import { UserMenu } from '@/components/layout/user-menu'
-import { prisma } from '@japanvip/db'
 import { HeaderSearch } from '@/components/layout/header-search'
 import { NavLinks, MobileMenuButton } from '@/components/layout/nav-links'
-import { LoginDropdown } from '@/components/layout/login-dropdown'
+import { HeaderAuthActions } from '@/components/layout/header-auth-actions'
+import { getNavData } from '@/lib/nav-data'
 
 export async function Header() {
-  const session = await auth()
-  const user = session?.user as SessionUser | undefined
-
-  const [logoRow, blogCategories, productCategories] = await Promise.all([
-    prisma.siteSetting.findUnique({ where: { key: 'site_logo_url' } }),
-    prisma.blogCategory.findMany({ orderBy: { name: 'asc' }, select: { name: true, slug: true } }),
-    prisma.category.findMany({ where: { isActive: true, parentId: null }, orderBy: { sortOrder: 'asc' }, select: { name: true, slug: true, children: { where: { isActive: true }, orderBy: { sortOrder: 'asc' }, select: { name: true, slug: true } } } }),
-  ])
-  const logoUrl = logoRow?.value ?? ''
+  const { logoUrl, blogCategories, productCategories } = await getNavData()
 
   return (
     <header className="sticky top-0 z-50 w-full">
@@ -72,20 +61,7 @@ export async function Header() {
           <div className="flex items-center gap-2">
             <CartSync />
             <CartButton />
-            {user ? (
-              <UserMenu name={user.name} email={user.email} />
-            ) : (
-              <>
-                <LoginDropdown />
-                <Link
-                  href="/register"
-                  className="rounded-md bg-brand-red px-3 py-1.5 text-sm font-medium text-white hover:bg-brand-red-dark transition-colors"
-                >
-                  <span className="hidden md:inline">Đăng ký</span>
-                  <span className="md:hidden">Đăng ký</span>
-                </Link>
-              </>
-            )}
+            <HeaderAuthActions />
             {/* Hamburger — mobile only */}
             <MobileMenuButton blogCategories={blogCategories} productCategories={productCategories} />
           </div>
