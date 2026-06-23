@@ -1,6 +1,6 @@
 import { auth } from '@/lib/auth'
 import { hasRole } from '@/lib/auth-types'
-import { getFacebookConfigStatus, saveFacebookConfig } from '@/lib/social/facebook-config'
+import { getFacebookConfigStatus, saveFacebookConfig, setFacebookPageName } from '@/lib/social/facebook-config'
 import { testFacebookConnection } from '@/lib/social/facebook.service'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -22,7 +22,9 @@ export async function POST(req: Request) {
 
   // Hành động test kết nối (không lưu)
   if (body.action === 'test') {
-    return Response.json(await testFacebookConnection())
+    const t = await testFacebookConnection()
+    if (t.ok && t.pageName) await setFacebookPageName(t.pageName)
+    return Response.json(t)
   }
 
   await saveFacebookConfig({
@@ -31,7 +33,8 @@ export async function POST(req: Request) {
     enabled: !!body.enabled,
   })
 
-  // Lưu xong test luôn để báo trạng thái
+  // Lưu xong test luôn để báo trạng thái + cache tên page
   const test = await testFacebookConnection()
+  if (test.ok && test.pageName) await setFacebookPageName(test.pageName)
   return Response.json({ success: true, test })
 }

@@ -11,6 +11,7 @@ export const FB_KEYS = {
   pageId: 'social.facebook.page_id',
   accessToken: 'social.facebook.access_token', // encrypted
   enabled: 'social.facebook.enabled',
+  pageName: 'social.facebook.page_name', // cache tên page để hiển thị
 }
 
 /** Config đã giải mã để gọi Graph API. null nếu thiếu pageId/token. */
@@ -28,14 +29,25 @@ export async function getFacebookConfig(): Promise<FacebookConfig | null> {
 }
 
 /** Trạng thái cho UI — KHÔNG trả token. */
-export async function getFacebookConfigStatus(): Promise<{ pageId: string; hasToken: boolean; enabled: boolean }> {
+export async function getFacebookConfigStatus(): Promise<{ pageId: string; hasToken: boolean; enabled: boolean; pageName: string }> {
   const rows = await prisma.siteSetting.findMany({ where: { key: { startsWith: 'social.facebook.' } } })
   const map = new Map(rows.map((r) => [r.key, r.value]))
   return {
     pageId: map.get(FB_KEYS.pageId) ?? '',
     hasToken: !!map.get(FB_KEYS.accessToken),
     enabled: map.get(FB_KEYS.enabled) === 'true',
+    pageName: map.get(FB_KEYS.pageName) ?? '',
   }
+}
+
+/** Lưu tên page (cache để hiển thị ở UI). */
+export async function setFacebookPageName(name: string): Promise<void> {
+  if (!name) return
+  await prisma.siteSetting.upsert({
+    where: { key: FB_KEYS.pageName },
+    create: { key: FB_KEYS.pageName, value: name },
+    update: { value: name },
+  })
 }
 
 export async function saveFacebookConfig(input: {
