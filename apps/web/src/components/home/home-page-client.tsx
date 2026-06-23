@@ -525,7 +525,7 @@ function NewArrivalsSlider({ items, router }: { items: ProductItem[]; router: Re
                       </>
                     : <span className="price-main">Liên hệ</span>}
                 </div>
-                <button className="btn-buy" onClick={(e) => { e.stopPropagation(); router.push(`/${p.slug}`) }}>Mua Ngay</button>
+                <button className="btn-buy" onClick={(e) => { e.stopPropagation(); router.push(`/${p.slug}`) }}>Xem chi tiết</button>
               </div>
             </div>
           )
@@ -979,7 +979,7 @@ export default function HomePageClient({
                             </>
                           })()}
                         </div>
-                        <button className="btn-buy" onClick={(e) => { e.stopPropagation(); router.push(`/${p.slug}`) }}>Mua Ngay</button>
+                        <button className="btn-buy" onClick={(e) => { e.stopPropagation(); router.push(`/${p.slug}`) }}>Xem chi tiết</button>
                       </div>
                     </div>
                   ))}
