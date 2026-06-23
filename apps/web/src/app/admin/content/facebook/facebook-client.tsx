@@ -24,7 +24,7 @@ const ANGLES = [
 ]
 
 const STATUS_BADGE: Record<string, { label: string; cls: string }> = {
-  DRAFT: { label: 'Nháp', cls: 'bg-gray-100 text-gray-600' },
+  DRAFT: { label: 'Nháp', cls: 'bg-white/10 text-slate-300' },
   SCHEDULED: { label: 'Đã lên lịch', cls: 'bg-blue-100 text-blue-700' },
   PUBLISHED: { label: 'Đã đăng', cls: 'bg-emerald-100 text-emerald-700' },
   FAILED: { label: 'Lỗi', cls: 'bg-red-100 text-red-700' },
@@ -185,13 +185,13 @@ export function FacebookContentClient() {
   return (
     <div className="mx-auto max-w-6xl space-y-6 p-6 lg:p-8">
       {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-gray-100 bg-gradient-to-r from-white to-gray-50 px-6 py-5 shadow-sm">
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/10 bg-gradient-to-r from-[#1a2233] to-[#161d2b] px-6 py-5 shadow-lg">
         <div>
-          <h1 className="flex items-center gap-2.5 text-2xl font-bold tracking-tight text-gray-900">
+          <h1 className="flex items-center gap-2.5 text-2xl font-bold tracking-tight text-white">
             <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#1877F2] text-base font-black text-white shadow-sm shadow-blue-500/30">f</span>
             Bài đăng Facebook
           </h1>
-          <p className="mt-1 text-sm text-gray-500">Soạn / AI tạo nội dung, đăng ngay hoặc lên lịch tự đăng lên Fanpage.</p>
+          <p className="mt-1 text-sm text-slate-400">Soạn / AI tạo nội dung, đăng ngay hoặc lên lịch tự đăng lên Fanpage.</p>
         </div>
         <ConnectionBadge status={status} loading={loading} />
       </div>
@@ -199,11 +199,11 @@ export function FacebookContentClient() {
       <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
         {/* Compose */}
         <div className="space-y-6">
-          <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm space-y-4">
+          <div className="rounded-2xl border border-white/10 bg-[#161d2b] p-6 shadow-sm space-y-4">
             <div className="flex flex-wrap items-center gap-2">
               {ANGLES.map((a) => (
                 <button key={a.key} onClick={() => setAngle(a.key)}
-                  className={`rounded-full px-3 py-1.5 text-sm font-medium transition-colors ${angle === a.key ? 'bg-brand-red text-white' : 'border border-gray-200 text-gray-600 hover:border-brand-red hover:text-brand-red'}`}>
+                  className={`rounded-full px-3 py-1.5 text-sm font-medium transition-colors ${angle === a.key ? 'bg-brand-red text-white' : 'border border-white/10 text-slate-300 hover:border-brand-red hover:text-brand-red'}`}>
                   {a.label}
                 </button>
               ))}
@@ -211,10 +211,10 @@ export function FacebookContentClient() {
 
             <div className="space-y-2">
               <input value={topic} onChange={(e) => setTopic(e.target.value)} placeholder="Gợi ý cho AI (vd: tên sản phẩm, chương trình, chủ đề mẹo...)"
-                className="w-full rounded-lg border px-3 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-red" />
+                className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-red" />
               <div className="flex gap-2">
                 <select value={aiModel} onChange={(e) => setAiModel(e.target.value)}
-                  className="flex-1 rounded-lg border bg-white px-3 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-brand-red">
+                  className="flex-1 rounded-lg border bg-[#161d2b] px-3 py-2.5 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-red">
                   <option value="auto">⚡ Tự động (free khi chạy local)</option>
                   <option value="claude-opus-4-8">💎 Opus 4.8 · API (chất lượng cao nhất)</option>
                   <option value="claude-sonnet-4-6">🚀 Sonnet 4.6 · API (nhanh, tiết kiệm)</option>
@@ -228,39 +228,39 @@ export function FacebookContentClient() {
 
             <div>
               <textarea value={message} onChange={(e) => setMessage(e.target.value)} onKeyDown={onKeyDown} rows={9} placeholder="Nội dung bài đăng Facebook... (Ctrl/⌘ + Enter để đăng)"
-                className="w-full rounded-lg border px-3 py-2.5 text-sm leading-relaxed text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-red" />
+                className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-sm leading-relaxed text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-red" />
               <div className="mt-1 flex items-center justify-between text-xs">
-                <span className="text-gray-400">⌘/Ctrl + Enter để đăng nhanh</span>
-                <span className={charCount > 2000 ? 'font-medium text-amber-600' : 'text-gray-400'}>{charCount.toLocaleString('vi-VN')} ký tự</span>
+                <span className="text-slate-400">⌘/Ctrl + Enter để đăng nhanh</span>
+                <span className={charCount > 2000 ? 'font-medium text-amber-600' : 'text-slate-400'}>{charCount.toLocaleString('vi-VN')} ký tự</span>
               </div>
             </div>
 
             <div className="grid gap-3 sm:grid-cols-2">
               <div>
-                <div className="flex items-center gap-2 rounded-xl border border-gray-200 px-3 transition focus-within:border-brand-red/50 focus-within:ring-2 focus-within:ring-brand-red/10">
-                  <ImageIcon className="h-4 w-4 flex-shrink-0 text-gray-400" />
+                <div className="flex items-center gap-2 rounded-xl border border-white/10 px-3 transition focus-within:border-brand-red/50 focus-within:ring-2 focus-within:ring-brand-red/10">
+                  <ImageIcon className="h-4 w-4 flex-shrink-0 text-slate-400" />
                   <input value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} placeholder="Dán URL ảnh, hoặc Tải lên →"
-                    className="flex-1 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 outline-none" />
-                  <label className={`flex cursor-pointer items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-medium transition ${uploading ? 'bg-gray-100 text-gray-400' : 'bg-gray-900 text-white hover:bg-gray-700'}`}>
+                    className="flex-1 bg-transparent py-2.5 text-sm text-white placeholder:text-slate-400 outline-none" />
+                  <label className={`flex cursor-pointer items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-medium transition ${uploading ? 'bg-white/10 text-slate-400' : 'bg-white/15 text-white hover:bg-white/25'}`}>
                     {uploading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Upload className="h-3.5 w-3.5" />}
                     {uploading ? 'Đang tải…' : 'Tải lên'}
                     <input type="file" accept="image/*" className="hidden" onChange={handleUpload} disabled={uploading} />
                   </label>
                 </div>
                 {imageUrl && (
-                  <button onClick={() => setImageUrl('')} className="mt-1.5 flex items-center gap-1 text-xs text-gray-400 transition hover:text-red-500">
+                  <button onClick={() => setImageUrl('')} className="mt-1.5 flex items-center gap-1 text-xs text-slate-400 transition hover:text-red-500">
                     <Trash className="h-3 w-3" /> Xoá ảnh
                   </button>
                 )}
               </div>
-              <div className="flex h-[46px] items-center gap-2 self-start rounded-xl border border-gray-200 px-3 transition focus-within:border-brand-red/50 focus-within:ring-2 focus-within:ring-brand-red/10">
-                <ExternalLink className="h-4 w-4 flex-shrink-0 text-gray-400" />
+              <div className="flex h-[46px] items-center gap-2 self-start rounded-xl border border-white/10 px-3 transition focus-within:border-brand-red/50 focus-within:ring-2 focus-within:ring-brand-red/10">
+                <ExternalLink className="h-4 w-4 flex-shrink-0 text-slate-400" />
                 <input value={linkUrl} onChange={(e) => setLinkUrl(e.target.value)} placeholder="Link đính kèm (tùy chọn)"
-                  className="flex-1 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 outline-none" />
+                  className="flex-1 bg-transparent py-2.5 text-sm text-white placeholder:text-slate-400 outline-none" />
               </div>
             </div>
 
-            <div className="flex flex-wrap items-center gap-3 border-t pt-4">
+            <div className="flex flex-wrap items-center gap-3 border-t border-white/10 pt-4">
               <button onClick={() => setConfirmPost(true)} disabled={!canPost}
                 className="flex items-center gap-1.5 rounded-lg bg-brand-red px-5 py-2.5 text-sm font-bold text-white hover:bg-brand-red-dark disabled:cursor-not-allowed disabled:opacity-50">
                 {busy === 'now' ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />} Đăng ngay
@@ -268,15 +268,15 @@ export function FacebookContentClient() {
 
               <div className="flex items-center gap-2">
                 <input type="datetime-local" value={scheduledAt} min={nowLocal()} onChange={(e) => setScheduledAt(e.target.value)}
-                  className="rounded-lg border px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-brand-red" />
+                  className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white [color-scheme:dark] focus:outline-none focus:ring-2 focus:ring-brand-red" />
                 <button onClick={schedule} disabled={!canPost || !scheduledAt}
-                  className="flex items-center gap-1.5 rounded-lg border-2 border-solid border-brand-red bg-white px-4 py-2.5 text-sm font-semibold text-brand-red hover:bg-brand-red hover:text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50">
+                  className="flex items-center gap-1.5 rounded-lg border-2 border-solid border-brand-red bg-[#161d2b] px-4 py-2.5 text-sm font-semibold text-brand-red hover:bg-brand-red hover:text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50">
                   {busy === 'schedule' ? <Loader2 className="h-4 w-4 animate-spin" /> : <CalendarClock className="h-4 w-4" />} Lên lịch
                 </button>
               </div>
 
               <button onClick={saveDraft} disabled={!canPost}
-                className="flex items-center gap-1.5 rounded-lg border px-4 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-50 disabled:opacity-50">
+                className="flex items-center gap-1.5 rounded-lg border border-white/10 px-4 py-2.5 text-sm font-medium text-slate-300 hover:bg-white/5 disabled:opacity-50">
                 {busy === 'draft' ? <Loader2 className="h-4 w-4 animate-spin" /> : <FileText className="h-4 w-4" />} Lưu nháp
               </button>
             </div>
@@ -285,26 +285,26 @@ export function FacebookContentClient() {
           </div>
 
           {/* List */}
-          <div className="rounded-2xl border border-gray-100 bg-white overflow-hidden shadow-sm">
-            <div className="flex flex-wrap items-center gap-2 border-b px-5 py-3.5">
-              <h2 className="mr-2 font-bold text-gray-900">Bài đã soạn</h2>
+          <div className="rounded-2xl border border-white/10 bg-[#161d2b] overflow-hidden shadow-sm">
+            <div className="flex flex-wrap items-center gap-2 border-b border-white/10 px-5 py-3.5">
+              <h2 className="mr-2 font-bold text-white">Bài đã soạn</h2>
               {FILTERS.map((f) => (
                 <button key={f.key} onClick={() => setFilter(f.key)}
-                  className={`rounded-full px-2.5 py-1 text-xs font-medium transition-colors ${filter === f.key ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>
+                  className={`rounded-full px-2.5 py-1 text-xs font-medium transition-colors ${filter === f.key ? 'bg-brand-red text-white' : 'bg-white/10 text-slate-300 hover:bg-white/20'}`}>
                   {f.label} {(counts[f.key] ?? 0) > 0 && <span className="opacity-70">({counts[f.key]})</span>}
                 </button>
               ))}
             </div>
             {loading ? (
-              <div className="flex h-32 items-center justify-center text-gray-400"><Loader2 className="h-5 w-5 animate-spin" /></div>
+              <div className="flex h-32 items-center justify-center text-slate-400"><Loader2 className="h-5 w-5 animate-spin" /></div>
             ) : filtered.length === 0 ? (
-              <p className="py-12 text-center text-sm text-gray-400">{filter === 'ALL' ? 'Chưa có bài nào. Soạn bài đầu tiên ở trên!' : 'Không có bài ở mục này.'}</p>
+              <p className="py-12 text-center text-sm text-slate-400">{filter === 'ALL' ? 'Chưa có bài nào. Soạn bài đầu tiên ở trên!' : 'Không có bài ở mục này.'}</p>
             ) : (
               <div className="divide-y">
                 {filtered.map((p) => {
-                  const badge = STATUS_BADGE[p.status] ?? { label: p.status, cls: 'bg-gray-100 text-gray-600' }
+                  const badge = STATUS_BADGE[p.status] ?? { label: p.status, cls: 'bg-white/10 text-slate-300' }
                   return (
-                    <div key={p.id} className="flex gap-4 px-5 py-4 transition-colors hover:bg-gray-50/60">
+                    <div key={p.id} className="flex gap-4 px-5 py-4 transition-colors hover:bg-white/[0.03]">
                       {p.imageUrl && (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img src={p.imageUrl} alt="" className="h-16 w-16 flex-shrink-0 rounded-lg border object-cover"
@@ -313,7 +313,7 @@ export function FacebookContentClient() {
                       <div className="min-w-0 flex-1">
                         <div className="mb-1 flex flex-wrap items-center gap-2">
                           <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${badge.cls}`}>{badge.label}</span>
-                          <span className="text-xs text-gray-400">{ANGLES.find((a) => a.key === p.angle)?.label ?? p.angle}</span>
+                          <span className="text-xs text-slate-400">{ANGLES.find((a) => a.key === p.angle)?.label ?? p.angle}</span>
                           {p.status === 'SCHEDULED' && p.scheduledAt && (
                             <span className="text-xs font-medium text-blue-600">⏰ {new Date(p.scheduledAt).toLocaleString('vi-VN')}</span>
                           )}
@@ -321,9 +321,9 @@ export function FacebookContentClient() {
                             <span className="text-xs text-emerald-600">{new Date(p.publishedAt).toLocaleString('vi-VN')}</span>
                           )}
                         </div>
-                        <p className="line-clamp-2 whitespace-pre-wrap text-sm text-gray-700">{p.message}</p>
+                        <p className="line-clamp-2 whitespace-pre-wrap text-sm text-slate-200">{p.message}</p>
                         {p.status === 'PUBLISHED' && insights?.byPost[p.id] && (
-                          <div className="mt-1.5 flex items-center gap-3 text-xs text-gray-500">
+                          <div className="mt-1.5 flex items-center gap-3 text-xs text-slate-400">
                             <span className="flex items-center gap-1"><ThumbsUp className="h-3 w-3" /> {insights.byPost[p.id]!.reactions}</span>
                             <span className="flex items-center gap-1"><MessageCircle className="h-3 w-3" /> {insights.byPost[p.id]!.comments}</span>
                             <span className="flex items-center gap-1"><Share2 className="h-3 w-3" /> {insights.byPost[p.id]!.shares}</span>
@@ -334,7 +334,7 @@ export function FacebookContentClient() {
                       <div className="flex flex-shrink-0 items-start gap-2">
                         {p.status === 'PUBLISHED' && p.fbPostId ? (
                           <a href={`https://facebook.com/${p.fbPostId}`} target="_blank" rel="noreferrer"
-                            className="flex items-center gap-1 rounded-lg border px-2.5 py-1.5 text-xs text-blue-600 hover:bg-blue-50">
+                            className="flex items-center gap-1 rounded-lg border border-white/10 px-2.5 py-1.5 text-xs text-blue-600 hover:bg-blue-50">
                             <ExternalLink className="h-3 w-3" /> Xem
                           </a>
                         ) : (
@@ -343,7 +343,7 @@ export function FacebookContentClient() {
                             {busy === p.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <Send className="h-3 w-3" />} Đăng
                           </button>
                         )}
-                        <button onClick={() => remove(p.id)} disabled={!!busy} className="rounded-lg border px-2 py-1.5 text-gray-400 hover:bg-red-50 hover:text-red-600" aria-label="Xoá">
+                        <button onClick={() => remove(p.id)} disabled={!!busy} className="rounded-lg border border-white/10 px-2 py-1.5 text-slate-400 hover:bg-red-50 hover:text-red-600" aria-label="Xoá">
                           <Trash2 className="h-3.5 w-3.5" />
                         </button>
                       </div>
@@ -358,8 +358,8 @@ export function FacebookContentClient() {
         {/* Analytics + Live preview — sticky */}
         <div className="space-y-4 lg:sticky lg:top-6 lg:self-start">
           {insights && insights.totals.postCount > 0 && (
-            <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
-              <p className="mb-3 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-gray-400">
+            <div className="rounded-2xl border border-white/10 bg-[#161d2b] p-5 shadow-sm">
+              <p className="mb-3 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-slate-400">
                 <BarChart3 className="h-3.5 w-3.5" /> Tương tác ({insights.totals.postCount} bài gần đây)
               </p>
               <div className="grid grid-cols-3 gap-2 text-center">
@@ -369,12 +369,12 @@ export function FacebookContentClient() {
               </div>
               <div className="mt-3 rounded-lg bg-brand-red/5 px-3 py-2 text-center">
                 <p className="text-xl font-black text-brand-red">{insights.totals.engagement.toLocaleString('vi-VN')}</p>
-                <p className="text-[11px] text-gray-500">tổng tương tác</p>
+                <p className="text-[11px] text-slate-400">tổng tương tác</p>
               </div>
             </div>
           )}
 
-          <p className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-gray-400">
+          <p className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-slate-400">
             <Globe className="h-3.5 w-3.5" /> Xem trước trên Facebook
           </p>
           <FacebookPreview pageName={pageName} message={message} imageUrl={imageUrl} linkUrl={linkUrl} scheduledAt={scheduledAt} />
@@ -389,15 +389,15 @@ export function FacebookContentClient() {
       {/* Confirm publish modal */}
       {confirmPost && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onClick={() => setConfirmPost(false)}>
-          <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-xl" onClick={(e) => e.stopPropagation()}>
+          <div className="w-full max-w-md rounded-xl bg-[#161d2b] p-6 shadow-xl" onClick={(e) => e.stopPropagation()}>
             <div className="mb-3 flex items-center justify-between">
-              <h3 className="flex items-center gap-2 text-lg font-bold text-gray-900"><Send className="h-5 w-5 text-brand-red" /> Đăng ngay lên Fanpage?</h3>
-              <button onClick={() => setConfirmPost(false)} className="text-gray-400 hover:text-gray-600"><X className="h-5 w-5" /></button>
+              <h3 className="flex items-center gap-2 text-lg font-bold text-white"><Send className="h-5 w-5 text-brand-red" /> Đăng ngay lên Fanpage?</h3>
+              <button onClick={() => setConfirmPost(false)} className="text-slate-400 hover:text-slate-300"><X className="h-5 w-5" /></button>
             </div>
-            <p className="text-sm text-gray-600">Bài sẽ hiển thị <b>công khai</b> trên <b>{pageName}</b> ngay lập tức. Bạn chắc chắn chứ?</p>
-            <div className="mt-3 max-h-32 overflow-y-auto rounded-lg bg-gray-50 px-3 py-2 text-sm text-gray-700 whitespace-pre-wrap">{message}</div>
+            <p className="text-sm text-slate-300">Bài sẽ hiển thị <b>công khai</b> trên <b>{pageName}</b> ngay lập tức. Bạn chắc chắn chứ?</p>
+            <div className="mt-3 max-h-32 overflow-y-auto rounded-lg bg-white/5 px-3 py-2 text-sm text-slate-200 whitespace-pre-wrap">{message}</div>
             <div className="mt-5 flex justify-end gap-2">
-              <button onClick={() => setConfirmPost(false)} className="rounded-lg border px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50">Huỷ</button>
+              <button onClick={() => setConfirmPost(false)} className="rounded-lg border border-white/10 px-4 py-2 text-sm font-medium text-slate-300 hover:bg-white/5">Huỷ</button>
               <button onClick={postNow} className="flex items-center gap-1.5 rounded-lg bg-brand-red px-4 py-2 text-sm font-bold text-white hover:bg-brand-red-dark">
                 <Send className="h-4 w-4" /> Đăng ngay
               </button>
@@ -411,16 +411,16 @@ export function FacebookContentClient() {
 
 function Stat({ icon, value, label }: { icon: React.ReactNode; value: number; label: string }) {
   return (
-    <div className="rounded-lg bg-gray-50 py-2">
-      <div className="flex items-center justify-center gap-1 text-gray-400">{icon}</div>
-      <p className="mt-0.5 text-base font-bold text-gray-900">{value.toLocaleString('vi-VN')}</p>
-      <p className="text-[10px] text-gray-500">{label}</p>
+    <div className="rounded-lg bg-white/5 py-2">
+      <div className="flex items-center justify-center gap-1 text-slate-400">{icon}</div>
+      <p className="mt-0.5 text-base font-bold text-white">{value.toLocaleString('vi-VN')}</p>
+      <p className="text-[10px] text-slate-400">{label}</p>
     </div>
   )
 }
 
 function ConnectionBadge({ status, loading }: { status: FbStatus | null; loading: boolean }) {
-  if (loading) return <span className="flex items-center gap-2 rounded-lg border px-3 py-2 text-sm text-gray-400"><Loader2 className="h-4 w-4 animate-spin" /> Đang tải…</span>
+  if (loading) return <span className="flex items-center gap-2 rounded-lg border border-white/10 px-3 py-2 text-sm text-slate-400"><Loader2 className="h-4 w-4 animate-spin" /> Đang tải…</span>
   if (!status?.hasToken) {
     return (
       <Link href="/admin/settings/facebook" className="flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700 hover:bg-red-100">
@@ -431,11 +431,11 @@ function ConnectionBadge({ status, loading }: { status: FbStatus | null; loading
   const name = status.pageName || 'Fanpage'
   return (
     <div className="flex items-center gap-3">
-      <span className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-medium ${status.enabled ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'border-amber-200 bg-amber-50 text-amber-700'}`}>
+      <span className={`flex items-center gap-2 rounded-lg border border-white/10 px-3 py-2 text-sm font-medium ${status.enabled ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'border-amber-200 bg-amber-50 text-amber-700'}`}>
         {status.enabled ? <CheckCircle2 className="h-4 w-4" /> : <AlertTriangle className="h-4 w-4" />}
         {status.enabled ? <>Đã kết nối · {name}</> : <>Kết nối OK · auto-đăng đang TẮT</>}
       </span>
-      <Link href="/admin/settings/facebook" className="flex items-center gap-1.5 rounded-lg border px-3 py-2 text-sm text-gray-500 hover:bg-gray-50">
+      <Link href="/admin/settings/facebook" className="flex items-center gap-1.5 rounded-lg border border-white/10 px-3 py-2 text-sm text-slate-400 hover:bg-white/5">
         <Settings className="h-4 w-4" /> Kết nối
       </Link>
     </div>
@@ -447,34 +447,34 @@ function FacebookPreview({ pageName, message, imageUrl, linkUrl, scheduledAt }: 
 }) {
   const when = scheduledAt ? new Date(scheduledAt).toLocaleString('vi-VN') : 'Vừa xong'
   return (
-    <div className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
+    <div className="overflow-hidden rounded-2xl border border-white/10 bg-[#161d2b] shadow-sm">
       <div className="flex items-center gap-2.5 p-3">
         <span className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-red text-sm font-black text-white">
           {(pageName || 'J').charAt(0).toUpperCase()}
         </span>
         <div className="min-w-0">
-          <p className="truncate text-sm font-semibold text-gray-900">{pageName}</p>
-          <p className="flex items-center gap-1 text-xs text-gray-400">{when} · <Globe className="h-3 w-3" /></p>
+          <p className="truncate text-sm font-semibold text-white">{pageName}</p>
+          <p className="flex items-center gap-1 text-xs text-slate-400">{when} · <Globe className="h-3 w-3" /></p>
         </div>
       </div>
       <div className="px-3 pb-2">
         {message ? (
-          <p className="whitespace-pre-wrap text-sm leading-relaxed text-gray-800">{message}</p>
+          <p className="whitespace-pre-wrap text-sm leading-relaxed text-slate-200">{message}</p>
         ) : (
-          <p className="text-sm italic text-gray-300">Nội dung bài đăng sẽ hiển thị ở đây…</p>
+          <p className="text-sm italic text-slate-500">Nội dung bài đăng sẽ hiển thị ở đây…</p>
         )}
       </div>
       {imageUrl ? (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={imageUrl} alt="preview" className="max-h-72 w-full border-y object-cover"
+        <img src={imageUrl} alt="preview" className="max-h-72 w-full border-y border-white/10 object-cover"
           onError={(e) => { e.currentTarget.style.display = 'none' }} />
       ) : linkUrl ? (
         <div className="mx-3 mb-2 overflow-hidden rounded-lg border">
-          <div className="flex h-24 items-center justify-center bg-gray-100 text-gray-300"><ExternalLink className="h-7 w-7" /></div>
-          <p className="truncate border-t bg-gray-50 px-3 py-2 text-xs text-gray-500">{linkUrl}</p>
+          <div className="flex h-24 items-center justify-center bg-white/10 text-slate-500"><ExternalLink className="h-7 w-7" /></div>
+          <p className="truncate border-t border-white/10 bg-white/5 px-3 py-2 text-xs text-slate-400">{linkUrl}</p>
         </div>
       ) : null}
-      <div className="flex items-center justify-around border-t py-1.5 text-xs font-medium text-gray-400">
+      <div className="flex items-center justify-around border-t border-white/10 py-1.5 text-xs font-medium text-slate-400">
         <span className="flex items-center gap-1.5"><ThumbsUp className="h-4 w-4" /> Thích</span>
         <span className="flex items-center gap-1.5"><MessageCircle className="h-4 w-4" /> Bình luận</span>
         <span className="flex items-center gap-1.5"><Share2 className="h-4 w-4" /> Chia sẻ</span>
