@@ -3,18 +3,26 @@ import { prisma } from '@japanvip/db'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
-import { auth } from '@/lib/auth'
-import { hasRole } from '@/lib/auth-types'
+import { unstable_cache } from 'next/cache'
 import { ProductGallery } from '@/components/product/product-gallery'
 import { ProductTabs } from '@/components/product/product-tabs'
 import { RelatedProducts } from '@/components/product/related-products'
 import { RecentlyViewed } from '@/components/product/recently-viewed'
 import { AuctionCard } from '@/components/auction/auction-card'
 import { AddToCartButtons } from '@/components/product/add-to-cart-buttons'
-import { PreOrderLeadCapture } from '@/components/product/pre-order-lead-capture'
+import { ProductPrice } from '@/components/product/product-price'
+import { AdminEditButton } from '@/components/product/admin-edit-button'
 import { getActiveExchangeRate } from '@/modules/bfj/services/exchange-rate.service'
 import type { ProductCondition } from '@japanvip/db'
 import { formatVND } from '@japanvip/utils'
+
+// Bọc cache để Redis (fetch no-store) trong exchange-rate không ép trang render động
+const getRateCached = unstable_cache(getActiveExchangeRate, ['exchange-rate-v1'], { revalidate: 300, tags: ['exchange-rate'] })
+const getProductContent = unstable_cache(
+  async () => prisma.siteSetting.findMany({ where: { key: { in: ['product.commitments', 'product.shipping_notes'] } } }),
+  ['product-content-v1'],
+  { revalidate: 300, tags: ['site-config'] }
+)
 
 type Props = { params: Promise<{ slug: string }> }
 
@@ -54,8 +62,6 @@ export const revalidate = 300
 
 export default async function ProductDetailPage({ params }: Props) {
   const { slug } = await params
-  const session = await auth()
-  const isAdmin = hasRole((session?.user as any)?.role, 'ADMIN')
 
   const product = await prisma.product.findUnique({
     where: { slug, status: 'ACTIVE' },
@@ -85,14 +91,14 @@ export default async function ProductDetailPage({ params }: Props) {
 
   const liveAuction = product.auctions.find((a) => a.status === 'LIVE')
 
-  // Nội dung khối phải (admin tự sửa: Cài đặt → Nội dung trang sản phẩm)
-  const contentSettings = await prisma.siteSetting.findMany({ where: { key: { in: ['product.commitments', 'product.shipping_notes'] } } })
+  // Nội dung khối phải (admin tự sửa: Cài đặt → Nội dung trang sản phẩm) — cache
+  const contentSettings = await getProductContent()
   const splitLines = (s: string | undefined, fallback: string) => (s ?? fallback).split('\n').map((l) => l.trim()).filter(Boolean)
   const commitmentLines = splitLines(contentSettings.find((r) => r.key === 'product.commitments')?.value, 'Hàng nội địa Nhật Bản mới 100%, nguyên hộp\nNhập khẩu trực tiếp, có tem nhập khẩu đầy đủ\nMiễn phí vận chuyển toàn quốc')
   const shippingLines = splitLines(contentSettings.find((r) => r.key === 'product.shipping_notes')?.value, 'Giao hàng trong 2 giờ (HN & TP. HCM)\nMiễn phí ship toàn quốc\nHướng dẫn sử dụng sản phẩm tại nhà')
 
   // ── Pre Order (lead-gen): hàng ORDER_ONLY hiện giá Nhật, ẩn giá VN tới khi khách đăng nhập ──
-  const isLoggedIn = !!session?.user
+  // Login state xử lý CLIENT-side (ProductPrice) để trang render TĨNH.
   const isPreOrder = product.badge === 'ORDER_ONLY'
   const japanPriceJpy = (() => {
     const raw = product.attributes.find((a) => a.name === '[japan_price]')?.value
@@ -100,11 +106,10 @@ export default async function ProductDetailPage({ params }: Props) {
     return Number.isFinite(n) && n > 0 ? n : null
   })()
   let japanPriceVnd: number | null = null
-  if (isPreOrder && japanPriceJpy && !isLoggedIn) {
-    const rate = await getActiveExchangeRate()
+  if (isPreOrder && japanPriceJpy) {
+    const rate = await getRateCached()
     japanPriceVnd = Math.round(japanPriceJpy * rate.rate)
   }
-  const showPreOrderGate = isPreOrder && !isLoggedIn && !!japanPriceJpy
 
   // Fetch related products: same category first, fallback to other active products
   const relatedSelect = {
@@ -172,17 +177,7 @@ export default async function ProductDetailPage({ params }: Props) {
   return (
     <div className="container pt-12 pb-8">
 
-      {isAdmin && (
-        <div className="mb-4 flex items-center gap-2">
-          <Link
-            href={`/admin/products/${product.id}`}
-            className="inline-flex items-center gap-1.5 rounded-lg bg-amber-400 px-3 py-1.5 text-sm font-bold text-gray-900 shadow hover:bg-amber-300 transition-colors"
-          >
-            ✏️ Sửa sản phẩm này
-          </Link>
-          <span className="text-xs text-gray-400">Chỉ admin thấy nút này</span>
-        </div>
-      )}
+      <AdminEditButton productId={product.id} />
 
       <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:items-start">
         {/* Gallery */}
@@ -224,63 +219,17 @@ export default async function ProductDetailPage({ params }: Props) {
             )}
           </div>
 
-          {/* Price */}
-          {isPreOrder && isLoggedIn && <PreOrderLeadCapture />}
-          <div className="py-3 border-y border-gray-100">
-            {liveAuction ? (
-              <div>
-                <p className="text-xs text-gray-400 uppercase tracking-wide mb-1">Giá đấu giá hiện tại</p>
-                <div className="flex items-center gap-3">
-                  <span className="text-3xl font-bold text-brand-red">{formatVND(Number(liveAuction.currentPrice))}</span>
-                  <span className="flex items-center gap-1 rounded-full bg-brand-red px-2.5 py-0.5 text-xs font-bold text-white">
-                    <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-white" />
-                    LIVE
-                  </span>
-                </div>
-                <p className="mt-1 text-xs text-gray-400">{liveAuction.bidCount} lượt đặt giá</p>
-              </div>
-            ) : showPreOrderGate ? (
-              <div>
-                <p className="mb-1 text-xs font-bold uppercase tracking-wide text-gray-500">Giá tham khảo tại Nhật</p>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-3xl font-bold text-gray-700">¥{japanPriceJpy!.toLocaleString('ja-JP')}</span>
-                  {japanPriceVnd && <span className="text-base text-gray-400">(~{formatVND(japanPriceVnd)})</span>}
-                </div>
-                <Link
-                  href={`/login?callbackUrl=${encodeURIComponent('/' + product.slug)}`}
-                  className="mt-3 inline-flex items-center gap-2 rounded-xl bg-brand-red px-5 py-2.5 text-sm font-bold text-white transition hover:bg-red-600"
-                >
-                  🔓 Đăng nhập để xem giá tại Việt Nam
-                </Link>
-                <p className="mt-2 text-xs text-gray-400">Giá tại VN đã gồm thuế nhập khẩu, vận chuyển &amp; bảo hành chính hãng.</p>
-              </div>
-            ) : product.salePrice ? (
-              <div>
-                <p className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Giá bán</p>
-                <div className="flex items-baseline gap-3">
-                  <span className="text-3xl font-bold text-brand-red">{formatVND(Number(product.salePrice))}</span>
-                  {product.marketPrice && Number(product.marketPrice) > Number(product.salePrice) && (
-                    <>
-                      <span className="text-base text-gray-400 line-through">{formatVND(Number(product.marketPrice))}</span>
-                      <span className="rounded-full bg-red-100 px-2 py-0.5 text-xs font-bold text-red-600">
-                        -{Math.round((1 - Number(product.salePrice) / Number(product.marketPrice)) * 100)}%
-                      </span>
-                    </>
-                  )}
-                </div>
-              </div>
-            ) : product.originPrice ? (
-              <div>
-                <p className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Giá bán</p>
-                <span className="text-3xl font-bold text-brand-red">{formatVND(Number(product.originPrice))}</span>
-              </div>
-            ) : (
-              <div>
-                <p className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Giá bán</p>
-                <span className="text-sm font-bold text-brand-red">Liên hệ để biết giá</span>
-              </div>
-            )}
-          </div>
+          {/* Price — client-side để render tĩnh (cổng giá pre-order theo login) */}
+          <ProductPrice
+            slug={product.slug}
+            isPreOrder={isPreOrder}
+            japanPriceJpy={japanPriceJpy}
+            japanPriceVnd={japanPriceVnd}
+            salePrice={product.salePrice ? Number(product.salePrice) : null}
+            marketPrice={product.marketPrice ? Number(product.marketPrice) : null}
+            originPrice={product.originPrice ? Number(product.originPrice) : null}
+            liveAuction={liveAuction ? { currentPrice: Number(liveAuction.currentPrice), bidCount: liveAuction.bidCount } : null}
+          />
 
           {/* Xuất xứ + Tình trạng — ngay dưới giá để khẳng định hàng mới */}
           <div className="flex flex-wrap items-center gap-x-6 gap-y-1.5 text-sm">
