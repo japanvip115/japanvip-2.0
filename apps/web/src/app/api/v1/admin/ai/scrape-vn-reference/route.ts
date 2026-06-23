@@ -3,10 +3,13 @@ import * as cheerio from 'cheerio'
 import { auth } from '@/lib/auth'
 import { hasRole } from '@/lib/auth-types'
 import { apiError, apiSuccess, handleApiError } from '@/lib/api-response'
+import { crawlPage, isCrawlerUp } from '@/lib/crawler'
 
-export const maxDuration = 30
+export const maxDuration = 60
 
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36'
+
+const JUNK_IMG = /(logo|icon|sprite|banner|avatar|placeholder|thumb|loading|flag|payment|zalo|facebook|qr|button)/i
 
 function isSafeUrl(raw: string): boolean {
   try {
@@ -15,6 +18,24 @@ function isSafeUrl(raw: string): boolean {
     const h = p.hostname.toLowerCase()
     return !/^(localhost|127\.|10\.|172\.(1[6-9]|2\d|3[01])\.|192\.168\.|169\.254\.)/.test(h)
   } catch { return false }
+}
+
+// Kết hợp: trang JS-render / chặn bot / fetch tĩnh trích được ít → bù bằng Crawl4AI (markdown + ảnh).
+async function crawlerFallback(target: string): Promise<{ title: string; content: string; images: string[] } | null> {
+  try {
+    if (!(await isCrawlerUp())) return null
+    const r = await crawlPage(target, { maxImages: 40, minWidth: 300 })
+    const seen = new Set<string>()
+    const images = r.images
+      .map((i) => i.url)
+      .filter((u) => u && /\.(jpe?g|png|webp)(\?|$)/i.test(u) && !JUNK_IMG.test(u))
+      .map((u) => u.replace(/-\d{2,4}x\d{2,4}(\.[a-z]+)(\?|$)/i, '$1$2'))
+      .filter((u) => { if (seen.has(u)) return false; seen.add(u); return true })
+      .slice(0, 15)
+    const content = (r.markdown || '').trim().slice(0, 6000)
+    if (!content && images.length === 0) return null
+    return { title: r.title || '', content, images }
+  } catch { return null }
 }
 
 // 🔒 LOCKED (2026-06) — Trang Nhật đã chốt & khoá. KHÔNG sửa nếu chưa được chủ dự án yêu cầu rõ. Xem CLAUDE.md.
@@ -34,7 +55,11 @@ export async function POST(req: NextRequest) {
       headers: { 'User-Agent': UA, Accept: 'text/html,application/xhtml+xml,*/*;q=0.9', 'Accept-Language': 'vi,en;q=0.5' },
       signal: AbortSignal.timeout(15000),
     })
-    if (!res.ok) return apiError(`Không tải được trang (HTTP ${res.status})`, 502)
+    if (!res.ok) {
+      const fb = await crawlerFallback(target)
+      if (fb) return apiSuccess({ title: fb.title, content: fb.content, specs: [], images: fb.images }, `Crawl4AI: ${fb.content.length} ký tự + ${fb.images.length} ảnh`)
+      return apiError(`Không tải được trang (HTTP ${res.status})`, 502)
+    }
 
     const $ = cheerio.load(await res.text())
     $('script, style, nav, header, footer, noscript, iframe, .menu, .breadcrumb, .related, .comment, .review-form').remove()
@@ -96,11 +121,29 @@ export async function POST(req: NextRequest) {
     })
     const cleanImages = images.slice(0, 15)
 
-    if (specs.length === 0 && content.length < 200 && cleanImages.length === 0) {
+    // Kết hợp: fetch tĩnh trích được ít (trang JS-render) hoặc thiếu ảnh → bù bằng Crawl4AI
+    let finalTitle = title
+    let finalContent = content
+    const finalImages = cleanImages
+    const weak = (content.length < 400 && specs.length === 0) || cleanImages.length < 2
+    if (weak) {
+      const fb = await crawlerFallback(target)
+      if (fb) {
+        if (fb.content.length > finalContent.length) finalContent = fb.content
+        if (!finalTitle && fb.title) finalTitle = fb.title
+        const seen2 = new Set(finalImages)
+        for (const u of fb.images) {
+          if (!seen2.has(u)) { finalImages.push(u); seen2.add(u) }
+          if (finalImages.length >= 15) break
+        }
+      }
+    }
+
+    if (specs.length === 0 && finalContent.length < 200 && finalImages.length === 0) {
       return apiError('Không trích được nội dung từ trang này', 422)
     }
 
-    return apiSuccess({ title, content, specs, images: cleanImages }, `Lấy ${specs.length} thông số + ${content.length} ký tự + ${cleanImages.length} ảnh ngữ cảnh`)
+    return apiSuccess({ title: finalTitle, content: finalContent, specs, images: finalImages }, `Lấy ${specs.length} thông số + ${finalContent.length} ký tự + ${finalImages.length} ảnh ngữ cảnh`)
   } catch (err) {
     return handleApiError(err)
   }
