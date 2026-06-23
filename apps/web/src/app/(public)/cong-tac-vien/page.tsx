@@ -26,9 +26,9 @@ const BENEFITS = [
 
 export default function AffiliatePage() {
   return (
-    <div className="bg-[#0a0a0f]">
+    <div className="bg-[#0f1520]">
       {/* Hero */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-[#0a0a0f] via-[#12101a] to-[#0a0a0f] py-12 text-center text-white sm:py-14">
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#0f1520] via-[#161d2b] to-[#0f1520] py-12 text-center text-white sm:py-14">
         {/* Ambient glow */}
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute left-1/2 top-0 h-[500px] w-[500px] -translate-x-1/2 rounded-full bg-amber-500/10 blur-[120px]" />
@@ -57,7 +57,7 @@ export default function AffiliatePage() {
             </span>
           </h1>
 
-          <p className="mx-auto mt-4 max-w-xl text-lg leading-relaxed text-gray-400">
+          <p className="mx-auto mt-4 max-w-xl text-lg leading-relaxed text-slate-300">
             Trở thành đối tác phân phối hàng gia dụng nội địa Nhật chính hãng.
             Hoa hồng hấp dẫn, minh bạch cho mỗi đơn hàng thành công.
           </p>
@@ -70,7 +70,7 @@ export default function AffiliatePage() {
                   <p className="bg-gradient-to-b from-amber-200 to-amber-500 bg-clip-text text-4xl font-bold text-transparent">
                     {s.value}
                   </p>
-                  <p className="mt-1 text-xs tracking-wide text-gray-500">{s.label}</p>
+                  <p className="mt-1 text-xs tracking-wide text-slate-400">{s.label}</p>
                 </div>
                 {i < STATS.length - 1 && <div className="h-10 w-px bg-gradient-to-b from-transparent via-white/15 to-transparent" />}
               </div>
@@ -80,7 +80,7 @@ export default function AffiliatePage() {
       </section>
 
       {/* Benefits */}
-      <section className="relative bg-[#0a0a0f] py-8">
+      <section className="relative bg-[#0f1520] py-8">
         <div className="mx-auto max-w-5xl px-4">
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
             {BENEFITS.map((b) => (
@@ -92,7 +92,7 @@ export default function AffiliatePage() {
                 <div className="relative">
                   <div className="mb-3 text-3xl">{b.icon}</div>
                   <h3 className="text-lg font-semibold text-white">{b.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-gray-400">{b.desc}</p>
+                  <p className="mt-2 text-sm leading-relaxed text-slate-300">{b.desc}</p>
                 </div>
               </div>
             ))}
@@ -101,7 +101,7 @@ export default function AffiliatePage() {
       </section>
 
       {/* How it works */}
-      <section className="relative bg-gradient-to-b from-[#0a0a0f] to-[#12101a] py-10">
+      <section className="relative bg-gradient-to-b from-[#0f1520] to-[#161d2b] py-10">
         <div className="mx-auto max-w-5xl px-4">
           <div className="mb-8 text-center">
             <p className="mb-2 text-sm font-semibold uppercase tracking-[0.2em] text-amber-400/80">Quy trình</p>
@@ -117,7 +117,7 @@ export default function AffiliatePage() {
                   {h.step}
                 </div>
                 <h3 className="text-lg font-semibold text-white">{h.title}</h3>
-                <p className="mx-auto mt-3 max-w-xs text-sm leading-relaxed text-gray-400">{h.desc}</p>
+                <p className="mx-auto mt-3 max-w-xs text-sm leading-relaxed text-slate-300">{h.desc}</p>
               </div>
             ))}
           </div>
@@ -125,13 +125,13 @@ export default function AffiliatePage() {
       </section>
 
       {/* Register form */}
-      <section className="relative overflow-hidden bg-[#12101a] py-10">
+      <section className="relative overflow-hidden bg-[#161d2b] py-10">
         <div className="pointer-events-none absolute left-1/2 top-1/2 h-[400px] w-[400px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-amber-500/[0.07] blur-[120px]" />
         <div className="relative mx-auto max-w-lg px-4">
           <div className="mb-6 text-center">
             <p className="mb-2 text-sm font-semibold uppercase tracking-[0.2em] text-amber-400/80">Bắt đầu ngay</p>
             <h2 className="text-3xl font-bold text-white">Đăng ký đối tác</h2>
-            <p className="mt-2 text-sm text-gray-400">Miễn phí · Xét duyệt trong 24h làm việc</p>
+            <p className="mt-2 text-sm text-slate-300">Miễn phí · Xét duyệt trong 24h làm việc</p>
           </div>
           <AffiliateRegisterForm />
         </div>
