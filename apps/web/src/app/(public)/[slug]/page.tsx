@@ -60,6 +60,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export const revalidate = 300
 
+// Pre-render SP đang bán tại build → cache CDN (●). SP mới render on-demand + cache (ISR).
+// Bắt buộc có để route [slug] bật chế độ ISR thay vì full-dynamic.
+export async function generateStaticParams() {
+  const products = await prisma.product.findMany({
+    where: { status: 'ACTIVE' },
+    orderBy: { createdAt: 'desc' },
+    take: 500,
+    select: { slug: true },
+  })
+  return products.map((p) => ({ slug: p.slug }))
+}
+
 export default async function ProductDetailPage({ params }: Props) {
   const { slug } = await params
 
