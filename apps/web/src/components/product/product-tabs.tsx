@@ -18,14 +18,64 @@ type Props = {
 }
 
 
-// ── Reviews theo CHỦNG LOẠI sản phẩm (tránh review tủ lạnh hiện trên mọi SP) ───
-const REVIEWERS = [
-  { name: 'Nguyễn Ngọc Hân', date: '28/05/2026' },
-  { name: 'Lương Thuý Nga', date: '19/05/2026' },
-  { name: 'Duy', date: '16/04/2026' },
-  { name: 'Nguyễn Đỗ Chương', date: '06/03/2026' },
-  { name: 'Phan Văn Trường', date: '20/12/2025' },
-]
+// ── Reviewer ngẫu nhiên THEO TỪNG SẢN PHẨM ──────────────────────────────────
+// Seed xác định từ tên SP → mỗi SP có bộ tên/ngày riêng nhưng ỔN ĐỊNH (không
+// dùng Math.random → tránh lỗi hydration server/client + không đổi mỗi lần load).
+const SURNAMES = ['Nguyễn', 'Trần', 'Lê', 'Phạm', 'Hoàng', 'Huỳnh', 'Phan', 'Vũ', 'Võ', 'Đặng', 'Bùi', 'Đỗ', 'Hồ', 'Ngô', 'Dương', 'Lý', 'Đinh', 'Trương', 'Lương', 'Mai']
+const MIDDLES = ['Văn', 'Thị', 'Ngọc', 'Minh', 'Quốc', 'Thanh', 'Hoàng', 'Đức', 'Thuý', 'Gia', 'Hữu', 'Xuân', 'Bảo', 'Khánh', 'Phương', 'Hải', 'Kim', 'Diễm', 'Tuấn', 'Hồng']
+const GIVENS = ['Hân', 'Nga', 'Duy', 'Trường', 'Chương', 'An', 'Bình', 'Châu', 'Dũng', 'Giang', 'Hà', 'Hương', 'Khoa', 'Lan', 'Linh', 'Long', 'Nam', 'Ngân', 'Như', 'Phúc', 'Quân', 'Quyên', 'Sơn', 'Thảo', 'Trang', 'Trí', 'Tú', 'Vy', 'Yến', 'Đạt']
+
+function makeRng(productName: string): () => number {
+  let h = 2166136261
+  const s = productName || 'japanvip'
+  for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619) }
+  let a = h >>> 0
+  return () => {
+    a |= 0; a = (a + 0x6d2b79f5) | 0
+    let t = Math.imul(a ^ (a >>> 15), 1 | a)
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296
+  }
+}
+
+function pick<T>(rng: () => number, arr: T[]): T {
+  return arr[Math.floor(rng() * arr.length)]!
+}
+
+// 4 kiểu tên: đầy đủ / Họ+Tên / Họ+Đệm (vd "Nguyễn Thuý") / chỉ Tên
+function makeName(rng: () => number): string {
+  const surname = pick(rng, SURNAMES)
+  const middle = pick(rng, MIDDLES)
+  const given = pick(rng, GIVENS)
+  const r = rng()
+  if (r < 0.45) return `${surname} ${middle} ${given}`
+  if (r < 0.70) return `${surname} ${given}`
+  if (r < 0.88) return `${surname} ${middle}`
+  return given
+}
+
+const D2 = (n: number) => String(n).padStart(2, '0')
+
+// Sinh n reviewer ổn định theo SP: tên không trùng + ngày giảm dần (gần đây → cũ)
+function buildReviewers(productName: string, n = 5): { name: string; date: string }[] {
+  const rng = makeRng(productName)
+  const names: string[] = []
+  let guard = 0
+  while (names.length < n && guard++ < 100) {
+    const nm = makeName(rng)
+    if (!names.includes(nm)) names.push(nm)
+  }
+
+  // Ngày: bắt đầu lùi 10–40 ngày từ mốc 10/06/2026, mỗi review cách nhau 8–45 ngày
+  let cursor = new Date(2026, 5, 10)
+  cursor.setDate(cursor.getDate() - (10 + Math.floor(rng() * 30)))
+  return names.map((name) => {
+    const date = `${D2(cursor.getDate())}/${D2(cursor.getMonth() + 1)}/${cursor.getFullYear()}`
+    cursor = new Date(cursor)
+    cursor.setDate(cursor.getDate() - (8 + Math.floor(rng() * 37)))
+    return { name, date }
+  })
+}
 
 const REVIEW_COMMENTS: Record<string, string[]> = {
   fridge: [
@@ -92,11 +142,12 @@ function detectCategory(productName: string): string {
 
 function buildReviews(productName: string, productImages: string[]) {
   const comments = REVIEW_COMMENTS[detectCategory(productName)] ?? REVIEW_COMMENTS.generic!
+  const reviewers = buildReviewers(productName, comments.length)
   // Mỗi ảnh chỉ gán cho 1 review (KHÔNG lặp ảnh → tránh trông giả). Rải ở review 1/3/5;
   // hết ảnh khác nhau thì review để text-only (tự nhiên hơn là lặp cùng 1 ảnh).
   const unique = [...new Set(productImages.filter(Boolean))]
   let imgIdx = 0
-  return REVIEWERS.map((r, i) => {
+  return reviewers.map((r, i) => {
     const wantImage = i === 0 || i === 2 || i === 4
     const img = wantImage && imgIdx < unique.length ? unique[imgIdx++]! : null
     return {
