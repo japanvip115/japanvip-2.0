@@ -41,7 +41,8 @@ class CrawlReq(BaseModel):
 
 JUNK_RE = re.compile(
     r"(no[_-]?image|placeholder|sprite|favicon|/btn_|button|/icons?/|spacer|blank\.|1x1|"
-    r"admin-ajax|loading|avatar|logo|thumb_overlay|banner|/ads?/|pixel)",
+    r"admin-ajax|loading|avatar|logo|thumb_overlay|banner|bnr[-_]|/ads?/|pixel|"
+    r"/parts/|/present/|sheettype|balloon)",
     re.I,
 )
 
