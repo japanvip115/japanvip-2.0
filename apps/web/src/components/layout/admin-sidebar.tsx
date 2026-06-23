@@ -43,6 +43,7 @@ const NAV_SECTIONS = [
     label: 'Nội dung & Cài đặt',
     items: [
       { href: '/admin/content/ai-writer', label: 'AI Content Writer', icon: Sparkles },
+      { href: '/admin/content/facebook', label: 'Bài đăng Facebook', icon: Megaphone },
       { href: '/admin/content', label: 'Nội Dung', icon: FileText },
       {
         href: '/admin/settings', label: 'Cài Đặt', icon: Settings, exact: true,

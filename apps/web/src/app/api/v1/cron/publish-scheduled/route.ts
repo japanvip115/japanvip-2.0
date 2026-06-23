@@ -6,6 +6,7 @@ import { sendContentDoneEmail } from '@/lib/email.service'
 import Anthropic from '@anthropic-ai/sdk'
 import { streamWithClaudeCode, findRelevantKnowledge } from '@/lib/claude-code-stream'
 import { runDailyMarketing } from '@/lib/marketing-cron.service'
+import { publishDueFacebookPosts } from '@/lib/social/facebook-publish'
 
 export const maxDuration = 60
 
@@ -26,6 +27,9 @@ export async function GET(req: NextRequest) {
   // Email marketing (win-back hằng ngày + digest thứ 5) — không chặn việc publish content
   const marketing = await runDailyMarketing().catch((e) => { console.error('marketing error', e); return { winback: 0, digest: 0 } })
 
+  // Facebook — đăng các bài đã lên lịch đến hạn (không chặn việc publish content)
+  const facebook = await publishDueFacebookPosts(10).catch((e) => { console.error('facebook publish error', e); return { processed: 0, published: 0, failed: 0 } })
+
   // Lấy tất cả task PENDING đến hạn (scheduledAt <= now)
   const tasks = await prisma.contentTask.findMany({
     where: { status: 'PENDING', scheduledAt: { lte: now } },
@@ -34,7 +38,7 @@ export async function GET(req: NextRequest) {
   })
 
   if (tasks.length === 0) {
-    return Response.json({ processed: 0, marketing })
+    return Response.json({ processed: 0, marketing, facebook })
   }
 
   const results: { id: string; status: string; error?: string }[] = []
@@ -94,7 +98,7 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  return Response.json({ processed: results.length, results, marketing })
+  return Response.json({ processed: results.length, results, marketing, facebook })
 }
 
 async function generateContent(task: {

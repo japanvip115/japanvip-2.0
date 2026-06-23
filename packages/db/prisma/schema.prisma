@@ -1326,6 +1326,37 @@ model ContentTask {
   @@map("content_tasks")
 }
 
+// ─────────────────────────────────────────
+// FACEBOOK MARKETING — bài đăng fanpage (auto-publish)
+// ─────────────────────────────────────────
+
+enum FacebookPostStatus {
+  DRAFT       // nháp
+  SCHEDULED   // đã lên lịch, chờ đăng
+  PUBLISHED   // đã đăng
+  FAILED      // đăng lỗi
+}
+
+model FacebookPost {
+  id           String             @id @default(uuid()) @db.Uuid
+  message      String             @db.Text
+  imageUrl     String?            @map("image_url") @db.VarChar(1000)
+  linkUrl      String?            @map("link_url") @db.VarChar(1000)
+  angle        String             @default("product") @db.VarChar(20) // product | promo | tips
+  status       FacebookPostStatus @default(DRAFT)
+  scheduledAt  DateTime?          @map("scheduled_at") @db.Timestamptz
+  publishedAt  DateTime?          @map("published_at") @db.Timestamptz
+  fbPostId     String?            @map("fb_post_id") @db.VarChar(100)
+  errorMessage String?            @map("error_message") @db.Text
+  productId    String?            @map("product_id") @db.Uuid
+  createdBy    String             @map("created_by") @db.Uuid
+  createdAt    DateTime           @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt    DateTime           @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@index([status, scheduledAt])
+  @@map("facebook_posts")
+}
+
 model BfjFreightRate {
   id                  String   @id @default(uuid()) @db.Uuid
   minWeightKg         Decimal  @map("min_weight_kg") @db.Decimal(8, 2)
