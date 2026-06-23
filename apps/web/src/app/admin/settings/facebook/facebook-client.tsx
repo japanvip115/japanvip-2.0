@@ -119,16 +119,16 @@ export function FacebookSettingsClient() {
       </div>
 
       {/* Hướng dẫn lấy token */}
-      <div className="rounded-xl border border-blue-100 bg-blue-50/50 p-5 text-sm text-gray-700">
-        <p className="mb-2 font-semibold text-gray-800">Cách lấy Page ID + Access Token</p>
-        <ol className="list-decimal space-y-1.5 pl-5">
-          <li>Tạo app tại <a href="https://developers.facebook.com/apps" target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-blue-600 hover:underline">developers.facebook.com/apps <ExternalLink className="h-3 w-3" /></a> (loại Business).</li>
-          <li>Thêm sản phẩm <b>Facebook Login</b> + quyền <code className="rounded bg-white px-1">pages_manage_posts</code>, <code className="rounded bg-white px-1">pages_read_engagement</code>.</li>
-          <li>Vào <a href="https://developers.facebook.com/tools/explorer" target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-blue-600 hover:underline">Graph API Explorer <ExternalLink className="h-3 w-3" /></a> → chọn app → Get <b>Page Access Token</b> → chọn Fanpage Japan VIP.</li>
-          <li>Đổi sang <b>token dài hạn</b> (long-lived, ~60 ngày) hoặc token vĩnh viễn qua System User.</li>
-          <li><b>Page ID</b>: lấy ở Graph API Explorer (<code className="rounded bg-white px-1">/me?fields=id,name</code> khi đang chọn page), hoặc trong Cài đặt trang.</li>
+      <div className="rounded-xl border border-gray-200 bg-white p-5 text-sm text-gray-700 shadow-sm">
+        <p className="mb-2 font-semibold text-gray-900">Cách lấy Page ID + Access Token</p>
+        <ol className="list-decimal space-y-1.5 pl-5 marker:text-gray-400">
+          <li>Tạo app tại <a href="https://developers.facebook.com/apps" target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 font-medium text-blue-600 hover:underline">developers.facebook.com/apps <ExternalLink className="h-3 w-3" /></a> — chọn use case <b>&ldquo;Quản lý mọi thứ trên Trang&rdquo;</b> (KHÔNG chọn app Business).</li>
+          <li>Quyền cần có: <code className="rounded bg-gray-100 px-1 text-gray-800">pages_manage_posts</code>, <code className="rounded bg-gray-100 px-1 text-gray-800">pages_read_engagement</code>, <code className="rounded bg-gray-100 px-1 text-gray-800">pages_show_list</code>.</li>
+          <li>Vào <a href="https://developers.facebook.com/tools/explorer" target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 font-medium text-blue-600 hover:underline">Graph API Explorer <ExternalLink className="h-3 w-3" /></a> → chọn app → &ldquo;Nhận mã truy cập Trang&rdquo; → chọn Fanpage Japan VIP.</li>
+          <li>Đổi sang <b>token dài hạn</b>: lấy user token 60 ngày (Token Debugger → Extend) rồi gọi <code className="rounded bg-gray-100 px-1 text-gray-800">me/accounts?fields=name,access_token</code> → token Page lúc này <b>không hết hạn</b>.</li>
+          <li><b>Page ID</b>: lấy ở kết quả trên, hoặc <code className="rounded bg-gray-100 px-1 text-gray-800">me?fields=id,name</code> khi đang chọn page.</li>
         </ol>
-        <p className="mt-2 text-xs text-gray-500">Token được lưu mã hoá. Vì đăng lên chính page của bạn (bạn là admin) nên không cần Meta App Review.</p>
+        <p className="mt-3 rounded-lg bg-blue-50 px-3 py-2 text-xs text-blue-800">Token được lưu mã hoá. Vì đăng lên chính page của bạn (bạn là admin) nên không cần Meta App Review.</p>
       </div>
     </div>
   )
