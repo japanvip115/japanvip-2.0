@@ -4,7 +4,7 @@ import React, { useEffect, useState, useCallback, useMemo } from 'react'
 import {
   Sparkles, Send, CalendarClock, FileText, Trash2, Loader2, ExternalLink,
   Image as ImageIcon, Settings, CheckCircle2, AlertTriangle, Globe,
-  ThumbsUp, MessageCircle, Share2, X, BarChart3,
+  ThumbsUp, MessageCircle, Share2, X, BarChart3, Upload, Trash,
 } from 'lucide-react'
 import Link from 'next/link'
 
@@ -58,6 +58,7 @@ export function FacebookContentClient() {
   const [scheduledAt, setScheduledAt] = useState('')
   const [filter, setFilter] = useState('ALL')
   const [generating, setGenerating] = useState(false)
+  const [uploading, setUploading] = useState(false)
   const [busy, setBusy] = useState('')
   const [err, setErr] = useState('')
   const [confirmPost, setConfirmPost] = useState(false)
@@ -86,6 +87,24 @@ export function FacebookContentClient() {
     return c
   }, [posts])
   const filtered = filter === 'ALL' ? posts : posts.filter((p) => p.status === filter)
+
+  async function handleUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    e.target.value = ''
+    if (!file) return
+    if (!file.type.startsWith('image/')) { setErr('Chỉ chấp nhận ảnh'); return }
+    setUploading(true); setErr('')
+    try {
+      const fd = new FormData()
+      fd.append('file', file)
+      fd.append('folder', 'settings')
+      const res = await fetch('/api/v1/admin/upload', { method: 'POST', body: fd })
+      const d = await res.json()
+      if (d.success) setImageUrl(d.data.publicUrl)
+      else setErr(d.error ?? 'Tải ảnh thất bại')
+    } catch { setErr('Lỗi tải ảnh') }
+    setUploading(false)
+  }
 
   async function generate() {
     setGenerating(true); setErr('')
@@ -164,12 +183,12 @@ export function FacebookContentClient() {
   }
 
   return (
-    <div className="mx-auto max-w-6xl space-y-5 p-6">
+    <div className="mx-auto max-w-6xl space-y-6 p-6 lg:p-8">
       {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-gray-100 bg-gradient-to-r from-white to-gray-50 px-6 py-5 shadow-sm">
         <div>
-          <h1 className="flex items-center gap-2 text-2xl font-bold text-gray-900">
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#1877F2] text-white text-sm font-black">f</span>
+          <h1 className="flex items-center gap-2.5 text-2xl font-bold tracking-tight text-gray-900">
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#1877F2] text-base font-black text-white shadow-sm shadow-blue-500/30">f</span>
             Bài đăng Facebook
           </h1>
           <p className="mt-1 text-sm text-gray-500">Soạn / AI tạo nội dung, đăng ngay hoặc lên lịch tự đăng lên Fanpage.</p>
@@ -177,10 +196,10 @@ export function FacebookContentClient() {
         <ConnectionBadge status={status} loading={loading} />
       </div>
 
-      <div className="grid gap-5 lg:grid-cols-[1fr_360px]">
+      <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
         {/* Compose */}
-        <div className="space-y-5">
-          <div className="rounded-xl border bg-white p-5 shadow-sm space-y-4">
+        <div className="space-y-6">
+          <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm space-y-4">
             <div className="flex flex-wrap items-center gap-2">
               {ANGLES.map((a) => (
                 <button key={a.key} onClick={() => setAngle(a.key)}
@@ -217,12 +236,24 @@ export function FacebookContentClient() {
             </div>
 
             <div className="grid gap-3 sm:grid-cols-2">
-              <div className="flex items-center gap-2 rounded-lg border px-3">
-                <ImageIcon className="h-4 w-4 flex-shrink-0 text-gray-400" />
-                <input value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} placeholder="URL ảnh (tùy chọn)"
-                  className="flex-1 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 outline-none" />
+              <div>
+                <div className="flex items-center gap-2 rounded-xl border border-gray-200 px-3 transition focus-within:border-brand-red/50 focus-within:ring-2 focus-within:ring-brand-red/10">
+                  <ImageIcon className="h-4 w-4 flex-shrink-0 text-gray-400" />
+                  <input value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} placeholder="Dán URL ảnh, hoặc Tải lên →"
+                    className="flex-1 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 outline-none" />
+                  <label className={`flex cursor-pointer items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-medium transition ${uploading ? 'bg-gray-100 text-gray-400' : 'bg-gray-900 text-white hover:bg-gray-700'}`}>
+                    {uploading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Upload className="h-3.5 w-3.5" />}
+                    {uploading ? 'Đang tải…' : 'Tải lên'}
+                    <input type="file" accept="image/*" className="hidden" onChange={handleUpload} disabled={uploading} />
+                  </label>
+                </div>
+                {imageUrl && (
+                  <button onClick={() => setImageUrl('')} className="mt-1.5 flex items-center gap-1 text-xs text-gray-400 transition hover:text-red-500">
+                    <Trash className="h-3 w-3" /> Xoá ảnh
+                  </button>
+                )}
               </div>
-              <div className="flex items-center gap-2 rounded-lg border px-3">
+              <div className="flex h-[46px] items-center gap-2 self-start rounded-xl border border-gray-200 px-3 transition focus-within:border-brand-red/50 focus-within:ring-2 focus-within:ring-brand-red/10">
                 <ExternalLink className="h-4 w-4 flex-shrink-0 text-gray-400" />
                 <input value={linkUrl} onChange={(e) => setLinkUrl(e.target.value)} placeholder="Link đính kèm (tùy chọn)"
                   className="flex-1 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 outline-none" />
@@ -254,7 +285,7 @@ export function FacebookContentClient() {
           </div>
 
           {/* List */}
-          <div className="rounded-xl border bg-white overflow-hidden shadow-sm">
+          <div className="rounded-2xl border border-gray-100 bg-white overflow-hidden shadow-sm">
             <div className="flex flex-wrap items-center gap-2 border-b px-5 py-3.5">
               <h2 className="mr-2 font-bold text-gray-900">Bài đã soạn</h2>
               {FILTERS.map((f) => (
@@ -327,7 +358,7 @@ export function FacebookContentClient() {
         {/* Analytics + Live preview — sticky */}
         <div className="space-y-4 lg:sticky lg:top-6 lg:self-start">
           {insights && insights.totals.postCount > 0 && (
-            <div className="rounded-xl border bg-white p-4 shadow-sm">
+            <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
               <p className="mb-3 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-gray-400">
                 <BarChart3 className="h-3.5 w-3.5" /> Tương tác ({insights.totals.postCount} bài gần đây)
               </p>
@@ -416,7 +447,7 @@ function FacebookPreview({ pageName, message, imageUrl, linkUrl, scheduledAt }: 
 }) {
   const when = scheduledAt ? new Date(scheduledAt).toLocaleString('vi-VN') : 'Vừa xong'
   return (
-    <div className="overflow-hidden rounded-xl border bg-white shadow-sm">
+    <div className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
       <div className="flex items-center gap-2.5 p-3">
         <span className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-red text-sm font-black text-white">
           {(pageName || 'J').charAt(0).toUpperCase()}
