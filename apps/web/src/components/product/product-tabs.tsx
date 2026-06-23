@@ -424,7 +424,7 @@ export function ProductTabs({
             ) : (
               <button
                 onClick={() => setShowForm(true)}
-                className="rounded-xl bg-brand-red px-6 py-3 text-sm font-bold text-white hover:bg-red-700 transition whitespace-nowrap"
+                className="rounded-xl border-2 border-solid border-brand-red bg-white px-6 py-3 text-sm font-bold text-brand-red hover:bg-brand-red hover:text-white transition-colors whitespace-nowrap"
               >
                 Gửi đánh giá của bạn
               </button>
