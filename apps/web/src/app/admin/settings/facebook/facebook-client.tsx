@@ -1,9 +1,13 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Save, Eye, EyeOff, Plug, CheckCircle2, XCircle, Loader2, ExternalLink } from 'lucide-react'
+import { Save, Eye, EyeOff, Plug, CheckCircle2, XCircle, Loader2, ExternalLink, MessageCircle, Plus, Trash2, Copy } from 'lucide-react'
 
-type Status = { pageId: string; hasToken: boolean; enabled: boolean }
+type Rule = { keyword: string; reply: string }
+type AutoReply = { enabled: boolean; defaultReply: string; rules: Rule[]; verifyToken: string }
+type Status = { pageId: string; hasToken: boolean; enabled: boolean; autoreply?: AutoReply }
+
+const WEBHOOK_URL = 'https://store.japanvip.vn/api/v1/webhooks/facebook'
 
 export function FacebookSettingsClient() {
   const [pageId, setPageId] = useState('')
@@ -15,13 +19,41 @@ export function FacebookSettingsClient() {
   const [saving, setSaving] = useState(false)
   const [testing, setTesting] = useState(false)
   const [result, setResult] = useState<{ ok: boolean; msg: string } | null>(null)
+  // Auto-reply
+  const [autoEnabled, setAutoEnabled] = useState(false)
+  const [defaultReply, setDefaultReply] = useState('')
+  const [rules, setRules] = useState<Rule[]>([])
+  const [verifyToken, setVerifyToken] = useState('')
+  const [savingAuto, setSavingAuto] = useState(false)
+  const [autoResult, setAutoResult] = useState<{ ok: boolean; msg: string } | null>(null)
 
   useEffect(() => {
     fetch('/api/v1/admin/settings/facebook')
       .then((r) => r.json())
-      .then((d: Status) => { setPageId(d.pageId ?? ''); setHasToken(!!d.hasToken); setEnabled(!!d.enabled) })
+      .then((d: Status) => {
+        setPageId(d.pageId ?? ''); setHasToken(!!d.hasToken); setEnabled(!!d.enabled)
+        if (d.autoreply) {
+          setAutoEnabled(!!d.autoreply.enabled)
+          setDefaultReply(d.autoreply.defaultReply ?? '')
+          setRules(d.autoreply.rules ?? [])
+          setVerifyToken(d.autoreply.verifyToken ?? '')
+        }
+      })
       .finally(() => setLoading(false))
   }, [])
+
+  async function saveAutoReply() {
+    setSavingAuto(true); setAutoResult(null)
+    const token = verifyToken || `jvip_${Math.random().toString(36).slice(2, 12)}`
+    if (!verifyToken) setVerifyToken(token)
+    const res = await fetch('/api/v1/admin/settings/facebook', {
+      method: 'POST', headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ action: 'save-autoreply', enabled: autoEnabled, defaultReply, rules, verifyToken: token }),
+    })
+    const d = await res.json()
+    setSavingAuto(false)
+    setAutoResult(d.success ? { ok: true, msg: 'Đã lưu cấu hình auto-reply.' } : { ok: false, msg: d.error ?? 'Lưu thất bại' })
+  }
 
   async function save() {
     setSaving(true); setResult(null)
@@ -118,6 +150,70 @@ export function FacebookSettingsClient() {
         </div>
       </div>
 
+      {/* Auto-reply comment */}
+      <div className="rounded-xl border bg-white p-6 space-y-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="flex items-center gap-2 text-lg font-bold text-gray-900">
+              <MessageCircle className="h-5 w-5 text-[#1877F2]" /> Tự động trả lời bình luận
+            </h2>
+            <p className="mt-0.5 text-xs text-gray-500">Khi khách comment, tự trả lời để chốt khách (theo từ khoá hoặc câu mặc định).</p>
+          </div>
+          <button type="button" onClick={() => setAutoEnabled((v) => !v)} className={`relative h-6 w-11 flex-shrink-0 rounded-full transition-colors ${autoEnabled ? 'bg-emerald-500' : 'bg-gray-300'}`}>
+            <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white transition-transform ${autoEnabled ? 'translate-x-5' : 'translate-x-0.5'}`} />
+          </button>
+        </div>
+
+        <div>
+          <label className="mb-1.5 block text-sm font-medium text-gray-700">Câu trả lời mặc định</label>
+          <textarea value={defaultReply} onChange={(e) => setDefaultReply(e.target.value)} rows={2}
+            placeholder="vd: Cảm ơn anh/chị đã quan tâm! Inbox shop hoặc gọi 0988.969.896 để được tư vấn ạ 🥰"
+            className="w-full rounded-lg border px-3 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-red" />
+        </div>
+
+        <div>
+          <label className="mb-1.5 block text-sm font-medium text-gray-700">Trả lời theo từ khoá (ưu tiên hơn câu mặc định)</label>
+          <div className="space-y-2">
+            {rules.map((r, i) => (
+              <div key={i} className="flex flex-col gap-2 rounded-lg border border-gray-100 bg-gray-50 p-2 sm:flex-row">
+                <input value={r.keyword} onChange={(e) => setRules((p) => p.map((x, idx) => idx === i ? { ...x, keyword: e.target.value } : x))}
+                  placeholder="Từ khoá (vd: giá)" className="w-full rounded-md border px-2.5 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-brand-red sm:w-40" />
+                <input value={r.reply} onChange={(e) => setRules((p) => p.map((x, idx) => idx === i ? { ...x, reply: e.target.value } : x))}
+                  placeholder="Câu trả lời khi comment chứa từ khoá" className="flex-1 rounded-md border px-2.5 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-brand-red" />
+                <button onClick={() => setRules((p) => p.filter((_, idx) => idx !== i))} className="flex items-center justify-center rounded-md border px-2 py-2 text-gray-400 hover:bg-red-50 hover:text-red-600"><Trash2 className="h-4 w-4" /></button>
+              </div>
+            ))}
+            <button onClick={() => setRules((p) => [...p, { keyword: '', reply: '' }])} className="flex items-center gap-1.5 rounded-lg border border-dashed px-3 py-2 text-sm font-medium text-gray-500 hover:border-brand-red hover:text-brand-red">
+              <Plus className="h-4 w-4" /> Thêm từ khoá
+            </button>
+          </div>
+        </div>
+
+        {autoResult && (
+          <div className={`flex items-start gap-2 rounded-lg px-3 py-2.5 text-sm ${autoResult.ok ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-700'}`}>
+            {autoResult.ok ? <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0" /> : <XCircle className="mt-0.5 h-4 w-4 flex-shrink-0" />}
+            {autoResult.msg}
+          </div>
+        )}
+
+        <button onClick={saveAutoReply} disabled={savingAuto} className="flex items-center gap-2 rounded-lg bg-brand-red px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-red-dark disabled:opacity-60">
+          {savingAuto ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />} Lưu auto-reply
+        </button>
+
+        {/* Hướng dẫn nối webhook */}
+        <div className="mt-2 rounded-lg bg-amber-50 p-4 text-xs text-amber-900">
+          <p className="mb-2 font-semibold">⚙️ Cần nối Webhook 1 lần (để Facebook báo có comment mới):</p>
+          <ol className="list-decimal space-y-1.5 pl-4 marker:text-amber-500">
+            <li>Lưu cấu hình trên trước (để tạo mã xác thực).</li>
+            <li>Vào App Meta → <b>Webhooks</b> → chọn <b>Page</b> → <b>Subscribe to this object</b>.</li>
+            <li>Callback URL: <CopyField text={WEBHOOK_URL} /></li>
+            <li>Verify Token: <CopyField text={verifyToken || '(bấm Lưu để tạo)'} /></li>
+            <li>Subscription Fields: tick <code className="rounded bg-amber-100 px-1">feed</code>.</li>
+            <li>Quyền token cần thêm: <code className="rounded bg-amber-100 px-1">pages_manage_engagement</code> (để trả lời comment).</li>
+          </ol>
+        </div>
+      </div>
+
       {/* Hướng dẫn lấy token */}
       <div className="rounded-xl border border-gray-200 bg-white p-5 text-sm text-gray-700 shadow-sm">
         <p className="mb-2 font-semibold text-gray-900">Cách lấy Page ID + Access Token</p>
@@ -131,5 +227,16 @@ export function FacebookSettingsClient() {
         <p className="mt-3 rounded-lg bg-blue-50 px-3 py-2 text-xs text-blue-800">Token được lưu mã hoá. Vì đăng lên chính page của bạn (bạn là admin) nên không cần Meta App Review.</p>
       </div>
     </div>
+  )
+}
+
+function CopyField({ text }: { text: string }) {
+  const [copied, setCopied] = useState(false)
+  return (
+    <button onClick={() => { navigator.clipboard?.writeText(text); setCopied(true); setTimeout(() => setCopied(false), 1500) }}
+      className="ml-1 inline-flex max-w-full items-center gap-1 rounded bg-amber-100 px-1.5 py-0.5 align-middle font-mono text-[11px] text-amber-900 hover:bg-amber-200">
+      <span className="truncate">{text}</span>
+      {copied ? <CheckCircle2 className="h-3 w-3 flex-shrink-0 text-emerald-600" /> : <Copy className="h-3 w-3 flex-shrink-0" />}
+    </button>
   )
 }
