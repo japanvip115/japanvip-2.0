@@ -1,7 +1,7 @@
 import type { MetadataRoute } from 'next'
 import { prisma } from '@japanvip/db'
 
-const BASE_URL = 'https://store.japanvip.vn'
+const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://japanvip.vn'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [products, categories, blogPosts] = await Promise.all([

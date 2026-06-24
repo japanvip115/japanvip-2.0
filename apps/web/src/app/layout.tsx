@@ -18,8 +18,9 @@ export async function generateMetadata(): Promise<Metadata> {
   const googleVerify = map['site_google_verification']
   const bingVerify = map['site_bing_verification']
 
+  const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://japanvip.vn'
   return {
-    metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://store.japanvip.vn'),
+    metadataBase: new URL(APP_URL),
     title: {
       default: 'Japan VIP — Hàng Gia Dụng Nội Địa Nhật Bản Chính Hãng',
       template: '%s | Japan VIP',
@@ -27,7 +28,7 @@ export async function generateMetadata(): Promise<Metadata> {
     description:
       'Phân phối hàng gia dụng nội địa Nhật Bản mới 100%, chính hãng. Dịch vụ mua hộ từ Nhật, đấu giá hàng Nhật uy tín tại Việt Nam.',
     keywords: ['hàng nội địa Nhật', 'gia dụng Nhật Bản', 'mua hộ Nhật', 'đấu giá hàng Nhật'],
-    authors: [{ name: 'Japan VIP', url: 'https://store.japanvip.vn' }],
+    authors: [{ name: 'Japan VIP', url: APP_URL }],
     ...(faviconUrl
       ? { icons: { icon: faviconUrl, shortcut: faviconUrl, apple: faviconUrl } }
       : {}),
@@ -42,7 +43,7 @@ export async function generateMetadata(): Promise<Metadata> {
     openGraph: {
       type: 'website',
       locale: 'vi_VN',
-      url: 'https://store.japanvip.vn',
+      url: APP_URL,
       siteName: 'Japan VIP',
       title: 'Japan VIP — Hàng Gia Dụng Nội Địa Nhật Bản Chính Hãng',
       description: 'Phân phối hàng gia dụng nội địa Nhật Bản mới 100%, chính hãng.',

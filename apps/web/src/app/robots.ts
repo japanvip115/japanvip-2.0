@@ -1,5 +1,7 @@
 import type { MetadataRoute } from 'next'
 
+const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://japanvip.vn'
+
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
@@ -14,7 +16,7 @@ export default function robots(): MetadataRoute.Robots {
         ],
       },
     ],
-    sitemap: 'https://store.japanvip.vn/sitemap.xml',
-    host: 'https://store.japanvip.vn',
+    sitemap: `${BASE_URL}/sitemap.xml`,
+    host: BASE_URL,
   }
 }
