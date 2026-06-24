@@ -1,8 +1,17 @@
 import type { Metadata } from 'next'
+import { unstable_cache } from 'next/cache'
 import { listPublicAuctions } from '@/modules/auction/services/auction.service'
 import { AuctionCard } from '@/components/auction/auction-card'
 import Link from 'next/link'
 import type { AuctionStatus } from '@japanvip/db'
+
+// Cache nhẹ theo (status, page) — TTL ngắn 15s vì đấu giá là dữ liệu LIVE.
+// Trang chi tiết mới là nơi đặt giá realtime; trang list chấp nhận trễ ~15s.
+const getAuctionList = unstable_cache(
+  async (status: AuctionStatus, page: number) => listPublicAuctions({ page, limit: 12, status }),
+  ['dau-gia-list-v1'],
+  { revalidate: 15, tags: ['auctions'] }
+)
 
 export const metadata: Metadata = {
   title: 'Đấu Giá Hàng Nhật — Japan VIP',
@@ -24,7 +33,7 @@ export default async function AuctionsPage({ searchParams }: Props) {
   const status: AuctionStatus = (statusParam as AuctionStatus) ?? 'LIVE'
   const page = Math.max(1, parseInt(pageParam ?? '1'))
 
-  const { auctions, total, totalPages } = await listPublicAuctions({ page, limit: 12, status })
+  const { auctions, total, totalPages } = await getAuctionList(status, page)
 
   return (
     <div className="container pb-6">

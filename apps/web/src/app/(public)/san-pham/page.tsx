@@ -1,12 +1,76 @@
 import type { Metadata } from 'next'
+import { unstable_cache } from 'next/cache'
 import { prisma } from '@japanvip/db'
 import Link from 'next/link'
 import { Suspense } from 'react'
 import { ProductCard } from '@/components/product/product-card'
 import { SortSelect } from '@/components/product/sort-select'
-import type { ProductCondition } from '@japanvip/db'
+import type { ProductCondition, Prisma } from '@japanvip/db'
 
 export const revalidate = 60
+
+// ── Cache phần việc DB: trang vẫn ƒ (đọc searchParams) nhưng query lặp lại cùng
+// bộ lọc lấy từ cache → bỏ 6+ round-trip Neon mỗi request (TTFB 3.6s → ~0.4s). ──
+
+// Sidebar (danh mục + brands) — giống nhau mọi request, không phụ thuộc searchParams.
+const getSidebarFilters = unstable_cache(
+  async () => {
+    const [categories, brands] = await Promise.all([
+      prisma.category.findMany({
+        where: { isActive: true, parentId: null },
+        orderBy: { sortOrder: 'asc' },
+        select: { id: true, name: true, slug: true, icon: true, _count: { select: { products: { where: { status: 'ACTIVE' } } } } },
+      }),
+      prisma.brand.findMany({ where: { isActive: true }, orderBy: { name: 'asc' }, select: { id: true, name: true } }),
+    ])
+    return { categories, brands }
+  },
+  ['san-pham-sidebar-v1'],
+  { revalidate: 300, tags: ['product-filters'] }
+)
+
+// Cây danh mục gọn — resolve slug/id → children + activeCategory IN-MEMORY (bỏ 2-3 query tuần tự).
+const getCategoryTree = unstable_cache(
+  async () => prisma.category.findMany({
+    select: { id: true, slug: true, name: true, parentId: true, imageUrl: true, imagePosition: true, description: true },
+  }),
+  ['san-pham-cat-tree-v1'],
+  { revalidate: 300, tags: ['product-filters'] }
+)
+
+// Banner trang SP (khi không lọc danh mục).
+const getProductsBanner = unstable_cache(
+  async () => {
+    const rows = await prisma.siteSetting.findMany({ where: { key: { in: ['products_banner_url', 'products_banner_position'] } } })
+    return {
+      url: rows.find((r) => r.key === 'products_banner_url')?.value ?? '',
+      position: rows.find((r) => r.key === 'products_banner_position')?.value ?? 'center',
+    }
+  },
+  ['san-pham-banner-v1'],
+  { revalidate: 300, tags: ['site-config'] }
+)
+
+// Danh sách SP + đếm — cache theo bộ lọc (key chứa ĐỦ giá trị để không lẫn kết quả).
+const getProductListing = unstable_cache(
+  async (where: Prisma.ProductWhereInput, orderBy: Prisma.ProductOrderByWithRelationInput, take: number, skip: number) => {
+    const [products, total] = await Promise.all([
+      prisma.product.findMany({
+        where, orderBy, take, skip,
+        include: {
+          images: { where: { isPrimary: true }, take: 1 },
+          category: { select: { name: true } },
+          brand: { select: { name: true } },
+          _count: { select: { auctions: true } },
+        },
+      }),
+      prisma.product.count({ where }),
+    ])
+    return { products, total }
+  },
+  ['san-pham-listing-v1'],
+  { revalidate: 120, tags: ['products'] }
+)
 
 type SearchParams = Promise<{
   q?: string
@@ -23,7 +87,7 @@ type SearchParams = Promise<{
 export async function generateMetadata({ searchParams }: { searchParams: SearchParams }): Promise<Metadata> {
   const { q, categoryId } = await searchParams
   const category = categoryId
-    ? await prisma.category.findUnique({ where: { id: categoryId }, select: { name: true } })
+    ? (await getCategoryTree()).find((c) => c.id === categoryId) ?? null
     : null
   const title = category
     ? `${category.name} — Hàng Nội Địa Nhật | Japan VIP`
@@ -65,24 +129,18 @@ export default async function ProductsPage({ searchParams }: { searchParams: Sea
   const take = 24
   const skip = (page - 1) * take
 
-  // Resolve categorySlug → categoryId(s) bao gồm cả con
+  // Resolve categorySlug/categoryId → categoryId(s) gồm cả con — IN-MEMORY từ cây cache.
+  const tree = await getCategoryTree()
+  const node = categorySlug && !categoryId
+    ? tree.find((c) => c.slug === categorySlug)
+    : categoryId
+    ? tree.find((c) => c.id === categoryId)
+    : undefined
   let resolvedCategoryIds: string[] = []
-  let effectiveCategoryId = categoryId
-  if (categorySlug && !categoryId) {
-    const cat = await prisma.category.findUnique({
-      where: { slug: categorySlug },
-      select: { id: true, children: { select: { id: true } } },
-    })
-    if (cat) {
-      effectiveCategoryId = cat.id
-      resolvedCategoryIds = [cat.id, ...cat.children.map((c) => c.id)]
-    }
-  } else if (categoryId) {
-    const cat = await prisma.category.findUnique({
-      where: { id: categoryId },
-      select: { id: true, children: { select: { id: true } } },
-    })
-    if (cat) resolvedCategoryIds = [cat.id, ...cat.children.map((c) => c.id)]
+  let activeCategory: { name: string; imageUrl: string | null; imagePosition: string | null; description: string | null } | null = null
+  if (node) {
+    resolvedCategoryIds = [node.id, ...tree.filter((c) => c.parentId === node.id).map((c) => c.id)]
+    activeCategory = { name: node.name, imageUrl: node.imageUrl, imagePosition: node.imagePosition, description: node.description }
   }
 
   const orderBy = sort === 'name_asc'
@@ -114,36 +172,14 @@ export default async function ProductsPage({ searchParams }: { searchParams: Sea
     } : {}),
   }
 
-  const [products, total, categories, brands, activeCategory, productsBannerSetting] = await Promise.all([
-    prisma.product.findMany({
-      where,
-      orderBy,
-      take,
-      skip,
-      include: {
-        images: { where: { isPrimary: true }, take: 1 },
-        category: { select: { name: true } },
-        brand: { select: { name: true } },
-        _count: { select: { auctions: true } },
-      },
-    }),
-    prisma.product.count({ where }),
-    prisma.category.findMany({
-      where: { isActive: true, parentId: null },
-      orderBy: { sortOrder: 'asc' },
-      select: { id: true, name: true, slug: true, icon: true, _count: { select: { products: { where: { status: 'ACTIVE' } } } } },
-    }),
-    prisma.brand.findMany({
-      where: { isActive: true },
-      orderBy: { name: 'asc' },
-      select: { id: true, name: true },
-    }),
-    effectiveCategoryId ? prisma.category.findUnique({ where: { id: effectiveCategoryId }, select: { name: true, imageUrl: true, imagePosition: true, description: true } }) : null,
-    !effectiveCategoryId ? prisma.siteSetting.findMany({ where: { key: { in: ['products_banner_url', 'products_banner_position'] } } }) : null,
+  const [{ products, total }, { categories, brands }, banner] = await Promise.all([
+    getProductListing(where, orderBy, take, skip),
+    getSidebarFilters(),
+    node ? Promise.resolve(null) : getProductsBanner(),
   ])
 
-  const productsBannerUrl = productsBannerSetting?.find?.((r) => r.key === 'products_banner_url')?.value ?? ''
-  const productsBannerPosition = productsBannerSetting?.find?.((r) => r.key === 'products_banner_position')?.value ?? 'center'
+  const productsBannerUrl = banner?.url ?? ''
+  const productsBannerPosition = banner?.position ?? 'center'
   const totalPages = Math.ceil(total / take)
 
   const buildUrl = (overrides: Record<string, string>) => {
