@@ -17,6 +17,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
+export const revalidate = 300
+
+// Pre-render bài blog đã đăng tại build → SSG cache CDN (bài drive SEO).
+export async function generateStaticParams() {
+  const posts = await prisma.blogPost.findMany({
+    where: { status: 'PUBLISHED' },
+    orderBy: { publishedAt: 'desc' },
+    take: 500,
+    select: { slug: true },
+  })
+  return posts.map((p) => ({ slug: p.slug }))
+}
+
 export default async function BlogPostPage({ params }: Props) {
   const { slug } = await params
 
