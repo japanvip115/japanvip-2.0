@@ -298,6 +298,9 @@ model Product {
   @@index([slug])
   @@index([status])
   @@index([ownerType, ownerId])
+  // Tăng tốc trang /san-pham: lọc status+danh mục sắp xếp theo mới nhất (lần đầu vào danh mục)
+  @@index([status, categoryId, createdAt])
+  @@index([status, createdAt])
   @@map("products")
 }
 
