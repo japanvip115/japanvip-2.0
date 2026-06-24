@@ -4,7 +4,7 @@ import React, { useEffect, useState, useCallback, useMemo } from 'react'
 import {
   Sparkles, Send, CalendarClock, FileText, Trash2, Loader2, ExternalLink,
   Image as ImageIcon, Settings, CheckCircle2, AlertTriangle, Globe,
-  ThumbsUp, MessageCircle, Share2, X, BarChart3, Upload,
+  ThumbsUp, MessageCircle, Share2, X, BarChart3, Upload, Rocket,
 } from 'lucide-react'
 import Link from 'next/link'
 import { FacebookCalendar } from './facebook-calendar'
@@ -398,10 +398,17 @@ export function FacebookContentClient() {
                       </div>
                       <div className="flex flex-shrink-0 items-start gap-2">
                         {p.status === 'PUBLISHED' && p.fbPostId ? (
-                          <a href={`https://facebook.com/${p.fbPostId}`} target="_blank" rel="noreferrer"
-                            className="flex items-center gap-1 rounded-lg border border-white/10 px-2.5 py-1.5 text-xs text-blue-600 hover:bg-blue-50">
-                            <ExternalLink className="h-3 w-3" /> Xem
-                          </a>
+                          <>
+                            <a href={`https://facebook.com/${p.fbPostId}`} target="_blank" rel="noreferrer"
+                              className="flex items-center gap-1 rounded-lg border border-white/10 px-2.5 py-1.5 text-xs text-blue-600 hover:bg-blue-50">
+                              <ExternalLink className="h-3 w-3" /> Xem
+                            </a>
+                            <a href={`https://www.facebook.com/${p.fbPostId}`} target="_blank" rel="noreferrer"
+                              title="Mở bài trên Facebook → bấm 'Tăng hạng bài viết / Boost' để chạy quảng cáo"
+                              className="flex items-center gap-1 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 px-2.5 py-1.5 text-xs font-medium text-white hover:opacity-90">
+                              <Rocket className="h-3 w-3" /> Boost
+                            </a>
+                          </>
                         ) : (
                           <button onClick={() => publishExisting(p.id)} disabled={!!busy}
                             className="flex items-center gap-1 rounded-lg bg-brand-red px-2.5 py-1.5 text-xs font-medium text-white hover:bg-brand-red-dark disabled:opacity-60">
