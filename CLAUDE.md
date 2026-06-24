@@ -4,6 +4,44 @@
 
 ---
 
+## ⚡ Nguyên tắc cộng tác với Claude (BẮT BUỘC — đọc trước MỌI task)
+
+> 4 luật nền. Tuân thủ trước khi làm bất cứ việc gì. Khi mâu thuẫn với phần khác trong tài liệu, ưu tiên 4 luật này.
+
+### §1 — THINK BEFORE CODING (Hỏi trước, đừng đoán, đừng giấu chỗ rối)
+
+- ❌ Tự đoán ý rồi chạy luôn — báo "xong rồi" mà thật ra chưa làm.
+- ❌ Gặp chỗ mơ hồ thì im lặng tự chọn một cách hiểu.
+- ✅ Nói rõ giả định. Không chắc → **dừng lại hỏi**.
+- ✅ Có nhiều cách hiểu → trình bày hết, không tự quyết một mình.
+- 💡 Lỗi phổ biến nhất của agent: đoán sai ý rồi chạy theo mà không kiểm tra lại, không hỏi cho rõ, không nêu mâu thuẫn.
+
+### §2 — SIMPLICITY FIRST (Viết tối thiểu, không gì thừa)
+
+- ❌ Viết 1.000 dòng cho thứ chỉ cần 100 — bloated, brittle.
+- ❌ Tự thêm "linh hoạt", abstraction, xử lý lỗi không được yêu cầu.
+- ✅ Chỉ làm **đúng thứ được hỏi**. Không gì mang tính phỏng đoán.
+- ✅ 200 dòng mà rút được còn 50 → **viết lại cho gọn**.
+- 💡 Model train trên codebase production nên mặc định viết kiểu lớn, phức tạp. Phải chủ động ép đơn giản — nó không tự làm.
+
+### §3 — SURGICAL CHANGES (Sửa đúng chỗ, không lan ra)
+
+- ❌ "Cải thiện" luôn code, comment, format ở chỗ lân cận.
+- ❌ Refactor cả những thứ không hề hỏng, lạc khỏi yêu cầu.
+- ✅ Mỗi dòng thay đổi đều **truy được về đúng yêu cầu**.
+- ✅ Giữ nguyên style sẵn có, kể cả khi mình sẽ làm khác.
+- 💡 Ít chạm = ít token = ít rủi ro phá vỡ thứ đang chạy. Diff sạch còn dễ review hơn nhiều.
+
+### §4 — GOAL-DRIVEN EXECUTION (Khai báo đích, loop tới khi đạt)
+
+- ❌ Ra lệnh từng thao tác một (imperative), kèm sát từng bước rồi dừng nửa chừng.
+- ❌ Nhận đề mơ hồ ("sửa cái bug đi") mà không chốt tiêu chí.
+- ✅ Tự xác định **tiêu chí 'done' rõ ràng** (vd "viết test tái hiện bug, rồi cho nó pass") → tự **loop tới khi đạt**.
+- ✅ Đề mơ hồ → hỏi để chốt tiêu chí trước (xem §1), rồi mới chạy.
+- 💡 LLM cực giỏi lặp tới khi chạm goal. Tiêu chí mạnh → tự đi; tiêu chí yếu ("làm cho chạy") → phải cầm tay mãi.
+
+---
+
 ## 🔒 LOCKED — VÙNG CODE ĐÃ CHỐT, KHÔNG ĐƯỢC TỰ Ý SỬA/XOÁ
 
 **Các phần dưới đây đã được chủ dự án (Nguyễn Thị Giang) duyệt và khoá (2026-06).**
