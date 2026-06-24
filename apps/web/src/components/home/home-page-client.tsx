@@ -619,11 +619,14 @@ function HeroBannerSlider({ banners, router }: { banners: HeroBanner[]; router: 
           style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
         />
       ) : (
-        <img
+        <Image
           key={banner.imageUrl}
           src={banner.imageUrl}
           alt={banner.title}
-          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+          fill
+          priority
+          sizes="100vw"
+          style={{ objectFit: 'cover' }}
         />
       )}
       <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 60%)' }} />

@@ -7,6 +7,8 @@ const nextConfig: NextConfig = {
   typedRoutes: false,
   serverExternalPackages: ['@prisma/client', '@japanvip/db', 'xlsx', 'playwright-core'],
   images: {
+    formats: ['image/webp'],
+    minimumCacheTTL: 31536000, // cache ảnh đã tối ưu 1 năm (giảm tải lại)
     remotePatterns: [
       { protocol: 'https', hostname: 'img.vietqr.io' },
       { protocol: 'https', hostname: '*.r2.cloudflarestorage.com' },
