@@ -583,7 +583,7 @@ ul, ol { list-style: none; }
 ══════════════════════════════════════════ */
 .url-tool-section { padding: 32px 0; background: var(--jp-gray-50); }
 .url-tool-wrapper { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
-.url-tool-left h2 { font-family: var(--font-sans); font-size: clamp(1.4rem, 2.2vw, 1.9rem); font-weight: 800; color: var(--jp-gray-900); line-height: 1.2; margin-bottom: 14px; letter-spacing: -0.02em; white-space: nowrap; }
+.url-tool-left h2 { font-family: var(--font-sans); font-size: clamp(1.15rem, 1.6vw, 1.45rem); font-weight: 800; color: var(--jp-gray-900); line-height: 1.25; margin-bottom: 14px; letter-spacing: -0.02em; }
 .url-tool-left p { color: var(--jp-gray-500); font-size: 1rem; line-height: 1.75; margin-bottom: 24px; max-width: 480px; }
 .supported-sites { display: flex; flex-wrap: wrap; gap: 8px; }
 .site-badge { padding: 5px 14px; border-radius: var(--radius-full); font-size: 0.78rem; font-weight: 700; }
@@ -1297,7 +1297,7 @@ ul, ol { list-style: none; }
   .hero-visual { display: none; }
   .url-tool-section { padding: 24px 0; }
   .url-tool-wrapper { grid-template-columns: 1fr; gap: 16px; }
-  .url-tool-left h2 { white-space: normal !important; font-size: 1.4rem; }
+  .url-tool-left h2 { white-space: normal !important; font-size: 1.1rem; }
   .url-tool-left p { font-size: 0.88rem; line-height: 1.6; margin-bottom: 14px; }
   .why-inner { grid-template-columns: 1fr; gap: 40px; }
   .auction-layout { grid-template-columns: 1fr; }
@@ -1337,6 +1337,11 @@ ul, ol { list-style: none; }
   .trust-icon { font-size: 1.4rem; }
   .trust-item strong { font-size: 0.9rem; }
   .trust-item span { font-size: 0.78rem; }
+
+  /* Nút "Kiểm Tra Ngay" gọn lại trên mobile */
+  .url-input-group { gap: 8px; }
+  .url-input-group .btn-primary { padding: 10px 14px; font-size: 0.8rem; }
+  .url-input-group input { padding: 10px 12px; }
 
   /* ── Categories: horizontal scroll on mobile ── */
   .categories-grid {

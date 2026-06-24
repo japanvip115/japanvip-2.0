@@ -77,7 +77,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     >
       <head>
         {/* ?v=N — cache-bust: bump version mỗi khi sửa style.css để trình duyệt tải bản mới ngay (tránh kẹt cache 4h) */}
-        <link rel="stylesheet" href="/style.css?v=20260623" />
+        <link rel="stylesheet" href="/style.css?v=20260624b" />
         {facebookVerify && (
           <meta name="facebook-domain-verification" content={facebookVerify} />
         )}
