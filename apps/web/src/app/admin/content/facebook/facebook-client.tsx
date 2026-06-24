@@ -4,7 +4,7 @@ import React, { useEffect, useState, useCallback, useMemo } from 'react'
 import {
   Sparkles, Send, CalendarClock, FileText, Trash2, Loader2, ExternalLink,
   Image as ImageIcon, Settings, CheckCircle2, AlertTriangle, Globe,
-  ThumbsUp, MessageCircle, Share2, X, BarChart3, Upload, Rocket,
+  ThumbsUp, MessageCircle, Share2, X, BarChart3, Upload, Rocket, ClipboardPaste,
 } from 'lucide-react'
 import Link from 'next/link'
 import { FacebookCalendar } from './facebook-calendar'
@@ -117,6 +117,15 @@ export function FacebookContentClient() {
     setImageUrlInput('')
   }
   function removeImage(i: number) { setImages((prev) => prev.filter((_, idx) => idx !== i)) }
+
+  async function pasteImageUrl() {
+    try {
+      const text = (await navigator.clipboard.readText()).trim()
+      if (!text) return
+      if (text.startsWith('http') || text.startsWith('/')) setImages((prev) => [...prev, text].slice(0, 10))
+      else setImageUrlInput(text)
+    } catch { /* clipboard bị chặn → user dán tay */ }
+  }
 
   async function generate() {
     setGenerating(true); setErr('')
@@ -268,8 +277,12 @@ export function FacebookContentClient() {
                     onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addImageUrl() } }}
                     placeholder="Dán URL ảnh + Enter, hoặc Tải lên →"
                     className="flex-1 bg-transparent py-2.5 text-sm text-white placeholder:text-slate-400 outline-none" />
-                  {imageUrlInput && (
+                  {imageUrlInput ? (
                     <button onClick={addImageUrl} className="rounded-lg bg-white/15 px-2.5 py-1.5 text-xs font-medium text-white hover:bg-white/25">Thêm</button>
+                  ) : (
+                    <button onClick={pasteImageUrl} title="Dán URL ảnh từ clipboard" className="flex items-center gap-1 rounded-lg bg-white/15 px-2.5 py-1.5 text-xs font-medium text-white hover:bg-white/25">
+                      <ClipboardPaste className="h-3.5 w-3.5" /> Dán nhanh
+                    </button>
                   )}
                   <label className={`flex cursor-pointer items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-medium transition ${uploading ? 'bg-white/10 text-slate-400' : 'bg-white/15 text-white hover:bg-white/25'}`}>
                     {uploading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Upload className="h-3.5 w-3.5" />}
