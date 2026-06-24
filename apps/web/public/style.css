@@ -1343,22 +1343,15 @@ ul, ol { list-style: none; }
   .url-input-group .btn-primary { padding: 10px 14px; font-size: 0.8rem; }
   .url-input-group input { padding: 10px 12px; }
 
-  /* ── Categories: horizontal scroll on mobile ── */
+  /* ── Categories: lưới hiện HẾT trên mobile (4 cột, không vuốt, không cắt) ── */
   .categories-grid {
-    display: flex;
-    flex-direction: row;
-    overflow-x: auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: unset;
     gap: 10px;
-    padding-bottom: 12px;
-    grid-template-columns: unset;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
   }
-  .categories-grid::-webkit-scrollbar { display: none; }
   .cat-card, .cat-card.cat-large {
-    flex: 0 0 auto;
-    width: 100px;
+    width: auto;
     min-height: unset;
     aspect-ratio: unset;
     grid-row: unset;
@@ -1502,8 +1495,8 @@ ul, ol { list-style: none; }
   .auction-grid, .auction-grid-full { grid-template-columns: 1fr; }
   /* Sản phẩm bán chạy: 2 sản phẩm / hàng trên mobile (yêu cầu chủ dự án) */
   .products-grid { grid-template-columns: repeat(2, 1fr); }
-  /* categories-grid inherits horizontal scroll from 768px breakpoint */
-  .cat-card, .cat-card.cat-large { width: 88px; }
+  /* categories-grid: lưới 4 cột (kế thừa từ 768px) — card tự chia, không cắt */
+  .cat-card, .cat-card.cat-large { width: auto; }
   .why-stats-grid { grid-template-columns: 1fr 1fr; }
   .big-cd { gap: 4px; }
   .big-cd-num { font-size: 2rem; min-width: 60px; padding: 6px 10px; }
@@ -1528,7 +1521,7 @@ ul, ol { list-style: none; }
 
   /* Categories */
   .categories-section { padding: 16px 0 20px; }
-  .cat-card, .cat-card.cat-large { width: 80px; }
+  .cat-card, .cat-card.cat-large { width: auto; padding: 10px 4px 8px; }
   .cat-icon, .cat-card.cat-large .cat-icon { width: 44px; height: 44px; font-size: 2rem; }
   .cat-info h3, .cat-card.cat-large .cat-info h3 { font-size: 0.65rem; }
 
