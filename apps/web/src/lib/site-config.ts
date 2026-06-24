@@ -8,6 +8,7 @@ const KEYS = [
   'site_facebook_verification',
   'site_facebook_pixel_id',
   'site_ga4_id',
+  'site_gtm_id',
   'content_protection_enabled',
 ] as const
 

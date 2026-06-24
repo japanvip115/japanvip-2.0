@@ -9,14 +9,16 @@ type Props = {
   facebookVerification: string
   facebookPixelId: string
   ga4Id: string
+  gtmId: string
 }
 
-export function VerificationSettingsForm({ googleVerification, bingVerification, facebookVerification, facebookPixelId, ga4Id }: Props) {
+export function VerificationSettingsForm({ googleVerification, bingVerification, facebookVerification, facebookPixelId, ga4Id, gtmId }: Props) {
   const [google, setGoogle] = useState(googleVerification)
   const [bing, setBing] = useState(bingVerification)
   const [facebook, setFacebook] = useState(facebookVerification)
   const [pixel, setPixel] = useState(facebookPixelId)
   const [ga4, setGa4] = useState(ga4Id)
+  const [gtm, setGtm] = useState(gtmId)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
 
@@ -40,6 +42,12 @@ export function VerificationSettingsForm({ googleVerification, bingVerification,
     return (m ? m[0].toUpperCase() : input).trim()
   }
 
+  // GTM Container ID dạng GTM-XXXXXXX — cho dán cả snippet vẫn bóc ra được
+  function extractGtmId(input: string): string {
+    const m = input.match(/GTM-[A-Z0-9]{5,}/i)
+    return (m ? m[0].toUpperCase() : input).trim()
+  }
+
   async function handleSave() {
     setSaving(true)
     setSaved(false)
@@ -53,6 +61,7 @@ export function VerificationSettingsForm({ googleVerification, bingVerification,
           site_facebook_verification: extractContent(facebook),
           site_facebook_pixel_id: extractPixelId(pixel),
           site_ga4_id: extractGa4Id(ga4),
+          site_gtm_id: extractGtmId(gtm),
         }),
       })
       if (res.ok) {
@@ -61,6 +70,7 @@ export function VerificationSettingsForm({ googleVerification, bingVerification,
         setFacebook(extractContent(facebook))
         setPixel(extractPixelId(pixel))
         setGa4(extractGa4Id(ga4))
+        setGtm(extractGtmId(gtm))
         setSaved(true)
         setTimeout(() => setSaved(false), 2500)
       }
@@ -157,6 +167,24 @@ export function VerificationSettingsForm({ googleVerification, bingVerification,
           className="w-full rounded-lg border border-gray-600 bg-gray-800 px-3 py-2 text-sm text-white placeholder-gray-500 outline-none focus:border-orange-500"
         />
         <p className="mt-1.5 text-[11px] text-gray-600">Lấy tại: analytics.google.com → Quản trị → Luồng dữ liệu (Data Streams) → chọn luồng web → Measurement ID.</p>
+      </div>
+
+      <div className="rounded-xl border border-emerald-500/25 bg-emerald-500/[0.04] p-5">
+        <div className="flex items-center gap-2 mb-1">
+          <span className="text-lg">🏷️</span>
+          <h2 className="font-semibold text-white">Google Tag Manager <span className="text-xs font-normal text-emerald-300/80">(quản lý tag tập trung)</span></h2>
+        </div>
+        <p className="text-xs text-gray-500 mb-3">
+          Nhập <b className="text-gray-300">Container ID</b> dạng <code className="rounded bg-gray-900 px-1 py-0.5 text-[11px] text-gray-300">GTM-XXXXXXX</code> (loại <b>Web</b>) → hệ thống tự chèn snippet GTM vào mọi trang.
+          Sau đó thêm GA4/Pixel/Ads ngay trong GTM mà <b className="text-gray-300">không cần sửa code</b>.
+        </p>
+        <input
+          value={gtm}
+          onChange={e => setGtm(e.target.value)}
+          placeholder="VD: GTM-PBZJHMV — hoặc dán cả snippet GTM"
+          className="w-full rounded-lg border border-gray-600 bg-gray-800 px-3 py-2 text-sm text-white placeholder-gray-500 outline-none focus:border-emerald-500"
+        />
+        <p className="mt-1.5 text-[11px] text-gray-600">Lấy tại: tagmanager.google.com → chọn container loại <b>Web</b> → ID hiện ở đầu trang.</p>
       </div>
 
       <div className="flex items-center gap-3">

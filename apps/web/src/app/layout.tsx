@@ -68,6 +68,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const facebookVerify = cfg['site_facebook_verification']
   const fbPixelId = cfg['site_facebook_pixel_id']
   const ga4Id = cfg['site_ga4_id']
+  const gtmId = cfg['site_gtm_id']
 
   return (
     <html
@@ -77,6 +78,14 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       style={{ '--font-sans': `var(${activeFontVar})` } as React.CSSProperties}
     >
       <head>
+        {/* Google Tag Manager — đặt cao nhất trong <head> theo chuẩn GTM */}
+        {gtmId && (
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','${gtmId}');`,
+            }}
+          />
+        )}
         {/* ?v=N — cache-bust: bump version mỗi khi sửa style.css để trình duyệt tải bản mới ngay (tránh kẹt cache 4h) */}
         <link rel="stylesheet" href="/style.css?v=20260624c" />
         {facebookVerify && (
@@ -101,6 +110,14 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         )}
       </head>
       <body>
+        {/* Google Tag Manager (noscript) — ngay sau <body> theo chuẩn GTM */}
+        {gtmId && (
+          <noscript
+            dangerouslySetInnerHTML={{
+              __html: `<iframe src="https://www.googletagmanager.com/ns.html?id=${gtmId}" height="0" width="0" style="display:none;visibility:hidden"></iframe>`,
+            }}
+          />
+        )}
         {fbPixelId && (
           <noscript>
             <img
