@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { unstable_cache } from 'next/cache'
+import Script from 'next/script'
 import './globals.css'
 import { getAllFontVariableClasses, getFontCssVar } from '@/lib/fonts'
 import { getActiveFont } from '@/lib/font-settings'
@@ -100,12 +101,13 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         )}
         {ga4Id && (
           <>
-            <script async src={`https://www.googletagmanager.com/gtag/js?id=${ga4Id}`} />
+            {/* Stub gtag chạy sớm (nhẹ) → hàng đợi event không mất. Thư viện gtag.js nặng hoãn lazyOnload → không hại LCP/TBT lúc render */}
             <script
               dangerouslySetInnerHTML={{
                 __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','${ga4Id}');`,
               }}
             />
+            <Script src={`https://www.googletagmanager.com/gtag/js?id=${ga4Id}`} strategy="lazyOnload" />
           </>
         )}
       </head>
