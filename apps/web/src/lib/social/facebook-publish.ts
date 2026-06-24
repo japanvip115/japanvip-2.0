@@ -15,6 +15,7 @@ export async function publishOnePost(postId: string): Promise<{ ok: boolean; pos
   const res = await publishPost({
     message: post.message,
     imageUrl: post.imageUrl ?? undefined,
+    imageUrls: post.imageUrls,
   })
 
   if (res.ok) {

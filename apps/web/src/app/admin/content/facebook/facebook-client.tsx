@@ -4,12 +4,13 @@ import React, { useEffect, useState, useCallback, useMemo } from 'react'
 import {
   Sparkles, Send, CalendarClock, FileText, Trash2, Loader2, ExternalLink,
   Image as ImageIcon, Settings, CheckCircle2, AlertTriangle, Globe,
-  ThumbsUp, MessageCircle, Share2, X, BarChart3, Upload, Trash,
+  ThumbsUp, MessageCircle, Share2, X, BarChart3, Upload,
 } from 'lucide-react'
 import Link from 'next/link'
+import { FacebookCalendar } from './facebook-calendar'
 
 type Post = {
-  id: string; message: string; imageUrl: string | null; linkUrl: string | null; firstComment: string | null; angle: string
+  id: string; message: string; imageUrl: string | null; imageUrls: string[]; linkUrl: string | null; firstComment: string | null; angle: string
   status: string; scheduledAt: string | null; publishedAt: string | null; fbPostId: string | null
   errorMessage: string | null; createdAt: string
 }
@@ -53,11 +54,13 @@ export function FacebookContentClient() {
   const [aiModel, setAiModel] = useState('auto')
   const [topic, setTopic] = useState('')
   const [message, setMessage] = useState('')
-  const [imageUrl, setImageUrl] = useState('')
+  const [images, setImages] = useState<string[]>([])
+  const [imageUrlInput, setImageUrlInput] = useState('')
   const [linkUrl, setLinkUrl] = useState('')
   const [firstComment, setFirstComment] = useState('')
   const [scheduledAt, setScheduledAt] = useState('')
   const [filter, setFilter] = useState('ALL')
+  const [view, setView] = useState<'list' | 'calendar'>('list')
   const [generating, setGenerating] = useState(false)
   const [uploading, setUploading] = useState(false)
   const [busy, setBusy] = useState('')
@@ -101,11 +104,19 @@ export function FacebookContentClient() {
       fd.append('folder', 'settings')
       const res = await fetch('/api/v1/admin/upload', { method: 'POST', body: fd })
       const d = await res.json()
-      if (d.success) setImageUrl(d.data.publicUrl)
+      if (d.success) setImages((prev) => [...prev, d.data.publicUrl].slice(0, 10))
       else setErr(d.error ?? 'Tải ảnh thất bại')
     } catch { setErr('Lỗi tải ảnh') }
     setUploading(false)
   }
+
+  function addImageUrl() {
+    const u = imageUrlInput.trim()
+    if (!u) return
+    setImages((prev) => [...prev, u].slice(0, 10))
+    setImageUrlInput('')
+  }
+  function removeImage(i: number) { setImages((prev) => prev.filter((_, idx) => idx !== i)) }
 
   async function generate() {
     setGenerating(true); setErr('')
@@ -129,7 +140,9 @@ export function FacebookContentClient() {
       method: 'POST', headers: { 'content-type': 'application/json' },
       body: JSON.stringify({
         message, angle, status,
-        imageUrl: imageUrl || undefined, linkUrl: linkUrl || undefined,
+        imageUrl: images[0] || undefined,
+        imageUrls: images.length ? images : undefined,
+        linkUrl: linkUrl || undefined,
         firstComment: firstComment || undefined,
         scheduledAt: status === 'SCHEDULED' && scheduledAt ? new Date(scheduledAt).toISOString() : undefined,
       }),
@@ -139,7 +152,17 @@ export function FacebookContentClient() {
     return d.data.post.id as string
   }
 
-  function resetForm() { setMessage(''); setImageUrl(''); setLinkUrl(''); setFirstComment(''); setScheduledAt(''); setTopic('') }
+  function resetForm() { setMessage(''); setImages([]); setImageUrlInput(''); setLinkUrl(''); setFirstComment(''); setScheduledAt(''); setTopic('') }
+
+  function loadIntoComposer(p: Post) {
+    setMessage(p.message)
+    setImages(p.imageUrls?.length ? p.imageUrls : p.imageUrl ? [p.imageUrl] : [])
+    setLinkUrl(p.linkUrl ?? '')
+    setFirstComment(p.firstComment ?? '')
+    setAngle(p.angle)
+    setView('list')
+    if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
 
   async function saveDraft() {
     setBusy('draft'); const id = await create('DRAFT'); setBusy('')
@@ -241,18 +264,35 @@ export function FacebookContentClient() {
               <div>
                 <div className="flex items-center gap-2 rounded-xl border border-white/10 px-3 transition focus-within:border-brand-red/50 focus-within:ring-2 focus-within:ring-brand-red/10">
                   <ImageIcon className="h-4 w-4 flex-shrink-0 text-slate-400" />
-                  <input value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} placeholder="Dán URL ảnh, hoặc Tải lên →"
+                  <input value={imageUrlInput} onChange={(e) => setImageUrlInput(e.target.value)}
+                    onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addImageUrl() } }}
+                    placeholder="Dán URL ảnh + Enter, hoặc Tải lên →"
                     className="flex-1 bg-transparent py-2.5 text-sm text-white placeholder:text-slate-400 outline-none" />
+                  {imageUrlInput && (
+                    <button onClick={addImageUrl} className="rounded-lg bg-white/15 px-2.5 py-1.5 text-xs font-medium text-white hover:bg-white/25">Thêm</button>
+                  )}
                   <label className={`flex cursor-pointer items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-medium transition ${uploading ? 'bg-white/10 text-slate-400' : 'bg-white/15 text-white hover:bg-white/25'}`}>
                     {uploading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Upload className="h-3.5 w-3.5" />}
                     {uploading ? 'Đang tải…' : 'Tải lên'}
                     <input type="file" accept="image/*" className="hidden" onChange={handleUpload} disabled={uploading} />
                   </label>
                 </div>
-                {imageUrl && (
-                  <button onClick={() => setImageUrl('')} className="mt-1.5 flex items-center gap-1 text-xs text-slate-400 transition hover:text-red-500">
-                    <Trash className="h-3 w-3" /> Xoá ảnh
-                  </button>
+                {images.length > 0 && (
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    {images.map((img, i) => (
+                      <div key={i} className="group relative h-16 w-16">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={img} alt="" className="h-16 w-16 rounded-lg border border-white/10 object-cover"
+                          onError={(e) => { e.currentTarget.style.opacity = '0.3' }} />
+                        {i === 0 && <span className="absolute left-0.5 top-0.5 rounded bg-black/60 px-1 text-[9px] text-white">Bìa</span>}
+                        <button onClick={() => removeImage(i)}
+                          className="absolute -right-1.5 -top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-600 text-white opacity-0 transition group-hover:opacity-100">
+                          <X className="h-2.5 w-2.5" />
+                        </button>
+                      </div>
+                    ))}
+                    {images.length > 1 && <span className="self-center text-[11px] text-slate-400">{images.length} ảnh → đăng album</span>}
+                  </div>
                 )}
               </div>
               <div className="flex h-[46px] items-center gap-2 self-start rounded-xl border border-white/10 px-3 transition focus-within:border-brand-red/50 focus-within:ring-2 focus-within:ring-brand-red/10">
@@ -305,14 +345,22 @@ export function FacebookContentClient() {
           <div className="rounded-2xl border border-white/10 bg-[#161d2b] overflow-hidden shadow-sm">
             <div className="flex flex-wrap items-center gap-2 border-b border-white/10 px-5 py-3.5">
               <h2 className="mr-2 font-bold text-white">Bài đã soạn</h2>
-              {FILTERS.map((f) => (
+              <div className="flex rounded-lg border border-white/10 p-0.5">
+                <button onClick={() => setView('list')}
+                  className={`rounded-md px-2.5 py-1 text-xs font-medium transition-colors ${view === 'list' ? 'bg-brand-red text-white' : 'text-slate-300 hover:text-white'}`}>Danh sách</button>
+                <button onClick={() => setView('calendar')}
+                  className={`rounded-md px-2.5 py-1 text-xs font-medium transition-colors ${view === 'calendar' ? 'bg-brand-red text-white' : 'text-slate-300 hover:text-white'}`}>📅 Lịch</button>
+              </div>
+              {view === 'list' && FILTERS.map((f) => (
                 <button key={f.key} onClick={() => setFilter(f.key)}
                   className={`rounded-full px-2.5 py-1 text-xs font-medium transition-colors ${filter === f.key ? 'bg-brand-red text-white' : 'bg-white/10 text-slate-300 hover:bg-white/20'}`}>
                   {f.label} {(counts[f.key] ?? 0) > 0 && <span className="opacity-70">({counts[f.key]})</span>}
                 </button>
               ))}
             </div>
-            {loading ? (
+            {view === 'calendar' ? (
+              <div className="p-4"><FacebookCalendar posts={posts} onSelect={(id) => { const p = posts.find((x) => x.id === id); if (p) loadIntoComposer(p) }} /></div>
+            ) : loading ? (
               <div className="flex h-32 items-center justify-center text-slate-400"><Loader2 className="h-5 w-5 animate-spin" /></div>
             ) : filtered.length === 0 ? (
               <p className="py-12 text-center text-sm text-slate-400">{filter === 'ALL' ? 'Chưa có bài nào. Soạn bài đầu tiên ở trên!' : 'Không có bài ở mục này.'}</p>
@@ -394,7 +442,7 @@ export function FacebookContentClient() {
           <p className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-slate-400">
             <Globe className="h-3.5 w-3.5" /> Xem trước trên Facebook
           </p>
-          <FacebookPreview pageName={pageName} message={message} imageUrl={imageUrl} linkUrl={linkUrl} firstComment={firstComment} scheduledAt={scheduledAt} />
+          <FacebookPreview pageName={pageName} message={message} images={images} linkUrl={linkUrl} firstComment={firstComment} scheduledAt={scheduledAt} />
           {!connected && (
             <Link href="/admin/settings/facebook" className="flex items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2.5 text-sm text-amber-800 hover:bg-amber-100">
               <AlertTriangle className="h-4 w-4 flex-shrink-0" /> Chưa kết nối Fanpage — bấm để cấu hình token
@@ -459,11 +507,12 @@ function ConnectionBadge({ status, loading }: { status: FbStatus | null; loading
   )
 }
 
-function FacebookPreview({ pageName, message, imageUrl, linkUrl, firstComment, scheduledAt }: {
-  pageName: string; message: string; imageUrl: string; linkUrl: string; firstComment: string; scheduledAt: string
+function FacebookPreview({ pageName, message, images, linkUrl, firstComment, scheduledAt }: {
+  pageName: string; message: string; images: string[]; linkUrl: string; firstComment: string; scheduledAt: string
 }) {
   const when = scheduledAt ? new Date(scheduledAt).toLocaleString('vi-VN') : 'Vừa xong'
   const commentCta = firstComment.trim() || '👉 Xem chi tiết & đặt hàng tại đây:'
+  const imageUrl = images[0] ?? ''
   return (
     <div className="overflow-hidden rounded-2xl border border-white/10 bg-[#161d2b] shadow-sm">
       <div className="flex items-center gap-2.5 p-3">
@@ -483,9 +532,14 @@ function FacebookPreview({ pageName, message, imageUrl, linkUrl, firstComment, s
         )}
       </div>
       {imageUrl && (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={imageUrl} alt="preview" className="max-h-72 w-full border-y border-white/10 object-cover"
-          onError={(e) => { e.currentTarget.style.display = 'none' }} />
+        <div className="relative">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={imageUrl} alt="preview" className="max-h-72 w-full border-y border-white/10 object-cover"
+            onError={(e) => { e.currentTarget.style.display = 'none' }} />
+          {images.length > 1 && (
+            <span className="absolute bottom-2 right-2 rounded-full bg-black/70 px-2 py-0.5 text-xs font-semibold text-white">📷 +{images.length - 1} ảnh</span>
+          )}
+        </div>
       )}
       <div className="flex items-center justify-around border-t border-white/10 py-1.5 text-xs font-medium text-slate-400">
         <span className="flex items-center gap-1.5"><ThumbsUp className="h-4 w-4" /> Thích</span>

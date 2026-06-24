@@ -16,7 +16,7 @@ export async function GET() {
     orderBy: { createdAt: 'desc' },
     take: 50,
     select: {
-      id: true, message: true, imageUrl: true, linkUrl: true, firstComment: true, angle: true,
+      id: true, message: true, imageUrl: true, imageUrls: true, linkUrl: true, firstComment: true, angle: true,
       status: true, scheduledAt: true, publishedAt: true, fbPostId: true, errorMessage: true, createdAt: true,
     },
   })
@@ -26,6 +26,7 @@ export async function GET() {
 const createSchema = z.object({
   message: z.string().min(5).max(5000),
   imageUrl: z.string().url().max(1000).optional().or(z.literal('')),
+  imageUrls: z.array(z.string().url().max(1000)).max(10).optional(),
   linkUrl: z.string().url().max(1000).optional().or(z.literal('')),
   firstComment: z.string().max(2000).optional().or(z.literal('')),
   angle: z.enum(['product', 'promo', 'tips']).default('product'),
@@ -47,6 +48,7 @@ export async function POST(req: NextRequest) {
       data: {
         message: body.message,
         imageUrl: body.imageUrl || null,
+        imageUrls: body.imageUrls ?? [],
         linkUrl: body.linkUrl || null,
         firstComment: body.firstComment || null,
         angle: body.angle,

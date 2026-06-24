@@ -66,9 +66,48 @@ export async function publishPhotoPost(message: string, imageUrl: string): Promi
   }
 }
 
-/** Đăng bài: có ảnh → /photos, không thì /feed. */
-export async function publishPost(opts: { message: string; imageUrl?: string; link?: string }): Promise<PublishResult> {
-  if (opts.imageUrl) return publishPhotoPost(opts.message, opts.imageUrl)
+/** Đăng album nhiều ảnh: upload từng ảnh (published=false) → /feed với attached_media. */
+export async function publishAlbumPost(message: string, imageUrls: string[]): Promise<PublishResult> {
+  const cfg = await getFacebookConfig()
+  if (!cfg) return { ok: false, error: 'Chưa cấu hình Facebook.' }
+  try {
+    const mediaIds: string[] = []
+    for (const url of imageUrls.slice(0, 10)) {
+      const body = new URLSearchParams({ url, published: 'false', access_token: cfg.accessToken })
+      const res = await fetch(`${GRAPH}/${cfg.pageId}/photos`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/x-www-form-urlencoded' },
+        body,
+        signal: AbortSignal.timeout(25000),
+      })
+      const data = await res.json()
+      if (data.error) return { ok: false, error: data.error.message ?? 'Lỗi tải ảnh album' }
+      if (data.id) mediaIds.push(data.id)
+    }
+    if (mediaIds.length === 0) return { ok: false, error: 'Không tải được ảnh nào' }
+
+    const feedBody = new URLSearchParams({ message, access_token: cfg.accessToken })
+    mediaIds.forEach((id, i) => feedBody.set(`attached_media[${i}]`, JSON.stringify({ media_fbid: id })))
+    const res = await fetch(`${GRAPH}/${cfg.pageId}/feed`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/x-www-form-urlencoded' },
+      body: feedBody,
+      signal: AbortSignal.timeout(25000),
+    })
+    const data = await res.json()
+    if (data.error) return { ok: false, error: data.error.message ?? 'Lỗi đăng album' }
+    return { ok: true, postId: data.id }
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : 'Không đăng được album' }
+  }
+}
+
+/** Đăng bài: nhiều ảnh → album, 1 ảnh → /photos, không ảnh → /feed. */
+export async function publishPost(opts: { message: string; imageUrl?: string; imageUrls?: string[]; link?: string }): Promise<PublishResult> {
+  const imgs = (opts.imageUrls ?? []).filter(Boolean)
+  if (imgs.length > 1) return publishAlbumPost(opts.message, imgs)
+  const single = imgs[0] ?? opts.imageUrl
+  if (single) return publishPhotoPost(opts.message, single)
   return publishTextPost(opts.message, opts.link)
 }
 

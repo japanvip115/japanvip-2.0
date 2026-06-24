@@ -1341,6 +1341,7 @@ model FacebookPost {
   id           String             @id @default(uuid()) @db.Uuid
   message      String             @db.Text
   imageUrl     String?            @map("image_url") @db.VarChar(1000)
+  imageUrls    String[]           @map("image_urls") // nhiều ảnh → đăng album (ưu tiên hơn imageUrl)
   linkUrl      String?            @map("link_url") @db.VarChar(1000)
   firstComment String?            @map("first_comment") @db.Text // text chèn trước link ở comment đầu (tăng reach)
   angle        String             @default("product") @db.VarChar(20) // product | promo | tips
