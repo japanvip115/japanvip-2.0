@@ -615,7 +615,8 @@ function HeroBannerSlider({ banners, router }: { banners: HeroBanner[]; router: 
         <video
           key={banner.imageUrl}
           src={banner.imageUrl}
-          autoPlay muted loop playsInline
+          poster={banner.imageUrl.replace(/\.mp4$/i, '.jpg')}
+          autoPlay muted loop playsInline preload="metadata"
           style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
         />
       ) : (
