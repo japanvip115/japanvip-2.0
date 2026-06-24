@@ -888,7 +888,7 @@ export default function HomePageClient({
             <div className="container">
               <div className="section-header">
                 <span className="section-label">Danh Mục</span>
-                <h2 style={{whiteSpace:'nowrap', fontSize:'1.5rem'}}>Gia Dụng Nhật Bản Được Yêu Thích Nhất</h2>
+                <h2 style={{fontSize:'clamp(1.15rem, 5vw, 1.5rem)'}}>Gia Dụng Nhật Bản Được Yêu Thích Nhất</h2>
               </div>
               <div className="categories-grid">
                 {categories.map((cat, i) => (
@@ -919,7 +919,7 @@ export default function HomePageClient({
               <div className="section-header">
                 <div>
                   <span className="section-label">Nổi Bật</span>
-                  <h2 style={{whiteSpace:'nowrap', fontSize:'1.5rem'}}>Sản Phẩm &amp; Đấu Giá Nổi Bật</h2>
+                  <h2 style={{fontSize:'clamp(1.15rem, 5vw, 1.5rem)'}}>Sản Phẩm &amp; Đấu Giá Nổi Bật</h2>
                 </div>
                 <button onClick={() => router.push('/san-pham')} className="see-all-link">Xem Tất Cả <span>→</span></button>
               </div>

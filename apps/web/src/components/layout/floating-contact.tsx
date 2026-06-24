@@ -6,7 +6,7 @@ export function FloatingContact() {
   const [open, setOpen] = useState(false)
 
   return (
-    <div className="fixed right-4 bottom-24 z-50 flex flex-col items-center gap-3">
+    <div className="fixed right-3 bottom-24 z-50 flex flex-col items-center gap-2.5 sm:right-4 sm:gap-3">
       {/* Sub buttons — visible when open */}
       <div
         className={`flex flex-col items-center gap-3 transition-all duration-300 ${
@@ -17,7 +17,7 @@ export function FloatingContact() {
         <a
           href="tel:0927298888"
           aria-label="Gọi hotline Japan VIP"
-          className="group relative flex h-12 w-12 items-center justify-center rounded-full bg-green-500 shadow-lg transition-transform hover:scale-110 active:scale-95"
+          className="group relative flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-green-500 shadow-lg transition-transform hover:scale-110 active:scale-95"
         >
           <svg viewBox="0 0 24 24" fill="white" className="h-6 w-6">
             <path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.11-.27c1.21.49 2.53.76 3.88.76a1 1 0 011 1v3.82a1 1 0 01-1 1C10.18 22 2 13.82 2 3.82a1 1 0 011-1H6.82a1 1 0 011 1c0 1.35.27 2.67.76 3.88a1 1 0 01-.27 1.11l-2.69 1.98z" />
@@ -33,7 +33,7 @@ export function FloatingContact() {
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Chat Zalo Japan VIP"
-          className="group relative flex h-12 w-12 items-center justify-center rounded-full shadow-lg transition-transform hover:scale-110 active:scale-95"
+          className="group relative flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full shadow-lg transition-transform hover:scale-110 active:scale-95"
           style={{ background: '#0068FF' }}
         >
           <svg viewBox="0 0 48 48" fill="none" className="h-7 w-7">
@@ -52,7 +52,7 @@ export function FloatingContact() {
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Facebook Japan VIP"
-          className="group relative flex h-12 w-12 items-center justify-center rounded-full shadow-lg transition-transform hover:scale-110 active:scale-95"
+          className="group relative flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full shadow-lg transition-transform hover:scale-110 active:scale-95"
           style={{ background: '#1877F2' }}
         >
           <svg viewBox="0 0 24 24" fill="white" className="h-6 w-6">
@@ -68,12 +68,12 @@ export function FloatingContact() {
       <button
         onClick={() => setOpen(o => !o)}
         aria-label="Liên hệ Japan VIP"
-        className="relative flex h-14 w-14 items-center justify-center rounded-full bg-primary shadow-xl transition-transform hover:scale-110 active:scale-95"
+        className="relative flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-full bg-primary shadow-xl transition-transform hover:scale-110 active:scale-95"
       >
         <svg
           viewBox="0 0 24 24"
           fill="white"
-          className={`h-7 w-7 transition-transform duration-300 ${open ? 'rotate-45' : ''}`}
+          className={`h-6 w-6 sm:h-7 sm:w-7 transition-transform duration-300 ${open ? 'rotate-45' : ''}`}
         >
           {open ? (
             <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
