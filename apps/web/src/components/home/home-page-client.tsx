@@ -691,7 +691,7 @@ function TestimonialSlider({ data }: { data: TestimonialItem[] }) {
               <div className="test-stars">{'★'.repeat(t.rating ?? 5)}</div>
               <p>&ldquo;{t.text}&rdquo;</p>
               <div className="test-author">
-                <img src={t.photoUrl ?? ''} alt={t.name} className="test-avatar-img"
+                <img src={t.photoUrl ?? ''} alt={t.name} className="test-avatar-img" loading="lazy" width={48} height={48}
                   onError={(e) => { e.currentTarget.style.display = 'none'; (e.currentTarget.nextElementSibling as HTMLElement).style.display = 'flex' }} />
                 <div className="test-avatar" style={{ display: 'none' }}>{t.name.split(' ').map(w => w[0]).slice(-2).join('')}</div>
                 <div><strong>{t.name}</strong><span>{t.city}</span></div>
@@ -903,7 +903,9 @@ export default function HomePageClient({
                     <div className="cat-bg" style={{background: CAT_GRADIENTS[i % CAT_GRADIENTS.length]}}></div>
                     <div className="cat-icon">
                       {cat.icon && (cat.icon.startsWith('http') || cat.icon.startsWith('/'))
-                        ? <img src={cat.icon} alt={cat.name} />
+                        ? (cat.icon.includes('media.japanvip.vn') || cat.icon.includes('r2.dev') || cat.icon.startsWith('/'))
+                          ? <Image src={cat.icon} alt={cat.name} width={256} height={256} sizes="(max-width:768px) 80px, 200px" />
+                          : <img src={cat.icon} alt={cat.name} loading="lazy" />
                         : (cat.icon || getCatEmoji(cat.name))}
                     </div>
                     <div className="cat-info">

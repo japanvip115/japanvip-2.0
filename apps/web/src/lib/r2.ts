@@ -49,6 +49,8 @@ export async function uploadFile(
         Key: key,
         Body: buffer,
         ContentType: contentType,
+        // Tên file = UUID (bất biến) → cache 1 năm để bỏ cảnh báo "efficient cache lifetimes"
+        CacheControl: 'public, max-age=31536000, immutable',
       }),
     )
     return `${process.env.R2_PUBLIC_URL}/${key}`
