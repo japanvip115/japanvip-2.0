@@ -9,7 +9,7 @@ import {
 import Link from 'next/link'
 
 type Post = {
-  id: string; message: string; imageUrl: string | null; linkUrl: string | null; angle: string
+  id: string; message: string; imageUrl: string | null; linkUrl: string | null; firstComment: string | null; angle: string
   status: string; scheduledAt: string | null; publishedAt: string | null; fbPostId: string | null
   errorMessage: string | null; createdAt: string
 }
@@ -55,6 +55,7 @@ export function FacebookContentClient() {
   const [message, setMessage] = useState('')
   const [imageUrl, setImageUrl] = useState('')
   const [linkUrl, setLinkUrl] = useState('')
+  const [firstComment, setFirstComment] = useState('')
   const [scheduledAt, setScheduledAt] = useState('')
   const [filter, setFilter] = useState('ALL')
   const [generating, setGenerating] = useState(false)
@@ -129,6 +130,7 @@ export function FacebookContentClient() {
       body: JSON.stringify({
         message, angle, status,
         imageUrl: imageUrl || undefined, linkUrl: linkUrl || undefined,
+        firstComment: firstComment || undefined,
         scheduledAt: status === 'SCHEDULED' && scheduledAt ? new Date(scheduledAt).toISOString() : undefined,
       }),
     })
@@ -137,7 +139,7 @@ export function FacebookContentClient() {
     return d.data.post.id as string
   }
 
-  function resetForm() { setMessage(''); setImageUrl(''); setLinkUrl(''); setScheduledAt(''); setTopic('') }
+  function resetForm() { setMessage(''); setImageUrl(''); setLinkUrl(''); setFirstComment(''); setScheduledAt(''); setTopic('') }
 
   async function saveDraft() {
     setBusy('draft'); const id = await create('DRAFT'); setBusy('')
@@ -255,10 +257,25 @@ export function FacebookContentClient() {
               </div>
               <div className="flex h-[46px] items-center gap-2 self-start rounded-xl border border-white/10 px-3 transition focus-within:border-brand-red/50 focus-within:ring-2 focus-within:ring-brand-red/10">
                 <ExternalLink className="h-4 w-4 flex-shrink-0 text-slate-400" />
-                <input value={linkUrl} onChange={(e) => setLinkUrl(e.target.value)} placeholder="Link đính kèm (tùy chọn)"
+                <input value={linkUrl} onChange={(e) => setLinkUrl(e.target.value)} placeholder="Link SP → tự vào comment đầu (tùy chọn)"
                   className="flex-1 bg-transparent py-2.5 text-sm text-white placeholder:text-slate-400 outline-none" />
               </div>
             </div>
+
+            {/* First-comment: link để ở comment đầu (tăng reach) + tự gắn UTM */}
+            {linkUrl && (
+              <div className="space-y-1.5 rounded-xl border border-blue-500/20 bg-blue-500/5 p-3">
+                <div className="flex items-center gap-1.5 text-xs font-semibold text-blue-300">
+                  <MessageCircle className="h-3.5 w-3.5" /> Comment đầu (chèn link — tăng reach)
+                </div>
+                <input value={firstComment} onChange={(e) => setFirstComment(e.target.value)}
+                  placeholder="👉 Xem chi tiết & đặt hàng tại đây:"
+                  className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-red" />
+                <p className="text-[11px] leading-relaxed text-slate-400">
+                  Link <b>không</b> để trong bài (FB bóp reach) → tự đăng vào comment đầu kèm UTM để đo khách trên GA4. Để trống dùng câu mặc định.
+                </p>
+              </div>
+            )}
 
             <div className="flex flex-wrap items-center gap-3 border-t border-white/10 pt-4">
               <button onClick={() => setConfirmPost(true)} disabled={!canPost}
@@ -377,7 +394,7 @@ export function FacebookContentClient() {
           <p className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-slate-400">
             <Globe className="h-3.5 w-3.5" /> Xem trước trên Facebook
           </p>
-          <FacebookPreview pageName={pageName} message={message} imageUrl={imageUrl} linkUrl={linkUrl} scheduledAt={scheduledAt} />
+          <FacebookPreview pageName={pageName} message={message} imageUrl={imageUrl} linkUrl={linkUrl} firstComment={firstComment} scheduledAt={scheduledAt} />
           {!connected && (
             <Link href="/admin/settings/facebook" className="flex items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2.5 text-sm text-amber-800 hover:bg-amber-100">
               <AlertTriangle className="h-4 w-4 flex-shrink-0" /> Chưa kết nối Fanpage — bấm để cấu hình token
@@ -442,10 +459,11 @@ function ConnectionBadge({ status, loading }: { status: FbStatus | null; loading
   )
 }
 
-function FacebookPreview({ pageName, message, imageUrl, linkUrl, scheduledAt }: {
-  pageName: string; message: string; imageUrl: string; linkUrl: string; scheduledAt: string
+function FacebookPreview({ pageName, message, imageUrl, linkUrl, firstComment, scheduledAt }: {
+  pageName: string; message: string; imageUrl: string; linkUrl: string; firstComment: string; scheduledAt: string
 }) {
   const when = scheduledAt ? new Date(scheduledAt).toLocaleString('vi-VN') : 'Vừa xong'
+  const commentCta = firstComment.trim() || '👉 Xem chi tiết & đặt hàng tại đây:'
   return (
     <div className="overflow-hidden rounded-2xl border border-white/10 bg-[#161d2b] shadow-sm">
       <div className="flex items-center gap-2.5 p-3">
@@ -464,21 +482,29 @@ function FacebookPreview({ pageName, message, imageUrl, linkUrl, scheduledAt }: 
           <p className="text-sm italic text-slate-500">Nội dung bài đăng sẽ hiển thị ở đây…</p>
         )}
       </div>
-      {imageUrl ? (
+      {imageUrl && (
         // eslint-disable-next-line @next/next/no-img-element
         <img src={imageUrl} alt="preview" className="max-h-72 w-full border-y border-white/10 object-cover"
           onError={(e) => { e.currentTarget.style.display = 'none' }} />
-      ) : linkUrl ? (
-        <div className="mx-3 mb-2 overflow-hidden rounded-lg border">
-          <div className="flex h-24 items-center justify-center bg-white/10 text-slate-500"><ExternalLink className="h-7 w-7" /></div>
-          <p className="truncate border-t border-white/10 bg-white/5 px-3 py-2 text-xs text-slate-400">{linkUrl}</p>
-        </div>
-      ) : null}
+      )}
       <div className="flex items-center justify-around border-t border-white/10 py-1.5 text-xs font-medium text-slate-400">
         <span className="flex items-center gap-1.5"><ThumbsUp className="h-4 w-4" /> Thích</span>
         <span className="flex items-center gap-1.5"><MessageCircle className="h-4 w-4" /> Bình luận</span>
         <span className="flex items-center gap-1.5"><Share2 className="h-4 w-4" /> Chia sẻ</span>
       </div>
+      {linkUrl && (
+        <div className="flex gap-2 border-t border-white/10 bg-white/[0.02] px-3 py-2.5">
+          <span className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-brand-red text-xs font-black text-white">
+            {(pageName || 'J').charAt(0).toUpperCase()}
+          </span>
+          <div className="min-w-0 rounded-2xl bg-white/5 px-3 py-2">
+            <p className="text-xs font-semibold text-slate-300">{pageName}</p>
+            <p className="whitespace-pre-wrap break-words text-xs text-slate-300">{commentCta}</p>
+            <p className="mt-0.5 truncate text-xs text-blue-400">{linkUrl}</p>
+            <p className="mt-1 text-[10px] text-slate-500">↑ Comment đầu tự đăng (kèm UTM)</p>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

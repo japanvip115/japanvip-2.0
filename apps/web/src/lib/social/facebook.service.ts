@@ -72,6 +72,26 @@ export async function publishPost(opts: { message: string; imageUrl?: string; li
   return publishTextPost(opts.message, opts.link)
 }
 
+/** Thêm comment vào 1 bài (dùng cho first-comment chèn link → tăng reach). */
+export async function addComment(fbPostId: string, message: string): Promise<PublishResult> {
+  const cfg = await getFacebookConfig()
+  if (!cfg) return { ok: false, error: 'Chưa cấu hình Facebook.' }
+  try {
+    const body = new URLSearchParams({ message, access_token: cfg.accessToken })
+    const res = await fetch(`${GRAPH}/${fbPostId}/comments`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/x-www-form-urlencoded' },
+      body,
+      signal: AbortSignal.timeout(20000),
+    })
+    const data = await res.json()
+    if (data.error) return { ok: false, error: data.error.message ?? 'Lỗi đăng comment' }
+    return { ok: true, postId: data.id }
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : 'Không đăng được comment' }
+  }
+}
+
 export type PostEngagement = { reactions: number; comments: number; shares: number }
 
 /** Đọc tương tác 1 bài (reaction/comment/share). Cần pages_read_engagement. null nếu lỗi. */

@@ -1342,6 +1342,7 @@ model FacebookPost {
   message      String             @db.Text
   imageUrl     String?            @map("image_url") @db.VarChar(1000)
   linkUrl      String?            @map("link_url") @db.VarChar(1000)
+  firstComment String?            @map("first_comment") @db.Text // text chèn trước link ở comment đầu (tăng reach)
   angle        String             @default("product") @db.VarChar(20) // product | promo | tips
   status       FacebookPostStatus @default(DRAFT)
   scheduledAt  DateTime?          @map("scheduled_at") @db.Timestamptz
