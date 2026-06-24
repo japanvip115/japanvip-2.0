@@ -12,7 +12,16 @@ export default function TestimonialsAdminPage() {
   const [editing, setEditing] = useState<(Partial<T> & { id?: string }) | null>(null)
   const [saving, setSaving] = useState(false)
   const [uploading, setUploading] = useState(false)
+  const [productReviewsOn, setProductReviewsOn] = useState(false)
   const fileRef = useRef<HTMLInputElement>(null)
+
+  async function toggleProductReviews() {
+    const next = !productReviewsOn
+    setProductReviewsOn(next)
+    await fetch('/api/v1/admin/settings/product-reviews', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ enabled: next }),
+    })
+  }
 
   async function uploadPhoto(file: File) {
     setUploading(true)
@@ -29,7 +38,10 @@ export default function TestimonialsAdminPage() {
   }
 
   const load = () => fetch('/api/v1/admin/testimonials').then(r => r.json()).then(setList)
-  useEffect(() => { load() }, [])
+  useEffect(() => {
+    load()
+    fetch('/api/v1/admin/settings/product-reviews').then(r => r.json()).then(d => setProductReviewsOn(!!d.enabled)).catch(() => {})
+  }, [])
 
   async function save() {
     if (!editing) return
@@ -62,6 +74,22 @@ export default function TestimonialsAdminPage() {
         <button onClick={() => setEditing(EMPTY)}
           className="flex items-center gap-1.5 rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-500">
           <Plus className="h-4 w-4" /> Thêm Đánh Giá
+        </button>
+      </div>
+
+      {/* Công tắc ẩn/hiện đánh giá sao ở TRANG SẢN PHẨM */}
+      <div className="mb-6 flex items-center justify-between rounded-xl border border-gray-700 bg-gray-800/60 p-4">
+        <div>
+          <p className="text-sm font-semibold text-white">Hiện đánh giá sao ở trang sản phẩm</p>
+          <p className="mt-0.5 text-xs text-gray-500">
+            {productReviewsOn
+              ? 'Đang HIỆN sao + tab đánh giá trên mỗi trang sản phẩm.'
+              : 'Đang ẨN — trang sản phẩm không hiển thị sao/đánh giá. (Thay đổi hiện sau ~5 phút do cache)'}
+          </p>
+        </div>
+        <button type="button" onClick={toggleProductReviews}
+          className={`relative h-6 w-11 flex-shrink-0 rounded-full transition-colors ${productReviewsOn ? 'bg-emerald-500' : 'bg-gray-600'}`}>
+          <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white transition-transform ${productReviewsOn ? 'translate-x-5' : 'translate-x-0.5'}`} />
         </button>
       </div>
 

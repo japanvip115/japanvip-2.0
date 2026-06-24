@@ -15,6 +15,7 @@ type Props = {
   productId: string
   productName: string
   productImages?: string[]
+  showReviews?: boolean
 }
 
 
@@ -318,7 +319,7 @@ function VideosSection({ items }: { items: Attribute[] }) {
 
 // ── Main Component ────────────────────────────────────────────────────────────
 export function ProductTabs({
-  description, attributes, specGroups, faqItems, videoItems, productId, productName, productImages = [],
+  description, attributes, specGroups, faqItems, videoItems, productId, productName, productImages = [], showReviews = true,
 }: Props) {
   const reviews = buildReviews(productName, productImages)
   const [showAllReviews, setShowAllReviews] = useState(false)
@@ -380,7 +381,8 @@ export function ProductTabs({
         )}
       </div>
 
-      {/* ── Reviews ── */}
+      {/* ── Reviews ── (ẩn khi admin tắt công tắc đánh giá SP) */}
+      {showReviews && (
       <div className="rounded-2xl border border-gray-100 bg-white shadow-sm overflow-hidden">
         {/* Heading */}
         <div className="px-5 pt-5 pb-3">
@@ -534,6 +536,7 @@ export function ProductTabs({
           </div>
         )}
       </div>
+      )}
     </section>
   )
 }

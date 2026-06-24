@@ -23,6 +23,12 @@ const getProductContent = unstable_cache(
   ['product-content-v1'],
   { revalidate: 300, tags: ['site-config'] }
 )
+// Công tắc hiện đánh giá sao ở trang SP (admin: Cài đặt → Đánh Giá Khách Hàng). Mặc định TẮT.
+const getProductReviewsEnabled = unstable_cache(
+  async () => (await prisma.siteSetting.findUnique({ where: { key: 'product_reviews_enabled' } }))?.value === 'true',
+  ['product-reviews-enabled-v1'],
+  { revalidate: 300, tags: ['site-config'] }
+)
 
 type Props = { params: Promise<{ slug: string }> }
 
@@ -105,6 +111,7 @@ export default async function ProductDetailPage({ params }: Props) {
 
   // Nội dung khối phải (admin tự sửa: Cài đặt → Nội dung trang sản phẩm) — cache
   const contentSettings = await getProductContent()
+  const reviewsEnabled = await getProductReviewsEnabled()
   const splitLines = (s: string | undefined, fallback: string) => (s ?? fallback).split('\n').map((l) => l.trim()).filter(Boolean)
   const commitmentLines = splitLines(contentSettings.find((r) => r.key === 'product.commitments')?.value, 'Hàng nội địa Nhật Bản mới 100%, nguyên hộp\nNhập khẩu trực tiếp, có tem nhập khẩu đầy đủ\nMiễn phí vận chuyển toàn quốc')
   const shippingLines = splitLines(contentSettings.find((r) => r.key === 'product.shipping_notes')?.value, 'Giao hàng trong 2 giờ (HN & TP. HCM)\nMiễn phí ship toàn quốc\nHướng dẫn sử dụng sản phẩm tại nhà')
@@ -263,7 +270,7 @@ export default async function ProductDetailPage({ params }: Props) {
           </div>
 
           {/* Star rating */}
-          {product.rating && (
+          {reviewsEnabled && product.rating && (
             <div className="flex items-center gap-2">
               <div className="flex items-center gap-0.5">
                 {[1,2,3,4,5].map((s) => {
@@ -474,6 +481,7 @@ export default async function ProductDetailPage({ params }: Props) {
             productId={product.id}
             productName={product.name}
             productImages={product.images.map((img) => img.url)}
+            showReviews={reviewsEnabled}
           />
         </div>
 
