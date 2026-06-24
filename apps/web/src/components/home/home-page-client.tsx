@@ -219,7 +219,7 @@ function MixedSlider({
                 }
                 <div className="auction-img">
                   {auction.product.images[0]
-                    ? <img src={auction.product.images[0].url} alt={auction.product.name} style={{width:'100%',height:'100%',objectFit:'cover'}} />
+                    ? <Image src={auction.product.images[0].url} alt={auction.product.name} fill sizes="(max-width:768px) 50vw, 250px" style={{objectFit:'cover'}} />
                     : <div className="auction-img-placeholder" style={{background: CAT_GRADIENTS[item.idx % CAT_GRADIENTS.length]}}><span className="product-emoji">{getCatEmoji(auction.product.name)}</span></div>
                   }
                 </div>
@@ -263,7 +263,7 @@ function MixedSlider({
               {p.badge === 'SOLD_OUT' && <div className="auction-badge-live" style={{fontSize:'0.55rem', padding:'2px 6px', background:'#6b7280'}}>ĐÃ BÁN</div>}
               <div className="auction-img">
                 {p.images[0]
-                  ? <img src={p.images[0].url} alt={p.name} style={{width:'100%',height:'100%',objectFit:'contain',padding:'10px',background:'#fff'}} />
+                  ? <Image src={p.images[0].url} alt={p.name} fill sizes="(max-width:768px) 50vw, 250px" style={{objectFit:'contain',padding:'10px'}} />
                   : <div className="auction-img-placeholder" style={{background: CAT_GRADIENTS[item.idx % CAT_GRADIENTS.length]}}><span className="product-emoji">{getCatEmoji(p.category?.name ?? p.name)}</span></div>
                 }
               </div>
@@ -399,7 +399,7 @@ function AuctionSlider({ auctions, router }: { auctions: AuctionItem[]; router: 
               }
               <div className="auction-img">
                 {auction.product.images[0]
-                  ? <img src={auction.product.images[0].url} alt={auction.product.name} style={{width:'100%',height:'100%',objectFit:'cover'}} />
+                  ? <Image src={auction.product.images[0].url} alt={auction.product.name} fill sizes="(max-width:768px) 50vw, 250px" style={{objectFit:'cover'}} />
                   : <div className="auction-img-placeholder" style={{background: CAT_GRADIENTS[i % CAT_GRADIENTS.length]}}><span className="product-emoji">{getCatEmoji(auction.product.name)}</span></div>
                 }
               </div>
@@ -508,7 +508,7 @@ function NewArrivalsSlider({ items, router }: { items: ProductItem[]; router: Re
             <div key={p.id} className="product-card auction-slider-card" onClick={() => router.push(`/${p.slug}`)}>
               <div className="product-img">
                 {p.images[0]
-                  ? <img src={p.images[0].url} alt={p.name} loading="lazy" style={{width:'100%',height:'100%',objectFit:'contain',padding:'12px',background:'#fff'}} />
+                  ? <Image src={p.images[0].url} alt={p.name} fill sizes="(max-width:768px) 50vw, 250px" style={{objectFit:'contain',padding:'12px'}} />
                   : <div className="product-img-placeholder" style={{background: CAT_GRADIENTS[i % CAT_GRADIENTS.length]}}><span style={{fontSize:'3rem'}}>{getCatEmoji(p.category?.name ?? p.name)}</span></div>
                 }
                 <div style={{position:'absolute',top:12,left:12,background:'rgba(220,38,38,0.9)',color:'#fff',fontSize:'0.55rem',fontWeight:700,padding:'2px 6px',borderRadius:9999,letterSpacing:'0.08em',zIndex:2}}>MỚI VỀ</div>
@@ -964,7 +964,7 @@ export default function HomePageClient({
                     <div key={p.id} className="product-card" onClick={() => router.push(`/${p.slug}`)}>
                       <div className="product-img">
                         {p.images[0]
-                          ? <img src={p.images[0].url} alt={p.name} style={{width:'100%',height:'100%',objectFit:'contain',padding:'12px',background:'#fff'}} />
+                          ? <Image src={p.images[0].url} alt={p.name} fill sizes="(max-width:768px) 50vw, 250px" style={{objectFit:'contain',padding:'12px'}} />
                           : <div className="product-img-placeholder" style={{background: CAT_GRADIENTS[i % CAT_GRADIENTS.length]}}><span style={{fontSize:'3rem'}}>{getCatEmoji(p.category?.name ?? p.name)}</span></div>
                         }
 
