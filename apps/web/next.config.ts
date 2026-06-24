@@ -4,6 +4,23 @@ const nextConfig: NextConfig = {
   experimental: {
     serverActions: { bodySizeLimit: '100mb' },
   },
+  // Domain chính = japanvip.vn. store/www → 301 redirect về apex (gộp SEO, không trùng nội dung).
+  async redirects() {
+    return [
+      {
+        source: '/:path*',
+        has: [{ type: 'host', value: 'store.japanvip.vn' }],
+        destination: 'https://japanvip.vn/:path*',
+        permanent: true,
+      },
+      {
+        source: '/:path*',
+        has: [{ type: 'host', value: 'www.japanvip.vn' }],
+        destination: 'https://japanvip.vn/:path*',
+        permanent: true,
+      },
+    ]
+  },
   typedRoutes: false,
   serverExternalPackages: ['@prisma/client', '@japanvip/db', 'xlsx', 'playwright-core'],
   images: {
