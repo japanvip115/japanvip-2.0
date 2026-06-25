@@ -2,8 +2,9 @@ import type { Metadata } from 'next'
 import { prisma } from '@japanvip/db'
 import Link from 'next/link'
 import type { BlogPostStatus } from '@japanvip/db'
-import { Plus, Pencil } from 'lucide-react'
+import { Plus } from 'lucide-react'
 import { BlogBulkImport } from '@/components/admin/blog-bulk-import'
+import { BlogTable } from '@/components/admin/blog-table'
 
 export const metadata: Metadata = { title: 'Admin — Blog' }
 export const dynamic = 'force-dynamic'
@@ -14,18 +15,6 @@ const STATUS_TABS = [
   { label: 'Bản nháp', value: 'DRAFT' },
   { label: 'Lưu trữ', value: 'ARCHIVED' },
 ]
-
-const STATUS_COLORS: Record<BlogPostStatus, string> = {
-  PUBLISHED: 'bg-green-500/15 text-green-400 ring-1 ring-inset ring-green-500/20',
-  DRAFT: 'bg-gray-500/15 text-gray-400 ring-1 ring-inset ring-gray-500/20',
-  ARCHIVED: 'bg-yellow-500/15 text-yellow-400 ring-1 ring-inset ring-yellow-500/20',
-}
-
-const STATUS_LABELS: Record<BlogPostStatus, string> = {
-  PUBLISHED: 'Đã xuất bản',
-  DRAFT: 'Bản nháp',
-  ARCHIVED: 'Lưu trữ',
-}
 
 type SearchParams = Promise<{ status?: string; page?: string; q?: string }>
 
@@ -111,70 +100,7 @@ export default async function AdminBlogPage({ searchParams }: { searchParams: Se
         </form>
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-gray-700 bg-gray-800/60">
-        <table className="w-full text-sm">
-          <thead className="bg-gray-900/60">
-            <tr className="border-b border-gray-700 text-left">
-              <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-gray-500">Tiêu đề</th>
-              <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-gray-500">Danh mục</th>
-              <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-gray-500">Tác giả</th>
-              <th className="px-4 py-3 text-center text-xs font-semibold uppercase tracking-wide text-gray-500">Trạng thái</th>
-              <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-gray-500">Ngày tạo</th>
-              <th className="px-4 py-3"></th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-700/50">
-            {posts.length === 0 && (
-              <tr>
-                <td colSpan={6} className="px-4 py-12 text-center text-gray-500">
-                  Chưa có bài viết nào.{' '}
-                  <Link href="/admin/content/blog/new" className="text-red-400 hover:underline">Viết ngay</Link>
-                </td>
-              </tr>
-            )}
-            {posts.map((post) => (
-              <tr key={post.id} className="hover:bg-gray-700/30 transition-colors cursor-pointer">
-                <td className="px-4 py-3 max-w-xs">
-                  <div className="flex items-center gap-2">
-                    <span className="font-medium text-gray-300 truncate">{post.title}</span>
-                    {post.status === 'PUBLISHED' && (
-                      <a
-                        href={`/blog/${post.slug}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="shrink-0 text-xs text-blue-400 hover:text-blue-300 transition-colors"
-                        title="Xem trang"
-                      >
-                        ↗
-                      </a>
-                    )}
-                  </div>
-                </td>
-                <td className="px-4 py-3 text-sm text-gray-300">{post.category?.name ?? '—'}</td>
-                <td className="px-4 py-3 text-sm text-gray-300">
-                  {post.author.profile?.fullName ?? post.author.email}
-                </td>
-                <td className="px-4 py-3 text-center">
-                  <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[post.status]}`}>
-                    {STATUS_LABELS[post.status]}
-                  </span>
-                </td>
-                <td className="px-4 py-3 text-xs text-gray-500">
-                  {new Date(post.createdAt).toLocaleDateString('vi-VN')}
-                </td>
-                <td className="px-4 py-3 text-right">
-                  <Link
-                    href={`/admin/content/blog/${post.id}`}
-                    className="inline-flex items-center gap-1 text-xs text-blue-400 hover:text-blue-300 transition-colors"
-                  >
-                    <Pencil className="h-3 w-3" /> Sửa
-                  </Link>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <BlogTable posts={posts} />
 
       {totalPages > 1 && (
         <div className="mt-4 flex justify-center gap-2">

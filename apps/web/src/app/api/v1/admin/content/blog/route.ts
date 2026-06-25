@@ -87,3 +87,16 @@ export async function POST(req: NextRequest) {
     return handleApiError(e)
   }
 }
+
+export async function DELETE(req: NextRequest) {
+  const err = await guard(req)
+  if (err) return err
+  try {
+    const { ids } = await req.json()
+    if (!Array.isArray(ids) || ids.length === 0) return apiError('ids required', 400)
+    const { count } = await prisma.blogPost.deleteMany({ where: { id: { in: ids } } })
+    return apiSuccess({ count })
+  } catch (e) {
+    return handleApiError(e)
+  }
+}
