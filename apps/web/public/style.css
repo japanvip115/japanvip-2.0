@@ -586,11 +586,11 @@ ul, ol { list-style: none; }
 .url-tool-left h2 { font-family: var(--font-sans); font-size: clamp(1.15rem, 1.6vw, 1.45rem); font-weight: 800; color: var(--jp-gray-900); line-height: 1.25; margin-bottom: 14px; letter-spacing: -0.02em; }
 .url-tool-left p { color: var(--jp-gray-500); font-size: 1rem; line-height: 1.75; margin-bottom: 24px; max-width: 480px; }
 .supported-sites { display: flex; flex-wrap: wrap; gap: 8px; }
-.site-badge { padding: 5px 14px; border-radius: var(--radius-full); font-size: 0.78rem; font-weight: 700; }
-.site-badge.amazon { background: #FF9900; color: white; }
-.site-badge.rakuten { background: #BF0000; color: white; }
-.site-badge.mercari { background: #FF4060; color: white; }
-.site-badge.yahoo { background: #720EC5; color: white; }
+.site-badge { padding: 5px 14px; border-radius: var(--radius-full); font-size: 0.78rem; font-weight: 700; background: transparent; border: 1.5px solid rgba(180,0,0,0.25); color: #999; transition: background 0.2s, color 0.2s, border-color 0.2s; cursor: pointer; }
+.site-badge.amazon:hover { background: #FF9900; color: white; border-color: #FF9900; }
+.site-badge.rakuten:hover { background: #BF0000; color: white; border-color: #BF0000; }
+.site-badge.mercari:hover { background: #FF4060; color: white; border-color: #FF4060; }
+.site-badge.yahoo:hover { background: #720EC5; color: white; border-color: #720EC5; }
 
 .url-import-box { background: white; border-radius: var(--radius-xl); padding: 32px; box-shadow: var(--shadow-lg); border: 1px solid var(--jp-gray-100); }
 .url-import-label { font-size: 0.85rem; font-weight: 600; color: var(--jp-gray-600); margin-bottom: 12px; }

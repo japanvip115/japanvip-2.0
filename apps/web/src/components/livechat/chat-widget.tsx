@@ -4,6 +4,8 @@ import { useState, useRef, useEffect } from 'react'
 
 type Message = { role: 'user' | 'assistant'; content: string }
 
+const THINK_MS = () => 8000 + Math.random() * 7000  // 8–15 giây
+
 export function ChatWidget() {
   const [open, setOpen] = useState(false)
   const [messages, setMessages] = useState<Message[]>([])
@@ -24,6 +26,9 @@ export function ChatWidget() {
     setLoading(true)
 
     try {
+      // Delay giả người thật đang suy nghĩ (8–15s)
+      await new Promise((r) => setTimeout(r, THINK_MS()))
+
       const res = await fetch('/api/v1/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -60,7 +65,7 @@ export function ChatWidget() {
     } catch {
       setMessages((m) => [
         ...m.slice(0, -1),
-        { role: 'assistant', content: 'Xin lỗi, có lỗi xảy ra. Vui lòng thử lại hoặc gọi hotline 09.2729.8888.' },
+        { role: 'assistant', content: 'Xin lỗi, mình không phản hồi được lúc này. Bạn vui lòng gọi hotline 09.2729.8888 để được hỗ trợ nhé!' },
       ])
     } finally {
       setLoading(false)
@@ -68,20 +73,21 @@ export function ChatWidget() {
   }
 
   return (
-    <div className="fixed left-3 bottom-6 z-40 sm:left-4">
+    <div className="fixed right-3 bottom-6 z-40 sm:right-4">
       {/* Chat window */}
       {open && (
         <div className="mb-3 flex w-80 flex-col rounded-2xl bg-white shadow-2xl border border-gray-100 overflow-hidden">
           {/* Header */}
           <div className="flex items-center gap-2.5 bg-primary px-4 py-3">
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/20">
+            <div className="relative flex h-8 w-8 items-center justify-center rounded-full bg-white/20">
               <svg viewBox="0 0 24 24" fill="white" className="h-4 w-4">
-                <path d="M12 2C6.48 2 2 6.48 2 12c0 1.54.36 3.04 1.05 4.38L2 22l5.62-1.05A9.94 9.94 0 0012 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm0 18c-1.41 0-2.75-.37-3.93-1.01l-.28-.16-3.33.62.62-3.33-.16-.28A7.94 7.94 0 014 12c0-4.41 3.59-8 8-8s8 3.59 8 8-3.59 8-8 8z"/>
+                <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
               </svg>
+              <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-green-400 border border-white" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-bold text-white leading-tight">Japan VIP AI</p>
-              <p className="text-xs text-white/75">Tư vấn hàng nội địa Nhật</p>
+              <p className="text-sm font-bold text-white leading-tight">Tư vấn viên Japan VIP</p>
+              <p className="text-xs text-white/75">Thường phản hồi trong vài phút</p>
             </div>
             <button onClick={() => setOpen(false)} className="text-white/75 hover:text-white">
               <svg viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
@@ -94,12 +100,12 @@ export function ChatWidget() {
           <div className="flex-1 overflow-y-auto p-3 space-y-2.5 max-h-72 bg-gray-50">
             {messages.length === 0 && (
               <div className="text-center py-4">
-                <p className="text-xs text-gray-400">Xin chào! Tôi có thể giúp gì cho bạn?</p>
+                <p className="text-xs text-gray-400">Xin chào! Mình có thể giúp gì cho bạn?</p>
                 <div className="mt-2 flex flex-wrap gap-1.5 justify-center">
                   {['Sản phẩm đang bán?', 'Chính sách bảo hành?', 'Địa chỉ showroom?'].map((q) => (
                     <button
                       key={q}
-                      onClick={() => { setInput(q); }}
+                      onClick={() => setInput(q)}
                       className="rounded-full border border-primary/30 px-2.5 py-1 text-xs text-primary hover:bg-primary/5"
                     >
                       {q}
@@ -121,7 +127,7 @@ export function ChatWidget() {
                 </div>
               </div>
             ))}
-            {loading && messages[messages.length - 1]?.role === 'user' && (
+            {loading && (
               <div className="flex justify-start">
                 <div className="bg-white rounded-2xl rounded-bl-sm px-3 py-2 shadow-sm flex gap-1">
                   {[0, 1, 2].map((i) => (
@@ -159,7 +165,7 @@ export function ChatWidget() {
       {/* Toggle button */}
       <button
         onClick={() => setOpen((o) => !o)}
-        aria-label="Chat với Japan VIP AI"
+        aria-label="Chat với tư vấn viên Japan VIP"
         className="flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-full bg-gray-800 shadow-xl transition-transform hover:scale-110 active:scale-95 relative"
       >
         {open ? (
@@ -171,7 +177,7 @@ export function ChatWidget() {
             <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H5.17L4 17.17V4h16v12z"/>
           </svg>
         )}
-        {!open && <span className="absolute inset-0 animate-ping rounded-full bg-red-400 opacity-30" />}
+        {!open && <span className="absolute inset-0 animate-ping rounded-full bg-gray-600 opacity-40" />}
       </button>
     </div>
   )
