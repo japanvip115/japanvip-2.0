@@ -1,5 +1,4 @@
 import { prisma } from '@japanvip/db'
-import { preload } from 'react-dom'
 import dynamicImport from 'next/dynamic'
 import { HOME_CONTENT_KEYS } from '@/lib/home-content-keys'
 
@@ -86,15 +85,6 @@ export default async function HomePage() {
 
   // Random "Hàng Mới Về" (chạy mỗi lần ISR làm mới, ~120s)
   const newArrivalsShuffled = [...newArrivals].sort(() => Math.random() - 0.5).slice(0, 12)
-
-  // Preload ảnh LCP của hero (banner đầu) ưu tiên cao → paint sớm.
-  // Video → preload poster (.jpg cùng tên). Ảnh → preload chính nó.
-  const firstBanner = heroBanners[0]
-  if (firstBanner?.imageUrl) {
-    const isVideo = /\.(mp4|webm|mov)(\?|$)/i.test(firstBanner.imageUrl)
-    const lcpUrl = isVideo ? firstBanner.imageUrl.replace(/\.(mp4|webm|mov)(\?|$)/i, '.jpg$2') : firstBanner.imageUrl
-    preload(lcpUrl, { as: 'image', fetchPriority: 'high' })
-  }
 
   return (
     <HomePageClient

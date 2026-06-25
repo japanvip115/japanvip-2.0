@@ -612,13 +612,25 @@ function HeroBannerSlider({ banners, router }: { banners: HeroBanner[]; router: 
       onClick={() => { if (banner.linkUrl) router.push(banner.linkUrl) }}
     >
       {video ? (
-        <video
-          key={banner.imageUrl}
-          src={banner.imageUrl}
-          poster={banner.imageUrl.replace(/\.mp4$/i, '.jpg')}
-          autoPlay muted loop playsInline preload="metadata"
-          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
-        />
+        <>
+          {/* Mobile/tablet: ảnh poster tĩnh (LCP nhanh, KHÔNG tải video 2.65MB) */}
+          <Image
+            src={banner.imageUrl.replace(/\.mp4$/i, '.jpg')}
+            alt={banner.title}
+            fill priority sizes="100vw"
+            className="lg:hidden"
+            style={{ objectFit: 'cover' }}
+          />
+          {/* Desktop (mạng nhanh): video tự phát */}
+          <video
+            key={banner.imageUrl}
+            src={banner.imageUrl}
+            poster={banner.imageUrl.replace(/\.mp4$/i, '.jpg')}
+            autoPlay muted loop playsInline preload="none"
+            className="hidden lg:block"
+            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+          />
+        </>
       ) : (
         <Image
           key={banner.imageUrl}
