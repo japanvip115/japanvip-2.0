@@ -334,6 +334,11 @@ export function ProductTabs({
   description, attributes, specGroups, faqItems, videoItems, productId, productName, productImages = [], showReviews = true,
 }: Props) {
   const reviews = buildReviews(productName, productImages)
+  const ratingDisplay = (() => {
+    const opts = [4.7, 4.8, 4.9, 5.0]
+    const rng = makeRng(productName + '__rating')
+    return opts[Math.floor(rng() * opts.length)]!
+  })()
   const [showAllReviews, setShowAllReviews] = useState(false)
   const visibleReviews = showAllReviews ? reviews : reviews.slice(0, 3)
   const hasDesc    = !!description
@@ -408,25 +413,31 @@ export function ProductTabs({
 
           {/* Score */}
           <div className="flex items-center gap-3 shrink-0">
-            <span className="text-4xl font-extrabold text-yellow-500 leading-none">5.00</span>
+            <span className="text-4xl font-extrabold text-yellow-500 leading-none">{ratingDisplay.toFixed(2)}</span>
             <span className="text-yellow-400 text-2xl">★</span>
           </div>
 
           {/* Bar chart */}
           <div className="flex-1 space-y-1.5">
-            {[5,4,3,2,1].map((star) => (
-              <div key={star} className="flex items-center gap-2 text-xs text-gray-500">
-                <span className="w-2 shrink-0 font-medium">{star}</span>
-                <span className="text-gray-400 shrink-0">★</span>
-                <div className="flex-1 h-1.5 rounded-full bg-gray-100 overflow-hidden">
-                  <div className="h-full rounded-full bg-brand-red transition-all"
-                    style={{ width: star === 5 ? '100%' : '0%' }} />
+            {[5,4,3,2,1].map((star) => {
+              const fiveStarCount = ratingDisplay === 5.0 ? reviews.length : Math.round(reviews.length * 0.8)
+              const fourStarCount = ratingDisplay < 5.0 ? reviews.length - fiveStarCount : 0
+              const count = star === 5 ? fiveStarCount : star === 4 ? fourStarCount : 0
+              const pct = reviews.length > 0 ? Math.round((count / reviews.length) * 100) : 0
+              return (
+                <div key={star} className="flex items-center gap-2 text-xs text-gray-500">
+                  <span className="w-2 shrink-0 font-medium">{star}</span>
+                  <span className="text-gray-400 shrink-0">★</span>
+                  <div className="flex-1 h-1.5 rounded-full bg-gray-100 overflow-hidden">
+                    <div className="h-full rounded-full bg-brand-red transition-all"
+                      style={{ width: `${pct}%` }} />
+                  </div>
+                  <span className="shrink-0 whitespace-nowrap text-right text-gray-400 w-16">
+                    {count > 0 ? `${count} đánh giá` : '0 đánh giá'}
+                  </span>
                 </div>
-                <span className="shrink-0 whitespace-nowrap text-right text-gray-400 w-16">
-                  {star === 5 ? '5 đánh giá' : '0 đánh giá'}
-                </span>
-              </div>
-            ))}
+              )
+            })}
           </div>
 
           {/* CTA */}
