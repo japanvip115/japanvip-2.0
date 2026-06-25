@@ -99,12 +99,18 @@ export async function calculateCostEstimate(params: {
   const surchargeVnd = Math.round(productPriceVnd * surchargeRate)
   const profitMarginVnd = Math.round(productPriceVnd * profitMarginRate)
 
+  // Ship quốc tế tính THEO CÂN NẶNG: giá mỗi kg = priceVnd / số kg của bậc (vd "Cước đi Air" 160k/1kg = 160k/kg).
+  // Cân tính cước = làm tròn LÊN kg (chuẩn hàng không), tối thiểu 1kg.
   const tier =
     estimatedWeightKg !== undefined
       ? pickTier(tiers, estimatedWeightKg)
       : (tiers[1] ?? tiers[0]!)
-  const shippingEstimateVnd = tier.priceVnd
-  const shippingMarginVnd = tier.priceVnd - tier.actualCostVnd
+  const blockKg = tier.maxWeightKg && tier.maxWeightKg > 0 ? tier.maxWeightKg : 1
+  const ratePerKgVnd = tier.priceVnd / blockKg
+  const actualCostPerKgVnd = tier.actualCostVnd / blockKg
+  const chargeableKg = Math.max(1, Math.ceil(estimatedWeightKg ?? 1))
+  const shippingEstimateVnd = Math.round(chargeableKg * ratePerKgVnd)
+  const shippingMarginVnd = Math.round(chargeableKg * (ratePerKgVnd - actualCostPerKgVnd))
 
   const totalEstimateVnd = productPriceVnd + serviceFeeVnd + domesticShippingVnd + surchargeVnd + profitMarginVnd + shippingEstimateVnd
   const depositAmountVnd = Math.round(totalEstimateVnd * depositRate)
