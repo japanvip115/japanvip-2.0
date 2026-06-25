@@ -1150,13 +1150,13 @@ export default function HomePageClient({
                       ))}
                     </div>
 
-                    {/* Bottom horizontal card */}
-                    {blogPosts[3] && (
-                      <a href={`/blog/${blogPosts[3].slug}`} className="group flex gap-4 rounded-2xl overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow p-3">
+                    {/* Bottom horizontal cards */}
+                    {[blogPosts[3], blogPosts[4]].filter(Boolean).map((post) => (
+                      <a key={post.slug} href={`/blog/${post.slug}`} className="group flex gap-4 rounded-2xl overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow p-3">
                         <div className="relative w-28 shrink-0 rounded-xl overflow-hidden bg-gray-100 aspect-square">
-                          {blogPosts[3].thumbnailUrl ? (
+                          {post.thumbnailUrl ? (
                             <Image
-                              src={blogPosts[3].thumbnailUrl} alt={blogPosts[3].title}
+                              src={post.thumbnailUrl} alt={post.title}
                               fill className="object-cover group-hover:scale-105 transition-transform duration-300"
                             />
                           ) : (
@@ -1164,20 +1164,20 @@ export default function HomePageClient({
                           )}
                         </div>
                         <div className="flex flex-col justify-center py-1 min-w-0">
-                          {blogPosts[3].category && (
+                          {post.category && (
                             <span className="inline-block text-[10px] font-bold uppercase text-brand-red mb-1">
-                              {blogPosts[3].category.name}
+                              {post.category.name}
                             </span>
                           )}
                           <h3 className="font-semibold text-gray-900 text-sm leading-snug line-clamp-2 group-hover:text-brand-red transition-colors">
-                            {blogPosts[3].title}
+                            {post.title}
                           </h3>
                           <p className="text-[11px] text-gray-400 mt-1.5">
-                            {blogPosts[3].publishedAt ? new Date(blogPosts[3].publishedAt).toLocaleDateString('vi-VN') : ''}
+                            {post.publishedAt ? new Date(post.publishedAt).toLocaleDateString('vi-VN') : ''}
                           </p>
                         </div>
                       </a>
-                    )}
+                    ))}
                   </div>
                 </div>
               </div>
