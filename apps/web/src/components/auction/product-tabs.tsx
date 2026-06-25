@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { ProductDescription } from '@/components/product/product-description'
 
 type Attribute = { id: string; name: string; value: string }
 
@@ -12,7 +13,6 @@ export function ProductTabs({
   attributes: Attribute[]
 }) {
   const [tab, setTab] = useState<'desc' | 'specs'>('desc')
-  const [expanded, setExpanded] = useState(false)
 
   return (
     <div className="rounded-xl border border-gray-100 overflow-hidden flex flex-col">
@@ -42,26 +42,9 @@ export function ProductTabs({
 
       {/* Tab body */}
       {tab === 'desc' && (
-        <div className="p-4 overflow-hidden">
-          {description ? (
-            <div className="relative">
-              <p className={`text-sm leading-relaxed text-gray-600 ${expanded ? '' : 'line-clamp-[12]'}`}>
-                {description}
-              </p>
-              {!expanded && (
-                <div className="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-white to-transparent pointer-events-none" />
-              )}
-              <button
-                onClick={() => setExpanded(!expanded)}
-                className="mt-2 text-xs font-semibold text-brand-red hover:underline cursor-pointer"
-              >
-                {expanded ? 'Thu gọn ▲' : 'Xem thêm ▼'}
-              </button>
-            </div>
-          ) : (
-            <span className="text-gray-400 italic text-sm">Chưa có mô tả sản phẩm.</span>
-          )}
-        </div>
+        description
+          ? <ProductDescription description={description} />
+          : <div className="p-4 text-sm text-gray-400 italic">Chưa có mô tả sản phẩm.</div>
       )}
 
       {tab === 'specs' && (
@@ -69,7 +52,7 @@ export function ProductTabs({
           <div className="divide-y divide-gray-50">
             {attributes.map((attr, i) => (
               <div key={attr.id} className={`flex items-start px-4 py-2.5 gap-4 ${i % 2 === 0 ? 'bg-white' : 'bg-gray-50/50'}`}>
-                <span className="text-xs text-gray-500 w-2/5 shrink-0 pt-0.5">{attr.name}</span>
+                <span className="text-xs text-gray-500 w-2/5 shrink-0 pt-0.5">{attr.name.replace(/^\[[^\]]+\]/, '')}</span>
                 <span className="text-xs font-semibold text-gray-800 flex-1">{attr.value}</span>
               </div>
             ))}

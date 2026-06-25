@@ -62,18 +62,7 @@ export default async function AuctionDetailPage({ params }: Props) {
   const images = auction.product.images
   const primaryImage = images.find((i) => i.isPrimary) ?? images[0]
 
-  const plainDescription = auction.product.description
-    ? auction.product.description
-        .replace(/<[^>]*>/g, ' ')
-        .replace(/&nbsp;/g, ' ')
-        .replace(/&amp;/g, '&')
-        .replace(/&lt;/g, '<')
-        .replace(/&gt;/g, '>')
-        .replace(/&quot;/g, '"')
-        .replace(/&#39;/g, "'")
-        .replace(/\s+/g, ' ')
-        .trim()
-    : null
+  const plainDescription = auction.product.description ?? null
 
   // Lazy settlement: if LIVE but past end time, trigger endAuction() in background
   if (auction.status === 'LIVE') {
