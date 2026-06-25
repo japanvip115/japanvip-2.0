@@ -1088,11 +1088,11 @@ export default function HomePageClient({
                   {/* Featured large card */}
                   {blogPosts[0] && (
                     <a href={`/blog/${blogPosts[0].slug}`} className="group flex flex-col rounded-2xl overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow">
-                      <div className="relative aspect-[4/3] bg-gray-100 overflow-hidden">
+                      <div className="relative aspect-[4/3] bg-gray-50 overflow-hidden">
                         {blogPosts[0].thumbnailUrl ? (
                           <Image
                             src={blogPosts[0].thumbnailUrl} alt={blogPosts[0].title}
-                            fill className="object-cover group-hover:scale-105 transition-transform duration-300"
+                            fill className="object-contain group-hover:scale-105 transition-transform duration-300"
                           />
                         ) : (
                           <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center text-4xl">📰</div>
