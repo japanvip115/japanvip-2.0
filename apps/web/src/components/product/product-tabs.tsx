@@ -141,11 +141,21 @@ function detectCategory(productName: string): string {
   return 'generic'
 }
 
+function getInitials(name: string): string {
+  const parts = name.trim().split(' ')
+  if (parts.length === 1) return parts[0]!.slice(0, 2).toUpperCase()
+  return (parts[0]![0]! + parts[parts.length - 1]![0]!).toUpperCase()
+}
+
+function nameHash(s: string): number {
+  let h = 0
+  for (const c of s) h = (h * 31 + c.charCodeAt(0)) | 0
+  return Math.abs(h)
+}
+
 function buildReviews(productName: string, productImages: string[]) {
   const comments = REVIEW_COMMENTS[detectCategory(productName)] ?? REVIEW_COMMENTS.generic!
   const reviewers = buildReviewers(productName, comments.length)
-  // Mỗi ảnh chỉ gán cho 1 review (KHÔNG lặp ảnh → tránh trông giả). Rải ở review 1/3/5;
-  // hết ảnh khác nhau thì review để text-only (tự nhiên hơn là lặp cùng 1 ảnh).
   const unique = [...new Set(productImages.filter(Boolean))]
   let imgIdx = 0
   return reviewers.map((r, i) => {
@@ -155,9 +165,11 @@ function buildReviews(productName: string, productImages: string[]) {
       id: i + 1,
       stars: 5,
       name: r.name,
+      initials: getInitials(r.name),
       date: r.date,
       comment: comments[i] ?? comments[0]!,
       images: img ? [img] : [],
+      helpful: 5 + (nameHash(r.name) % 28),
     }
   })
 }
@@ -498,18 +510,22 @@ export function ProductTabs({
         <div className="divide-y divide-gray-50">
           {visibleReviews.map((r) => (
             <div key={r.id} className="px-5 py-4">
-              <div className="flex flex-wrap items-center gap-2 mb-1">
-                <span className="text-yellow-400 text-sm tracking-tight">{'★'.repeat(r.stars)}</span>
-                <span className="font-semibold text-sm text-gray-900">{r.name}</span>
-                <span className="text-gray-400 text-xs">— {r.date}</span>
-                <span className="flex items-center gap-1 text-xs text-green-600 font-medium">
-                  <svg className="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/></svg>
-                  Đã mua tại {productName ? 'japanvip.vn' : 'japanvip.vn'}
-                </span>
+              {/* Header: avatar + name/stars + date */}
+              <div className="flex items-start gap-3 mb-2">
+                <div className="flex-shrink-0 h-9 w-9 rounded-full bg-brand-red flex items-center justify-center text-white text-xs font-bold">
+                  {r.initials}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between gap-2">
+                    <strong className="text-sm text-gray-900">{r.name}</strong>
+                    <span className="text-xs text-gray-400 shrink-0">{r.date}</span>
+                  </div>
+                  <span className="text-yellow-400 text-xs tracking-tight">{'★'.repeat(r.stars)}</span>
+                </div>
               </div>
-              <p className="text-sm text-gray-700 leading-relaxed">{r.comment}</p>
+              <p className="text-sm text-gray-700 leading-relaxed mb-2">{r.comment}</p>
               {r.images.length > 0 && (
-                <div className="flex flex-wrap gap-2 mt-2">
+                <div className="flex flex-wrap gap-2 mb-2">
                   {r.images.map((src, i) => (
                     <img
                       key={i}
@@ -520,6 +536,15 @@ export function ProductTabs({
                   ))}
                 </div>
               )}
+              <div className="flex items-center gap-3">
+                <button className="flex items-center gap-1 text-xs text-gray-500 hover:text-brand-red transition-colors">
+                  👍 Hữu ích ({r.helpful})
+                </button>
+                <span className="flex items-center gap-1 text-xs text-green-600 font-medium">
+                  <svg className="w-3 h-3" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/></svg>
+                  Đã mua tại japanvip.vn
+                </span>
+              </div>
             </div>
           ))}
         </div>

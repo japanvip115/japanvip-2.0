@@ -80,7 +80,7 @@ export function AddToCartButtons({ productId, slug, name, image, priceJpy, price
         >
           <span aria-hidden className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-500 group-hover:translate-x-full" />
           <Zap className="relative h-4 w-4 shrink-0" />
-          <span className="relative">Đặt Hàng Ngay</span>
+          <span className="relative">Đặt Hàng</span>
         </button>
       </div>
 

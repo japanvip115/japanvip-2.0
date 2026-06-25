@@ -198,7 +198,7 @@ ul, ol { list-style: none; }
   width: auto;
   display: block;
   margin: 0 auto;
-  padding: 7px 32px;
+  padding: 7px 20px;
   background: var(--gradient-red);
   color: white;
   border-radius: var(--radius-md);

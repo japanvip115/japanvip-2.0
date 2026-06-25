@@ -242,7 +242,7 @@ function MixedSlider({
                     style={{marginTop:'auto', width:'fit-content', margin:'auto auto 0'}}
                     onClick={(e) => { e.stopPropagation(); router.push(`/dau-gia/${auction.id}`) }}
                   >
-                    Đặt Giá Ngay
+                    Đặt Giá
                   </button>
                 </div>
               </div>
@@ -295,7 +295,7 @@ function MixedSlider({
                   onMouseLeave={e => (e.currentTarget.style.background = '#e85d7a')}
                   onClick={(e) => { e.stopPropagation(); setQuickOrder({ id: p.id, slug: p.slug, name: p.name, image: p.images[0]?.url ?? null, priceVnd: p.salePrice ?? p.originPrice ?? p.marketPrice ?? null }) }}
                 >
-                  Đặt Hàng Ngay
+                  Đặt Hàng
                 </button>
               </div>
             </div>

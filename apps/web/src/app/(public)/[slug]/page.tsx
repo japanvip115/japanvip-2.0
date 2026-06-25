@@ -218,24 +218,51 @@ export default async function ProductDetailPage({ params }: Props) {
             {product.name}
           </h1>
 
-          {/* Brand + condition */}
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-gray-500">
-            {product.brand && (
-              <Link href={`/san-pham?brandId=${product.brand.id}`} className="flex items-center gap-1.5 hover:opacity-80 transition-opacity">
-                <span className="text-sm font-semibold text-gray-700">Thương hiệu:</span>
-                {product.brand.logoUrl ? (
-                  <Image
-                    src={product.brand.logoUrl}
-                    alt={product.brand.name}
-                    width={64}
-                    height={24}
-                    className="h-6 w-auto object-contain"
-                  />
-                ) : (
-                  <span className="text-sm font-semibold text-brand-red">{product.brand.name}</span>
-                )}
-              </Link>
-            )}
+          {/* Brand + stars — cùng 1 khối, sát nhau */}
+          <div className="flex flex-col gap-1.5">
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-gray-500">
+              {product.brand && (
+                <Link href={`/san-pham?brandId=${product.brand.id}`} className="flex items-center gap-1.5 hover:opacity-80 transition-opacity">
+                  <span className="text-sm font-semibold text-gray-700">Thương hiệu:</span>
+                  {product.brand.logoUrl ? (
+                    <Image
+                      src={product.brand.logoUrl}
+                      alt={product.brand.name}
+                      width={64}
+                      height={24}
+                      className="h-6 w-auto object-contain"
+                    />
+                  ) : (
+                    <span className="text-sm font-semibold text-brand-red">{product.brand.name}</span>
+                  )}
+                </Link>
+              )}
+            </div>
+
+          {/* Star rating — dưới thương hiệu */}
+          {reviewsEnabled && (() => {
+            const rating = product.rating ? Number(product.rating) : 5
+            const count = product.reviewCount > 0 ? product.reviewCount : 5
+            // Số đã bán: seed từ tên SP để ổn định (500–950)
+            let h = 2166136261
+            for (let i = 0; i < product.name.length; i++) { h ^= product.name.charCodeAt(i); h = Math.imul(h, 16777619) }
+            const sold = 500 + (Math.abs(h >>> 0) % 451)
+            return (
+              <div className="flex items-center gap-2">
+                <div className="flex items-center gap-0.5">
+                  {[1,2,3,4,5].map((s) => (
+                    <svg key={s} className={`h-4 w-4 ${s <= Math.round(rating) ? 'text-yellow-400' : 'text-gray-200'}`} fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                    </svg>
+                  ))}
+                </div>
+                <span className="text-sm font-bold text-gray-800">{rating.toFixed(1)}</span>
+                <span className="text-xs text-gray-400">({count} đánh giá)</span>
+                <span className="text-gray-300 text-xs">•</span>
+                <span className="text-xs text-gray-500">Đã bán: <span className="font-semibold">{sold.toLocaleString('vi-VN')}</span></span>
+              </div>
+            )
+          })()}
           </div>
 
           {/* Price — client-side để render tĩnh (cổng giá pre-order theo login) */}
@@ -268,26 +295,6 @@ export default async function ProductDetailPage({ params }: Props) {
               )}
             </div>
           </div>
-
-          {/* Star rating */}
-          {reviewsEnabled && product.rating && (
-            <div className="flex items-center gap-2">
-              <div className="flex items-center gap-0.5">
-                {[1,2,3,4,5].map((s) => {
-                  const r = Number(product.rating)
-                  return (
-                    <svg key={s} className={`h-4 w-4 ${s <= Math.round(r) ? 'text-yellow-400' : 'text-gray-200'}`} fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                    </svg>
-                  )
-                })}
-              </div>
-              <span className="text-sm font-bold text-gray-800">{Number(product.rating).toFixed(1)}</span>
-              {product.reviewCount > 0 && (
-                <span className="text-xs text-gray-400">({product.reviewCount} đánh giá)</span>
-              )}
-            </div>
-          )}
 
           {/* Quick specs strip */}
           {quickItems.length > 0 && (
