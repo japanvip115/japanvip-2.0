@@ -6,7 +6,7 @@ export function FloatingContact() {
   const [open, setOpen] = useState(false)
 
   return (
-    <div className="fixed right-3 bottom-24 z-50 flex flex-col items-center gap-2.5 sm:right-4 sm:gap-3">
+    <div className="fixed left-3 bottom-24 z-50 flex flex-col items-center gap-2.5 sm:left-4 sm:gap-3">
       {/* Sub buttons — visible when open */}
       <div
         className={`flex flex-col items-center gap-3 transition-all duration-300 ${
@@ -22,7 +22,7 @@ export function FloatingContact() {
           <svg viewBox="0 0 24 24" fill="white" className="h-6 w-6">
             <path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.11-.27c1.21.49 2.53.76 3.88.76a1 1 0 011 1v3.82a1 1 0 01-1 1C10.18 22 2 13.82 2 3.82a1 1 0 011-1H6.82a1 1 0 011 1c0 1.35.27 2.67.76 3.88a1 1 0 01-.27 1.11l-2.69 1.98z" />
           </svg>
-          <span className="pointer-events-none absolute right-14 whitespace-nowrap rounded-lg bg-green-500 px-3 py-1 text-sm font-medium text-white opacity-0 shadow transition-opacity group-hover:opacity-100">
+          <span className="pointer-events-none absolute left-14 whitespace-nowrap rounded-lg bg-green-500 px-3 py-1 text-sm font-medium text-white opacity-0 shadow transition-opacity group-hover:opacity-100">
             0927.298.888
           </span>
         </a>
@@ -41,7 +41,7 @@ export function FloatingContact() {
               Zalo
             </text>
           </svg>
-          <span className="pointer-events-none absolute right-14 whitespace-nowrap rounded-lg px-3 py-1 text-sm font-medium text-white opacity-0 shadow transition-opacity group-hover:opacity-100" style={{ background: '#0068FF' }}>
+          <span className="pointer-events-none absolute left-14 whitespace-nowrap rounded-lg px-3 py-1 text-sm font-medium text-white opacity-0 shadow transition-opacity group-hover:opacity-100" style={{ background: '#0068FF' }}>
             Chat Zalo
           </span>
         </a>
@@ -58,7 +58,7 @@ export function FloatingContact() {
           <svg viewBox="0 0 24 24" fill="white" className="h-6 w-6">
             <path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.413c0-3.025 1.792-4.697 4.533-4.697 1.312 0 2.686.236 2.686.236v2.97h-1.514c-1.491 0-1.956.93-1.956 1.886v2.265h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z" />
           </svg>
-          <span className="pointer-events-none absolute right-14 whitespace-nowrap rounded-lg px-3 py-1 text-sm font-medium text-white opacity-0 shadow transition-opacity group-hover:opacity-100" style={{ background: '#1877F2' }}>
+          <span className="pointer-events-none absolute left-14 whitespace-nowrap rounded-lg px-3 py-1 text-sm font-medium text-white opacity-0 shadow transition-opacity group-hover:opacity-100" style={{ background: '#1877F2' }}>
             Facebook
           </span>
         </a>

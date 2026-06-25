@@ -68,7 +68,7 @@ export function ChatWidget() {
   }
 
   return (
-    <div className="fixed left-3 bottom-6 z-50 sm:left-4">
+    <div className="fixed left-3 bottom-6 z-40 sm:left-4">
       {/* Chat window */}
       {open && (
         <div className="mb-3 flex w-80 flex-col rounded-2xl bg-white shadow-2xl border border-gray-100 overflow-hidden">
@@ -160,7 +160,7 @@ export function ChatWidget() {
       <button
         onClick={() => setOpen((o) => !o)}
         aria-label="Chat với Japan VIP AI"
-        className="flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-full bg-primary shadow-xl transition-transform hover:scale-110 active:scale-95 relative"
+        className="flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-full bg-gray-800 shadow-xl transition-transform hover:scale-110 active:scale-95 relative"
       >
         {open ? (
           <svg viewBox="0 0 24 24" fill="white" className="h-6 w-6">
