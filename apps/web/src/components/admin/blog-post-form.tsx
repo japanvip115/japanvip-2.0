@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { ImageUploadField } from '@/components/admin/image-upload-field'
 import { X, Search, PackageSearch } from 'lucide-react'
@@ -51,6 +51,7 @@ export function BlogPostForm({ mode, categories: initialCategories, authorId, in
   const router = useRouter()
   const [saving, setSaving] = useState(false)
   const [deleting, setDeleting] = useState(false)
+  const [contentTab, setContentTab] = useState<'edit' | 'preview'>('edit')
   const [error, setError] = useState('')
   const [importUrl, setImportUrl] = useState('')
   const [importing, setImporting] = useState(false)
@@ -330,15 +331,34 @@ export function BlogPostForm({ mode, categories: initialCategories, authorId, in
             </div>
 
             <div>
-              <label className={LABEL_CLS}>Nội dung <span className="text-red-400">*</span></label>
-              <textarea
-                value={form.content}
-                onChange={(e) => set('content', e.target.value)}
-                required
-                rows={16}
-                className={`${INPUT_CLS} font-mono`}
-                placeholder="Nội dung bài viết (hỗ trợ Markdown)..."
-              />
+              <div className="flex items-center justify-between mb-1">
+                <label className={LABEL_CLS}>Nội dung <span className="text-red-400">*</span></label>
+                <div className="flex rounded-lg overflow-hidden border border-gray-700 text-xs">
+                  <button type="button" onClick={() => setContentTab('edit')}
+                    className={`px-3 py-1 transition ${contentTab === 'edit' ? 'bg-gray-700 text-white' : 'text-gray-400 hover:text-white'}`}>
+                    Chỉnh sửa
+                  </button>
+                  <button type="button" onClick={() => setContentTab('preview')}
+                    className={`px-3 py-1 transition ${contentTab === 'preview' ? 'bg-gray-700 text-white' : 'text-gray-400 hover:text-white'}`}>
+                    Xem trước
+                  </button>
+                </div>
+              </div>
+              {contentTab === 'edit' ? (
+                <textarea
+                  value={form.content}
+                  onChange={(e) => set('content', e.target.value)}
+                  required
+                  rows={16}
+                  className={`${INPUT_CLS} font-mono`}
+                  placeholder="Nội dung bài viết (hỗ trợ HTML)..."
+                />
+              ) : (
+                <div
+                  className="blog-content min-h-[320px] rounded-lg border border-gray-700 bg-white p-5 text-gray-900 overflow-auto"
+                  dangerouslySetInnerHTML={{ __html: form.content }}
+                />
+              )}
               <p className="mt-1 text-xs text-gray-500">{form.content.length} ký tự</p>
             </div>
           </div>
