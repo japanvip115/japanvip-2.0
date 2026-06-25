@@ -1069,34 +1069,6 @@ export default function HomePageClient({
 
           <TestimonialSlider data={testimonials} />
 
-          {brands.filter(b => b.logoUrl).length > 0 && (
-            <section className="py-5 bg-white border-y border-gray-100 overflow-hidden">
-              <p className="text-center text-sm font-bold uppercase tracking-widest text-gray-600 mb-4">
-                Thương Hiệu Đối Tác
-              </p>
-              <div className="relative">
-                <div className="flex gap-6 items-center animate-marquee whitespace-nowrap">
-                  {[...brands.filter(b => b.logoUrl), ...brands.filter(b => b.logoUrl)].map((b, i) => (
-                    <a
-                      key={b.id + '-' + i}
-                      href={`/san-pham?brandId=${b.id}`}
-                      title={b.name}
-                      className="inline-flex shrink-0 hover:scale-110 transition-transform duration-200"
-                    >
-                      <Image
-                        src={b.logoUrl}
-                        alt={b.name}
-                        width={140}
-                        height={56}
-                        className="h-10 w-auto object-contain"
-                      />
-                    </a>
-                  ))}
-                </div>
-              </div>
-            </section>
-          )}
-
           {blogPosts.length > 0 && (
             <section className="py-12 bg-gray-50">
               <div className="container mx-auto px-4 max-w-6xl">
@@ -1175,6 +1147,34 @@ export default function HomePageClient({
                       </a>
                     ))}
                   </div>
+                </div>
+              </div>
+            </section>
+          )}
+
+          {brands.filter(b => b.logoUrl).length > 0 && (
+            <section className="py-5 bg-white border-y border-gray-100 overflow-hidden">
+              <p className="text-center text-sm font-bold uppercase tracking-widest text-gray-600 mb-4">
+                Thương Hiệu Đối Tác
+              </p>
+              <div className="relative">
+                <div className="flex gap-6 items-center animate-marquee whitespace-nowrap">
+                  {[...brands.filter(b => b.logoUrl), ...brands.filter(b => b.logoUrl)].map((b, i) => (
+                    <a
+                      key={b.id + '-' + i}
+                      href={`/san-pham?brandId=${b.id}`}
+                      title={b.name}
+                      className="inline-flex shrink-0 hover:scale-110 transition-transform duration-200"
+                    >
+                      <Image
+                        src={b.logoUrl}
+                        alt={b.name}
+                        width={140}
+                        height={56}
+                        className="h-10 w-auto object-contain"
+                      />
+                    </a>
+                  ))}
                 </div>
               </div>
             </section>
