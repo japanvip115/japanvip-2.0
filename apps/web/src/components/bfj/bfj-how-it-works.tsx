@@ -19,8 +19,10 @@ export function BfjHowItWorks() {
                 <div className="step">
                   <div className="step-num">{s.num}</div>
                   <div className="step-icon">{s.icon}</div>
-                  <h4>{s.title}</h4>
-                  <p>{s.desc}</p>
+                  <div className="step-content">
+                    <h4>{s.title}</h4>
+                    <p>{s.desc}</p>
+                  </div>
                 </div>
                 {i < STEPS.length - 1 && <div className="step-arrow">→</div>}
               </Fragment>

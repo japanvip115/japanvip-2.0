@@ -1440,8 +1440,24 @@ ul, ol { list-style: none; }
   .testimonial-card p { font-size: 0.85rem; margin-bottom: 14px; }
   .blog-preview-grid { grid-template-columns: 1fr; }
   .blog-cards-small { grid-template-columns: 1fr; }
-  .steps { flex-direction: column; align-items: center; }
-  .step-arrow { transform: rotate(90deg); }
+  /* Quy trình mobile: mỗi bước = 1 hàng-card (số + icon + nội dung), gọn gàng */
+  .how-it-works { padding: 20px 16px; }
+  .how-it-works h3 { margin-bottom: 16px; font-size: 1.1rem; }
+  .steps { flex-direction: column; align-items: stretch; gap: 10px; }
+  .step {
+    display: flex; align-items: center; gap: 14px;
+    text-align: left; padding: 14px;
+    background: var(--jp-gray-50); border-radius: 12px;
+  }
+  .step-num {
+    position: static; flex-shrink: 0;
+    width: 26px; height: 26px; font-size: 0.78rem;
+  }
+  .step-icon { font-size: 2rem; margin: 0; flex-shrink: 0; line-height: 1; }
+  .step-content { flex: 1; min-width: 0; }
+  .step-content h4 { text-align: left; margin-bottom: 2px; }
+  .step-content p { text-align: left; }
+  .step-arrow { display: none; }
   .dashboard-layout { grid-template-columns: 1fr; }
   .dashboard-sidebar { position: static; height: auto; }
   .dash-widgets { grid-template-columns: repeat(2, 1fr); }

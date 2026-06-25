@@ -328,7 +328,7 @@ export function BfjUrlForm({ fees }: { fees: StaticFees }) {
   return (
     <div className="grid gap-6 lg:grid-cols-3">
       {/* ── Left column ── */}
-      <div className="space-y-5 lg:col-span-2">
+      <div className="min-w-0 space-y-5 lg:col-span-2">
         {/* URL Input */}
         <div className="rounded-2xl border bg-white p-6 shadow-sm">
           <h2 className="mb-1 text-xl font-bold text-gray-900">🔗 Nhập URL Sản Phẩm</h2>
@@ -551,7 +551,7 @@ export function BfjUrlForm({ fees }: { fees: StaticFees }) {
       </div>
 
       {/* ── Right column ── */}
-      <div className="space-y-4">
+      <div className="min-w-0 space-y-4">
         {step === 'preview' && result && !result.estimate ? (
           <>
             {/* No-price panel — product found but price not extracted */}
