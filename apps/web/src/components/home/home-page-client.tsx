@@ -620,7 +620,7 @@ function HeroBannerSlider({ banners, router }: { banners: HeroBanner[]; router: 
             style={{
               position: 'absolute', inset: 0,
               opacity: active ? 1 : 0,
-              transition: 'opacity 0.8s ease-in-out',
+              transition: 'opacity 1.4s cubic-bezier(0.4, 0, 0.2, 1)',
               zIndex: active ? 1 : 0,
             }}
           >
@@ -632,7 +632,7 @@ function HeroBannerSlider({ banners, router }: { banners: HeroBanner[]; router: 
                   fill sizes="100vw"
                   priority={i === 0}
                   className="lg:hidden"
-                  style={{ objectFit: 'cover' }}
+                  style={{ objectFit: 'cover', animation: active ? 'kenburns 6s ease-in-out forwards' : 'none' }}
                 />
                 <video
                   src={banner.imageUrl}
@@ -648,7 +648,7 @@ function HeroBannerSlider({ banners, router }: { banners: HeroBanner[]; router: 
                 alt={banner.title}
                 fill sizes="100vw"
                 priority={i === 0}
-                style={{ objectFit: 'cover' }}
+                style={{ objectFit: 'cover', animation: active ? 'kenburns 6s ease-in-out forwards' : 'none' }}
               />
             )}
           </div>
