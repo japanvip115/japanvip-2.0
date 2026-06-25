@@ -20,9 +20,7 @@ const schema = z.object({
 })
 
 async function guard(req: NextRequest) {
-  const session = await auth()
-  if (!session) return apiError('Unauthorized', 401)
-  if (!hasRole((session.user as any).role, 'EDITOR')) return apiError('Forbidden', 403)
+  if (!await resolveEditorAuth(req)) return apiError('Unauthorized', 401)
   return null
 }
 
