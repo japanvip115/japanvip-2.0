@@ -151,10 +151,10 @@ export async function listPublicAuctions(params: {
   return { auctions, total, page, limit, totalPages: Math.ceil(total / limit) }
 }
 
-export async function getAuctionDetail(auctionId: string) {
-  return prisma.auction.findUnique({
-    where: { id: auctionId },
-    include: {
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
+export async function getAuctionDetail(idOrSlug: string) {
+  const AUCTION_INCLUDE = {
       product: {
         include: {
           images: true,
@@ -164,7 +164,7 @@ export async function getAuctionDetail(auctionId: string) {
         },
       },
       bids: {
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: 'desc' as const },
         take: 10,
         include: {
           bidder: {
@@ -172,9 +172,18 @@ export async function getAuctionDetail(auctionId: string) {
           },
         },
       },
-    },
+  }
+  if (UUID_RE.test(idOrSlug)) {
+    return prisma.auction.findUnique({ where: { id: idOrSlug }, include: AUCTION_INCLUDE })
+  }
+  // product slug → lấy phiên gần nhất (ưu tiên LIVE > SCHEDULED > khác)
+  return prisma.auction.findFirst({
+    where: { product: { slug: idOrSlug } },
+    orderBy: { startsAt: 'desc' },
+    include: AUCTION_INCLUDE,
   })
 }
+
 
 export async function updateAuctionStatus(
   auctionId: string,

@@ -1,6 +1,6 @@
 import { getAuctionDetail } from '@/modules/auction/services/auction.service'
 import { endAuction } from '@/modules/auction/services/bid.service'
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 import { auth } from '@/lib/auth'
 import { prisma } from '@japanvip/db'
 import { AuctionDetailClient } from '@/components/auction/auction-detail-client'
@@ -45,6 +45,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export const revalidate = 5
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
 export default async function AuctionDetailPage({ params }: Props) {
   const { id } = await params
   const [auction, session, feeRateRow, shippingRow, auctionReviews] = await Promise.all([
@@ -58,6 +60,8 @@ export default async function AuctionDetailPage({ params }: Props) {
     `,
   ])
   if (!auction) notFound()
+  // UUID trong URL → 301 sang slug sản phẩm (canonical, SEO)
+  if (UUID_RE.test(id)) redirect(`/dau-gia/${auction.product.slug}`)
 
   const images = auction.product.images
   const primaryImage = images.find((i) => i.isPrimary) ?? images[0]
