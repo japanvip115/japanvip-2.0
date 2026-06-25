@@ -25,6 +25,12 @@ export async function middleware(req: NextRequest) {
   const refParam = req.nextUrl.searchParams.get('ref')
   const validRef = refParam && /^[A-Z0-9_-]{3,20}$/i.test(refParam) ? refParam.toUpperCase() : null
 
+  // Bearer token từ máy ngoài — để route handler tự xử lý auth
+  const authHeader = req.headers.get('authorization')
+  if (authHeader?.startsWith('Bearer jvip_') && pathname.startsWith('/api/v1/admin/')) {
+    return NextResponse.next()
+  }
+
   for (const route of PROTECTED) {
     if (!route.pattern.test(pathname)) continue
 
