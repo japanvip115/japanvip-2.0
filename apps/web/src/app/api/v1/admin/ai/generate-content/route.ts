@@ -298,7 +298,7 @@ Tạo SEO metadata cho sản phẩm. Xuất JSON:
 
     // 🔒 LOCKED (2026-06) — Văn phong + cấu trúc blog học từ kho đối thủ, đã chốt. Xem CLAUDE.md. KHÔNG tự sửa.
     case 'blog': {
-      const blogWords = maxWords ?? 5000
+      const blogWords = maxWords ?? 7500
       return `${HTML_ONLY}${base}
 Viết bài blog HTML dài, chi tiết như một biên tập viên gia dụng Nhật chuyên nghiệp. Học văn phong từ hiephongjapan.vn: đi thẳng vào số liệu, trung thực, thực tế, không sáo rỗng.
 
