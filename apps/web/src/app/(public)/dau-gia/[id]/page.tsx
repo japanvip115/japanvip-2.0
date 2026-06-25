@@ -145,6 +145,7 @@ export default async function AuctionDetailPage({ params }: Props) {
             startPrice={Number(auction.startPrice)}
             minIncrement={Number(auction.minIncrement)}
             buyNowPrice={auction.buyNowPrice ? Number(auction.buyNowPrice) : null}
+            reserveMet={!auction.reservePrice || Number(auction.currentPrice) >= Number(auction.reservePrice)}
             initialBids={auction.bids.map((b) => ({
               id: b.id,
               amount: Number(b.amount),

@@ -290,6 +290,7 @@ export async function endAuction(auctionId: string): Promise<void> {
       winnerId: true,
       winningBidId: true,
       currentPrice: true,
+      reservePrice: true,
       buyerPremium: true,
       commissionRate: true,
       partnerId: true,
@@ -312,7 +313,18 @@ export async function endAuction(auctionId: string): Promise<void> {
     })
     if (claim.count === 0) return false // instance khác đã xử lý
 
-    if (auction.winnerId && auction.currentPrice) {
+    // Kiểm tra giá sàn: nếu chưa đạt → xóa winner, không tạo settlement
+    const reserveMet = !auction.reservePrice ||
+      Number(auction.currentPrice) >= Number(auction.reservePrice)
+    if (!reserveMet && auction.winnerId) {
+      await tx.auction.update({
+        where: { id: auctionId },
+        data: { winnerId: null, winningBidId: null },
+      })
+    }
+
+    const effectiveWinnerId = reserveMet ? auction.winnerId : null
+    if (effectiveWinnerId && auction.currentPrice) {
       const hammerPrice = Number(auction.currentPrice)
       const buyerPremiumAmount = Math.round(hammerPrice * Number(auction.buyerPremium))
       const totalPayable = hammerPrice + buyerPremiumAmount
@@ -324,7 +336,7 @@ export async function endAuction(auctionId: string): Promise<void> {
       await tx.auctionSettlement.create({
         data: {
           auctionId,
-          winnerId: auction.winnerId,
+          winnerId: effectiveWinnerId,
           hammerPrice,
           buyerPremiumAmount,
           totalPayable,
@@ -347,13 +359,16 @@ export async function endAuction(auctionId: string): Promise<void> {
   if (!claimed) return
 
   // Phần thông báo/email đặt ngoài transaction để không giữ lock DB lâu.
-  if (auction.winnerId && auction.currentPrice) {
+  const reserveMet = !auction.reservePrice ||
+    Number(auction.currentPrice) >= Number(auction.reservePrice)
+  const effectiveWinnerId = reserveMet ? auction.winnerId : null
+  if (effectiveWinnerId && auction.currentPrice) {
     const hammerPrice = Number(auction.currentPrice)
     const buyerPremiumAmount = Math.round(hammerPrice * Number(auction.buyerPremium))
     const totalPayable = hammerPrice + buyerPremiumAmount
 
     notifyUser({
-      userId: auction.winnerId,
+      userId: effectiveWinnerId,
       type: 'auction_won',
       title: 'Chúc mừng! Bạn đã thắng đấu giá',
       body: `Bạn đã thắng với giá ${hammerPrice.toLocaleString('vi-VN')}₫. Vui lòng thanh toán trong 3 ngày.`,
@@ -363,7 +378,7 @@ export async function endAuction(auctionId: string): Promise<void> {
 
     const [winnerInfo, auctionInfo] = await Promise.all([
       prisma.user.findUnique({
-        where: { id: auction.winnerId },
+        where: { id: effectiveWinnerId },
         select: { email: true, profile: { select: { fullName: true } } },
       }).catch(() => null),
       prisma.auction.findUnique({
@@ -388,7 +403,7 @@ export async function endAuction(auctionId: string): Promise<void> {
 
   const endEvent: AuctionEvent = {
     type: 'auction_ended',
-    data: { winnerId: auction.winnerId, winnerAmount: auction.winnerId ? Number(auction.currentPrice) : null },
+    data: { winnerId: effectiveWinnerId, winnerAmount: effectiveWinnerId ? Number(auction.currentPrice) : null },
   }
   // pub/sub removed — SSE polling picks up auction_ended via getAuctionState
   await invalidateAuctionCache(auctionId)

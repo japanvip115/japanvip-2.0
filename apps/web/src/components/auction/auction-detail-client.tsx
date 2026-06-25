@@ -33,6 +33,7 @@ type Props = {
   isLoggedIn: boolean
   auctionFeeRate: number
   shippingFee: number
+  reserveMet?: boolean
 }
 
 function CostBreakdown({ price, feeRate, shippingFee }: { price: number; feeRate: number; shippingFee: number }) {
@@ -115,7 +116,7 @@ export function AuctionDetailClient({
   initialBidCount, initialEndsAt, initialExtendedEnd,
   startPrice, minIncrement, buyNowPrice, initialBids,
   winnerId: initialWinnerId, userId, isLoggedIn,
-  auctionFeeRate, shippingFee,
+  auctionFeeRate, shippingFee, reserveMet = true,
 }: Props) {
   const [status, setStatus] = useState<AuctionStatus>(initialStatus)
   const [currentPrice, setCurrentPrice] = useState(initialCurrentPrice)
@@ -359,6 +360,16 @@ export function AuctionDetailClient({
               {formatVND(currentPrice)}
             </p>
             <p className="mt-0.5 text-xs text-gray-400">{bidCount} lượt đặt giá</p>
+            {!reserveMet && bidCount > 0 && (
+              <span className="mt-1 inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-700">
+                🔒 Chưa đạt giá sàn
+              </span>
+            )}
+            {reserveMet && bidCount > 0 && (
+              <span className="mt-1 inline-flex items-center gap-1 rounded-full bg-green-100 px-2 py-0.5 text-xs font-semibold text-green-700">
+                ✓ Đã đạt giá sàn
+              </span>
+            )}
           </div>
           <div className="text-right">
             <p className="text-xs text-gray-400">Bước giá</p>
