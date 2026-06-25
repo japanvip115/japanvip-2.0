@@ -104,7 +104,7 @@ Thời gian bảo hành, phạm vi, hỗ trợ kỹ thuật, quy trình tiếp n
 5 bullet ✔: nguồn gốc rõ ràng, kiểm tra trước khi giao, giá minh bạch, giao hàng toàn quốc, hỗ trợ kỹ thuật sau bán hàng. Chỉ dùng "hàng chính hãng" khi có tài liệu chứng minh.
 
 **Section 14 — Kêu gọi hành động**
-Dùng <div class="cta-box"> với <h2>, mô tả tư vấn, <a href="tel:0927298888" class="btn-buy-now">MUA NGAY</a>, Hotline: 09.2729.8888, Website: japanvip.vn.
+Dùng <div class="cta-box"> với <h2>, mô tả tư vấn, <a href="tel:0927298888" class="btn-buy-now">MUA NGAY</a>, Hotline: 09.2729.8888 · Zalo: 0988.969.896 · Showroom Hà Nội: 21 Lê Văn Lương, Thanh Xuân · Trụ sở Hải Phòng: 115 Đinh Tiên Hoàng, Hồng Bàng.
 
 # 7. HTML Components
 
