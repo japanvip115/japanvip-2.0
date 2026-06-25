@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
 import { unstable_cache } from 'next/cache'
-import Script from 'next/script'
 import './globals.css'
 import { getAllFontVariableClasses, getFontCssVar } from '@/lib/fonts'
 import { getActiveFont } from '@/lib/font-settings'
@@ -100,15 +99,13 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           />
         )}
         {ga4Id && (
-          <>
-            {/* Stub gtag chạy sớm (nhẹ) → hàng đợi event không mất. Thư viện gtag.js nặng hoãn lazyOnload → không hại LCP/TBT lúc render */}
-            <script
-              dangerouslySetInnerHTML={{
-                __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','${ga4Id}');`,
-              }}
-            />
-            <Script src={`https://www.googletagmanager.com/gtag/js?id=${ga4Id}`} strategy="lazyOnload" />
-          </>
+          // Stub gtag chạy sớm (event không mất) nhưng CHỈ tải gtag.js sau tương tác đầu / sau 4s
+          // → GA4 không đụng main-thread lúc render (LCP/TBT/SI sạch), vẫn track người ở lại.
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','${ga4Id}');(function(){var done=false,ev=['scroll','mousemove','touchstart','click','keydown'];function load(){if(done)return;done=true;ev.forEach(function(e){window.removeEventListener(e,load)});var s=document.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=${ga4Id}';document.head.appendChild(s)}ev.forEach(function(e){window.addEventListener(e,load,{passive:true})});setTimeout(load,4000)})();`,
+            }}
+          />
         )}
       </head>
       <body>
