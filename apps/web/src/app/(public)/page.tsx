@@ -24,7 +24,7 @@ const PRODUCT_SELECT = {
 
 export default async function HomePage() {
   const now = new Date()
-  const [categories, homeProducts, orderProducts, newArrivals, liveAuctions, contentRows, brands, testimonials, heroBanners] = await Promise.all([
+  const [categories, homeProducts, orderProducts, newArrivals, liveAuctions, contentRows, brands, testimonials, heroBanners, blogPosts] = await Promise.all([
     prisma.category.findMany({
       where: { isActive: true, showOnHome: true, parentId: null },
       orderBy: { sortOrder: 'asc' },
@@ -71,6 +71,12 @@ export default async function HomePage() {
       },
       orderBy: { sortOrder: 'asc' }, select: { id: true, title: true, imageUrl: true, linkUrl: true },
     }),
+    prisma.blogPost.findMany({
+      where: { status: 'PUBLISHED' },
+      orderBy: { publishedAt: 'desc' },
+      take: 4,
+      select: { slug: true, title: true, publishedAt: true, thumbnailUrl: true, excerpt: true, category: { select: { name: true, slug: true } } },
+    }),
   ])
 
   const content: Record<string, string> = {}
@@ -102,6 +108,12 @@ export default async function HomePage() {
       heroBanners={heroBanners}
       brands={brands as Array<{ id: string; name: string; slug: string; logoUrl: string }>}
       testimonials={testimonials}
+      blogPosts={blogPosts.map((p) => ({
+        slug: p.slug, title: p.title, excerpt: p.excerpt,
+        thumbnailUrl: p.thumbnailUrl,
+        publishedAt: p.publishedAt ? p.publishedAt.toISOString() : null,
+        category: p.category,
+      }))}
     />
   )
 }

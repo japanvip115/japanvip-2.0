@@ -76,20 +76,20 @@ export function ChatWidget() {
     <div className="fixed right-3 bottom-6 z-40 sm:right-4">
       {/* Chat window */}
       {open && (
-        <div className="mb-3 flex w-80 flex-col rounded-2xl bg-white shadow-2xl border border-gray-100 overflow-hidden">
+        <div className="mb-3 flex w-80 flex-col rounded-2xl shadow-2xl border border-gray-700 overflow-hidden" style={{background:'#1a1a2e'}}>
           {/* Header */}
-          <div className="flex items-center gap-2.5 bg-primary px-4 py-3">
-            <div className="relative flex h-8 w-8 items-center justify-center rounded-full bg-white/20">
+          <div className="flex items-center gap-2.5 px-4 py-3" style={{background:'#16213e'}}>
+            <div className="relative flex h-8 w-8 items-center justify-center rounded-full bg-white/10">
               <svg viewBox="0 0 24 24" fill="white" className="h-4 w-4">
                 <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
               </svg>
-              <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-green-400 border border-white" />
+              <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-green-400 border border-gray-800" />
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-bold text-white leading-tight">Tư vấn viên Japan VIP</p>
-              <p className="text-xs text-white/75">Thường phản hồi trong vài phút</p>
+              <p className="text-xs text-gray-400">Thường phản hồi trong vài phút</p>
             </div>
-            <button onClick={() => setOpen(false)} className="text-white/75 hover:text-white">
+            <button onClick={() => setOpen(false)} className="text-gray-400 hover:text-white transition-colors">
               <svg viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
                 <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
               </svg>
@@ -97,7 +97,7 @@ export function ChatWidget() {
           </div>
 
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-3 space-y-2.5 max-h-72 bg-gray-50">
+          <div className="flex-1 overflow-y-auto p-3 space-y-2.5 max-h-72" style={{background:'#1a1a2e'}}>
             {messages.length === 0 && (
               <div className="text-center py-4">
                 <p className="text-xs text-gray-400">Xin chào! Mình có thể giúp gì cho bạn?</p>
@@ -106,7 +106,7 @@ export function ChatWidget() {
                     <button
                       key={q}
                       onClick={() => setInput(q)}
-                      className="rounded-full border border-primary/30 px-2.5 py-1 text-xs text-primary hover:bg-primary/5"
+                      className="rounded-full border border-gray-600 px-2.5 py-1 text-xs text-gray-300 hover:border-gray-400 hover:text-white transition-colors"
                     >
                       {q}
                     </button>
@@ -119,19 +119,20 @@ export function ChatWidget() {
                 <div
                   className={`max-w-[85%] rounded-2xl px-3 py-2 text-sm leading-relaxed ${
                     m.role === 'user'
-                      ? 'bg-primary text-white rounded-br-sm'
-                      : 'bg-white text-gray-800 shadow-sm rounded-bl-sm'
+                      ? 'text-white rounded-br-sm'
+                      : 'text-gray-200 rounded-bl-sm'
                   }`}
+                  style={m.role === 'user' ? {background:'#0f3460'} : {background:'#16213e'}}
                 >
-                  {m.content || <span className="inline-block h-4 w-4 animate-pulse rounded bg-gray-200" />}
+                  {m.content || <span className="inline-block h-4 w-4 animate-pulse rounded bg-gray-600" />}
                 </div>
               </div>
             ))}
             {loading && (
               <div className="flex justify-start">
-                <div className="bg-white rounded-2xl rounded-bl-sm px-3 py-2 shadow-sm flex gap-1">
+                <div className="rounded-2xl rounded-bl-sm px-3 py-2 flex gap-1" style={{background:'#16213e'}}>
                   {[0, 1, 2].map((i) => (
-                    <span key={i} className="h-1.5 w-1.5 rounded-full bg-gray-400 animate-bounce" style={{ animationDelay: `${i * 0.15}s` }} />
+                    <span key={i} className="h-1.5 w-1.5 rounded-full bg-gray-500 animate-bounce" style={{ animationDelay: `${i * 0.15}s` }} />
                   ))}
                 </div>
               </div>
@@ -140,19 +141,19 @@ export function ChatWidget() {
           </div>
 
           {/* Input */}
-          <div className="flex items-center gap-2 border-t border-gray-100 p-2 bg-white">
+          <div className="flex items-center gap-2 border-t border-gray-700 p-2" style={{background:'#16213e'}}>
             <input
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && send()}
               placeholder="Nhập câu hỏi..."
               disabled={loading}
-              className="flex-1 rounded-xl border border-gray-200 px-3 py-1.5 text-sm outline-none focus:border-primary disabled:opacity-50"
+              className="flex-1 rounded-xl border border-gray-600 bg-gray-800 px-3 py-1.5 text-sm text-white placeholder-gray-500 outline-none focus:border-gray-400 disabled:opacity-50"
             />
             <button
               onClick={send}
               disabled={loading || !input.trim()}
-              className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary text-white disabled:opacity-40 hover:bg-red-600 transition-colors"
+              className="flex h-8 w-8 items-center justify-center rounded-xl bg-brand-red text-white disabled:opacity-40 hover:bg-red-600 transition-colors"
             >
               <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4 rotate-90">
                 <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>

@@ -764,6 +764,10 @@ const DEFAULTS: Record<string, string> = {
 }
 
 type BrandItem = { id: string; name: string; slug: string; logoUrl: string }
+type BlogPostItem = {
+  slug: string; title: string; excerpt: string | null; thumbnailUrl: string | null
+  publishedAt: string | null; category: { name: string; slug: string } | null
+}
 
 export default function HomePageClient({
   categories,
@@ -775,6 +779,7 @@ export default function HomePageClient({
   heroBanners = [],
   brands = [],
   testimonials = [],
+  blogPosts = [],
 }: {
   categories: CategoryItem[]
   products: ProductItem[]
@@ -785,6 +790,7 @@ export default function HomePageClient({
   heroBanners?: HeroBanner[]
   brands?: BrandItem[]
   testimonials?: TestimonialItem[]
+  blogPosts?: BlogPostItem[]
 }) {
   const router = useRouter()
   // isAdmin lấy client-side để trang chủ render TĨNH (CDN) — admin thấy nút sửa sau khi hydrate
@@ -1086,6 +1092,89 @@ export default function HomePageClient({
                       />
                     </a>
                   ))}
+                </div>
+              </div>
+            </section>
+          )}
+
+          {blogPosts.length > 0 && (
+            <section className="py-12 bg-gray-50">
+              <div className="container mx-auto px-4 max-w-6xl">
+                {/* Header */}
+                <div className="flex items-end justify-between mb-8">
+                  <div>
+                    <p className="text-xs font-bold uppercase tracking-widest text-brand-red mb-1">Kiến Thức</p>
+                    <h2 className="text-2xl lg:text-3xl font-bold text-gray-900">Blog Gia Dụng Nhật Bản</h2>
+                  </div>
+                  <a href="/blog" className="text-sm font-semibold text-brand-red hover:underline shrink-0">
+                    Tất Cả Bài Viết →
+                  </a>
+                </div>
+
+                {/* Grid */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {/* Featured large card */}
+                  {blogPosts[0] && (
+                    <a href={`/blog/${blogPosts[0].slug}`} className="group flex flex-col rounded-2xl overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow">
+                      <div className="relative aspect-[16/9] bg-gray-100 overflow-hidden">
+                        {blogPosts[0].thumbnailUrl ? (
+                          <Image
+                            src={blogPosts[0].thumbnailUrl} alt={blogPosts[0].title}
+                            fill className="object-cover group-hover:scale-105 transition-transform duration-300"
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center text-4xl">📰</div>
+                        )}
+                        {blogPosts[0].category && (
+                          <span className="absolute top-3 left-3 bg-brand-red text-white text-xs font-bold uppercase px-2.5 py-1 rounded-full">
+                            {blogPosts[0].category.name}
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex flex-col flex-1 p-5">
+                        <h3 className="font-bold text-gray-900 text-lg leading-snug mb-2 group-hover:text-brand-red transition-colors line-clamp-2">
+                          {blogPosts[0].title}
+                        </h3>
+                        {blogPosts[0].excerpt && (
+                          <p className="text-sm text-gray-500 leading-relaxed line-clamp-2 mb-3 flex-1">{blogPosts[0].excerpt}</p>
+                        )}
+                        <p className="text-xs text-gray-400 mt-auto">
+                          {blogPosts[0].publishedAt ? new Date(blogPosts[0].publishedAt).toLocaleDateString('vi-VN') : ''}
+                        </p>
+                      </div>
+                    </a>
+                  )}
+
+                  {/* Right: 3 small cards */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {blogPosts.slice(1).map((post) => (
+                      <a key={post.slug} href={`/blog/${post.slug}`} className="group flex flex-col rounded-2xl overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow">
+                        <div className="relative aspect-[4/3] bg-gray-100 overflow-hidden">
+                          {post.thumbnailUrl ? (
+                            <Image
+                              src={post.thumbnailUrl} alt={post.title}
+                              fill className="object-cover group-hover:scale-105 transition-transform duration-300"
+                            />
+                          ) : (
+                            <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center text-3xl">📰</div>
+                          )}
+                          {post.category && (
+                            <span className="absolute top-2 left-2 bg-brand-red text-white text-[10px] font-bold uppercase px-2 py-0.5 rounded-full">
+                              {post.category.name}
+                            </span>
+                          )}
+                        </div>
+                        <div className="p-3 flex flex-col flex-1">
+                          <h3 className="font-semibold text-gray-900 text-sm leading-snug line-clamp-2 group-hover:text-brand-red transition-colors flex-1">
+                            {post.title}
+                          </h3>
+                          <p className="text-[11px] text-gray-400 mt-2">
+                            {post.publishedAt ? new Date(post.publishedAt).toLocaleDateString('vi-VN') : ''}
+                          </p>
+                        </div>
+                      </a>
+                    ))}
+                  </div>
                 </div>
               </div>
             </section>
