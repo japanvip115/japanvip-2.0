@@ -1,41 +1,31 @@
+import { Fragment } from 'react'
+
 const STEPS = [
-  {
-    step: '01',
-    title: 'Dán link sản phẩm',
-    desc: 'Copy link từ Amazon JP, Rakuten, Mercari hoặc Yahoo Shopping và dán vào ô tìm kiếm.',
-  },
-  {
-    step: '02',
-    title: 'Nhận báo giá',
-    desc: 'Hệ thống tự động lấy thông tin sản phẩm và tính chi phí bao gồm phí dịch vụ + vận chuyển.',
-  },
-  {
-    step: '03',
-    title: 'Đặt cọc 30%',
-    desc: 'Xác nhận đơn và đặt cọc 30% tổng giá trị. Chúng tôi tiến hành mua hàng tại Nhật ngay.',
-  },
-  {
-    step: '04',
-    title: 'Nhận hàng tại nhà',
-    desc: 'Hàng về kho Việt Nam, giao tận nhà trong 7–21 ngày. Thanh toán phần còn lại khi nhận hàng.',
-  },
+  { num: 1, icon: '🔗', title: 'Dán Link', desc: 'Copy link sản phẩm từ Amazon JP, Rakuten, Mercari hoặc Yahoo Shopping Japan' },
+  { num: 2, icon: '💰', title: 'Xem Báo Giá', desc: 'Hệ thống tự động tính giá, phí ship, phí dịch vụ và tổng chi phí về VN' },
+  { num: 3, icon: '💳', title: 'Đặt Cọc', desc: 'Thanh toán đặt cọc 30–50% qua ngân hàng để xác nhận đơn hàng' },
+  { num: 4, icon: '📦', title: 'Nhận Hàng', desc: '7–14 ngày hàng về VN, giao tận nhà toàn quốc' },
 ]
 
 export function BfjHowItWorks() {
   return (
     <section className="bg-gray-50 py-10">
       <div className="container">
-        <h2 className="mb-8 text-center text-3xl font-bold text-gray-900">
-          Quy trình mua hộ
-        </h2>
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-          {STEPS.map((s) => (
-            <div key={s.step} className="rounded-xl bg-white p-6 shadow-sm">
-              <div className="mb-4 text-4xl font-black text-red-100">{s.step}</div>
-              <h3 className="mb-2 font-bold text-gray-900">{s.title}</h3>
-              <p className="text-sm text-gray-500">{s.desc}</p>
-            </div>
-          ))}
+        <div className="how-it-works">
+          <h3>📋 Quy Trình 4 Bước Đơn Giản</h3>
+          <div className="steps">
+            {STEPS.map((s, i) => (
+              <Fragment key={s.num}>
+                <div className="step">
+                  <div className="step-num">{s.num}</div>
+                  <div className="step-icon">{s.icon}</div>
+                  <h4>{s.title}</h4>
+                  <p>{s.desc}</p>
+                </div>
+                {i < STEPS.length - 1 && <div className="step-arrow">→</div>}
+              </Fragment>
+            ))}
+          </div>
         </div>
       </div>
     </section>
