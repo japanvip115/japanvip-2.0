@@ -1084,11 +1084,11 @@ export default function HomePageClient({
                 </div>
 
                 {/* Grid */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
                   {/* Featured large card */}
                   {blogPosts[0] && (
                     <a href={`/blog/${blogPosts[0].slug}`} className="group flex flex-col rounded-2xl overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow">
-                      <div className="relative aspect-[16/9] bg-gray-100 overflow-hidden">
+                      <div className="relative aspect-[4/3] bg-gray-100 overflow-hidden">
                         {blogPosts[0].thumbnailUrl ? (
                           <Image
                             src={blogPosts[0].thumbnailUrl} alt={blogPosts[0].title}
@@ -1103,49 +1103,81 @@ export default function HomePageClient({
                           </span>
                         )}
                       </div>
-                      <div className="flex flex-col flex-1 p-5">
+                      <div className="flex flex-col p-5">
                         <h3 className="font-bold text-gray-900 text-lg leading-snug mb-2 group-hover:text-brand-red transition-colors line-clamp-2">
                           {blogPosts[0].title}
                         </h3>
                         {blogPosts[0].excerpt && (
-                          <p className="text-sm text-gray-500 leading-relaxed line-clamp-2 mb-3 flex-1">{blogPosts[0].excerpt}</p>
+                          <p className="text-sm text-gray-500 leading-relaxed line-clamp-3 mb-3">{blogPosts[0].excerpt}</p>
                         )}
-                        <p className="text-xs text-gray-400 mt-auto">
+                        <p className="text-xs text-gray-400">
                           {blogPosts[0].publishedAt ? new Date(blogPosts[0].publishedAt).toLocaleDateString('vi-VN') : ''}
                         </p>
                       </div>
                     </a>
                   )}
 
-                  {/* Right: 3 small cards */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {blogPosts.slice(1).map((post) => (
-                      <a key={post.slug} href={`/blog/${post.slug}`} className="group flex flex-col rounded-2xl overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow">
-                        <div className="relative aspect-[4/3] bg-gray-100 overflow-hidden">
-                          {post.thumbnailUrl ? (
+                  {/* Right: 2 top cards + 1 horizontal bottom card */}
+                  <div className="flex flex-col gap-4">
+                    {/* Top 2 cards */}
+                    <div className="grid grid-cols-2 gap-4">
+                      {blogPosts.slice(1, 3).map((post) => (
+                        <a key={post.slug} href={`/blog/${post.slug}`} className="group flex flex-col rounded-2xl overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow">
+                          <div className="relative aspect-[4/3] bg-gray-100 overflow-hidden">
+                            {post.thumbnailUrl ? (
+                              <Image
+                                src={post.thumbnailUrl} alt={post.title}
+                                fill className="object-cover group-hover:scale-105 transition-transform duration-300"
+                              />
+                            ) : (
+                              <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center text-2xl">📰</div>
+                            )}
+                            {post.category && (
+                              <span className="absolute top-2 left-2 bg-brand-red text-white text-[10px] font-bold uppercase px-2 py-0.5 rounded-full">
+                                {post.category.name}
+                              </span>
+                            )}
+                          </div>
+                          <div className="p-3">
+                            <h3 className="font-semibold text-gray-900 text-sm leading-snug line-clamp-2 group-hover:text-brand-red transition-colors">
+                              {post.title}
+                            </h3>
+                            <p className="text-[11px] text-gray-400 mt-1.5">
+                              {post.publishedAt ? new Date(post.publishedAt).toLocaleDateString('vi-VN') : ''}
+                            </p>
+                          </div>
+                        </a>
+                      ))}
+                    </div>
+
+                    {/* Bottom horizontal card */}
+                    {blogPosts[3] && (
+                      <a href={`/blog/${blogPosts[3].slug}`} className="group flex gap-4 rounded-2xl overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow p-3">
+                        <div className="relative w-28 shrink-0 rounded-xl overflow-hidden bg-gray-100 aspect-square">
+                          {blogPosts[3].thumbnailUrl ? (
                             <Image
-                              src={post.thumbnailUrl} alt={post.title}
+                              src={blogPosts[3].thumbnailUrl} alt={blogPosts[3].title}
                               fill className="object-cover group-hover:scale-105 transition-transform duration-300"
                             />
                           ) : (
-                            <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center text-3xl">📰</div>
-                          )}
-                          {post.category && (
-                            <span className="absolute top-2 left-2 bg-brand-red text-white text-[10px] font-bold uppercase px-2 py-0.5 rounded-full">
-                              {post.category.name}
-                            </span>
+                            <div className="w-full h-full flex items-center justify-center text-2xl">📰</div>
                           )}
                         </div>
-                        <div className="p-3 flex flex-col flex-1">
-                          <h3 className="font-semibold text-gray-900 text-sm leading-snug line-clamp-2 group-hover:text-brand-red transition-colors flex-1">
-                            {post.title}
+                        <div className="flex flex-col justify-center py-1 min-w-0">
+                          {blogPosts[3].category && (
+                            <span className="inline-block text-[10px] font-bold uppercase text-brand-red mb-1">
+                              {blogPosts[3].category.name}
+                            </span>
+                          )}
+                          <h3 className="font-semibold text-gray-900 text-sm leading-snug line-clamp-2 group-hover:text-brand-red transition-colors">
+                            {blogPosts[3].title}
                           </h3>
-                          <p className="text-[11px] text-gray-400 mt-2">
-                            {post.publishedAt ? new Date(post.publishedAt).toLocaleDateString('vi-VN') : ''}
+                          <p className="text-[11px] text-gray-400 mt-1.5">
+                            {blogPosts[3].publishedAt ? new Date(blogPosts[3].publishedAt).toLocaleDateString('vi-VN') : ''}
                           </p>
                         </div>
                       </a>
-                    ))}
+                    )}
                   </div>
                 </div>
               </div>
