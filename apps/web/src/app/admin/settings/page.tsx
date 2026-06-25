@@ -57,6 +57,7 @@ const GROUPS: { title: string; icon: string; items: SettingItem[] }[] = [
       { href: '/admin/settings/newsletter',       icon: '📧', title: 'Email Hàng Loạt',             desc: 'Soạn & gửi tin/khuyến mãi cho khách đã đăng ký', badge: 'Mới', badgeColor: 'blue' },
       { href: '/admin/settings/automations',      icon: '⚙️', title: 'Tự Động Hóa Email',           desc: 'Bật/tắt & tinh chỉnh welcome, win-back, bỏ giỏ, digest…', badge: 'Mới', badgeColor: 'blue' },
       { href: '/admin/settings/email-templates',  icon: '✉️', title: 'Mẫu Email (HTML)',             desc: 'Dán HTML tự thiết kế ghi đè email tự động (Stripo/BeeFree…)', badge: 'Mới', badgeColor: 'blue' },
+      { href: '/admin/settings/api-keys',          icon: '🗝️', title: 'API Key Ngoài',              desc: 'Bearer token cho Claude máy B / tool ngoài gọi API viết nội dung', badge: 'Mới', badgeColor: 'green' },
       { href: '/admin/settings/ai-keys',          icon: '🔐', title: 'AI API Keys',                 desc: 'Claude, GPT, Gemini, Stability, RunwayML…' },
       { href: '/admin/settings/ai-style',         icon: '🎨', title: 'Style Content AI',            desc: 'Tone, cấu trúc HTML, FAQ, attributes cho AI' },
       { href: '/admin/settings/blog-scrape',      icon: '🧹', title: 'Lọc Nội Dung Blog',          desc: 'Tự xoá backlink, SĐT khi scrape bài ngoài' },
