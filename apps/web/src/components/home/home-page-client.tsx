@@ -1084,7 +1084,7 @@ export default function HomePageClient({
                 </div>
 
                 {/* Grid */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   {/* Featured large card */}
                   {blogPosts[0] && (
                     <a href={`/blog/${blogPosts[0].slug}`} className="group flex flex-col rounded-2xl overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow">
@@ -1118,7 +1118,7 @@ export default function HomePageClient({
                   )}
 
                   {/* Right: 2 top cards + 1 horizontal bottom card */}
-                  <div className="flex flex-col gap-4">
+                  <div className="flex flex-col gap-4 h-full">
                     {/* Top 2 cards */}
                     <div className="grid grid-cols-2 gap-4">
                       {blogPosts.slice(1, 3).map((post) => (
@@ -1152,7 +1152,7 @@ export default function HomePageClient({
 
                     {/* Bottom horizontal card */}
                     {blogPosts[3] && (
-                      <a href={`/blog/${blogPosts[3].slug}`} className="group flex gap-4 rounded-2xl overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow p-3">
+                      <a href={`/blog/${blogPosts[3].slug}`} className="group flex gap-4 rounded-2xl overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow p-3 flex-1">
                         <div className="relative w-28 shrink-0 rounded-xl overflow-hidden bg-gray-100 aspect-square">
                           {blogPosts[3].thumbnailUrl ? (
                             <Image
