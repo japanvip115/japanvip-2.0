@@ -273,7 +273,7 @@ function SpecsTable({ attributes, specGroups }: { attributes: Attribute[]; specG
                 </tr>
                 {grp.items.map((attr, i) => (
                   <tr key={attr.id} className={i % 2 === 0 ? 'bg-gray-50/40' : 'bg-white'}>
-                    <td className="w-2/5 px-5 py-3 font-medium text-gray-500">{attr.name}</td>
+                    <td className="w-2/5 px-5 py-3 font-medium text-gray-500">{attr.name.replace(/^\[[^\]]+\]/, '')}</td>
                     <td className="px-5 py-3 font-medium text-gray-900">{attr.value}</td>
                   </tr>
                 ))}
