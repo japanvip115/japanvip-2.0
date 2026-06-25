@@ -883,10 +883,10 @@ export default function HomePageClient({
                   <h2>{t('home_bfj_title')}</h2>
                   <p>{t('home_bfj_desc')}</p>
                   <div className="supported-sites">
-                    <span className="site-badge amazon">Amazon JP</span>
+                    <span className="site-badge amazon">Amazon Japan</span>
                     <span className="site-badge rakuten">Rakuten</span>
                     <span className="site-badge mercari">Mercari</span>
-                    <span className="site-badge yahoo">Yahoo JP</span>
+                    <span className="site-badge yahoo">Yahoo Japan</span>
                   </div>
                 </div>
                 <div className="url-tool-right">
@@ -1156,7 +1156,7 @@ export default function HomePageClient({
                     </div>
 
                     {/* Bottom horizontal cards */}
-                    {[blogPosts[3], blogPosts[4]].filter(Boolean).map((post) => (
+                    {[blogPosts[3], blogPosts[4]].filter((p): p is BlogPostItem => Boolean(p)).map((post) => (
                       <a key={post.slug} href={`/blog/${post.slug}`} className="group flex flex-1 gap-4 rounded-2xl overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow p-3 items-center">
                         <div className="relative w-28 shrink-0 rounded-xl overflow-hidden bg-gray-100 aspect-square">
                           {post.thumbnailUrl ? (
@@ -1260,12 +1260,12 @@ export default function HomePageClient({
                         Kiểm Tra Ngay
                       </button>
                     </div>
-                    <div className="url-tips"><strong>💡 Hỗ trợ:</strong><ul><li>amazon.co.jp/dp/...</li><li>item.rakuten.co.jp/...</li><li>jp.mercari.com/item/...</li></ul></div>
+                    <div className="url-tips"><strong>💡 Hỗ trợ:</strong><span style={{display:'inline-flex',flexWrap:'wrap',gap:'0 1rem',marginLeft:'0.5rem'}}><span>amazon.co.jp/dp/...</span><span>item.rakuten.co.jp/...</span><span>jp.mercari.com/item/...</span></span></div>
                   </div>
                   <div className="product-result" id="product-result" style={{display:'none'}}>
                     <h3>📦 Thông Tin Sản Phẩm</h3>
                     <div className="result-card">
-                      <div className="result-img"><div className="result-img-placeholder" style={{background:'linear-gradient(135deg, #667eea, #764ba2)'}}><span style={{fontSize:'4rem'}}>🍚</span></div><div className="source-badge">Amazon JP</div></div>
+                      <div className="result-img"><div className="result-img-placeholder" style={{background:'linear-gradient(135deg, #667eea, #764ba2)'}}><span style={{fontSize:'4rem'}}>🍚</span></div><div className="source-badge">Amazon Japan</div></div>
                       <div className="result-info">
                         <h4>Tiger IH Rice Cooker JKT-S18W 1.8L</h4>
                         <div className="price-breakdown">
