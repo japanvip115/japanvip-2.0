@@ -1,3 +1,4 @@
+import { resolveEditorAuth } from '@/lib/api-auth'
 import { NextRequest } from 'next/server'
 import { z } from 'zod'
 import { prisma, Prisma } from '@japanvip/db'
@@ -31,9 +32,7 @@ const patchSchema = z.object({
 
 
 export async function GET(_req: NextRequest, { params }: Params) {
-  const session = await auth()
-  if (!session) return apiError('Unauthorized', 401)
-  if (!hasRole(session.user!.role, 'EDITOR')) return apiError('Forbidden', 403)
+  if (!await resolveEditorAuth(_req)) return apiError('Unauthorized', 401)
 
   const { id } = await params
 
@@ -56,9 +55,7 @@ export async function GET(_req: NextRequest, { params }: Params) {
 }
 
 export async function PATCH(req: NextRequest, { params }: Params) {
-  const session = await auth()
-  if (!session) return apiError('Unauthorized', 401)
-  if (!hasRole(session.user!.role, 'EDITOR')) return apiError('Forbidden', 403)
+  if (!await resolveEditorAuth(req)) return apiError('Unauthorized', 401)
 
   const { id } = await params
 
@@ -117,9 +114,7 @@ export async function PATCH(req: NextRequest, { params }: Params) {
 }
 
 export async function DELETE(_req: NextRequest, { params }: Params) {
-  const session = await auth()
-  if (!session) return apiError('Unauthorized', 401)
-  if (!hasRole(session.user!.role, 'EDITOR')) return apiError('Forbidden', 403)
+  if (!await resolveEditorAuth(_req)) return apiError('Unauthorized', 401)
 
   const { id } = await params
 

@@ -1,3 +1,4 @@
+import { resolveEditorAuth } from '@/lib/api-auth'
 import type { NextRequest } from 'next/server'
 import * as cheerio from 'cheerio'
 import { auth } from '@/lib/auth'

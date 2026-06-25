@@ -1,3 +1,4 @@
+import { resolveEditorAuth } from '@/lib/api-auth'
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 import { prisma } from '@japanvip/db'
@@ -103,9 +104,7 @@ async function findCategoryId(productName: string): Promise<string | null> {
 }
 
 export async function POST(req: NextRequest) {
-  const session = await auth()
-  if (!session) return apiError('Unauthorized', 401)
-  if (!hasRole(session.user!.role, 'EDITOR')) return apiError('Forbidden', 403)
+  if (!await resolveEditorAuth(req)) return apiError('Unauthorized', 401)
 
   try {
     const body = await req.json()

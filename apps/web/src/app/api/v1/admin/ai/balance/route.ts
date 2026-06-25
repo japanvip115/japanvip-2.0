@@ -1,12 +1,10 @@
+import { resolveEditorAuth } from '@/lib/api-auth'
 import { auth } from '@/lib/auth'
 import { hasRole } from '@/lib/auth-types'
 import { getAiApiKey } from '@/lib/ai-keys'
 
-export async function GET() {
-  const session = await auth()
-  if (!hasRole((session?.user as any)?.role, 'EDITOR')) {
-    return Response.json({ error: 'Unauthorized' }, { status: 401 })
-  }
+export async function GET(req: Request) {
+  if (!await resolveEditorAuth(req)) return Response.json({ error: 'Unauthorized' }, { status: 401 })
 
   const apiKey = await getAiApiKey('anthropic')
   if (!apiKey) {

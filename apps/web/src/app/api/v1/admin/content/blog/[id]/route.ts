@@ -1,3 +1,4 @@
+import { resolveEditorAuth } from '@/lib/api-auth'
 import { NextRequest } from 'next/server'
 import { z } from 'zod'
 import { prisma } from '@japanvip/db'

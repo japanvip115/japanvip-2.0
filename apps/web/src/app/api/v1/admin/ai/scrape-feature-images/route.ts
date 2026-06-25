@@ -1,3 +1,4 @@
+import { resolveEditorAuth } from '@/lib/api-auth'
 import type { NextRequest } from 'next/server'
 import { auth } from '@/lib/auth'
 import { hasRole } from '@/lib/auth-types'

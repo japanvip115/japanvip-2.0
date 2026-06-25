@@ -1,3 +1,4 @@
+import { resolveEditorAuth } from '@/lib/api-auth'
 import Anthropic from '@anthropic-ai/sdk'
 import { auth } from '@/lib/auth'
 import { hasRole } from '@/lib/auth-types'
@@ -99,10 +100,7 @@ ${specsText ? `\nThông số tham khảo:\n${specsText}\n` : ''}${content ? `\nN
 
 // ── Route handler ─────────────────────────────────────────────────────────────
 export async function POST(req: Request) {
-  const session = await auth()
-  if (!hasRole((session?.user as any)?.role, 'EDITOR')) {
-    return Response.json({ error: 'Unauthorized' }, { status: 401 })
-  }
+  if (!await resolveEditorAuth(req)) return Response.json({ error: 'Unauthorized' }, { status: 401 })
 
   const { type, productName, specs, keywords, extra, customInstruction, freePrompt, provider = 'anthropic', maxWords, testMode, productId, categoryId, brandId, claudeCodeModel, images = [], vnReference } = await req.json()
 

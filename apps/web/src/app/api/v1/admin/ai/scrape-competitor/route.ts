@@ -1,3 +1,4 @@
+import { resolveEditorAuth } from '@/lib/api-auth'
 import { auth } from '@/lib/auth'
 import { hasRole } from '@/lib/auth-types'
 
