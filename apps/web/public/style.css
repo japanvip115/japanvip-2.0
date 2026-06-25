@@ -804,11 +804,9 @@ ul, ol { list-style: none; }
 .btn-clear { color: var(--jp-gray-300); font-size: 1rem; transition: var(--transition); padding: 2px 6px; }
 .btn-clear:hover { color: var(--jp-red); }
 .btn-check { width: 100%; justify-content: center; padding: 14px; font-size: 1rem; border-radius: var(--radius-lg); }
-.url-tips { background: var(--jp-gray-50); border-radius: var(--radius-md); padding: 14px 16px; }
-.url-tips strong { font-size: 0.82rem; color: var(--jp-gray-700); display: block; margin-bottom: 6px; }
-.url-tips ul { display: flex; flex-direction: column; gap: 4px; }
-.url-tips li { font-size: 0.8rem; color: var(--jp-gray-500); }
-.url-tips li::before { content: '• '; color: var(--jp-red); }
+.url-tips { background: var(--jp-gray-50); border-radius: var(--radius-md); padding: 10px 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; }
+.url-tips strong { font-size: 0.82rem; color: var(--jp-gray-700); white-space: nowrap; }
+.url-tips span span { font-size: 0.8rem; color: var(--jp-gray-500); white-space: nowrap; }
 
 .product-result { background: white; border-radius: var(--radius-xl); padding: 28px; box-shadow: var(--shadow-md); border: 1px solid var(--jp-gray-100); margin-bottom: 30px; animation: fadeIn 0.4s ease; }
 .product-result h3 { font-family: var(--font-serif); font-size: 1.2rem; font-weight: 700; margin-bottom: 20px; color: var(--jp-gray-900); }
