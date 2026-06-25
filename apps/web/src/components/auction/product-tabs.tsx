@@ -43,7 +43,7 @@ export function ProductTabs({
       {/* Tab body */}
       {tab === 'desc' && (
         description
-          ? <ProductDescription description={description} />
+          ? <ProductDescription description={description} collapseHeight={280} />
           : <div className="p-4 text-sm text-gray-400 italic">Chưa có mô tả sản phẩm.</div>
       )}
 

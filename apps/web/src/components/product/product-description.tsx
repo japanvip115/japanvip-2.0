@@ -76,7 +76,7 @@ function processDescription(html: string): { processed: string; toc: TocItem[] }
 
 const COLLAPSE_HEIGHT = 600
 
-export function ProductDescription({ description }: { description: string }) {
+export function ProductDescription({ description, collapseHeight = COLLAPSE_HEIGHT }: { description: string; collapseHeight?: number }) {
   const [tocOpen, setTocOpen] = useState(false)
   const [collapsed, setCollapsed] = useState(true)
 
@@ -135,7 +135,7 @@ export function ProductDescription({ description }: { description: string }) {
       {/* ── Content ── */}
       <div
         className="relative overflow-hidden transition-[max-height] duration-500"
-        style={{ maxHeight: collapsed ? `${COLLAPSE_HEIGHT}px` : undefined }}
+        style={{ maxHeight: collapsed ? `${collapseHeight}px` : undefined }}
       >
         <div
           className="prose prose-sm max-w-none text-gray-700 leading-7
