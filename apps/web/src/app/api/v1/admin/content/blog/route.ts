@@ -43,9 +43,14 @@ export async function POST(req: NextRequest) {
     const body = await req.json()
     const { relatedProductIds, ...rest } = body
     const data = schema.parse(rest)
-    // Mặc định tác giả = admin đang đăng nhập nếu client không truyền authorId
     const session = await auth()
-    const authorId = data.authorId ?? (session!.user as any).id
+    const sessionUserId = (session?.user as any)?.id
+    const fallbackAdmin = sessionUserId ? null : await prisma.user.findFirst({
+      where: { role: { in: ['ADMIN', 'SUPER_ADMIN'] } },
+      select: { id: true },
+      orderBy: { createdAt: 'asc' },
+    })
+    const authorId = data.authorId ?? sessionUserId ?? fallbackAdmin?.id
     if (!authorId) return apiError('Thiếu tác giả', 400)
     const slug = await uniqueSlug(data.slug)
 
