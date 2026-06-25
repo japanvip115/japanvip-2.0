@@ -772,7 +772,7 @@ export function BfjUrlForm({ fees }: { fees: StaticFees }) {
                       {[
                         { label: 'Giá sản phẩm (JPY)', w: 'w-20' },
                         { label: 'Phí mua hộ (8%)', w: 'w-16' },
-                        { label: 'Ship JP → VN', w: 'w-24' },
+                        { label: 'Ship Japan → Việt Nam', w: 'w-24' },
                       ].map((row, i) => (
                         <div key={i} className="flex justify-between text-gray-400">
                           <span>{row.label}</span>
@@ -837,7 +837,7 @@ export function BfjUrlForm({ fees }: { fees: StaticFees }) {
                   )}
                   <div className="flex justify-between text-gray-500">
                     <span>
-                      Ship quốc tế JP → VN
+                      Ship quốc tế Japan → Việt Nam
                       {result.weightKg != null && (
                         <span className="ml-1 text-[10px] text-blue-500">({result.weightKg} kg)</span>
                       )}
