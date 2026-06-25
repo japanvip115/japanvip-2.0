@@ -1076,7 +1076,7 @@ export default function HomePageClient({
                 <div className="flex items-end justify-between mb-8">
                   <div>
                     <p className="text-xs font-bold uppercase tracking-widest text-brand-red mb-1">Kiến Thức</p>
-                    <h2 className="text-2xl lg:text-3xl font-bold text-gray-900">Blog Gia Dụng Nhật Bản</h2>
+                    <h2 className="text-xl lg:text-2xl font-bold text-gray-900">Blog Gia Dụng Nhật Bản</h2>
                   </div>
                   <a href="/blog" className="text-sm font-semibold text-brand-red hover:underline shrink-0">
                     Tất Cả Bài Viết →
