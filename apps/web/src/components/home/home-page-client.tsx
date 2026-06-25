@@ -602,58 +602,70 @@ function HeroBannerSlider({ banners, router }: { banners: HeroBanner[]; router: 
     return () => { if (timerRef.current) clearInterval(timerRef.current) }
   }, [banners.length])
 
-  const banner = banners[idx]!
-  const video = isVideo(banner.imageUrl)
+  const activeBanner = banners[idx]!
 
   return (
     <section
       className="relative overflow-hidden h-[300px] sm:h-[440px] lg:h-[625px]"
-      style={{ cursor: banner.linkUrl ? 'pointer' : 'default' }}
-      onClick={() => { if (banner.linkUrl) router.push(banner.linkUrl) }}
+      style={{ cursor: activeBanner.linkUrl ? 'pointer' : 'default' }}
+      onClick={() => { if (activeBanner.linkUrl) router.push(activeBanner.linkUrl) }}
     >
-      {video ? (
-        <>
-          {/* Mobile/tablet: ảnh poster tĩnh (LCP nhanh, KHÔNG tải video 2.65MB) */}
-          <Image
-            src={banner.imageUrl.replace(/\.mp4$/i, '.jpg')}
-            alt={banner.title}
-            fill priority sizes="100vw"
-            className="lg:hidden"
-            style={{ objectFit: 'cover' }}
-          />
-          {/* Desktop (mạng nhanh): video tự phát */}
-          <video
+      {/* Render tất cả banner chồng nhau — crossfade bằng opacity */}
+      {banners.map((banner, i) => {
+        const active = i === idx
+        const video = isVideo(banner.imageUrl)
+        return (
+          <div
             key={banner.imageUrl}
-            src={banner.imageUrl}
-            poster={banner.imageUrl.replace(/\.mp4$/i, '.jpg')}
-            autoPlay muted loop playsInline preload="none"
-            className="hidden lg:block"
-            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
-          />
-        </>
-      ) : (
-        <Image
-          key={banner.imageUrl}
-          src={banner.imageUrl}
-          alt={banner.title}
-          fill
-          priority
-          sizes="100vw"
-          style={{ objectFit: 'cover' }}
-        />
-      )}
-      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 60%)' }} />
+            style={{
+              position: 'absolute', inset: 0,
+              opacity: active ? 1 : 0,
+              transition: 'opacity 0.8s ease-in-out',
+              zIndex: active ? 1 : 0,
+            }}
+          >
+            {video ? (
+              <>
+                <Image
+                  src={banner.imageUrl.replace(/\.mp4$/i, '.jpg')}
+                  alt={banner.title}
+                  fill sizes="100vw"
+                  priority={i === 0}
+                  className="lg:hidden"
+                  style={{ objectFit: 'cover' }}
+                />
+                <video
+                  src={banner.imageUrl}
+                  poster={banner.imageUrl.replace(/\.mp4$/i, '.jpg')}
+                  autoPlay muted loop playsInline preload="none"
+                  className="hidden lg:block"
+                  style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+                />
+              </>
+            ) : (
+              <Image
+                src={banner.imageUrl}
+                alt={banner.title}
+                fill sizes="100vw"
+                priority={i === 0}
+                style={{ objectFit: 'cover' }}
+              />
+            )}
+          </div>
+        )
+      })}
+      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 60%)', zIndex: 2 }} />
       {banners.length > 1 && (
         <>
           <button
             onClick={(e) => { e.stopPropagation(); go(idx - 1) }}
-            style={{ position: 'absolute', left: 16, top: '50%', transform: 'translateY(-50%)', background: 'rgba(0,0,0,0.4)', border: 'none', borderRadius: 9999, width: 40, height: 40, color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            style={{ position: 'absolute', left: 16, top: '50%', transform: 'translateY(-50%)', background: 'rgba(0,0,0,0.4)', border: 'none', borderRadius: 9999, width: 40, height: 40, color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 3 }}
           >‹</button>
           <button
             onClick={(e) => { e.stopPropagation(); go(idx + 1) }}
-            style={{ position: 'absolute', right: 16, top: '50%', transform: 'translateY(-50%)', background: 'rgba(0,0,0,0.4)', border: 'none', borderRadius: 9999, width: 40, height: 40, color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            style={{ position: 'absolute', right: 16, top: '50%', transform: 'translateY(-50%)', background: 'rgba(0,0,0,0.4)', border: 'none', borderRadius: 9999, width: 40, height: 40, color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 3 }}
           >›</button>
-          <div style={{ position: 'absolute', bottom: 16, left: 0, right: 0, display: 'flex', justifyContent: 'center', gap: 8 }}>
+          <div style={{ position: 'absolute', bottom: 16, left: 0, right: 0, display: 'flex', justifyContent: 'center', gap: 8, zIndex: 3 }}>
             {banners.map((_, i) => (
               <button
                 key={i}
