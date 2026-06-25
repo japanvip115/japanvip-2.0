@@ -298,33 +298,38 @@ Tạo SEO metadata cho sản phẩm. Xuất JSON:
 
     // 🔒 LOCKED (2026-06) — Văn phong + cấu trúc blog học từ kho đối thủ, đã chốt. Xem CLAUDE.md. KHÔNG tự sửa.
     case 'blog': {
-      const blogWords = maxWords ?? 1500
+      const blogWords = maxWords ?? 5000
       return `${HTML_ONLY}${base}
-Viết bài blog HTML như một biên tập viên đánh giá gia dụng Nhật thực thụ. HỌC VĂN PHONG + CẤU TRÚC từ các bài "TÀI LIỆU THAM KHẢO" ở cuối prompt (style của congnghenhat.com): chi tiết, thực tế, trung thực, đi thẳng vào số liệu — KHÔNG sáo rỗng, KHÔNG công thức.
+Viết bài blog HTML dài, chi tiết như một biên tập viên gia dụng Nhật chuyên nghiệp. Học văn phong từ hiephongjapan.vn: đi thẳng vào số liệu, trung thực, thực tế, không sáo rỗng.
 
 🏷️ TIÊU ĐỀ BÀI (thẻ <h1> đầu, BẮT BUỘC):
-- TUYỆT ĐỐI KHÔNG "[Tên sản phẩm] là gì?" — sáo rỗng, không ai search.
-- Chọn 1 mẫu tiêu đề như đối thủ hay dùng:
-  · "Đánh giá tổng quan/chi tiết [sản phẩm] nội địa Nhật"
-  · "So sánh [A] và [B]"
-  · "Có nên mua [loại sản phẩm] nội địa Nhật không?"
-  · "Kinh nghiệm chọn mua [loại]"
-  · "[Sản phẩm] — [lợi ích/điểm nổi bật nhất]"
-- Ví dụ tốt: "Đánh giá máy hút bụi cyclone Toshiba VC-C7-R: nhỏ gọn 2,2kg cho căn hộ Việt".
+- Chọn 1 mẫu tiêu đề customer-friendly (không phải mã model):
+  · "[Dung tích/Công suất] nội địa Nhật: [Câu hỏi khách hay hỏi]?"
+  · "Đánh giá [sản phẩm] nội địa Nhật: Review thực tế tại Việt Nam"
+  · "Có nên mua [sản phẩm] nội địa Nhật không? Ưu nhược điểm thật"
+  · "So sánh [A] và [B]: Cái nào đáng mua hơn?"
+  · "[Sản phẩm]: [Lợi ích cụ thể cho gia đình N người]"
+- Ví dụ tốt: "Tủ lạnh Hitachi 540L nội địa Nhật: Dùng tốt cho gia đình 4–5 người, cần biến áp 100V"
+- TUYỆT ĐỐI KHÔNG dùng tiêu đề chỉ là mã model (vd "Tủ lạnh Hitachi R-HXCC54V")
 
-✍️ MỞ BÀI: vào thẳng tình huống/vấn đề thực tế hoặc nêu ngay điểm nổi bật — KHÔNG định nghĩa "X là dòng... thuộc thương hiệu...".
+✍️ MỞ BÀI: bắt đầu bằng tình huống thực tế của khách hàng hoặc câu hỏi họ đang tìm câu trả lời — KHÔNG định nghĩa "X là dòng... thuộc thương hiệu...".
 
-📑 CẤU TRÚC (theo style đối thủ, mỗi mục <h2> — bỏ mục nào thiếu dữ liệu, KHÔNG để trống):
-1. Thiết kế & ngoại hình (kích thước, màu, trọng lượng — số liệu thật)
-2. Công nghệ & tính năng nổi bật (giải thích cơ chế + lợi ích thực tế)
-3. Ưu điểm (bullet ✔)
-4. Nhược điểm cần cân nhắc (THẬT THÀ: điện áp 100V cần biến áp, bảng tiếng Nhật, giá... — KHÔNG giấu)
-5. Trải nghiệm sử dụng thực tế tại Việt Nam
-6. Thông số kỹ thuật (bảng <table>)
-7. Sản phẩm phù hợp với ai
-8. Kết luận + CTA Japan VIP (Hotline: 09.2729.8888)
+📑 CẤU TRÚC 12 SECTION (mỗi section dùng <h2>, mỗi mục con dùng <h3> — bỏ section nào thiếu dữ liệu):
+I.   Trước khi mua — những điều cần xác định
+II.  Tổng quan sản phẩm (dung tích/công suất, phân khúc, đối tượng phù hợp)
+III. Bảng thông số kỹ thuật chi tiết (<table> HTML — chỉ điền trường có dữ liệu xác thực)
+IV.  Công nghệ & tính năng nổi bật (mỗi công nghệ 1 <h3>, giải thích cơ chế + lợi ích thực tế, 150–200 từ/mục)
+V.   Thiết kế & ngoại hình (kích thước, màu, trọng lượng, vật liệu)
+VI.  Trải nghiệm sử dụng thực tế tại Việt Nam (tiếng ồn, tiêu thụ điện, vận hành mùa hè/nồm)
+VII. Lưu ý điện 100V — biến áp và chi phí (PHẢI có — đây là điểm độc quyền của hàng nội địa Nhật)
+VIII.Ưu điểm nổi bật (bullet ✔)
+IX.  Nhược điểm cần cân nhắc (THẬT THÀ: bảng tiếng Nhật, giá cao, cần biến áp, giao hàng HN+HP — KHÔNG giấu)
+X.   Sản phẩm phù hợp với ai — và KHÔNG phù hợp với ai
+XI.  5 câu hỏi nên hỏi người bán trước khi xuống tiền
+XII. Kết luận + Câu hỏi thường gặp (FAQ — 5–8 câu, dùng <h3> cho mỗi câu)
+     + CTA Japan VIP: Hotline 09.2729.8888, giao hàng Hà Nội và Hải Phòng
 
-Mục tiêu ${blogWords.toLocaleString()} từ. SEO tự nhiên. Heading đặt tên tự nhiên theo Ý (vd "Thiết kế & ngoại hình", "Công nghệ lốc xoáy giữ lực hút"), KHÔNG đánh số 1/2/3 vào tiêu đề mục, KHÔNG dùng "[Sản phẩm] là gì?".
+Mục tiêu ${blogWords.toLocaleString()} từ (~${Math.round(blogWords * 6.5).toLocaleString()} ký tự). SEO tự nhiên. Heading đặt tên tự nhiên theo ý nghĩa (KHÔNG đánh số La Mã vào thẻ <h2>/<h3>, chỉ là số La Mã trong text nếu cần phân biệt). PHẢI hoàn thành đủ các section, không cắt giữa chừng.
 Chỉ đưa số liệu khi có dữ liệu xác thực. KHÔNG dùng "bảo hành chính hãng".${buildImageBlock(images)}${VI_ONLY_RULE}${NO_PLACEHOLDER_RULE}${instruction}`
     }
 
