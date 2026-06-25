@@ -15,7 +15,7 @@ function toSlug(str: string) {
 
 export async function POST(req: NextRequest) {
   const session = await auth()
-  if (!hasRole((session?.user as any)?.role, 'ADMIN')) {
+  if (!hasRole((session?.user as any)?.role, 'EDITOR')) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
 
 export async function DELETE(req: NextRequest) {
   const session = await auth()
-  if (!hasRole((session?.user as any)?.role, 'ADMIN')) {
+  if (!hasRole((session?.user as any)?.role, 'EDITOR')) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
   const { id } = await req.json()

@@ -78,7 +78,7 @@ async function scrapeArticle(url: string, blocklist: RegExp[], authorId: string)
 export async function POST(req: NextRequest) {
   const session = await auth()
   const user = session?.user as any
-  if (!hasRole(user?.role, 'ADMIN')) {
+  if (!hasRole(user?.role, 'EDITOR')) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 

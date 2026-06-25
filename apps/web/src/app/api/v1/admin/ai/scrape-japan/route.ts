@@ -490,7 +490,7 @@ async function scrapeJapanGeneral(url: string) {
 export async function POST(req: NextRequest) {
   const session = await auth()
   if (!session) return apiError('Unauthorized', 401)
-  if (!hasRole(session.user!.role, 'ADMIN')) return apiError('Forbidden', 403)
+  if (!hasRole(session.user!.role, 'EDITOR')) return apiError('Forbidden', 403)
 
   try {
     const { url } = await req.json()

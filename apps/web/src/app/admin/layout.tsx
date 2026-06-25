@@ -26,13 +26,14 @@ async function getSidebarCounts(): Promise<Record<string, number>> {
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await auth()
   if (!session) redirect('/login')
-  if (!hasRole((session.user as any).role, 'ADMIN')) redirect('/403')
+  const userRole = (session.user as any).role
+  if (!hasRole(userRole, 'EDITOR')) redirect('/403')
 
   const counts = await getSidebarCounts()
 
   return (
     <div className="flex min-h-screen bg-gray-950">
-      <AdminSidebar user={{ name: session.user?.name, email: session.user?.email }} counts={counts} />
+      <AdminSidebar user={{ name: session.user?.name, email: session.user?.email, role: userRole }} counts={counts} />
       <main className="flex-1 overflow-auto p-6 text-gray-100">{children}</main>
     </div>
   )

@@ -39,7 +39,7 @@ async function crawlerImages(target: string): Promise<string[]> {
 export async function POST(req: NextRequest) {
   const session = await auth()
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  if (!hasRole((session?.user as any)?.role, 'ADMIN')) {
+  if (!hasRole((session?.user as any)?.role, 'EDITOR')) {
     return apiError('Unauthorized', 401)
   }
 

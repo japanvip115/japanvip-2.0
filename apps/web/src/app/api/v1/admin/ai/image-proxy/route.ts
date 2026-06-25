@@ -6,7 +6,7 @@ const BLOCKED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0', '::1', 'japanvip.vn'
 
 export async function GET(req: Request) {
   const session = await auth()
-  if (!hasRole((session?.user as any)?.role, 'ADMIN')) {
+  if (!hasRole((session?.user as any)?.role, 'EDITOR')) {
     return new Response('Unauthorized', { status: 401 })
   }
 

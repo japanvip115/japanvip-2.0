@@ -10,7 +10,7 @@ type FoundImage = { url: string; thumbnail: string; title: string; width: number
 // Tìm thêm ảnh — ưu tiên Exa (không cần bật API Google), fallback Google Custom Search
 export async function POST(req: Request) {
   const session = await auth()
-  if (!hasRole((session?.user as any)?.role, 'ADMIN')) {
+  if (!hasRole((session?.user as any)?.role, 'EDITOR')) {
     return apiError('Unauthorized', 401)
   }
 

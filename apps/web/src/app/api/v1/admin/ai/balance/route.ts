@@ -4,7 +4,7 @@ import { getAiApiKey } from '@/lib/ai-keys'
 
 export async function GET() {
   const session = await auth()
-  if (!hasRole((session?.user as any)?.role, 'ADMIN')) {
+  if (!hasRole((session?.user as any)?.role, 'EDITOR')) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }
 

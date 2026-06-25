@@ -5,7 +5,7 @@ import { findRelatedProducts } from '@/lib/blog-scraper'
 
 export async function POST(req: NextRequest) {
   const session = await auth()
-  if (!hasRole((session?.user as any)?.role, 'ADMIN')) {
+  if (!hasRole((session?.user as any)?.role, 'EDITOR')) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
   const { title } = await req.json()

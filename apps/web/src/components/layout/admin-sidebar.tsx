@@ -58,12 +58,20 @@ const NAV_SECTIONS = [
   },
 ]
 
+// Sections ẩn với EDITOR (chỉ viết nội dung)
+const EDITOR_HIDDEN_SECTIONS = new Set(['Kinh doanh', 'Tổng quan'])
+const EDITOR_HIDDEN_ITEMS = new Set([
+  '/admin/products', '/admin/categories', '/admin/brands',
+  '/admin/settings',
+])
+
 type AdminSidebarProps = {
-  user: { name?: string | null; email?: string | null }
+  user: { name?: string | null; email?: string | null; role?: string }
   counts?: Record<string, number>
 }
 
 export function AdminSidebar({ user, counts = {} }: AdminSidebarProps) {
+  const isEditor = user.role === 'EDITOR'
   const pathname = usePathname()
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({})
   const [ready, setReady] = useState(false)
@@ -108,7 +116,7 @@ export function AdminSidebar({ user, counts = {} }: AdminSidebarProps) {
 
       {/* Nav */}
       <nav className="flex-1 overflow-y-auto py-2 px-2">
-        {NAV_SECTIONS.map((section) => {
+        {NAV_SECTIONS.filter(s => !isEditor || !EDITOR_HIDDEN_SECTIONS.has(s.label)).map((section) => {
           const isCollapsed = ready && collapsed[section.label]
           const pending = sectionPending(section)
           return (
@@ -129,7 +137,7 @@ export function AdminSidebar({ user, counts = {} }: AdminSidebarProps) {
               </button>
 
               <div className={`overflow-hidden transition-all duration-200 ${isCollapsed ? 'max-h-0' : 'mt-0.5 max-h-[600px]'}`}>
-                {section.items.map((item) => {
+                {section.items.filter(item => !isEditor || !EDITOR_HIDDEN_ITEMS.has(item.href)).map((item) => {
                   const active = item.exact ? pathname === item.href : pathname.startsWith(item.href)
                   const badge = counts[item.href] ?? 0
                   const children = (item as any).children as typeof section.items | undefined

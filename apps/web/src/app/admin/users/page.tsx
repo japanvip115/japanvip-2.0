@@ -28,6 +28,7 @@ const STATUS_LABELS: Record<UserStatus, string> = {
 const ROLE_LABELS: Record<UserRole, string> = {
   CUSTOMER: 'Khách hàng',
   PARTNER: 'Đối tác',
+  EDITOR: 'Biên tập viên',
   ADMIN: 'Admin',
   SUPER_ADMIN: 'Super Admin',
 }
@@ -35,6 +36,7 @@ const ROLE_LABELS: Record<UserRole, string> = {
 const ROLE_COLORS: Record<UserRole, string> = {
   CUSTOMER: 'text-gray-400',
   PARTNER: 'text-blue-400',
+  EDITOR: 'text-green-400',
   ADMIN: 'text-orange-400',
   SUPER_ADMIN: 'text-red-400',
 }

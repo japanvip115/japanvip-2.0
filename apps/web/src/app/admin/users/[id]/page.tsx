@@ -25,6 +25,7 @@ const STATUS_LABELS: Record<UserStatus, string> = {
 const ROLE_LABELS: Record<UserRole, string> = {
   CUSTOMER: 'Khách hàng',
   PARTNER: 'Đối tác',
+  EDITOR: 'Biên tập viên',
   ADMIN: 'Admin',
   SUPER_ADMIN: 'Super Admin',
 }

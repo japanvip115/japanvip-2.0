@@ -33,7 +33,7 @@ const patchSchema = z.object({
 export async function GET(_req: NextRequest, { params }: Params) {
   const session = await auth()
   if (!session) return apiError('Unauthorized', 401)
-  if (!hasRole(session.user!.role, 'ADMIN')) return apiError('Forbidden', 403)
+  if (!hasRole(session.user!.role, 'EDITOR')) return apiError('Forbidden', 403)
 
   const { id } = await params
 
@@ -58,7 +58,7 @@ export async function GET(_req: NextRequest, { params }: Params) {
 export async function PATCH(req: NextRequest, { params }: Params) {
   const session = await auth()
   if (!session) return apiError('Unauthorized', 401)
-  if (!hasRole(session.user!.role, 'ADMIN')) return apiError('Forbidden', 403)
+  if (!hasRole(session.user!.role, 'EDITOR')) return apiError('Forbidden', 403)
 
   const { id } = await params
 
@@ -119,7 +119,7 @@ export async function PATCH(req: NextRequest, { params }: Params) {
 export async function DELETE(_req: NextRequest, { params }: Params) {
   const session = await auth()
   if (!session) return apiError('Unauthorized', 401)
-  if (!hasRole(session.user!.role, 'ADMIN')) return apiError('Forbidden', 403)
+  if (!hasRole(session.user!.role, 'EDITOR')) return apiError('Forbidden', 403)
 
   const { id } = await params
 

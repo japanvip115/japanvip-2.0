@@ -16,7 +16,7 @@ const schema = z.object({
 export async function POST(req: NextRequest, { params }: Params) {
   const session = await auth()
   if (!session) return apiError('Unauthorized', 401)
-  if (!hasRole(session.user!.role, 'ADMIN')) return apiError('Forbidden', 403)
+  if (!hasRole(session.user!.role, 'EDITOR')) return apiError('Forbidden', 403)
 
   const { id: productId } = await params
 

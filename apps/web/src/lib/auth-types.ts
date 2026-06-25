@@ -17,8 +17,9 @@ export type AuthSession = {
 export const ROLE_HIERARCHY: Record<UserRole, number> = {
   CUSTOMER: 1,
   PARTNER: 2,
-  ADMIN: 3,
-  SUPER_ADMIN: 4,
+  EDITOR: 3,
+  ADMIN: 4,
+  SUPER_ADMIN: 5,
 }
 
 export function hasRole(userRole: UserRole, requiredRole: UserRole): boolean {

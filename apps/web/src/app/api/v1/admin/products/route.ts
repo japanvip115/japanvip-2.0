@@ -27,7 +27,7 @@ const createSchema = z.object({
 export async function GET(req: NextRequest) {
   const session = await auth()
   if (!session) return apiError('Unauthorized', 401)
-  if (!hasRole(session.user!.role, 'ADMIN')) return apiError('Forbidden', 403)
+  if (!hasRole(session.user!.role, 'EDITOR')) return apiError('Forbidden', 403)
 
   const { searchParams } = req.nextUrl
   const page = Math.max(1, parseInt(searchParams.get('page') ?? '1'))
