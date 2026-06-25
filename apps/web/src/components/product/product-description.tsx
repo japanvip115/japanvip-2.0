@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { List } from 'lucide-react'
 
 type TocItem = {
@@ -79,8 +79,20 @@ const COLLAPSE_HEIGHT = 600
 export function ProductDescription({ description, collapseHeight = COLLAPSE_HEIGHT }: { description: string; collapseHeight?: number }) {
   const [tocOpen, setTocOpen] = useState(false)
   const [collapsed, setCollapsed] = useState(true)
+  const wrapperRef = useRef<HTMLDivElement>(null)
 
   const { processed, toc } = useMemo(() => processDescription(description), [description])
+
+  // Auto-collapse khi expanded mà user scroll lên khỏi vùng nhìn
+  useEffect(() => {
+    if (collapsed) return
+    function onScroll() {
+      if (!wrapperRef.current) return
+      if (wrapperRef.current.getBoundingClientRect().bottom < 0) setCollapsed(true)
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [collapsed])
 
   function scrollTo(id: string) {
     const el = document.getElementById(id)
@@ -91,7 +103,7 @@ export function ProductDescription({ description, collapseHeight = COLLAPSE_HEIG
   }
 
   return (
-    <div className="p-6 lg:p-8">
+    <div ref={wrapperRef} className="p-6 lg:p-8">
       {/* ── TOC Box ── */}
       {toc.length > 0 && (
         <div className="mb-6 w-full max-w-lg rounded-xl border border-gray-200 bg-gray-50 overflow-hidden">
