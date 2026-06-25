@@ -250,6 +250,43 @@ export default async function BlogPostPage({ params }: Props) {
           </aside>
         </div>
       </div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify([
+            {
+              '@context': 'https://schema.org',
+              '@type': 'Article',
+              headline: post.title,
+              description: post.excerpt ?? undefined,
+              image: post.thumbnailUrl ?? undefined,
+              datePublished: post.publishedAt?.toISOString() ?? post.createdAt.toISOString(),
+              dateModified: post.updatedAt?.toISOString() ?? post.createdAt.toISOString(),
+              author: {
+                '@type': 'Organization',
+                name: 'Japan VIP',
+                url: 'https://japanvip.vn',
+              },
+              publisher: {
+                '@type': 'Organization',
+                name: 'Japan VIP',
+                logo: { '@type': 'ImageObject', url: 'https://japanvip.vn/logo.png' },
+              },
+              mainEntityOfPage: { '@type': 'WebPage', '@id': `https://japanvip.vn/blog/${post.slug}` },
+            },
+            {
+              '@context': 'https://schema.org',
+              '@type': 'BreadcrumbList',
+              itemListElement: [
+                { '@type': 'ListItem', position: 1, name: 'Trang chủ', item: 'https://japanvip.vn' },
+                { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://japanvip.vn/blog' },
+                ...(post.category ? [{ '@type': 'ListItem', position: 3, name: post.category.name, item: `https://japanvip.vn/blog?cat=${post.category.slug}` }] : []),
+                { '@type': 'ListItem', position: post.category ? 4 : 3, name: post.title, item: `https://japanvip.vn/blog/${post.slug}` },
+              ],
+            },
+          ]),
+        }}
+      />
     </div>
   )
 }

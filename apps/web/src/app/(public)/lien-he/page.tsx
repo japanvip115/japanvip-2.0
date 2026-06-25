@@ -15,9 +15,37 @@ const ADDRESSES = [
   { icon: '🕐', label: 'Giờ hỗ trợ', value: '08:00 – 18:30 · Tất cả các ngày trong tuần' },
 ]
 
+const LIEN_HE_SCHEMA = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'LocalBusiness',
+    '@id': 'https://japanvip.vn/#localbusiness',
+    name: 'Japan VIP',
+    description: 'Nhập khẩu và phân phối hàng gia dụng nội địa Nhật Bản chính hãng tại Việt Nam.',
+    url: 'https://japanvip.vn',
+    telephone: '+84988969896',
+    email: 'info@japanvip.vn',
+    address: { '@type': 'PostalAddress', streetAddress: '115 Đinh Tiên Hoàng', addressLocality: 'Hải Phòng', addressCountry: 'VN' },
+    openingHours: 'Mo-Su 08:00-18:30',
+    sameAs: ['https://facebook.com/japanvip', 'https://youtube.com/c/JapanvipVn1'],
+    hasMap: 'https://maps.google.com/?q=115+Đinh+Tiên+Hoàng,+Hải+Phòng',
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      { '@type': 'Question', name: 'Japan VIP ở đâu?', acceptedAnswer: { '@type': 'Answer', text: 'Japan VIP có trụ sở tại 115 Đinh Tiên Hoàng, Hồng Bàng, Hải Phòng và showroom tại 21 Lê Văn Lương, Thanh Xuân, Hà Nội.' } },
+      { '@type': 'Question', name: 'Hotline Japan VIP là số mấy?', acceptedAnswer: { '@type': 'Answer', text: 'Hotline Japan VIP: 0988.969.896 và 0967.868.688. Hỗ trợ 08:00–18:30, tất cả các ngày trong tuần.' } },
+      { '@type': 'Question', name: 'Japan VIP làm việc mấy giờ?', acceptedAnswer: { '@type': 'Answer', text: 'Japan VIP hỗ trợ khách hàng từ 08:00 đến 18:30, tất cả các ngày trong tuần kể cả thứ 7 và chủ nhật.' } },
+      { '@type': 'Question', name: 'Có thể liên hệ Japan VIP qua Zalo không?', acceptedAnswer: { '@type': 'Answer', text: 'Có, bạn có thể liên hệ Japan VIP qua Zalo tại zalo.me/0988969896 để được tư vấn và hỗ trợ nhanh nhất.' } },
+    ],
+  },
+]
+
 export default function LienHePage() {
   return (
     <div className="min-h-[60vh]">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(LIEN_HE_SCHEMA) }} />
       {/* Hero */}
       <div className="relative overflow-hidden bg-gray-900 py-16 text-center">
         <div className="absolute inset-0 opacity-5"

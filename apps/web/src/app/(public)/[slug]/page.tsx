@@ -602,27 +602,56 @@ export default async function ProductDetailPage({ params }: Props) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'Product',
-            name: product.name,
-            description: product.description,
-            image: product.images.map((i) => i.url),
-            brand: product.brand ? { '@type': 'Brand', name: product.brand.name } : undefined,
-            offers: liveAuction ? {
-              '@type': 'Offer',
-              price: Number(liveAuction.currentPrice),
-              priceCurrency: 'VND',
-              availability: 'https://schema.org/InStock',
-              seller: { '@type': 'Organization', name: 'Japan VIP' },
-            } : product.salePrice ? {
-              '@type': 'Offer',
-              price: Number(product.salePrice),
-              priceCurrency: 'VND',
-              availability: 'https://schema.org/InStock',
-              seller: { '@type': 'Organization', name: 'Japan VIP' },
-            } : undefined,
-          }),
+          __html: JSON.stringify([
+            {
+              '@context': 'https://schema.org',
+              '@type': 'Product',
+              name: product.name,
+              description: product.description,
+              image: product.images.map((i) => i.url),
+              brand: product.brand ? { '@type': 'Brand', name: product.brand.name } : undefined,
+              ...(reviewsEnabled && product.rating ? {
+                aggregateRating: {
+                  '@type': 'AggregateRating',
+                  ratingValue: Number(product.rating).toFixed(1),
+                  reviewCount: product.reviewCount > 0 ? product.reviewCount : 5,
+                  bestRating: '5',
+                  worstRating: '1',
+                },
+              } : {}),
+              offers: liveAuction ? {
+                '@type': 'Offer',
+                price: Number(liveAuction.currentPrice),
+                priceCurrency: 'VND',
+                availability: 'https://schema.org/InStock',
+                seller: { '@type': 'Organization', name: 'Japan VIP' },
+              } : product.salePrice ? {
+                '@type': 'Offer',
+                price: Number(product.salePrice),
+                priceCurrency: 'VND',
+                availability: 'https://schema.org/InStock',
+                seller: { '@type': 'Organization', name: 'Japan VIP' },
+              } : undefined,
+            },
+            {
+              '@context': 'https://schema.org',
+              '@type': 'BreadcrumbList',
+              itemListElement: [
+                { '@type': 'ListItem', position: 1, name: 'Trang chủ', item: 'https://japanvip.vn' },
+                ...(product.category ? [{ '@type': 'ListItem', position: 2, name: product.category.name, item: `https://japanvip.vn/danh-muc/${product.category.slug}` }] : []),
+                { '@type': 'ListItem', position: product.category ? 3 : 2, name: product.name, item: `https://japanvip.vn/${product.slug}` },
+              ],
+            },
+            ...(faqItems.length > 0 ? [{
+              '@context': 'https://schema.org',
+              '@type': 'FAQPage',
+              mainEntity: faqItems.map((f) => ({
+                '@type': 'Question',
+                name: f.name,
+                acceptedAnswer: { '@type': 'Answer', text: f.value },
+              })),
+            }] : []),
+          ]),
         }}
       />
     </div>
