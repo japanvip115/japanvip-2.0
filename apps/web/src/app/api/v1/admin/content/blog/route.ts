@@ -35,6 +35,21 @@ async function uniqueSlug(base: string): Promise<string> {
   return slug
 }
 
+export async function GET(req: NextRequest) {
+  const err = await guard(req)
+  if (err) return err
+
+  try {
+    const posts = await prisma.blogPost.findMany({
+      select: { id: true, slug: true, title: true, status: true },
+      orderBy: { createdAt: 'desc' },
+    })
+    return apiSuccess(posts)
+  } catch (e) {
+    return handleApiError(e)
+  }
+}
+
 export async function POST(req: NextRequest) {
   const err = await guard(req)
   if (err) return err
