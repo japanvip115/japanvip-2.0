@@ -507,6 +507,17 @@ ul, ol { list-style: none; }
 .page-hero h1, .page-hero h2 { font-family: var(--font-serif); font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 700; margin-bottom: 12px; }
 .page-hero p { color: rgba(255,255,255,0.75); font-size: 1.05rem; max-width: 600px; }
 
+/* Trang chính sách / nội dung tĩnh */
+.legal-content h2 { font-family: var(--font-serif); font-size: 1.2rem; font-weight: 700; color: var(--jp-gray-900); margin: 1.6rem 0 0.6rem; }
+.legal-content h3 { font-size: 1.02rem; font-weight: 700; color: var(--jp-gray-900); margin: 1.1rem 0 0.4rem; }
+.legal-content p { margin-bottom: 0.7rem; }
+.legal-content ul, .legal-content ol { margin: 0.4rem 0 0.9rem 1.2rem; }
+.legal-content ul { list-style: disc; }
+.legal-content ol { list-style: decimal; }
+.legal-content li { margin-bottom: 0.35rem; }
+.legal-content a { color: var(--jp-red); text-decoration: underline; }
+.legal-content strong { color: var(--jp-gray-900); }
+
 /* Breadcrumb */
 .breadcrumb {
   display: flex;

@@ -1040,7 +1040,7 @@ export function BfjUrlForm({ fees }: { fees: StaticFees }) {
                     </div>
                     <p className="text-center text-[11px] text-gray-400">
                       Nhấn <strong>Xác Nhận Đặt Cọc</strong> tức là bạn đồng ý với{' '}
-                      <a href="/chinh-sach" target="_blank" className="text-gray-500 underline">điều khoản dịch vụ</a>
+                      <a href="/dieu-khoan-su-dung" target="_blank" className="text-gray-500 underline">điều khoản dịch vụ</a>
                     </p>
                   </div>
                 )}

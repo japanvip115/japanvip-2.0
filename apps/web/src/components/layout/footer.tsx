@@ -41,11 +41,13 @@ export async function Footer() {
           <div>
             <FooterHeading>Hỗ Trợ</FooterHeading>
             <FooterLinks links={[
-              { href: '/blog', label: 'Bài Viết' },
-              { href: '/lien-he', label: 'Liên Hệ' },
+              { href: '/gioi-thieu', label: 'Giới Thiệu' },
+              { href: '/huong-dan-mua-hang', label: 'Hướng Dẫn Mua Hàng' },
               { href: '/chinh-sach-doi-tra', label: 'Chính Sách Đổi Trả' },
               { href: '/chinh-sach-van-chuyen', label: 'Chính Sách Vận Chuyển' },
-              { href: '/bao-mat', label: 'Bảo Mật Thông Tin' },
+              { href: '/chinh-sach-bao-hanh', label: 'Chính Sách Bảo Hành' },
+              { href: '/chinh-sach-bao-mat', label: 'Chính Sách Bảo Mật' },
+              { href: '/dieu-khoan-su-dung', label: 'Điều Khoản Sử Dụng' },
               { href: '/cong-tac-vien', label: '🤝 Cộng Tác Viên' },
             ]} />
           </div>
