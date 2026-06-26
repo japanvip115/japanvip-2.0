@@ -299,8 +299,11 @@ Tạo SEO metadata cho sản phẩm. Xuất JSON:
     // 🔒 LOCKED (2026-06) — Văn phong + cấu trúc blog học từ kho đối thủ, đã chốt. Xem CLAUDE.md. KHÔNG tự sửa.
     case 'blog': {
       const blogWords = maxWords ?? 7500
+      const blogMin = Math.round(blogWords * 0.8)
       return `${HTML_ONLY}${base}
 Viết bài blog HTML dài, chi tiết như một biên tập viên gia dụng Nhật chuyên nghiệp. Học văn phong từ hiephongjapan.vn: đi thẳng vào số liệu, trung thực, thực tế, không sáo rỗng.
+
+⚠️ ĐỘ DÀI BẮT BUỘC: ${blogMin.toLocaleString()}–${blogWords.toLocaleString()} từ. PHẢI đạt tối thiểu ${blogMin.toLocaleString()} từ. Mỗi section phải viết đầy đủ, chi tiết — KHÔNG tóm tắt ngắn gọn, KHÔNG bỏ section.
 
 🏷️ TIÊU ĐỀ BÀI (thẻ <h1> đầu, BẮT BUỘC):
 - Chọn 1 mẫu tiêu đề customer-friendly (không phải mã model):
