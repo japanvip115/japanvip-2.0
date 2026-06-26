@@ -14,7 +14,7 @@ type Props = { params: Promise<{ slug: string }> }
 function getCategory(slug: string) {
   return prisma.category.findUnique({
     where: { slug },
-    select: { id: true, name: true, slug: true, description: true, imageUrl: true, imagePosition: true },
+    select: { id: true, name: true, slug: true, description: true, metaTitle: true, metaDesc: true, imageUrl: true, imagePosition: true },
   })
 }
 
@@ -29,9 +29,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const category = await getCategory(slug)
   if (!category) return { title: 'Không tìm thấy danh mục' }
 
-  const title = `${category.name} Nội Địa Nhật Bản Chính Hãng`
+  const title = category.metaTitle?.trim() || `${category.name} Nội Địa Nhật Bản Chính Hãng`
   const description =
-    category.description?.replace(/\s+/g, ' ').trim().slice(0, 160) ??
+    category.metaDesc?.trim() ||
+    category.description?.replace(/\s+/g, ' ').trim().slice(0, 160) ||
     `Mua ${category.name} nội địa Nhật Bản chính hãng, mới 100% tại Japan VIP. Bảo hành 12 tháng, giao hàng toàn quốc.`
 
   return {
