@@ -439,9 +439,18 @@ export function BlogPostForm({ mode, categories: initialCategories, authorId, in
           </div>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-4 lg:sticky lg:top-4 lg:self-start">
           <div className="rounded-xl border border-gray-700 bg-gray-800/60 p-5 space-y-4">
-            <h3 className="text-sm font-semibold text-gray-200">Xuất bản</h3>
+            <div className="flex items-center justify-between gap-2">
+              <h3 className="text-sm font-semibold text-gray-200">Xuất bản</h3>
+              <button
+                type="submit"
+                disabled={saving}
+                className="rounded-lg bg-red-600 px-4 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-red-500 disabled:opacity-50 cursor-pointer whitespace-nowrap"
+              >
+                {saving ? 'Đang lưu...' : mode === 'create' ? '✓ Tạo Bài' : '💾 Lưu Thay Đổi'}
+              </button>
+            </div>
 
             <div>
               <label className={LABEL_CLS}>Trạng thái</label>
