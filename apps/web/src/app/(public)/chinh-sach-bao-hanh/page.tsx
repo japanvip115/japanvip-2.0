@@ -18,8 +18,8 @@ export default function ChinhSachBaoHanhPage() {
 
       <h2>1. Thời hạn bảo hành</h2>
       <p>
-        Thời hạn bảo hành tùy theo từng sản phẩm và nhà sản xuất, được ghi rõ trên trang sản phẩm hoặc phiếu bảo
-        hành kèm theo. Thông thường từ <strong>6 đến 12 tháng</strong> cho lỗi kỹ thuật của nhà sản xuất.
+        Japan VIP bảo hành <strong>12 tháng</strong> cho lỗi kỹ thuật của nhà sản xuất, kể từ ngày khách hàng nhận
+        sản phẩm. Thông tin bảo hành được ghi trên hóa đơn hoặc phiếu bảo hành kèm theo sản phẩm.
       </p>
 
       <h2>2. Điều kiện bảo hành</h2>

@@ -4,11 +4,15 @@ import { prisma } from '@japanvip/db'
 const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://japanvip.vn'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [products, blogPosts] = await Promise.all([
+  const [products, categories, blogPosts] = await Promise.all([
     prisma.product.findMany({
       where: { status: 'ACTIVE' },
       select: { slug: true, updatedAt: true },
       orderBy: { updatedAt: 'desc' },
+    }),
+    prisma.category.findMany({
+      where: { isActive: true },
+      select: { slug: true, updatedAt: true },
     }),
     prisma.blogPost.findMany({
       where: { status: 'PUBLISHED' },
@@ -17,8 +21,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }),
   ])
 
-  // Lưu ý: danh mục KHÔNG khai báo ở đây (interim). /danh-muc/* hiện chỉ redirect.
-  // Đợt 2: dựng /danh-muc/{slug} thành trang thật 200 + thêm lại vào sitemap.
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: BASE_URL, lastModified: new Date(), changeFrequency: 'daily', priority: 1 },
     { url: `${BASE_URL}/san-pham`, lastModified: new Date(), changeFrequency: 'daily', priority: 0.9 },
@@ -42,6 +44,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }))
 
+  const categoryRoutes: MetadataRoute.Sitemap = categories.map((c) => ({
+    url: `${BASE_URL}/danh-muc/${c.slug}`,
+    lastModified: c.updatedAt,
+    changeFrequency: 'weekly',
+    priority: 0.7,
+  }))
+
   const blogRoutes: MetadataRoute.Sitemap = blogPosts.map((b) => ({
     url: `${BASE_URL}/blog/${b.slug}`,
     lastModified: b.updatedAt,
@@ -49,5 +58,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.6,
   }))
 
-  return [...staticRoutes, ...productRoutes, ...blogRoutes]
+  return [...staticRoutes, ...productRoutes, ...categoryRoutes, ...blogRoutes]
 }

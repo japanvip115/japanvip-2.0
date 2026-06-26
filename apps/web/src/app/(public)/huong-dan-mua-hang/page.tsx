@@ -28,7 +28,7 @@ export default function HuongDanMuaHangPage() {
       <p>
         Với sản phẩm chưa có sẵn, bạn dùng dịch vụ <Link href="/mua-ho">mua hộ từ Nhật</Link>: dán link sản phẩm từ
         Amazon Japan, Rakuten, Mercari… để nhận báo giá tức thì (đã gồm giá sản phẩm, phí vận chuyển JP→VN và phí
-        dịch vụ). Đặt cọc tối thiểu để Japan VIP tiến hành mua hộ.
+        dịch vụ). Đặt cọc tối thiểu 30% để Japan VIP tiến hành mua hộ.
       </p>
 
       <h2>3. Tham gia đấu giá</h2>

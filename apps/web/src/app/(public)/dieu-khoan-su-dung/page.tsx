@@ -32,7 +32,7 @@ export default function DieuKhoanSuDungPage() {
 
       <h2>3. Dịch vụ mua hộ &amp; đấu giá</h2>
       <p>
-        Với dịch vụ <Link href="/mua-ho">mua hộ từ Nhật</Link> và đấu giá, khách hàng đặt cọc theo quy định, thanh
+        Với dịch vụ <Link href="/mua-ho">mua hộ từ Nhật</Link> và đấu giá, khách hàng đặt cọc tối thiểu 30% giá trị đơn hàng, thanh
         toán phần còn lại trước khi giao hàng. Thời gian và chi phí vận chuyển phụ thuộc vào trọng lượng và loại
         hàng hóa.
       </p>

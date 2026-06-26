@@ -95,8 +95,8 @@ export async function generateMetadata({ searchParams }: { searchParams: SearchP
     : q
     ? `Tìm kiếm "${q}"`
     : 'Sản Phẩm Gia Dụng Nhật Bản'
-  // Canonical gom biến thể lọc (sort/page/giá/tìm kiếm) về URL sạch; danh mục giữ categoryId.
-  const canonical = category ? `/san-pham?categoryId=${category.id}` : '/san-pham'
+  // Canonical: trang lọc theo danh mục trỏ về landing /danh-muc/{slug} (trang chính); còn lại về /san-pham sạch.
+  const canonical = category ? `/danh-muc/${category.slug}` : '/san-pham'
   return {
     title,
     description: 'Hàng gia dụng nội địa Nhật Bản chính hãng: bếp từ, máy giặt, nồi cơm điện, tủ lạnh và hơn 1000 sản phẩm đang chờ bạn.',
