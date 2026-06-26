@@ -47,7 +47,7 @@ export function ProductGallery({ images, productName }: { images: GalleryImage[]
                 active?.id === img.id ? 'border-brand-red' : 'border-red-200 hover:border-brand-red'
               }`}
             >
-              <Image src={img.url} alt={img.altText ?? ''} fill className="object-cover" sizes="64px" />
+              <Image src={img.url} alt={img.altText ?? productName} fill className="object-cover" sizes="64px" />
             </button>
           ))}
         </div>

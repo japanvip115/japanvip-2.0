@@ -47,13 +47,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   })
   if (!product) return { title: 'Không tìm thấy — Japan VIP' }
 
-  const title = product.metaTitle ?? `${product.name} | Japan VIP`
+  // Root layout có title.template '%s | Japan VIP' → KHÔNG tự thêm brand ở đây (tránh lặp).
+  const title = product.metaTitle ?? product.name
   const description = product.metaDesc ?? product.description ?? `${product.name} — Hàng gia dụng nội địa Nhật Bản chính hãng tại Japan VIP.`
   const image = product.images[0]?.url
 
   return {
     title,
     description,
+    alternates: { canonical: `/${slug}` },
     openGraph: {
       title,
       description,

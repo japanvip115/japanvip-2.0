@@ -1,6 +1,11 @@
+import type { Metadata } from 'next'
 import { prisma } from '@japanvip/db'
 import dynamicImport from 'next/dynamic'
 import { HOME_CONTENT_KEYS } from '@/lib/home-content-keys'
+
+// Title/description/OG kế thừa từ root layout (trang chủ là `default`, không lồng template).
+// Chỉ khai báo canonical tường minh cho trang chủ.
+export const metadata: Metadata = { alternates: { canonical: '/' } }
 
 const HomePageClient = dynamicImport(() => import('@/components/home/home-page-client'))
 

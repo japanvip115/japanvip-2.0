@@ -1,4 +1,4 @@
-import { redirect, notFound } from 'next/navigation'
+import { permanentRedirect, notFound } from 'next/navigation'
 import { prisma } from '@japanvip/db'
 
 export const revalidate = 300
@@ -19,5 +19,5 @@ export default async function CategorySlugPage({ params }: { params: Promise<{ s
     select: { id: true },
   })
   if (!category) notFound()
-  redirect(`/san-pham?categoryId=${category.id}`)
+  permanentRedirect(`/san-pham?categoryId=${category.id}`)
 }

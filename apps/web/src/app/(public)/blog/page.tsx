@@ -3,7 +3,17 @@ import { Suspense } from 'react'
 import { prisma } from '@japanvip/db'
 import { BlogListClient } from './blog-list-client'
 
-export const metadata: Metadata = { title: 'Bài Viết — Japan VIP' }
+export const metadata: Metadata = {
+  title: 'Blog Gia Dụng Nội Địa Nhật Bản — Kinh Nghiệm & Đánh Giá',
+  description:
+    'Cẩm nang chọn mua, hướng dẫn sử dụng, so sánh và đánh giá hàng gia dụng nội địa Nhật Bản: bếp từ, máy giặt, nồi cơm, máy lọc không khí… từ Japan VIP.',
+  alternates: { canonical: '/blog' },
+  openGraph: {
+    title: 'Blog Japan VIP — Kinh Nghiệm & Đánh Giá Hàng Gia Dụng Nhật Bản',
+    description: 'Cẩm nang chọn mua, hướng dẫn sử dụng và đánh giá hàng gia dụng nội địa Nhật Bản từ Japan VIP.',
+    type: 'website',
+  },
+}
 export const revalidate = 300
 
 export default async function BlogPage() {
@@ -49,6 +59,10 @@ export default async function BlogPage() {
   return (
     <div className="bg-white min-h-screen">
       <div className="mx-auto max-w-7xl px-4 py-8">
+        <header className="mb-6">
+          <h1 className="text-2xl font-bold text-gray-900 md:text-3xl">Blog Japan VIP</h1>
+          <p className="mt-1 text-sm text-gray-500">Kinh nghiệm chọn mua, hướng dẫn sử dụng &amp; đánh giá hàng gia dụng nội địa Nhật Bản</p>
+        </header>
         <Suspense fallback={<p className="py-20 text-center text-gray-400">Đang tải…</p>}>
           <BlogListClient posts={postsData} categories={categoriesData} products={productsData} />
         </Suspense>

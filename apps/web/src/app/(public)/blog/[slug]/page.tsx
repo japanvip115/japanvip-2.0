@@ -10,10 +10,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
   const post = await prisma.blogPost.findUnique({ where: { slug }, select: { title: true, metaTitle: true, metaDesc: true, thumbnailUrl: true } })
   if (!post) return {}
+  const title = post.metaTitle ?? post.title
+  const description = post.metaDesc ?? undefined
   return {
-    title: post.metaTitle ?? post.title,
-    description: post.metaDesc ?? undefined,
-    openGraph: { images: post.thumbnailUrl ? [post.thumbnailUrl] : [] },
+    title,
+    description,
+    alternates: { canonical: `/blog/${slug}` },
+    openGraph: { title, description, type: 'article', images: post.thumbnailUrl ? [post.thumbnailUrl] : [] },
+    twitter: { card: 'summary_large_image', title, description, images: post.thumbnailUrl ? [post.thumbnailUrl] : [] },
   }
 }
 

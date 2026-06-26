@@ -1238,7 +1238,7 @@ export default function HomePageClient({
           <div className="page-hero simple">
             <div className="container">
               <div className="breadcrumb"><span onClick={() => nav('home')}>Trang Chủ</span> / <span>Mua Hàng Nhật</span></div>
-              <h1>Dịch Vụ Mua Hàng Từ Nhật Bản</h1>
+              <h2>Dịch Vụ Mua Hàng Từ Nhật Bản</h2>
               <p>Dán link sản phẩm – Nhận báo giá tức thì – Giao về tận nhà</p>
             </div>
           </div>
@@ -1316,7 +1316,7 @@ export default function HomePageClient({
               <div className="product-detail-info">
                 <div className="detail-badges"><span className="badge-origin">🇯🇵 Nhật Bản Chính Hãng</span><span className="badge-hot">🔥 Bán Chạy</span></div>
                 <div className="detail-brand">Tiger Corporation</div>
-                <h1 className="detail-title">Nồi Cơm Điện Tiger JKT-S18W IH 1.8L – Tacook Simultaneous Cooking</h1>
+                <h2 className="detail-title">Nồi Cơm Điện Tiger JKT-S18W IH 1.8L – Tacook Simultaneous Cooking</h2>
                 <div className="detail-price-block">
                   <div className="detail-price">3,200,000₫</div>
                   <div className="detail-price-old">3,800,000₫</div>
@@ -1335,7 +1335,7 @@ export default function HomePageClient({
           <div className="page-hero auction-hero">
             <div className="container">
               <div className="breadcrumb"><span onClick={() => nav('home')}>Trang Chủ</span> / <span>Đấu Giá</span></div>
-              <h1>🔨 Sàn Đấu Giá Gia Dụng Nhật Bản</h1>
+              <h2>🔨 Sàn Đấu Giá Gia Dụng Nhật Bản</h2>
               <p>Tìm kiếm sản phẩm Nhật chính hãng với giá tốt nhất qua hình thức đấu giá minh bạch</p>
             </div>
           </div>
@@ -1388,7 +1388,7 @@ export default function HomePageClient({
           <div className="page-hero simple">
             <div className="container">
               <div className="breadcrumb"><span onClick={() => nav('home')}>Trang Chủ</span> / <span>Theo Dõi Đơn Hàng</span></div>
-              <h1>📦 Theo Dõi Đơn Hàng</h1>
+              <h2>📦 Theo Dõi Đơn Hàng</h2>
               <p>Kiểm tra trạng thái đơn hàng của bạn theo thời gian thực</p>
             </div>
           </div>
@@ -1424,7 +1424,7 @@ export default function HomePageClient({
           <div className="page-hero simple">
             <div className="container">
               <div className="breadcrumb"><span onClick={() => nav('home')}>Trang Chủ</span> / <span>Blog</span></div>
-              <h1>📝 Blog Gia Dụng Nhật Bản</h1>
+              <h2>📝 Blog Gia Dụng Nhật Bản</h2>
               <p>Kiến thức, đánh giá và kinh nghiệm mua hàng Nhật Bản từ chuyên gia</p>
             </div>
           </div>
@@ -1435,7 +1435,7 @@ export default function HomePageClient({
           <div className="page-hero simple">
             <div className="container">
               <div className="breadcrumb"><span onClick={() => nav('home')}>Trang Chủ</span> / <span>Liên Hệ</span></div>
-              <h1>📞 Liên Hệ JapanVip</h1>
+              <h2>📞 Liên Hệ JapanVip</h2>
               <p>Chúng tôi luôn sẵn sàng hỗ trợ bạn</p>
             </div>
           </div>

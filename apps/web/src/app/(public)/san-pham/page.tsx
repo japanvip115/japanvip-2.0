@@ -89,14 +89,18 @@ export async function generateMetadata({ searchParams }: { searchParams: SearchP
   const category = categoryId
     ? (await getCategoryTree()).find((c) => c.id === categoryId) ?? null
     : null
+  // Root layout có title.template '%s | Japan VIP' → KHÔNG tự thêm brand ở đây (tránh lặp).
   const title = category
-    ? `${category.name} — Hàng Nội Địa Nhật | Japan VIP`
+    ? `${category.name} — Hàng Nội Địa Nhật`
     : q
-    ? `Tìm kiếm "${q}" — Japan VIP`
-    : 'Sản Phẩm Gia Dụng Nhật Bản — Japan VIP'
+    ? `Tìm kiếm "${q}"`
+    : 'Sản Phẩm Gia Dụng Nhật Bản'
+  // Canonical gom biến thể lọc (sort/page/giá/tìm kiếm) về URL sạch; danh mục giữ categoryId.
+  const canonical = category ? `/san-pham?categoryId=${category.id}` : '/san-pham'
   return {
     title,
     description: 'Hàng gia dụng nội địa Nhật Bản chính hãng: bếp từ, máy giặt, nồi cơm điện, tủ lạnh và hơn 1000 sản phẩm đang chờ bạn.',
+    alternates: { canonical },
     openGraph: { title, type: 'website' },
   }
 }

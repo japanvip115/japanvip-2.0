@@ -26,7 +26,7 @@ export async function generateMetadata(): Promise<Metadata> {
       template: '%s | Japan VIP',
     },
     description:
-      'Phân phối hàng gia dụng nội địa Nhật Bản mới 100%, chính hãng. Dịch vụ mua hộ từ Nhật, đấu giá hàng Nhật uy tín tại Việt Nam.',
+      'Phân phối hàng gia dụng nội địa Nhật Bản mới 100%, chính hãng: bếp từ, máy giặt, nồi cơm, tủ lạnh. Mua hộ & đấu giá hàng Nhật uy tín, giao toàn quốc.',
     keywords: ['hàng nội địa Nhật', 'gia dụng Nhật Bản', 'mua hộ Nhật', 'đấu giá hàng Nhật'],
     authors: [{ name: 'Japan VIP', url: APP_URL }],
     ...(faviconUrl
@@ -87,7 +87,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           />
         )}
         {/* ?v=N — cache-bust: bump version mỗi khi sửa style.css để trình duyệt tải bản mới ngay (tránh kẹt cache 4h) */}
-        <link rel="stylesheet" href="/style.css?v=20260625b" />
+        <link rel="stylesheet" href="/style.css?v=20260626a" />
         {facebookVerify && (
           <meta name="facebook-domain-verification" content={facebookVerify} />
         )}

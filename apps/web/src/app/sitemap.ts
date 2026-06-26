@@ -11,7 +11,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       orderBy: { updatedAt: 'desc' },
     }),
     prisma.category.findMany({
-      select: { slug: true, updatedAt: true },
+      where: { isActive: true },
+      select: { id: true, updatedAt: true },
     }),
     prisma.blogPost.findMany({
       where: { status: 'PUBLISHED' },
@@ -39,8 +40,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }))
 
+  // Trỏ thẳng URL canonical (/san-pham?categoryId=) — /danh-muc/* chỉ redirect 308 sang đây.
   const categoryRoutes: MetadataRoute.Sitemap = categories.map((c) => ({
-    url: `${BASE_URL}/danh-muc/${c.slug}`,
+    url: `${BASE_URL}/san-pham?categoryId=${c.id}`,
     lastModified: c.updatedAt,
     changeFrequency: 'weekly',
     priority: 0.7,
