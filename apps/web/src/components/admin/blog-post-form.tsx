@@ -489,7 +489,7 @@ export function BlogPostForm({ mode, categories: initialCategories, authorId, in
                   className={`${INPUT_CLS} [color-scheme:dark]`}
                 />
                 <p className="mt-1 text-xs text-gray-500">
-                  Bài tự đăng vào lần chạy <strong className="text-gray-400">8:00 sáng</strong> kế tiếp sau thời điểm hẹn.
+                  Bài tự đăng <strong className="text-gray-400">đúng thời điểm hẹn</strong> (hệ thống kiểm tra mỗi ~10 phút).
                 </p>
               </div>
             )}
