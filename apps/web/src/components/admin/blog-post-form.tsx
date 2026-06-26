@@ -24,6 +24,7 @@ type Props = {
     categoryId: string | null
     metaTitle: string | null
     metaDesc: string | null
+    scheduledAt?: string | Date | null
   }
 }
 
@@ -35,6 +36,15 @@ function toSlug(str: string) {
     .replace(/[^a-z0-9\s-]/g, '')
     .trim()
     .replace(/\s+/g, '-')
+}
+
+// Date/ISO → "YYYY-MM-DDTHH:mm" (giờ địa phương) cho input datetime-local
+function toLocalInput(d: string | Date | null | undefined): string {
+  if (!d) return ''
+  const dt = new Date(d)
+  if (isNaN(dt.getTime())) return ''
+  const local = new Date(dt.getTime() - dt.getTimezoneOffset() * 60000)
+  return local.toISOString().slice(0, 16)
 }
 
 const INPUT_CLS = 'w-full rounded-lg border border-gray-700 bg-gray-900 px-3 py-2.5 text-sm text-gray-100 placeholder-gray-600 transition-colors focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500/30'
@@ -210,6 +220,7 @@ export function BlogPostForm({ mode, categories: initialCategories, authorId, in
     categoryId: initial?.categoryId ?? '',
     metaTitle: initial?.metaTitle ?? '',
     metaDesc: initial?.metaDesc ?? '',
+    scheduledAt: toLocalInput(initial?.scheduledAt),
   })
 
   function set<K extends keyof typeof form>(key: K, val: (typeof form)[K]) {
@@ -236,6 +247,7 @@ export function BlogPostForm({ mode, categories: initialCategories, authorId, in
           metaTitle: form.metaTitle || null,
           metaDesc: form.metaDesc || null,
           publishedAt: form.status === 'PUBLISHED' ? new Date().toISOString() : null,
+          scheduledAt: form.status === 'SCHEDULED' && form.scheduledAt ? new Date(form.scheduledAt).toISOString() : null,
           relatedProductIds: relatedProducts.map((p) => p.id),
         }),
       })
@@ -460,10 +472,27 @@ export function BlogPostForm({ mode, categories: initialCategories, authorId, in
                 className={INPUT_CLS}
               >
                 <option value="DRAFT">Bản nháp</option>
+                <option value="SCHEDULED">Lên lịch đăng</option>
                 <option value="PUBLISHED">Xuất bản</option>
                 <option value="ARCHIVED">Lưu trữ</option>
               </select>
             </div>
+
+            {form.status === 'SCHEDULED' && (
+              <div>
+                <label className={LABEL_CLS}>Thời điểm đăng</label>
+                <input
+                  type="datetime-local"
+                  value={form.scheduledAt}
+                  onChange={(e) => set('scheduledAt', e.target.value)}
+                  required
+                  className={`${INPUT_CLS} [color-scheme:dark]`}
+                />
+                <p className="mt-1 text-xs text-gray-500">
+                  Bài tự đăng vào lần chạy <strong className="text-gray-400">8:00 sáng</strong> kế tiếp sau thời điểm hẹn.
+                </p>
+              </div>
+            )}
 
             <div>
               <div className="mb-1.5 flex items-center justify-between">

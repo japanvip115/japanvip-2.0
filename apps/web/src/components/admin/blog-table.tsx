@@ -9,19 +9,22 @@ type Post = {
   id: string
   title: string
   slug: string
-  status: 'PUBLISHED' | 'DRAFT' | 'ARCHIVED'
+  status: 'PUBLISHED' | 'DRAFT' | 'ARCHIVED' | 'SCHEDULED'
   createdAt: Date
+  scheduledAt?: Date | string | null
   category: { name: string } | null
   author: { email: string; profile: { fullName: string | null } | null }
 }
 
 const STATUS_COLORS: Record<Post['status'], string> = {
   PUBLISHED: 'bg-green-500/15 text-green-400 ring-1 ring-inset ring-green-500/20',
+  SCHEDULED: 'bg-blue-500/15 text-blue-400 ring-1 ring-inset ring-blue-500/20',
   DRAFT: 'bg-gray-500/15 text-gray-400 ring-1 ring-inset ring-gray-500/20',
   ARCHIVED: 'bg-yellow-500/15 text-yellow-400 ring-1 ring-inset ring-yellow-500/20',
 }
 const STATUS_LABELS: Record<Post['status'], string> = {
   PUBLISHED: 'Đã xuất bản',
+  SCHEDULED: 'Đã lên lịch',
   DRAFT: 'Bản nháp',
   ARCHIVED: 'Lưu trữ',
 }
@@ -164,6 +167,11 @@ export function BlogTable({ posts }: { posts: Post[] }) {
                   <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[post.status]}`}>
                     {STATUS_LABELS[post.status]}
                   </span>
+                  {post.status === 'SCHEDULED' && post.scheduledAt && (
+                    <p className="mt-1 text-[11px] text-blue-400/80">
+                      {new Date(post.scheduledAt).toLocaleString('vi-VN', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}
+                    </p>
+                  )}
                 </td>
                 <td className="px-4 py-3 text-xs text-gray-500">
                   {new Date(post.createdAt).toLocaleDateString('vi-VN')}

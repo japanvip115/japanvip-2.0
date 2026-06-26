@@ -12,6 +12,7 @@ export const dynamic = 'force-dynamic'
 const STATUS_TABS = [
   { label: 'Tất cả', value: 'ALL' },
   { label: 'Đã xuất bản', value: 'PUBLISHED' },
+  { label: 'Đã lên lịch', value: 'SCHEDULED' },
   { label: 'Bản nháp', value: 'DRAFT' },
   { label: 'Lưu trữ', value: 'ARCHIVED' },
 ]

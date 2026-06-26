@@ -30,6 +30,11 @@ export async function GET(req: NextRequest) {
   // Facebook — đăng các bài đã lên lịch đến hạn (không chặn việc publish content)
   const facebook = await publishDueFacebookPosts(10).catch((e) => { console.error('facebook publish error', e); return { processed: 0, published: 0, failed: 0 } })
 
+  // Blog — đăng các bài đã lên lịch (status SCHEDULED) đến hạn
+  const blog = await prisma.blogPost
+    .updateMany({ where: { status: 'SCHEDULED', scheduledAt: { lte: now } }, data: { status: 'PUBLISHED', publishedAt: now } })
+    .catch((e) => { console.error('blog publish error', e); return { count: 0 } })
+
   // Lấy tất cả task PENDING đến hạn (scheduledAt <= now)
   const tasks = await prisma.contentTask.findMany({
     where: { status: 'PENDING', scheduledAt: { lte: now } },
@@ -38,7 +43,7 @@ export async function GET(req: NextRequest) {
   })
 
   if (tasks.length === 0) {
-    return Response.json({ processed: 0, marketing, facebook })
+    return Response.json({ processed: 0, marketing, facebook, blog: blog.count })
   }
 
   const results: { id: string; status: string; error?: string }[] = []
@@ -98,7 +103,7 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  return Response.json({ processed: results.length, results, marketing, facebook })
+  return Response.json({ processed: results.length, results, marketing, facebook, blog: blog.count })
 }
 
 async function generateContent(task: {

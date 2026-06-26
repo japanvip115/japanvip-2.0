@@ -14,11 +14,12 @@ const schema = z.object({
   excerpt: z.string().optional().nullable(),
   content: z.string().min(1),
   thumbnailUrl: z.string().min(1).optional().nullable(),
-  status: z.enum(['DRAFT', 'PUBLISHED', 'ARCHIVED']).default('DRAFT'),
+  status: z.enum(['DRAFT', 'SCHEDULED', 'PUBLISHED', 'ARCHIVED']).default('DRAFT'),
   categoryId: z.string().uuid().optional().nullable(),
   metaTitle: z.string().max(255).optional().nullable(),
   metaDesc: z.string().optional().nullable(),
   publishedAt: z.string().datetime().optional().nullable(),
+  scheduledAt: z.string().datetime().optional().nullable(),
 })
 
 async function guard(req: NextRequest) {
@@ -99,6 +100,7 @@ export async function POST(req: NextRequest) {
         content: finalContent,
         thumbnailUrl: finalThumb,
         publishedAt: data.publishedAt ? new Date(data.publishedAt) : null,
+        scheduledAt: data.scheduledAt ? new Date(data.scheduledAt) : null,
       },
     })
     return apiSuccess(post, undefined, 201)
