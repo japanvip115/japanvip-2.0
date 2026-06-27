@@ -1405,3 +1405,174 @@ model Subscriber {
   @@index([status])
   @@map("subscribers")
 }
+
+// ─────────────────────────────────────────
+// DOMAIN: CONTENT STUDIO (AI nội dung đa kênh)
+// Bảng MỚI, độc lập — KHÔNG sửa model/enum nào đang có.
+// Lưu createdBy/sourceProductId dạng UUID trần (giống ContentTask/FacebookPost),
+// nên không phải thêm relation vào User/Product.
+// ─────────────────────────────────────────
+
+enum ContentChannel {
+  FACEBOOK
+  ZALO
+  TIKTOK_CAPTION
+  TIKTOK_SCRIPT
+  YOUTUBE_SHORTS
+  YOUTUBE_OUTLINE
+  EMAIL
+  PUSH
+  BANNER
+  META_AD
+  CHATBOT
+}
+
+enum ContentAssetStatus {
+  DRAFT
+  AI_GENERATED
+  PENDING_REVIEW
+  REVISION_REQUIRED
+  APPROVED
+  SCHEDULED
+  PUBLISHED
+  REJECTED
+  ARCHIVED
+}
+
+model ContentAsset {
+  id              String             @id @default(uuid()) @db.Uuid
+  title           String             @db.VarChar(500)
+  channel         ContentChannel
+  body            String             @db.Text
+  metadata        Json?
+  provider        String             @default("auto") @db.VarChar(50)
+  status          ContentAssetStatus @default(AI_GENERATED)
+  sourceProductId String?            @map("source_product_id") @db.Uuid
+  sourceTopic     String?            @map("source_topic") @db.Text
+  goal            String?            @db.VarChar(50)
+  audience        String?            @db.VarChar(100)
+  scheduledAt     DateTime?          @map("scheduled_at") @db.Timestamptz
+  publishedAt     DateTime?          @map("published_at") @db.Timestamptz
+  publishedUrl    String?            @map("published_url") @db.VarChar(1000)
+  reviewNote      String?            @map("review_note") @db.Text
+  createdBy       String             @map("created_by") @db.Uuid
+  reviewedBy      String?            @map("reviewed_by") @db.Uuid
+  createdAt       DateTime           @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt       DateTime           @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@index([status, createdAt])
+  @@index([channel, status])
+  @@index([sourceProductId])
+  @@index([createdBy])
+  @@map("content_assets")
+}
+
+// ─────────────────────────────────────────
+// DOMAIN: KNOWLEDGE BASE (Kho tri thức có cấu trúc)
+// Bảng MỚI, độc lập — quan hệ chỉ GIỮA các bảng KB với nhau.
+// relatedProductId / createdBy / reviewedBy = UUID trần → không phải sửa Product/User.
+// ─────────────────────────────────────────
+
+enum KnowledgeStatus {
+  DRAFT
+  PENDING_REVIEW
+  APPROVED
+  ARCHIVED
+}
+
+enum FactVerification {
+  UNVERIFIED
+  VERIFIED
+  DISPUTED
+}
+
+model KnowledgeCategory {
+  id          String             @id @default(uuid()) @db.Uuid
+  name        String             @db.VarChar(255)
+  slug        String             @unique @db.VarChar(255)
+  description String?            @db.Text
+  sortOrder   Int                @default(0) @map("sort_order")
+  createdAt   DateTime           @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt   DateTime           @updatedAt @map("updated_at") @db.Timestamptz
+
+  articles KnowledgeArticle[]
+
+  @@index([slug])
+  @@map("knowledge_categories")
+}
+
+model KnowledgeArticle {
+  id              String          @id @default(uuid()) @db.Uuid
+  categoryId      String?         @map("category_id") @db.Uuid
+  title           String          @db.VarChar(500)
+  slug            String          @unique @db.VarChar(500)
+  summary         String?         @db.Text
+  content         String          @db.Text
+  tags            String[]
+  sourceType      String?         @map("source_type") @db.VarChar(50)
+  sourceUrl       String?         @map("source_url") @db.VarChar(1000)
+  language        String          @default("vi") @db.VarChar(10)
+  status          KnowledgeStatus @default(DRAFT)
+  confidenceScore Int?            @map("confidence_score")
+  createdBy       String          @map("created_by") @db.Uuid
+  reviewedBy      String?         @map("reviewed_by") @db.Uuid
+  publishedAt     DateTime?       @map("published_at") @db.Timestamptz
+  createdAt       DateTime        @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt       DateTime        @updatedAt @map("updated_at") @db.Timestamptz
+
+  category KnowledgeCategory? @relation(fields: [categoryId], references: [id])
+  facts    KnowledgeFact[]
+
+  @@index([status, updatedAt])
+  @@index([categoryId])
+  @@index([slug])
+  @@map("knowledge_articles")
+}
+
+model KnowledgeFact {
+  id                 String           @id @default(uuid()) @db.Uuid
+  subject            String           @db.VarChar(500)
+  predicate          String           @db.VarChar(255)
+  object             String           @db.Text
+  sourceReference    String?          @map("source_reference") @db.VarChar(1000)
+  confidenceScore    Int?             @map("confidence_score")
+  verificationStatus FactVerification @default(UNVERIFIED) @map("verification_status")
+  relatedProductId   String?          @map("related_product_id") @db.Uuid
+  relatedArticleId   String?          @map("related_article_id") @db.Uuid
+  createdBy          String           @map("created_by") @db.Uuid
+  createdAt          DateTime         @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt          DateTime         @updatedAt @map("updated_at") @db.Timestamptz
+
+  article KnowledgeArticle? @relation(fields: [relatedArticleId], references: [id])
+
+  @@index([verificationStatus])
+  @@index([relatedProductId])
+  @@index([relatedArticleId])
+  @@map("knowledge_facts")
+}
+
+// Hồ sơ tri thức từng sản phẩm (kết quả phân tích AI: dịch JP→VI, rủi ro, điện áp…)
+// productId = UUID trần @unique (1 hồ sơ / sản phẩm) → không sửa model Product.
+model ProductKnowledgeProfile {
+  id                   String    @id @default(uuid()) @db.Uuid
+  productId            String    @unique @map("product_id") @db.Uuid
+  originalLanguage     String    @default("ja") @map("original_language") @db.VarChar(10)
+  originalSourceText   String?   @map("original_source_text") @db.Text
+  translatedSummary    String?   @map("translated_summary") @db.Text
+  verifiedFacts        String[]  @map("verified_facts")
+  missingFields        String[]  @map("missing_fields")
+  riskFlags            String[]  @map("risk_flags")
+  buyerGuidance        String?   @map("buyer_guidance") @db.Text
+  voltageGuidance      String?   @map("voltage_guidance") @db.Text
+  transformerGuidance  String?   @map("transformer_guidance") @db.Text
+  modelComparisonNotes String?   @map("model_comparison_notes") @db.Text
+  internalNotes        String?   @map("internal_notes") @db.Text
+  confidenceScore      Int?      @map("confidence_score")
+  lastVerifiedAt       DateTime? @map("last_verified_at") @db.Timestamptz
+  updatedBy            String?   @map("updated_by") @db.Uuid
+  createdAt            DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt            DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@index([productId])
+  @@map("product_knowledge_profiles")
+}

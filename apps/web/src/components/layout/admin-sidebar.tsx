@@ -8,7 +8,7 @@ import {
   LayoutDashboard, Package, Gavel, Users, ShoppingBag,
   DollarSign, FileText, Settings, FolderOpen, Layers,
   ChevronRight, ChevronDown, ShieldAlert, Ban, LogOut, ExternalLink,
-  Home, ClipboardList, Gift, Mail, Sparkles, Megaphone, Key,
+  Home, ClipboardList, Gift, Mail, Sparkles, Megaphone, Key, Wand2, BookOpen, BrainCircuit,
 } from 'lucide-react'
 
 const NAV_SECTIONS = [
@@ -42,7 +42,11 @@ const NAV_SECTIONS = [
   {
     label: 'Nội dung & Cài đặt',
     items: [
+      { href: '/admin/ai', label: 'Tổng quan AI', icon: Sparkles, exact: true },
       { href: '/admin/content/ai-writer', label: 'AI Content Writer', icon: Sparkles },
+      { href: '/admin/content/studio', label: 'Content Studio', icon: Wand2 },
+      { href: '/admin/knowledge', label: 'Kho tri thức', icon: BookOpen },
+      { href: '/admin/ai/products', label: 'Sản phẩm AI', icon: BrainCircuit },
       { href: '/admin/content/facebook', label: 'Bài đăng Facebook', icon: Megaphone },
       { href: '/admin/content', label: 'Nội Dung', icon: FileText },
       {

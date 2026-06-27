@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { prisma } from '@japanvip/db'
 import Link from 'next/link'
-import { FileText, ImageOff, Globe, ChevronRight, Sparkles } from 'lucide-react'
+import { FileText, ImageOff, Globe, ChevronRight, Sparkles, Wand2 } from 'lucide-react'
 
 export const metadata: Metadata = { title: 'Admin — Nội Dung' }
 export const dynamic = 'force-dynamic'
@@ -50,6 +50,15 @@ export default async function AdminContentPage() {
       desc: 'Tạo mô tả sản phẩm, FAQ, SEO, bài blog với Claude AI',
       stats: [
         { label: 'Powered by', value: 'Claude', color: 'text-purple-400' },
+      ],
+    },
+    {
+      href: '/admin/content/studio',
+      icon: Wand2,
+      title: '🪄 Content Studio',
+      desc: 'Từ 1 sản phẩm → nội dung đa kênh: Facebook, Zalo, TikTok, YouTube, Email…',
+      stats: [
+        { label: 'Đa kênh', value: '11', color: 'text-pink-400' },
       ],
     },
     {
