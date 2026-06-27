@@ -60,7 +60,7 @@ export function BlogListClient({ posts, categories, products }: { posts: Post[];
                 {shown.map((p) => (
                   <article key={p.slug} className="group flex flex-col overflow-hidden rounded-xl border border-gray-100 bg-white transition-shadow duration-200 hover:shadow-md">
                     <Link href={`/blog/${p.slug}`} className="flex flex-1 flex-col">
-                      <div className="relative aspect-[16/10] w-full overflow-hidden bg-gray-100">
+                      <div className="relative aspect-[4/3] w-full overflow-hidden bg-gray-100">
                         {p.thumbnailUrl ? (
                           <Image src={p.thumbnailUrl} alt={p.title} fill
                             className="object-cover transition-transform duration-300 group-hover:scale-105"
