@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
+import { useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 
 type Post = {
@@ -20,10 +21,16 @@ type Product = {
   imageUrl: string | null
 }
 
+const PAGE_SIZE = 12
+
 // Lọc danh mục client-side (useSearchParams) → trang /blog render TĨNH.
 export function BlogListClient({ posts, categories, products }: { posts: Post[]; categories: Category[]; products: Product[] }) {
   const cat = useSearchParams().get('cat') ?? ''
   const filtered = cat ? posts.filter((p) => p.category?.slug === cat) : posts
+
+  const [visible, setVisible] = useState(PAGE_SIZE)
+  useEffect(() => { setVisible(PAGE_SIZE) }, [cat])
+  const shown = filtered.slice(0, visible)
 
   return (
     <>
@@ -42,54 +49,53 @@ export function BlogListClient({ posts, categories, products }: { posts: Post[];
         </div>
       )}
 
-      <div className="grid grid-cols-1 gap-0 lg:grid-cols-[1fr_300px] lg:gap-8">
-        {/* Posts list */}
-        <div className="divide-y divide-gray-100">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_300px]">
+        {/* Posts grid */}
+        <div>
           {filtered.length === 0 ? (
             <p className="py-20 text-center text-gray-400">Chưa có bài viết nào.</p>
-          ) : filtered.map((p) => (
-            <article key={p.slug} className="py-7">
-              <Link href={`/blog/${p.slug}`}>
-                <h2 className="text-xl font-bold text-gray-900 hover:text-brand-red transition-colors leading-snug mb-2">
-                  {p.title}
-                </h2>
-              </Link>
-
-              <div className="mb-3 flex flex-wrap items-center gap-3 text-xs text-gray-400">
-                {p.category && (
-                  <Link href={`/blog?cat=${p.category.slug}`} className="flex items-center gap-1 hover:text-brand-red transition-colors">
-                    <span>📁</span> {p.category.name}
-                  </Link>
-                )}
-                {p.publishedAt && (
-                  <span className="flex items-center gap-1">
-                    <span>📅</span> {new Date(p.publishedAt).toLocaleDateString('vi-VN')}
-                  </span>
-                )}
-              </div>
-
-              <div className="flex gap-5">
-                {p.thumbnailUrl && (
-                  <Link href={`/blog/${p.slug}`} className="shrink-0">
-                    <div className="relative h-28 w-36 overflow-hidden rounded-lg bg-gray-100">
-                      <Image src={p.thumbnailUrl} alt={p.title} fill className="object-cover hover:scale-105 transition-transform duration-300" sizes="144px" />
-                    </div>
-                  </Link>
-                )}
-                <div className="flex flex-col justify-between flex-1 min-w-0">
-                  {p.excerpt && (
-                    <p className="text-sm text-gray-600 leading-relaxed line-clamp-4">{p.excerpt}</p>
-                  )}
-                  <div className="mt-3">
-                    <Link href={`/blog/${p.slug}`}
-                      className="inline-block rounded border border-gray-300 px-4 py-1.5 text-sm text-gray-600 hover:border-brand-red hover:text-brand-red transition-colors">
-                      Xem thêm
+          ) : (
+            <>
+              <div className="grid gap-5 sm:grid-cols-2">
+                {shown.map((p) => (
+                  <article key={p.slug} className="group flex flex-col overflow-hidden rounded-xl border border-gray-100 bg-white transition-shadow duration-200 hover:shadow-md">
+                    <Link href={`/blog/${p.slug}`} className="flex flex-1 flex-col">
+                      <div className="relative aspect-[16/10] w-full overflow-hidden bg-gray-100">
+                        {p.thumbnailUrl ? (
+                          <Image src={p.thumbnailUrl} alt={p.title} fill
+                            className="object-cover transition-transform duration-300 group-hover:scale-105"
+                            sizes="(min-width:1024px) 420px, (min-width:640px) 45vw, 100vw" />
+                        ) : (
+                          <div className="flex h-full w-full items-center justify-center text-4xl text-gray-200">📰</div>
+                        )}
+                      </div>
+                      <div className="flex flex-1 flex-col p-4">
+                        <div className="mb-2 flex flex-wrap items-center gap-3 text-xs text-gray-400">
+                          {p.category && <span className="flex items-center gap-1">📁 {p.category.name}</span>}
+                          {p.publishedAt && <span className="flex items-center gap-1">📅 {new Date(p.publishedAt).toLocaleDateString('vi-VN')}</span>}
+                        </div>
+                        <h2 className="mb-1.5 line-clamp-2 text-base font-bold leading-snug text-gray-900 transition-colors group-hover:text-brand-red">
+                          {p.title}
+                        </h2>
+                        {p.excerpt && (
+                          <p className="line-clamp-2 text-sm leading-relaxed text-gray-500">{p.excerpt}</p>
+                        )}
+                      </div>
                     </Link>
-                  </div>
-                </div>
+                  </article>
+                ))}
               </div>
-            </article>
-          ))}
+
+              {visible < filtered.length && (
+                <div className="mt-8 text-center">
+                  <button onClick={() => setVisible((v) => v + PAGE_SIZE)}
+                    className="rounded-full border border-gray-300 px-6 py-2.5 text-sm font-semibold text-gray-700 transition-colors hover:border-brand-red hover:text-brand-red">
+                    Xem thêm bài viết ({filtered.length - visible})
+                  </button>
+                </div>
+              )}
+            </>
+          )}
         </div>
 
         {/* Sidebar */}
