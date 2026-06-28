@@ -9,6 +9,10 @@ export function LoginForm({ callbackUrl }: { callbackUrl: string }) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
+  // Chống open-redirect: chỉ chấp nhận đường dẫn nội bộ tương đối (vd "/dashboard"),
+  // chặn "//evil.com" và URL tuyệt đối ra ngoài.
+  const safeCallback = callbackUrl && callbackUrl.startsWith('/') && !callbackUrl.startsWith('//') ? callbackUrl : '/dashboard'
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!email || !password) { setError('Vui lòng nhập đầy đủ thông tin'); return }
@@ -32,7 +36,7 @@ export function LoginForm({ callbackUrl }: { callbackUrl: string }) {
       setError('Email hoặc mật khẩu không đúng. Vui lòng thử lại.')
       setLoading(false)
     } else {
-      window.location.href = callbackUrl
+      window.location.href = safeCallback
     }
   }
 
@@ -90,7 +94,7 @@ export function LoginForm({ callbackUrl }: { callbackUrl: string }) {
 
       <button
         type="button"
-        onClick={() => signIn('google', { callbackUrl })}
+        onClick={() => signIn('google', { callbackUrl: safeCallback })}
         className="flex w-full items-center justify-center gap-3 rounded-lg border border-gray-300 bg-white py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
       >
         <svg width="18" height="18" viewBox="0 0 24 24">

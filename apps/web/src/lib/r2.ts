@@ -7,6 +7,23 @@ export type UploadFolder = 'products' | 'avatars' | 'banners' | 'blogs' | 'brand
 export const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/avif', 'video/mp4', 'video/webm', 'video/quicktime']
 export const MAX_UPLOAD_BYTES = 100 * 1024 * 1024 // 100MB (video)
 
+// Kiểm tra CHỮ KÝ file (magic bytes) khớp content-type khai báo → chống giả MIME
+// (vd upload HTML/script nhưng gắn nhãn image/jpeg).
+function signatureMatches(buf: Buffer, ct: string): boolean {
+  if (buf.length < 12) return false
+  const ascii = (s: number, e: number) => buf.toString('ascii', s, e)
+  switch (ct) {
+    case 'image/jpeg': return buf[0] === 0xff && buf[1] === 0xd8 && buf[2] === 0xff
+    case 'image/png': return buf[0] === 0x89 && buf[1] === 0x50 && buf[2] === 0x4e && buf[3] === 0x47
+    case 'image/webp': return ascii(0, 4) === 'RIFF' && ascii(8, 12) === 'WEBP'
+    case 'image/avif': return ascii(4, 8) === 'ftyp'
+    case 'video/mp4':
+    case 'video/quicktime': return ascii(4, 8) === 'ftyp'
+    case 'video/webm': return buf[0] === 0x1a && buf[1] === 0x45 && buf[2] === 0xdf && buf[3] === 0xa3
+    default: return false
+  }
+}
+
 function isR2Configured(): boolean {
   return !!(
     process.env.CLOUDFLARE_ACCOUNT_ID &&
@@ -36,7 +53,8 @@ export async function uploadFile(
   originalName: string,
 ): Promise<string> {
   if (!ALLOWED_MIME_TYPES.includes(contentType)) throw new Error('Unsupported file type')
-  if (buffer.byteLength > MAX_UPLOAD_BYTES) throw new Error('File too large (max 10MB)')
+  if (buffer.byteLength > MAX_UPLOAD_BYTES) throw new Error('File too large')
+  if (!signatureMatches(buffer, contentType)) throw new Error('Nội dung file không khớp định dạng khai báo')
 
   const ext = originalName.split('.').pop()?.toLowerCase() ?? contentType.split('/')[1] ?? 'jpg'
   const filename = `${uuidv4()}.${ext}`

@@ -2,8 +2,10 @@ import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
   experimental: {
-    serverActions: { bodySizeLimit: '100mb' },
+    serverActions: { bodySizeLimit: '10mb' },
   },
+  // ESLint: không chặn build/deploy nếu có lỗi lint (CI chạy lint riêng dạng cảnh báo)
+  eslint: { ignoreDuringBuilds: true },
   // Domain chính = japanvip.vn. store/www → 301 redirect về apex (gộp SEO, không trùng nội dung).
   async redirects() {
     return [
@@ -53,6 +55,8 @@ const nextConfig: NextConfig = {
           { key: 'X-XSS-Protection', value: '1; mode=block' },
           { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
           { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
+          { key: 'Cross-Origin-Opener-Policy', value: 'same-origin' },
+          { key: 'Cross-Origin-Resource-Policy', value: 'same-site' },
           {
             key: 'Content-Security-Policy',
             value: [

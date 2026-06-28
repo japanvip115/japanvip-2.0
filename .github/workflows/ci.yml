@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate Prisma client
+        run: pnpm --filter @japanvip/db db:generate
+
+      - name: Typecheck
+        run: pnpm --filter @japanvip/web exec tsc --noEmit
+
+      - name: Lint (cảnh báo, không chặn)
+        run: pnpm --filter @japanvip/web lint
+        continue-on-error: true
+
+      - name: Dependency audit (cảnh báo, không chặn)
+        run: pnpm audit --audit-level=high
+        continue-on-error: true
+
+      - name: Secret scan (gitleaks, cảnh báo, không chặn)
+        uses: gitleaks/gitleaks-action@v2
+        continue-on-error: true

@@ -14,6 +14,13 @@
     "db:push": "turbo db:push",
     "db:studio": "pnpm --filter @japanvip/db studio"
   },
+  "pnpm": {
+    "overrides": {
+      "undici": ">=7.28.0",
+      "nodemailer": ">=9.0.1",
+      "postcss": ">=8.5.10"
+    }
+  },
   "devDependencies": {
     "turbo": "^2.3.3",
     "prettier": "^3.4.2",
