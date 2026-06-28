@@ -21,7 +21,7 @@ export async function POST(req: NextRequest, { params }: Params) {
 
   const target = await prisma.user.findUnique({ where: { id }, select: { role: true } })
   if (!target) return apiError('Không tìm thấy người dùng', 404)
-  if (target.role === 'SUPER_ADMIN') return apiError('Không thể đổi mật khẩu Super Admin', 403)
+  if (target.role === 'SUPER_ADMIN' && session.user!.role !== 'SUPER_ADMIN') return apiError('Không thể đổi mật khẩu Super Admin', 403)
 
   try {
     const { password } = schema.parse(await req.json())
