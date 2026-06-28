@@ -55,7 +55,7 @@
     "clsx": "^2.1.1",
     "ioredis": "^5.4.1",
     "lucide-react": "^0.468.0",
-    "next": "^15.2.0",
+    "next": "^16.2.9",
     "next-auth": "^5.0.0-beta.28",
     "nodemailer": "^9.0.0",
     "playwright-core": "^1.61.0",
