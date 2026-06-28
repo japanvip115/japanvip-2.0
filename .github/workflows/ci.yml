@@ -39,5 +39,5 @@ jobs:
         continue-on-error: true
 
       - name: Secret scan (gitleaks, cảnh báo, không chặn)
-        uses: gitleaks/gitleaks-action@v2
+        uses: gitleaks/gitleaks-action@v3
         continue-on-error: true
