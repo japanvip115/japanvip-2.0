@@ -17,8 +17,9 @@ export function handleApiError(err: unknown): NextResponse<ApiError> {
     return apiError('Validation error', 422, err.flatten().fieldErrors)
   }
   if (err instanceof Error) {
-    console.error('[API Error]', err.message)
-    return apiError(err.message, 500)
+    // Log đầy đủ ở server, KHÔNG trả err.message ra client (tránh lộ schema/chi tiết Prisma)
+    console.error('[API Error]', err)
+    return apiError('Đã có lỗi xảy ra, vui lòng thử lại.', 500)
   }
-  return apiError('Internal server error', 500)
+  return apiError('Đã có lỗi xảy ra, vui lòng thử lại.', 500)
 }

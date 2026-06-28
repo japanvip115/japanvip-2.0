@@ -1,3 +1,4 @@
+import { randomInt } from 'crypto'
 import { prisma } from '@japanvip/db'
 import { sendOtpEmail } from './email.service'
 
@@ -5,7 +6,8 @@ const OTP_TTL_MINUTES = 10
 const MAX_ACTIVE_OTPS = 3
 
 export function generateOtpCode(): string {
-  return String(Math.floor(100000 + Math.random() * 900000))
+  // crypto.randomInt → mã 6 số ngẫu nhiên an toàn (không dùng Math.random đoán được)
+  return String(randomInt(100000, 1000000))
 }
 
 export async function createAndSendOtp(email: string, purpose: 'verify_email' | 'reset_password' | 'quick_order' | 'affiliate_register', fullName?: string) {
@@ -30,7 +32,8 @@ export async function createAndSendOtp(email: string, purpose: 'verify_email' | 
 }
 
 export async function verifyOtp(email: string, code: string, purpose: 'verify_email' | 'reset_password' | 'quick_order' | 'affiliate_register'): Promise<boolean> {
-  const otp = await prisma.emailOtp.findFirst({
+  // Atomic: chỉ đánh dấu usedAt nếu mã còn hợp lệ & chưa dùng → chống đua dùng lại 1 OTP 2 lần.
+  const res = await prisma.emailOtp.updateMany({
     where: {
       email,
       code,
@@ -38,11 +41,7 @@ export async function verifyOtp(email: string, code: string, purpose: 'verify_em
       usedAt: null,
       expiresAt: { gt: new Date() },
     },
-    orderBy: { createdAt: 'desc' },
+    data: { usedAt: new Date() },
   })
-
-  if (!otp) return false
-
-  await prisma.emailOtp.update({ where: { id: otp.id }, data: { usedAt: new Date() } })
-  return true
+  return res.count > 0
 }

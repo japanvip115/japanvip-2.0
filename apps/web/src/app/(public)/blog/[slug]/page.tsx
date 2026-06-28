@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
 import { prisma } from '@japanvip/db'
+import { sanitizeContentHtml } from '@/lib/sanitize-content'
 
 type Props = { params: Promise<{ slug: string }> }
 
@@ -71,7 +72,7 @@ export default async function BlogPostPage({ params }: Props) {
   // 🔒 LOCKED (2026-06) — Render blog đã chốt: CSS bảng/figure, bỏ h1 trùng, gộp <br>, whitelist block,
   // bỏ ảnh hero. Xem CLAUDE.md. KHÔNG tự sửa.
   // Markdown → HTML with cleanup
-  const html = post.content
+  const rawHtml = post.content
     // Bỏ <h1> trong nội dung (trùng tiêu đề bài đã hiển thị ở header)
     .replace(/<h1[^>]*>[\s\S]*?<\/h1>/gi, '')
     // Gộp nhiều <br> liên tiếp thành 1 và bỏ <br> sát các block (tránh khoảng trống thừa)
@@ -118,6 +119,9 @@ export default async function BlogPostPage({ params }: Props) {
       return `<p>${chunk.replace(/\n/g, '<br />')}</p>`
     })
     .join('\n')
+
+  // Bảo mật: sanitize HTML cuối (chặn stored-XSS từ nội dung AI/cào web). Giữ nguyên render đã chốt.
+  const html = sanitizeContentHtml(rawHtml)
 
   return (
     <div className="bg-gray-50 min-h-screen">

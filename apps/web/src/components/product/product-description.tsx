@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { List } from 'lucide-react'
+import { sanitizeContentHtml } from '@/lib/sanitize-content'
 
 type TocItem = {
   id: string
@@ -71,7 +72,8 @@ function processDescription(html: string): { processed: string; toc: TocItem[] }
     }
   )
 
-  return { processed, toc }
+  // Bảo mật: sanitize trước khi render (chặn stored-XSS từ mô tả AI/cào web)
+  return { processed: sanitizeContentHtml(processed), toc }
 }
 
 const COLLAPSE_HEIGHT = 600

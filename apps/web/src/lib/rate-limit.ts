@@ -8,6 +8,12 @@ type RateLimitConfig = { limit: number; windowSeconds: number }
 const CONFIGS: Record<string, RateLimitConfig> = {
   'auth:login':      { limit: 5,  windowSeconds: 60 },
   'auth:register':   { limit: 3,  windowSeconds: 3600 },
+  // OTP / khôi phục mật khẩu — siết để chống brute-force mã 6 số (trước đây rơi về default 60/phút)
+  'auth:verify-email':    { limit: 8, windowSeconds: 600 },
+  'auth:resend-otp':      { limit: 3, windowSeconds: 3600 },
+  'auth:forgot-password': { limit: 5, windowSeconds: 3600 },
+  'auth:reset-password':  { limit: 8, windowSeconds: 600 },
+  'affiliate-otp':        { limit: 3, windowSeconds: 3600 },
   'bfj:parse-url':   { limit: 20, windowSeconds: 60 },
   'auction:bid':     { limit: 10, windowSeconds: 10 },
   'auction:max-bid': { limit: 5,  windowSeconds: 30 },
