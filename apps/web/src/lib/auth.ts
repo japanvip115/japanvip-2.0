@@ -188,11 +188,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth(async () => {
     trustHost: true,
     pages: { signIn: '/login', error: '/login' },
     providers: [
-      Google({
-        clientId,
-        clientSecret,
-        authorization: { params: { prompt: 'select_account' } },
-      }),
+      ...(clientId && clientSecret
+        ? [Google({ clientId, clientSecret, authorization: { params: { prompt: 'select_account' } } })]
+        : []),
       credentialsProvider,
     ],
     callbacks: sharedCallbacks,

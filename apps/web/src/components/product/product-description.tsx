@@ -85,12 +85,15 @@ export function ProductDescription({ description, collapseHeight = COLLAPSE_HEIG
 
   const { processed, toc } = useMemo(() => processDescription(description), [description])
 
-  // Auto-collapse khi expanded mà user scroll lên khỏi vùng nhìn
+  // Auto-collapse khi expanded mà user scroll lên khỏi vùng mô tả (về khu vực đấu giá)
   useEffect(() => {
     if (collapsed) return
     function onScroll() {
       if (!wrapperRef.current) return
-      if (wrapperRef.current.getBoundingClientRect().bottom < 0) setCollapsed(true)
+      const rect = wrapperRef.current.getBoundingClientRect()
+      // Scroll xuống quá → bottom ra khỏi viewport
+      // Scroll lên → top quá nửa màn hình (đang xem khu đấu giá bên trên)
+      if (rect.bottom < 0 || rect.top > window.innerHeight * 0.5) setCollapsed(true)
     }
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)

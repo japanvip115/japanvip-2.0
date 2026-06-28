@@ -126,18 +126,6 @@ export default async function BlogPostPage({ params }: Props) {
   return (
     <div className="bg-gray-50 min-h-screen">
       <div className="mx-auto max-w-7xl px-4 py-8">
-        {/* Breadcrumb */}
-        <nav className="mb-5 flex items-center gap-1.5 text-sm text-gray-500">
-          <Link href="/" className="hover:text-brand-red">Trang chủ</Link>
-          <span>/</span>
-          <Link href="/blog" className="hover:text-brand-red">Blog</Link>
-          {post.category && (
-            <>
-              <span>/</span>
-              <Link href={`/blog?cat=${post.category.slug}`} className="hover:text-brand-red">{post.category.name}</Link>
-            </>
-          )}
-        </nav>
 
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_300px]">
           {/* Article — KHÔNG hiện ảnh bìa lớn ở đầu bài chi tiết (ảnh đã có trong nội dung).
