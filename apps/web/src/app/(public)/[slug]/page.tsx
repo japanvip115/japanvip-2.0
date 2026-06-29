@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import { unstable_cache } from 'next/cache'
+import { stripBrandSuffix } from '@/lib/seo'
 import { ProductGallery } from '@/components/product/product-gallery'
 import { ProductTabs } from '@/components/product/product-tabs'
 import { RelatedProducts } from '@/components/product/related-products'
@@ -47,8 +48,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   })
   if (!product) return { title: 'Không tìm thấy — Japan VIP' }
 
-  // Root layout có title.template '%s | Japan VIP' → KHÔNG tự thêm brand ở đây (tránh lặp).
-  const title = product.metaTitle ?? product.name
+  // Root layout có title.template '%s | Japan VIP' → strip brand nếu metaTitle đã kèm (tránh lặp).
+  const title = stripBrandSuffix(product.metaTitle ?? product.name)
   const description = product.metaDesc ?? product.description ?? `${product.name} — Hàng gia dụng nội địa Nhật Bản chính hãng tại Japan VIP.`
   const image = product.images[0]?.url
 
@@ -630,6 +631,7 @@ export default async function ProductDetailPage({ params }: Props) {
                 price: Number(liveAuction.currentPrice),
                 priceCurrency: 'VND',
                 availability: 'https://schema.org/InStock',
+                itemCondition: 'https://schema.org/NewCondition',
                 seller: { '@type': 'Organization', name: 'Japan VIP' },
                 shippingDetails: { '@type': 'OfferShippingDetails', shippingRate: { '@type': 'MonetaryAmount', value: '0', currency: 'VND' }, deliveryTime: { '@type': 'ShippingDeliveryTime', handlingTime: { '@type': 'QuantitativeValue', minValue: 0, maxValue: 1, unitCode: 'DAY' }, transitTime: { '@type': 'QuantitativeValue', minValue: 1, maxValue: 3, unitCode: 'DAY' } }, shippingDestination: { '@type': 'DefinedRegion', addressCountry: 'VN' } },
                 hasMerchantReturnPolicy: { '@type': 'MerchantReturnPolicy', applicableCountry: 'VN', returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow', merchantReturnDays: 7, returnMethod: 'https://schema.org/ReturnByMail' },
@@ -638,6 +640,7 @@ export default async function ProductDetailPage({ params }: Props) {
                 price: Number(product.salePrice),
                 priceCurrency: 'VND',
                 availability: 'https://schema.org/InStock',
+                itemCondition: 'https://schema.org/NewCondition',
                 seller: { '@type': 'Organization', name: 'Japan VIP' },
                 shippingDetails: { '@type': 'OfferShippingDetails', shippingRate: { '@type': 'MonetaryAmount', value: '0', currency: 'VND' }, deliveryTime: { '@type': 'ShippingDeliveryTime', handlingTime: { '@type': 'QuantitativeValue', minValue: 0, maxValue: 1, unitCode: 'DAY' }, transitTime: { '@type': 'QuantitativeValue', minValue: 1, maxValue: 3, unitCode: 'DAY' } }, shippingDestination: { '@type': 'DefinedRegion', addressCountry: 'VN' } },
                 hasMerchantReturnPolicy: { '@type': 'MerchantReturnPolicy', applicableCountry: 'VN', returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow', merchantReturnDays: 7, returnMethod: 'https://schema.org/ReturnByMail' },

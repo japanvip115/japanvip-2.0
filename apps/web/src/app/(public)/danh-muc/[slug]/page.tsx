@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import { prisma } from '@japanvip/db'
+import { stripBrandSuffix } from '@/lib/seo'
 import { ProductCard } from '@/components/product/product-card'
 
 export const revalidate = 300
@@ -29,7 +30,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const category = await getCategory(slug)
   if (!category) return { title: 'Không tìm thấy danh mục' }
 
-  const title = category.metaTitle?.trim() || `${category.name} Nội Địa Nhật Bản Chính Hãng`
+  const title = stripBrandSuffix(category.metaTitle?.trim() || `${category.name} Nội Địa Nhật Bản Chính Hãng`)
   const description =
     category.metaDesc?.trim() ||
     category.description?.replace(/\s+/g, ' ').trim().slice(0, 160) ||
@@ -43,7 +44,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title,
       description,
       type: 'website',
-      ...(category.imageUrl ? { images: [category.imageUrl] } : {}),
+      images: [category.imageUrl || '/og-default.jpg'],
     },
   }
 }

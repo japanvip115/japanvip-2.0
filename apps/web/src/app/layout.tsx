@@ -47,11 +47,13 @@ export async function generateMetadata(): Promise<Metadata> {
       siteName: 'Japan VIP',
       title: 'Japan VIP — Hàng Gia Dụng Nội Địa Nhật Bản Chính Hãng',
       description: 'Phân phối hàng gia dụng nội địa Nhật Bản mới 100%, chính hãng.',
+      images: [{ url: '/og-default.jpg', width: 1200, height: 630, alt: 'Japan VIP — Hàng Gia Dụng Nội Địa Nhật Bản' }],
     },
     twitter: {
       card: 'summary_large_image',
       title: 'Japan VIP — Hàng Gia Dụng Nội Địa Nhật Bản',
       description: 'Phân phối hàng gia dụng nội địa Nhật Bản mới 100%, chính hãng.',
+      images: ['/og-default.jpg'],
     },
     robots: {
       index: true,
