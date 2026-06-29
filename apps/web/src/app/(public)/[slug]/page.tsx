@@ -617,10 +617,12 @@ export default async function ProductDetailPage({ params }: Props) {
                 .slice(0, 500),
               image: product.images.map((i) => i.url),
               brand: product.brand ? { '@type': 'Brand', name: product.brand.name } : undefined,
-              ...(reviewsEnabled && product.rating ? {
+              // Khớp ĐÚNG với rating hiển thị trên trang (dòng 247-248): khi bật review,
+              // luôn có rating (fallback 5) → schema phải khớp để Google hiện ⭐ (rating đã visible).
+              ...(reviewsEnabled ? {
                 aggregateRating: {
                   '@type': 'AggregateRating',
-                  ratingValue: Number(product.rating).toFixed(1),
+                  ratingValue: (product.rating ? Number(product.rating) : 5).toFixed(1),
                   reviewCount: product.reviewCount > 0 ? product.reviewCount : 5,
                   bestRating: '5',
                   worstRating: '1',
