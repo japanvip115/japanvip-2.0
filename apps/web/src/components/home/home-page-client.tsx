@@ -602,6 +602,7 @@ function HeroBannerSlider({ banners, router }: { banners: HeroBanner[]; router: 
   }, [banners.length])
 
   const activeBanner = banners[idx]!
+  const video = isVideo(activeBanner.imageUrl)
 
   return (
     <section
@@ -609,50 +610,39 @@ function HeroBannerSlider({ banners, router }: { banners: HeroBanner[]; router: 
       style={{ cursor: activeBanner.linkUrl ? 'pointer' : 'default' }}
       onClick={() => { if (activeBanner.linkUrl) router.push(activeBanner.linkUrl) }}
     >
-      {/* Render tất cả banner chồng nhau — crossfade bằng opacity */}
-      {banners.map((banner, i) => {
-        const active = i === idx
-        const video = isVideo(banner.imageUrl)
-        return (
-          <div
-            key={banner.imageUrl}
-            style={{
-              position: 'absolute', inset: 0,
-              opacity: active ? 1 : 0,
-              transition: 'opacity 1.4s cubic-bezier(0.4, 0, 0.2, 1)',
-              zIndex: active ? 1 : 0,
-            }}
-          >
-            {video ? (
-              <>
-                <Image
-                  src={banner.imageUrl.replace(/\.mp4$/i, '.jpg')}
-                  alt={banner.title}
-                  fill sizes="100vw"
-                  priority={i === 0}
-                  className="lg:hidden"
-                  style={{ objectFit: 'cover', animation: 'kenburns 12s ease-in-out infinite alternate' }}
-                />
-                <video
-                  src={banner.imageUrl}
-                  poster={banner.imageUrl.replace(/\.mp4$/i, '.jpg')}
-                  autoPlay muted loop playsInline preload="none"
-                  className="hidden lg:block"
-                  style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
-                />
-              </>
-            ) : (
-              <Image
-                src={banner.imageUrl}
-                alt={banner.title}
-                fill sizes="100vw"
-                priority={i === 0}
-                style={{ objectFit: 'cover', animation: 'kenburns 12s ease-in-out infinite alternate' }}
-              />
-            )}
-          </div>
-        )
-      })}
+      {/* CHỈ render banner đang hiện — tránh tải đồng thời N ảnh ẩn làm chậm LCP.
+          key=URL → đổi banner thì remount, ảnh mới fade-in nhẹ. */}
+      <div key={activeBanner.imageUrl} style={{ position: 'absolute', inset: 0, zIndex: 1, animation: 'heroFadeIn 0.8s ease' }}>
+        {video ? (
+          <>
+            {/* Mobile/tablet: ảnh poster tĩnh (LCP nhanh, KHÔNG tải video) */}
+            <Image
+              src={activeBanner.imageUrl.replace(/\.mp4$/i, '.jpg')}
+              alt={activeBanner.title}
+              fill sizes="100vw"
+              priority
+              className="lg:hidden"
+              style={{ objectFit: 'cover', animation: 'kenburns 12s ease-in-out infinite alternate' }}
+            />
+            {/* Desktop (mạng nhanh): video tự phát */}
+            <video
+              src={activeBanner.imageUrl}
+              poster={activeBanner.imageUrl.replace(/\.mp4$/i, '.jpg')}
+              autoPlay muted loop playsInline preload="none"
+              className="hidden lg:block"
+              style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+            />
+          </>
+        ) : (
+          <Image
+            src={activeBanner.imageUrl}
+            alt={activeBanner.title}
+            fill sizes="100vw"
+            priority
+            style={{ objectFit: 'cover', animation: 'kenburns 12s ease-in-out infinite alternate' }}
+          />
+        )}
+      </div>
       <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 60%)', zIndex: 2 }} />
       {banners.length > 1 && (
         <>
