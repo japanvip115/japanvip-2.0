@@ -96,6 +96,29 @@
 
 ---
 
+## Quy chuẩn ảnh sản phẩm (BẮT BUỘC — áp dụng mọi lần thêm/sửa ảnh SP)
+
+| Loại ảnh | Kích thước | Cách xử lý |
+|---|---|---|
+| **Ảnh chính** (`isPrimary: true`) | **đúng 850×850** px | `sharp fit:'contain'` + nền trắng `#fff` → canvas vuông chuẩn |
+| Ảnh gallery phụ (nội dung/tính năng) | ≤ 850×850, giữ tỉ lệ | `sharp fit:'inside'`, không phóng to |
+| Ảnh ngang (banner/lifestyle, tỉ lệ ≥ 1.3) | ≤ 1200×650 | `sharp fit:'inside'` |
+
+**Quy trình thêm ảnh chính thủ công** (khi không qua AI Writer):
+1. Download ảnh về local (`/tmp/`)
+2. `sharp().resize(850, 850, { fit:'contain', background:{r:255,g:255,b:255} }).flatten({background:{r:255,g:255,b:255}}).jpeg({quality:90})` → `/tmp/tên-850.jpg`
+3. Upload đè R2 bằng AWS S3Client (endpoint Cloudflare R2, bucket `japanvip-media`, folder `products/`)
+4. Dùng MCP `add_product_image` với `isPrimary: true` để gắn vào DB
+
+**Node.js S3Client config** (lấy từ `.env.local`):
+```
+endpoint: https://{CLOUDFLARE_ACCOUNT_ID}.r2.cloudflarestorage.com
+credentials: R2_ACCESS_KEY_ID / R2_SECRET_ACCESS_KEY
+bucket: R2_BUCKET_NAME = japanvip-media
+```
+
+---
+
 ## Việc đang chờ (chưa làm)
 - **Google tìm ảnh** (search-images route + UI): đã cấu hình xong (project `japanvip-image-search`, billing Japan Vlp, key+CX trong `.env.local`, API enabled). Chờ Google kích hoạt Custom Search cho project mới (403 lúc đầu, tự thông sau vài giờ). KHÔNG cần làm thêm.
 - Lấy giá Amazon chuẩn: **Amazon PA-API** (scrape tĩnh không chắc vì giá render JS + sponsored).

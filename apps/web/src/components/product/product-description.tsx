@@ -173,7 +173,7 @@ export function ProductDescription({ description, collapseHeight = COLLAPSE_HEIG
             [&_.compare-grid]:grid [&_.compare-grid]:grid-cols-3 [&_.compare-grid]:gap-3 [&_.compare-grid]:my-5 [&_.compare-grid]:text-center [&_.compare-grid]:text-sm
             [&_.compare-box]:rounded-xl [&_.compare-box]:border [&_.compare-box]:px-3 [&_.compare-box]:py-4
             [&_.compare-val]:block [&_.compare-val]:text-2xl [&_.compare-val]:font-extrabold [&_.compare-val]:mb-1
-            [&_img]:max-w-full [&_img]:rounded-xl [&_img]:my-6 [&_img]:shadow-sm
+            [&_img]:block [&_img]:mx-auto [&_img]:max-w-full [&_img]:rounded-xl [&_img]:my-6 [&_img]:shadow-sm
             [&_a]:text-brand-red [&_a]:underline
             scroll-mt-20"
           dangerouslySetInnerHTML={{ __html: processed }}
