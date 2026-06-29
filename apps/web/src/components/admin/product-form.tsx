@@ -277,9 +277,6 @@ export function ProductForm({ mode, productId, initialData = {}, categories = []
             </div>
           </div>
 
-          {/* Images slot — injected from parent page */}
-          {imageSlot && <div key="image-slot">{imageSlot}</div>}
-
           {/* SEO */}
           <div className={CARD}>
             <h2 className={CARD_TITLE}>SEO</h2>
@@ -493,6 +490,9 @@ export function ProductForm({ mode, productId, initialData = {}, categories = []
               </div>
             </div>
           </div>
+
+          {/* Hình ảnh sản phẩm — trong sidebar, dưới Giá bán */}
+          {imageSlot && <div key="image-slot">{imageSlot}</div>}
 
           {/* URL nguồn */}
           <div className={CARD}>
