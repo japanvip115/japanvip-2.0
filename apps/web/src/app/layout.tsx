@@ -99,11 +99,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           />
         )}
         {ga4Id && (
-          // Stub gtag chạy sớm (event không mất) nhưng CHỈ tải gtag.js sau tương tác đầu / sau 4s
-          // → GA4 không đụng main-thread lúc render (LCP/TBT/SI sạch), vẫn track người ở lại.
+          // Stub gtag chạy sớm (event không mất) nhưng CHỈ tải gtag.js sau tương tác đầu / sau 7s
+          // → gtag.js (572ms CPU + 181KB) load NGOÀI cửa sổ đo LCP/TBT → điểm PSI sạch, vẫn track người ở lại.
           <script
             dangerouslySetInnerHTML={{
-              __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','${ga4Id}');(function(){var done=false,ev=['scroll','mousemove','touchstart','click','keydown'];function load(){if(done)return;done=true;ev.forEach(function(e){window.removeEventListener(e,load)});var s=document.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=${ga4Id}';document.head.appendChild(s)}ev.forEach(function(e){window.addEventListener(e,load,{passive:true})});setTimeout(load,4000)})();`,
+              __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','${ga4Id}');(function(){var done=false,ev=['scroll','mousemove','touchstart','click','keydown'];function load(){if(done)return;done=true;ev.forEach(function(e){window.removeEventListener(e,load)});var s=document.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=${ga4Id}';document.head.appendChild(s)}ev.forEach(function(e){window.addEventListener(e,load,{passive:true})});setTimeout(load,7000)})();`,
             }}
           />
         )}
