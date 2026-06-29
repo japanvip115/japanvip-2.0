@@ -169,7 +169,7 @@ export function NavLinks({ blogCategories = [], productCategories: _ = [] }: { b
       {blogCategories.length > 0 ? (
         <div className="group relative">
           <Link href="/blog" className={dropLinkCls('/blog')}>
-            Blog Nhật Bản
+            Góc Tư Vấn
             <ChevronDown className="h-3.5 w-3.5 opacity-60 transition-all duration-200 group-hover:rotate-180 group-hover:opacity-100" />
           </Link>
           <div className="pointer-events-none absolute left-1/2 top-full z-50 -translate-x-1/2 pt-3 opacity-0 translate-y-1 transition-all duration-200 group-hover:pointer-events-auto group-hover:opacity-100 group-hover:translate-y-0">
@@ -193,7 +193,7 @@ export function NavLinks({ blogCategories = [], productCategories: _ = [] }: { b
           </div>
         </div>
       ) : (
-        <Link href="/blog" className={linkCls('/blog')}>Blog Nhật Bản</Link>
+        <Link href="/blog" className={linkCls('/blog')}>Góc Tư Vấn</Link>
       )}
 
       {/* Các link đơn */}
@@ -236,7 +236,7 @@ export function MobileMenuButton({ blogCategories = [], productCategories = [] }
         { label: 'Máy Hút Bụi', href: '/dau-gia' },
       ],
     },
-    { label: '📝 Blog Nhật Bản', href: '/blog' },
+    { label: '📝 Góc Tư Vấn', href: '/blog' },
     { label: '📦 Theo Dõi Đơn', href: '/theo-doi-don' },
     { label: '🤝 CTV', href: '/cong-tac-vien' },
     { label: '📞 Liên Hệ', href: '/lien-he' },
