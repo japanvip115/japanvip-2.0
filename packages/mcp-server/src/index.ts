@@ -134,6 +134,7 @@ server.tool(
     attributes: z.array(z.object({
       name: z.string().describe('Ví dụ: [quick]Bảo hành hoặc [faq]Câu hỏi?'),
       value: z.string(),
+      order: z.number().optional().describe('Thứ tự hiển thị (0 = đầu tiên)'),
     })),
     replacePrefix: z.string().optional().describe('Xoá toàn bộ attribute có prefix này trước khi thêm mới. Ví dụ: [faq]'),
   },
@@ -143,14 +144,16 @@ server.tool(
         where: { productId, name: { startsWith: replacePrefix } },
       })
     }
-    for (const attr of attributes) {
+    for (let i = 0; i < attributes.length; i++) {
+      const attr = attributes[i]
+      const sortOrder = attr.order ?? i
       const existing = await prisma.productAttribute.findFirst({
         where: { productId, name: attr.name },
       })
       if (existing) {
-        await prisma.productAttribute.update({ where: { id: existing.id }, data: { value: attr.value } })
+        await prisma.productAttribute.update({ where: { id: existing.id }, data: { value: attr.value, sortOrder } })
       } else {
-        await prisma.productAttribute.create({ data: { productId, name: attr.name, value: attr.value } })
+        await prisma.productAttribute.create({ data: { productId, name: attr.name, value: attr.value, sortOrder } })
       }
     }
     return { content: [{ type: 'text' as const, text: `✓ Đã upsert ${attributes.length} attributes cho sản phẩm ${productId}` }] }

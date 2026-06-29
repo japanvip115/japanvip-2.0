@@ -89,7 +89,7 @@ export default async function ProductDetailPage({ params }: Props) {
       category: { select: { id: true, name: true, slug: true } },
       brand: { select: { id: true, name: true, logoUrl: true } },
       images: { orderBy: [{ isPrimary: 'desc' }, { sortOrder: 'asc' }] },
-      attributes: { orderBy: { name: 'asc' } },
+      attributes: { orderBy: [{ sortOrder: 'asc' }, { createdAt: 'asc' }] },
       auctions: {
         where: { status: { in: ['LIVE', 'SCHEDULED'] } },
         orderBy: { createdAt: 'desc' },
