@@ -1,5 +1,6 @@
 generator client {
   provider      = "prisma-client-js"
+  output        = "../../../apps/web/src/generated/prisma"
   binaryTargets = ["native", "rhel-openssl-3.0.x"]
 }
 
@@ -16,6 +17,7 @@ datasource db {
 enum UserRole {
   CUSTOMER
   PARTNER
+  EDITOR
   ADMIN
   SUPER_ADMIN
 }
@@ -27,45 +29,53 @@ enum UserStatus {
 }
 
 model User {
-  id            String     @id @default(uuid()) @db.Uuid
-  email         String     @unique @db.VarChar(255)
-  phone         String?    @unique @db.VarChar(20)
-  passwordHash  String?    @map("password_hash")
-  role          UserRole   @default(CUSTOMER)
-  status        UserStatus @default(PENDING_VERIFY)
-  emailVerified      Boolean    @default(false) @map("email_verified")
-  fraudScore         Int        @default(0) @map("fraud_score")
-  sessionVersion     Int        @default(0) @map("session_version")
-  failedLoginCount   Int        @default(0) @map("failed_login_count")
-  lockedUntil        DateTime?  @map("locked_until") @db.Timestamptz
-  createdAt          DateTime   @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt          DateTime   @updatedAt @map("updated_at") @db.Timestamptz
-  deletedAt          DateTime?  @map("deleted_at") @db.Timestamptz
+  id               String     @id @default(uuid()) @db.Uuid
+  email            String     @unique @db.VarChar(255)
+  phone            String?    @unique @db.VarChar(20)
+  passwordHash     String?    @map("password_hash")
+  role             UserRole   @default(CUSTOMER)
+  status           UserStatus @default(PENDING_VERIFY)
+  emailVerified    Boolean    @default(false) @map("email_verified")
+  marketingOptIn   Boolean    @default(true) @map("marketing_opt_in")
+  unsubscribeToken String?    @unique @map("unsubscribe_token") @db.VarChar(64)
+  fraudScore       Int        @default(0) @map("fraud_score")
+  sessionVersion   Int        @default(0) @map("session_version")
+  failedLoginCount Int        @default(0) @map("failed_login_count")
+  lockedUntil      DateTime?  @map("locked_until") @db.Timestamptz
+  referralCode     String?    @unique @map("referral_code") @db.VarChar(20)
+  pointsBalance    Int        @default(0) @map("points_balance")
+  createdAt        DateTime   @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt        DateTime   @updatedAt @map("updated_at") @db.Timestamptz
+  deletedAt        DateTime?  @map("deleted_at") @db.Timestamptz
 
-  profile         UserProfile?
-  addresses       Address[]
-  accounts        Account[]
-  sessions        Session[]
-  wallet          Wallet?
-  transactions    Transaction[]
-  notifications   Notification[]
-  partnerProfile  PartnerProfile?
-  bfjOrders       BfjOrder[]
-  bfjQuoteRequests BfjQuoteRequest[]
-  bids            Bid[]
-  createdAuctions Auction[]        @relation("AuctionCreator")
-  partnerAuctions Auction[]        @relation("AuctionPartner")
-  auctionWins     Auction[]        @relation("AuctionWinner")
-  maxBids         AuctionMaxBid[]
-  watchlists      AuctionWatchlist[]
-  auditLogs       AuditLog[]
-  fraudFlags      FraudFlag[]      @relation("FraudFlagUser")
-  fraudResolved   FraudFlag[]      @relation("FraudFlagResolver")
-  blogPosts       BlogPost[]
-  partnerApprovals PartnerProfile[] @relation("PartnerApprovedBy")
-  adminTransactions Transaction[]   @relation("TransactionCreatedBy")
-  loginHistory    LoginHistory[]
-  bidConfirmOtps  BidConfirmOtp[]
+  profile           UserProfile?
+  addresses         Address[]
+  accounts          Account[]
+  sessions          Session[]
+  wallet            Wallet?
+  transactions      Transaction[]
+  notifications     Notification[]
+  partnerProfile    PartnerProfile?
+  bfjOrders         BfjOrder[]
+  bfjQuoteRequests  BfjQuoteRequest[]
+  bids              Bid[]
+  createdAuctions   Auction[]          @relation("AuctionCreator")
+  partnerAuctions   Auction[]          @relation("AuctionPartner")
+  auctionWins       Auction[]          @relation("AuctionWinner")
+  maxBids           AuctionMaxBid[]
+  watchlists        AuctionWatchlist[]
+  auditLogs         AuditLog[]
+  fraudFlags        FraudFlag[]        @relation("FraudFlagUser")
+  fraudResolved     FraudFlag[]        @relation("FraudFlagResolver")
+  blogPosts         BlogPost[]
+  partnerApprovals  PartnerProfile[]   @relation("PartnerApprovedBy")
+  adminTransactions Transaction[]      @relation("TransactionCreatedBy")
+  loginHistory      LoginHistory[]
+  bidConfirmOtps    BidConfirmOtp[]
+  cart              Cart?
+  pointTxns         PointTransaction[]
+  referralsMade     Referral[]         @relation("ReferralReferrer")
+  referralReceived  Referral?          @relation("ReferralReferee")
 
   @@index([email])
   @@index([phone])
@@ -158,30 +168,30 @@ model VerificationToken {
 }
 
 model EmailOtp {
-  id         String    @id @default(uuid()) @db.Uuid
-  email      String    @db.VarChar(255)
-  code       String    @db.VarChar(6)
-  purpose    String    @db.VarChar(50)  // 'verify_email' | 'reset_password'
-  expiresAt  DateTime  @map("expires_at") @db.Timestamptz
-  usedAt     DateTime? @map("used_at") @db.Timestamptz
-  createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  id        String    @id @default(uuid()) @db.Uuid
+  email     String    @db.VarChar(255)
+  code      String    @db.VarChar(6)
+  purpose   String    @db.VarChar(50) // 'verify_email' | 'reset_password'
+  expiresAt DateTime  @map("expires_at") @db.Timestamptz
+  usedAt    DateTime? @map("used_at") @db.Timestamptz
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz
 
   @@index([email, purpose])
   @@map("email_otps")
 }
 
 model BfjQuoteRequest {
-  id           String    @id @default(uuid()) @db.Uuid
-  userId       String    @map("user_id") @db.Uuid
-  sourceUrl    String    @map("source_url") @db.VarChar(2000)
-  productName  String    @map("product_name") @db.VarChar(500)
-  productImage String?   @map("product_image") @db.VarChar(2000)
-  productModel String?   @map("product_model") @db.VarChar(100)
+  id           String   @id @default(uuid()) @db.Uuid
+  userId       String   @map("user_id") @db.Uuid
+  sourceUrl    String   @map("source_url") @db.VarChar(2000)
+  productName  String   @map("product_name") @db.VarChar(500)
+  productImage String?  @map("product_image") @db.VarChar(2000)
+  productModel String?  @map("product_model") @db.VarChar(100)
   notes        String?
-  emailSent    Boolean   @default(false) @map("email_sent")
-  createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  emailSent    Boolean  @default(false) @map("email_sent")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz
 
-  user  User  @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id])
 
   @@index([userId])
   @@map("bfj_quote_requests")
@@ -192,21 +202,21 @@ model BfjQuoteRequest {
 // ─────────────────────────────────────────
 
 model Category {
-  id          String     @id @default(uuid()) @db.Uuid
-  parentId    String?    @map("parent_id") @db.Uuid
-  name        String     @db.VarChar(255)
-  slug        String     @unique @db.VarChar(255)
-  description String?
-  imageUrl      String?    @map("image_url")
-  imagePosition String?    @map("image_position") @db.VarChar(20)
-  icon          String?    @db.VarChar(255)
-  sortOrder   Int        @default(0) @map("sort_order")
-  isActive    Boolean    @default(true) @map("is_active")
-  showOnHome  Boolean    @default(true) @map("show_on_home")
-  metaTitle   String?    @map("meta_title") @db.VarChar(255)
-  metaDesc    String?    @map("meta_desc")
-  createdAt   DateTime   @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt   DateTime   @updatedAt @map("updated_at") @db.Timestamptz
+  id            String   @id @default(uuid()) @db.Uuid
+  parentId      String?  @map("parent_id") @db.Uuid
+  name          String   @db.VarChar(255)
+  slug          String   @unique @db.VarChar(255)
+  description   String?
+  imageUrl      String?  @map("image_url")
+  imagePosition String?  @map("image_position") @db.VarChar(20)
+  icon          String?  @db.VarChar(255)
+  sortOrder     Int      @default(0) @map("sort_order")
+  isActive      Boolean  @default(true) @map("is_active")
+  showOnHome    Boolean  @default(true) @map("show_on_home")
+  metaTitle     String?  @map("meta_title") @db.VarChar(255)
+  metaDesc      String?  @map("meta_desc")
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt     DateTime @updatedAt @map("updated_at") @db.Timestamptz
 
   parent   Category?  @relation("CategoryChildren", fields: [parentId], references: [id])
   children Category[] @relation("CategoryChildren")
@@ -254,41 +264,45 @@ enum ProductStatus {
 }
 
 model Product {
-  id            String           @id @default(uuid()) @db.Uuid
-  categoryId    String?          @map("category_id") @db.Uuid
-  brandId       String?          @map("brand_id") @db.Uuid
-  ownerType     ProductOwnerType @map("owner_type")
-  ownerId       String?          @map("owner_id") @db.Uuid
-  name          String           @db.VarChar(500)
-  slug          String           @unique @db.VarChar(500)
-  description   String?
-  condition     ProductCondition @default(NEW)
-  originUrl     String?          @map("origin_url")
-  originPrice   Decimal?         @map("origin_price") @db.Decimal(15, 2)
-  salePrice     Decimal?         @map("sale_price") @db.Decimal(15, 2)
-  marketPrice   Decimal?         @map("market_price") @db.Decimal(15, 2)
-  status        ProductStatus    @default(DRAFT)
-  badge         String?          @db.VarChar(20)
-  showOnHome    Boolean          @default(false) @map("show_on_home")
-  gifts         Json?
-  rating        Decimal?         @db.Decimal(2, 1)
-  reviewCount   Int              @default(0) @map("review_count")
-  metaTitle     String?          @map("meta_title") @db.VarChar(255)
-  metaDesc      String?          @map("meta_desc")
-  createdAt     DateTime         @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt     DateTime         @updatedAt @map("updated_at") @db.Timestamptz
+  id          String           @id @default(uuid()) @db.Uuid
+  categoryId  String?          @map("category_id") @db.Uuid
+  brandId     String?          @map("brand_id") @db.Uuid
+  ownerType   ProductOwnerType @map("owner_type")
+  ownerId     String?          @map("owner_id") @db.Uuid
+  name        String           @db.VarChar(500)
+  slug        String           @unique @db.VarChar(500)
+  description String?
+  condition   ProductCondition @default(NEW)
+  originUrl   String?          @map("origin_url")
+  originPrice Decimal?         @map("origin_price") @db.Decimal(15, 2)
+  salePrice   Decimal?         @map("sale_price") @db.Decimal(15, 2)
+  marketPrice Decimal?         @map("market_price") @db.Decimal(15, 2)
+  status      ProductStatus    @default(DRAFT)
+  badge       String?          @db.VarChar(20)
+  showOnHome  Boolean          @default(false) @map("show_on_home")
+  gifts       Json?
+  rating      Decimal?         @db.Decimal(2, 1)
+  reviewCount Int              @default(0) @map("review_count")
+  metaTitle   String?          @map("meta_title") @db.VarChar(255)
+  metaDesc    String?          @map("meta_desc")
+  createdAt   DateTime         @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt   DateTime         @updatedAt @map("updated_at") @db.Timestamptz
 
-  category   Category?          @relation(fields: [categoryId], references: [id])
-  brand      Brand?             @relation(fields: [brandId], references: [id])
-  images     ProductImage[]
-  attributes ProductAttribute[]
-  auctions   Auction[]
+  category       Category?          @relation(fields: [categoryId], references: [id])
+  brand          Brand?             @relation(fields: [brandId], references: [id])
+  images         ProductImage[]
+  attributes     ProductAttribute[]
+  auctions       Auction[]
+  affiliateLinks AffiliateLink[]
 
   @@index([categoryId])
   @@index([brandId])
   @@index([slug])
   @@index([status])
   @@index([ownerType, ownerId])
+  // Tăng tốc trang /san-pham: lọc status+danh mục sắp xếp theo mới nhất (lần đầu vào danh mục)
+  @@index([status, categoryId, createdAt])
+  @@index([status, createdAt])
   @@map("products")
 }
 
@@ -313,6 +327,7 @@ model ProductAttribute {
   productId String   @map("product_id") @db.Uuid
   name      String   @db.VarChar(255)
   value     String
+  sortOrder Int      @default(0) @map("sort_order")
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
 
@@ -393,30 +408,30 @@ enum BfjOrderStatus {
 }
 
 model BfjOrder {
-  id              String         @id @default(uuid()) @db.Uuid
-  orderNumber     String         @unique @map("order_number") @db.VarChar(50)
-  customerId      String         @map("customer_id") @db.Uuid
-  status          BfjOrderStatus @default(PENDING_REVIEW)
-  exchangeRateId  String?        @map("exchange_rate_id") @db.Uuid
-  serviceFeeRate  Decimal        @default(0.08) @map("service_fee_rate") @db.Decimal(5, 4)
-  estimatedJpy    Decimal?       @map("estimated_jpy") @db.Decimal(15, 2)
-  estimatedVnd    Decimal?       @map("estimated_vnd") @db.Decimal(20, 2)
-  finalJpy        Decimal?       @map("final_jpy") @db.Decimal(15, 2)
-  finalVnd        Decimal?       @map("final_vnd") @db.Decimal(20, 2)
-  depositRate     Decimal        @default(0.30) @map("deposit_rate") @db.Decimal(5, 4)
-  depositAmount   Decimal?       @map("deposit_amount") @db.Decimal(20, 2)
-  depositPaid          Boolean        @default(false) @map("deposit_paid")
-  depositProofUrl      String?        @map("deposit_proof_url")
-  depositProofNote     String?        @map("deposit_proof_note")
-  depositSubmittedAt   DateTime?      @map("deposit_submitted_at") @db.Timestamptz
-  profitVnd       Decimal?       @map("profit_vnd") @db.Decimal(20, 2)
-  notes           String?
-  adminNotes      String?        @map("admin_notes")
-  addressId       String?        @map("address_id") @db.Uuid
-  trackingJp      String?        @map("tracking_jp") @db.VarChar(255)
-  trackingVn      String?        @map("tracking_vn") @db.VarChar(255)
-  createdAt       DateTime       @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt       DateTime       @updatedAt @map("updated_at") @db.Timestamptz
+  id                 String         @id @default(uuid()) @db.Uuid
+  orderNumber        String         @unique @map("order_number") @db.VarChar(50)
+  customerId         String         @map("customer_id") @db.Uuid
+  status             BfjOrderStatus @default(PENDING_REVIEW)
+  exchangeRateId     String?        @map("exchange_rate_id") @db.Uuid
+  serviceFeeRate     Decimal        @default(0.08) @map("service_fee_rate") @db.Decimal(5, 4)
+  estimatedJpy       Decimal?       @map("estimated_jpy") @db.Decimal(15, 2)
+  estimatedVnd       Decimal?       @map("estimated_vnd") @db.Decimal(20, 2)
+  finalJpy           Decimal?       @map("final_jpy") @db.Decimal(15, 2)
+  finalVnd           Decimal?       @map("final_vnd") @db.Decimal(20, 2)
+  depositRate        Decimal        @default(0.30) @map("deposit_rate") @db.Decimal(5, 4)
+  depositAmount      Decimal?       @map("deposit_amount") @db.Decimal(20, 2)
+  depositPaid        Boolean        @default(false) @map("deposit_paid")
+  depositProofUrl    String?        @map("deposit_proof_url")
+  depositProofNote   String?        @map("deposit_proof_note")
+  depositSubmittedAt DateTime?      @map("deposit_submitted_at") @db.Timestamptz
+  profitVnd          Decimal?       @map("profit_vnd") @db.Decimal(20, 2)
+  notes              String?
+  adminNotes         String?        @map("admin_notes")
+  addressId          String?        @map("address_id") @db.Uuid
+  trackingJp         String?        @map("tracking_jp") @db.VarChar(255)
+  trackingVn         String?        @map("tracking_vn") @db.VarChar(255)
+  createdAt          DateTime       @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt          DateTime       @updatedAt @map("updated_at") @db.Timestamptz
 
   customer     User           @relation(fields: [customerId], references: [id])
   exchangeRate ExchangeRate?  @relation(fields: [exchangeRateId], references: [id])
@@ -466,13 +481,13 @@ model BfjOrderItem {
 }
 
 model BfjUrlParseLog {
-  id           String    @id @default(uuid()) @db.Uuid
+  id           String   @id @default(uuid()) @db.Uuid
   url          String
-  platform     String    @db.VarChar(50)
-  parsedData   Json?     @map("parsed_data")
-  success      Boolean   @default(false)
-  errorMessage String?   @map("error_message")
-  createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  platform     String   @db.VarChar(50)
+  parsedData   Json?    @map("parsed_data")
+  success      Boolean  @default(false)
+  errorMessage String?  @map("error_message")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz
 
   @@index([platform])
   @@index([success])
@@ -498,36 +513,36 @@ enum AuctionStatus {
 }
 
 model Auction {
-  id              String        @id @default(uuid()) @db.Uuid
-  auctionNumber   String        @unique @map("auction_number") @db.VarChar(50)
-  productId       String        @map("product_id") @db.Uuid
-  type            AuctionType
-  partnerId       String?       @map("partner_id") @db.Uuid
-  status          AuctionStatus @default(DRAFT)
-  startPrice      Decimal       @map("start_price") @db.Decimal(20, 2)
-  reservePrice    Decimal?      @map("reserve_price") @db.Decimal(20, 2)
-  buyNowPrice     Decimal?      @map("buy_now_price") @db.Decimal(20, 2)
-  minIncrement    Decimal       @default(10000) @map("min_increment") @db.Decimal(20, 2)
-  currentPrice    Decimal       @map("current_price") @db.Decimal(20, 2)
-  bidCount        Int           @default(0) @map("bid_count")
-  startsAt        DateTime      @map("starts_at") @db.Timestamptz
-  endsAt          DateTime      @map("ends_at") @db.Timestamptz
-  extendedEnd     DateTime?     @map("extended_end") @db.Timestamptz
-  autoExtend      Boolean       @default(true) @map("auto_extend")
-  extendMinutes   Int           @default(5) @map("extend_minutes")
-  extendTrigger   Int           @default(3) @map("extend_trigger")
-  extensionCount  Int           @default(0) @map("extension_count")
-  maxExtensions   Int           @default(20) @map("max_extensions")
-  winnerId        String?       @map("winner_id") @db.Uuid
-  winningBidId    String?       @map("winning_bid_id") @db.Uuid
-  commissionRate  Decimal       @default(0.10) @map("commission_rate") @db.Decimal(5, 4)
-  buyerPremium    Decimal       @default(0.03) @map("buyer_premium") @db.Decimal(5, 4)
-  settlementDue   DateTime?     @map("settlement_due") @db.Timestamptz
-  unitCondition   String?       @map("unit_condition") @db.VarChar(500)
-  unitImages      String[]      @map("unit_images") @db.Text
-  createdBy       String        @map("created_by") @db.Uuid
-  createdAt       DateTime      @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt       DateTime      @updatedAt @map("updated_at") @db.Timestamptz
+  id             String        @id @default(uuid()) @db.Uuid
+  auctionNumber  String        @unique @map("auction_number") @db.VarChar(50)
+  productId      String        @map("product_id") @db.Uuid
+  type           AuctionType
+  partnerId      String?       @map("partner_id") @db.Uuid
+  status         AuctionStatus @default(DRAFT)
+  startPrice     Decimal       @map("start_price") @db.Decimal(20, 2)
+  reservePrice   Decimal?      @map("reserve_price") @db.Decimal(20, 2)
+  buyNowPrice    Decimal?      @map("buy_now_price") @db.Decimal(20, 2)
+  minIncrement   Decimal       @default(10000) @map("min_increment") @db.Decimal(20, 2)
+  currentPrice   Decimal       @map("current_price") @db.Decimal(20, 2)
+  bidCount       Int           @default(0) @map("bid_count")
+  startsAt       DateTime      @map("starts_at") @db.Timestamptz
+  endsAt         DateTime      @map("ends_at") @db.Timestamptz
+  extendedEnd    DateTime?     @map("extended_end") @db.Timestamptz
+  autoExtend     Boolean       @default(true) @map("auto_extend")
+  extendMinutes  Int           @default(5) @map("extend_minutes")
+  extendTrigger  Int           @default(3) @map("extend_trigger")
+  extensionCount Int           @default(0) @map("extension_count")
+  maxExtensions  Int           @default(20) @map("max_extensions")
+  winnerId       String?       @map("winner_id") @db.Uuid
+  winningBidId   String?       @map("winning_bid_id") @db.Uuid
+  commissionRate Decimal       @default(0.10) @map("commission_rate") @db.Decimal(5, 4)
+  buyerPremium   Decimal       @default(0.03) @map("buyer_premium") @db.Decimal(5, 4)
+  settlementDue  DateTime?     @map("settlement_due") @db.Timestamptz
+  unitCondition  String?       @map("unit_condition") @db.VarChar(500)
+  unitImages     String[]      @map("unit_images") @db.Text
+  createdBy      String        @map("created_by") @db.Uuid
+  createdAt      DateTime      @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt      DateTime      @updatedAt @map("updated_at") @db.Timestamptz
 
   product    Product            @relation(fields: [productId], references: [id])
   partner    User?              @relation("AuctionPartner", fields: [partnerId], references: [id])
@@ -620,20 +635,20 @@ enum SettlementStatus {
 }
 
 model AuctionSettlement {
-  id                  String           @id @default(uuid()) @db.Uuid
-  auctionId           String           @unique @map("auction_id") @db.Uuid
-  winnerId            String           @map("winner_id") @db.Uuid
-  hammerPrice         Decimal          @map("hammer_price") @db.Decimal(20, 2)
-  buyerPremiumAmount  Decimal          @map("buyer_premium_amount") @db.Decimal(20, 2)
-  totalPayable        Decimal          @map("total_payable") @db.Decimal(20, 2)
-  partnerId           String?          @map("partner_id") @db.Uuid
-  commissionAmount    Decimal?         @map("commission_amount") @db.Decimal(20, 2)
-  partnerPayout       Decimal?         @map("partner_payout") @db.Decimal(20, 2)
-  status              SettlementStatus @default(PENDING)
-  paidAt              DateTime?        @map("paid_at") @db.Timestamptz
-  transactionId       String?          @map("transaction_id") @db.Uuid
-  createdAt           DateTime         @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt           DateTime         @updatedAt @map("updated_at") @db.Timestamptz
+  id                 String           @id @default(uuid()) @db.Uuid
+  auctionId          String           @unique @map("auction_id") @db.Uuid
+  winnerId           String           @map("winner_id") @db.Uuid
+  hammerPrice        Decimal          @map("hammer_price") @db.Decimal(20, 2)
+  buyerPremiumAmount Decimal          @map("buyer_premium_amount") @db.Decimal(20, 2)
+  totalPayable       Decimal          @map("total_payable") @db.Decimal(20, 2)
+  partnerId          String?          @map("partner_id") @db.Uuid
+  commissionAmount   Decimal?         @map("commission_amount") @db.Decimal(20, 2)
+  partnerPayout      Decimal?         @map("partner_payout") @db.Decimal(20, 2)
+  status             SettlementStatus @default(PENDING)
+  paidAt             DateTime?        @map("paid_at") @db.Timestamptz
+  transactionId      String?          @map("transaction_id") @db.Uuid
+  createdAt          DateTime         @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt          DateTime         @updatedAt @map("updated_at") @db.Timestamptz
 
   auction Auction @relation(fields: [auctionId], references: [id])
 
@@ -660,20 +675,22 @@ enum PaymentIntentStatus {
 }
 
 model PaymentIntent {
-  id            String              @id @default(uuid()) @db.Uuid
-  code          String              @unique @db.VarChar(64)
-  provider      PaymentProvider
-  purpose       PaymentPurpose
-  userId        String              @map("user_id") @db.Uuid
-  amount        Decimal             @db.Decimal(20, 2)
-  status        PaymentIntentStatus @default(PENDING)
-  referenceType String              @map("reference_type") @db.VarChar(40)
-  referenceId   String              @map("reference_id") @db.Uuid
-  providerRef   String?             @map("provider_ref") @db.VarChar(100)
-  providerData  Json?               @map("provider_data")
-  paidAt        DateTime?           @map("paid_at") @db.Timestamptz
-  createdAt     DateTime            @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt     DateTime            @updatedAt @map("updated_at") @db.Timestamptz
+  id             String              @id @default(uuid()) @db.Uuid
+  code           String              @unique @db.VarChar(64)
+  provider       PaymentProvider
+  purpose        PaymentPurpose
+  userId         String              @map("user_id") @db.Uuid
+  amount         Decimal             @db.Decimal(20, 2)
+  originalAmount Decimal?            @map("original_amount") @db.Decimal(20, 2)
+  pointsUsed     Int                 @default(0) @map("points_used")
+  status         PaymentIntentStatus @default(PENDING)
+  referenceType  String              @map("reference_type") @db.VarChar(40)
+  referenceId    String              @map("reference_id") @db.Uuid
+  providerRef    String?             @map("provider_ref") @db.VarChar(100)
+  providerData   Json?               @map("provider_data")
+  paidAt         DateTime?           @map("paid_at") @db.Timestamptz
+  createdAt      DateTime            @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt      DateTime            @updatedAt @map("updated_at") @db.Timestamptz
 
   @@index([userId])
   @@index([status])
@@ -744,9 +761,9 @@ model Transaction {
   createdAt     DateTime             @default(now()) @map("created_at") @db.Timestamptz
   updatedAt     DateTime             @updatedAt @map("updated_at") @db.Timestamptz
 
-  wallet    Wallet @relation(fields: [walletId], references: [id])
-  user      User   @relation(fields: [userId], references: [id])
-  createdByUser User? @relation("TransactionCreatedBy", fields: [createdBy], references: [id])
+  wallet        Wallet @relation(fields: [walletId], references: [id])
+  user          User   @relation(fields: [userId], references: [id])
+  createdByUser User?  @relation("TransactionCreatedBy", fields: [createdBy], references: [id])
 
   @@index([userId])
   @@index([walletId])
@@ -754,6 +771,64 @@ model Transaction {
   @@index([type])
   @@index([referenceType, referenceId])
   @@map("transactions")
+}
+
+// ─────────────────────────────────────────
+// DOMAIN 5b: REFERRAL & LOYALTY POINTS
+// (khách thường giới thiệu bạn bè — KHÁC với CTV/Partner)
+// ─────────────────────────────────────────
+
+enum ReferralStatus {
+  PENDING // người được mời đã đăng ký qua mã, chưa đặt giá
+  REWARDED // người được mời đã đặt giá lần đầu → đã thưởng 2 chiều
+  CANCELLED // huỷ do gian lận / admin thu hồi
+}
+
+model Referral {
+  id             String         @id @default(uuid()) @db.Uuid
+  referrerId     String         @map("referrer_id") @db.Uuid
+  refereeId      String         @unique @map("referee_id") @db.Uuid
+  code           String         @db.VarChar(20)
+  status         ReferralStatus @default(PENDING)
+  referrerPoints Int            @default(0) @map("referrer_points")
+  refereePoints  Int            @default(0) @map("referee_points")
+  qualifiedAt    DateTime?      @map("qualified_at") @db.Timestamptz
+  createdAt      DateTime       @default(now()) @map("created_at") @db.Timestamptz
+
+  referrer User @relation("ReferralReferrer", fields: [referrerId], references: [id])
+  referee  User @relation("ReferralReferee", fields: [refereeId], references: [id])
+
+  @@index([referrerId])
+  @@index([status])
+  @@map("referrals")
+}
+
+enum PointTransactionType {
+  REFERRAL_REFERRER // điểm cho người đi mời
+  REFERRAL_REFEREE // điểm chào mừng cho người được mời
+  REDEEM_AUCTION // dùng điểm giảm giá phiên đấu giá
+  REDEEM_ORDER // dùng điểm giảm giá đơn hàng
+  ADMIN_ADJUST // admin điều chỉnh thủ công
+  REFUND // hoàn điểm khi huỷ đơn
+}
+
+model PointTransaction {
+  id            String               @id @default(uuid()) @db.Uuid
+  userId        String               @map("user_id") @db.Uuid
+  type          PointTransactionType
+  amount        Int // +cộng / -trừ
+  balanceBefore Int                  @map("balance_before")
+  balanceAfter  Int                  @map("balance_after")
+  referenceType String?              @map("reference_type") @db.VarChar(50)
+  referenceId   String?              @map("reference_id") @db.Uuid
+  note          String?
+  createdAt     DateTime             @default(now()) @map("created_at") @db.Timestamptz
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([type])
+  @@map("point_transactions")
 }
 
 // ─────────────────────────────────────────
@@ -774,6 +849,10 @@ model PartnerProfile {
   bankName              String?       @map("bank_name") @db.VarChar(255)
   bankAccount           String?       @map("bank_account") @db.VarChar(100)
   bankHolder            String?       @map("bank_holder") @db.VarChar(255)
+  idCardNumber          String?       @map("id_card_number") @db.VarChar(20)
+  idCardFront           String?       @map("id_card_front") @db.VarChar(500)
+  idCardBack            String?       @map("id_card_back") @db.VarChar(500)
+  adminNote             String?       @map("admin_note") @db.Text
   commissionTier        String        @default("DEFAULT") @map("commission_tier") @db.VarChar(50)
   defaultCommissionRate Decimal       @default(0.05) @map("default_commission_rate") @db.Decimal(5, 4)
   refCode               String        @unique @map("ref_code") @db.VarChar(20)
@@ -785,9 +864,11 @@ model PartnerProfile {
   createdAt             DateTime      @default(now()) @map("created_at") @db.Timestamptz
   updatedAt             DateTime      @updatedAt @map("updated_at") @db.Timestamptz
 
-  user        User                 @relation(fields: [userId], references: [id])
-  approver    User?                @relation("PartnerApprovedBy", fields: [approvedBy], references: [id])
+  user        User                  @relation(fields: [userId], references: [id])
+  approver    User?                 @relation("PartnerApprovedBy", fields: [approvedBy], references: [id])
   commissions AffiliateCommission[]
+  clicks      AffiliateClick[]
+  links       AffiliateLink[]
 
   @@index([status])
   @@index([refCode])
@@ -802,28 +883,72 @@ enum CommissionStatus {
 }
 
 model AffiliateCommission {
-  id            String           @id @default(uuid()) @db.Uuid
-  partnerId     String           @map("partner_id") @db.Uuid
-  quickOrderId  String?          @map("quick_order_id") @db.Uuid
-  orderRef      String           @map("order_ref") @db.VarChar(50)
-  productName   String           @map("product_name") @db.VarChar(500)
-  orderAmount   Decimal          @map("order_amount") @db.Decimal(20, 2)
-  commissionRate Decimal         @map("commission_rate") @db.Decimal(5, 4)
-  commissionAmount Decimal       @map("commission_amount") @db.Decimal(20, 2)
-  status        CommissionStatus @default(PENDING)
-  note          String?          @db.VarChar(500)
-  approvedAt    DateTime?        @map("approved_at") @db.Timestamptz
-  approvedBy    String?          @map("approved_by") @db.Uuid
-  paidAt        DateTime?        @map("paid_at") @db.Timestamptz
-  createdAt     DateTime         @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt     DateTime         @updatedAt @map("updated_at") @db.Timestamptz
+  id               String           @id @default(uuid()) @db.Uuid
+  partnerId        String           @map("partner_id") @db.Uuid
+  quickOrderId     String?          @map("quick_order_id") @db.Uuid
+  orderRef         String           @map("order_ref") @db.VarChar(50)
+  productName      String           @map("product_name") @db.VarChar(500)
+  orderAmount      Decimal          @map("order_amount") @db.Decimal(20, 2)
+  commissionRate   Decimal          @map("commission_rate") @db.Decimal(5, 4)
+  commissionAmount Decimal          @map("commission_amount") @db.Decimal(20, 2)
+  status           CommissionStatus @default(PENDING)
+  note             String?          @db.VarChar(500)
+  approvedAt       DateTime?        @map("approved_at") @db.Timestamptz
+  approvedBy       String?          @map("approved_by") @db.Uuid
+  paidAt           DateTime?        @map("paid_at") @db.Timestamptz
+  createdAt        DateTime         @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt        DateTime         @updatedAt @map("updated_at") @db.Timestamptz
 
-  partner    PartnerProfile @relation(fields: [partnerId], references: [id])
+  partner PartnerProfile @relation(fields: [partnerId], references: [id])
 
   @@index([partnerId, status])
   @@index([status])
   @@index([orderRef])
   @@map("affiliate_commissions")
+}
+
+model AffiliateClick {
+  id               String   @id @default(uuid()) @db.Uuid
+  partnerId        String   @map("partner_id") @db.Uuid
+  affiliateLinkId  String?  @map("affiliate_link_id") @db.Uuid
+  refCode          String   @map("ref_code") @db.VarChar(20)
+  ipHash           String?  @map("ip_hash") @db.VarChar(64)
+  userAgent        String?  @map("user_agent") @db.VarChar(500)
+  referrer         String?  @db.VarChar(500)
+  landingUrl       String?  @map("landing_url") @db.VarChar(500)
+  convertedOrderId String?  @map("converted_order_id") @db.Uuid
+  createdAt        DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  partner PartnerProfile @relation(fields: [partnerId], references: [id])
+  link    AffiliateLink? @relation(fields: [affiliateLinkId], references: [id])
+
+  @@index([partnerId, createdAt])
+  @@index([refCode])
+  @@index([ipHash, refCode, createdAt])
+  @@map("affiliate_clicks")
+}
+
+model AffiliateLink {
+  id             String   @id @default(uuid()) @db.Uuid
+  partnerId      String   @map("partner_id") @db.Uuid
+  productId      String?  @map("product_id") @db.Uuid
+  trackingCode   String   @unique @map("tracking_code") @db.VarChar(20)
+  label          String?  @db.VarChar(200)
+  destinationUrl String   @map("destination_url") @db.VarChar(500)
+  clicks         Int      @default(0)
+  orders         Int      @default(0)
+  revenue        Decimal  @default(0) @db.Decimal(20, 2)
+  commission     Decimal  @default(0) @db.Decimal(20, 2)
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt      DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  partner   PartnerProfile   @relation(fields: [partnerId], references: [id])
+  product   Product?         @relation(fields: [productId], references: [id])
+  clickLogs AffiliateClick[]
+
+  @@index([partnerId, createdAt])
+  @@index([trackingCode])
+  @@map("affiliate_links")
 }
 
 // ─────────────────────────────────────────
@@ -870,11 +995,11 @@ model Notification {
 // ─────────────────────────────────────────
 
 model BlogCategory {
-  id        String     @id @default(uuid()) @db.Uuid
-  name      String     @db.VarChar(255)
-  slug      String     @unique @db.VarChar(255)
-  createdAt DateTime   @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt DateTime   @updatedAt @map("updated_at") @db.Timestamptz
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String   @db.VarChar(255)
+  slug      String   @unique @db.VarChar(255)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
 
   posts BlogPost[]
 
@@ -883,6 +1008,7 @@ model BlogCategory {
 
 enum BlogPostStatus {
   DRAFT
+  SCHEDULED
   PUBLISHED
   ARCHIVED
 }
@@ -898,6 +1024,7 @@ model BlogPost {
   thumbnailUrl String?        @map("thumbnail_url")
   status       BlogPostStatus @default(DRAFT)
   publishedAt  DateTime?      @map("published_at") @db.Timestamptz
+  scheduledAt  DateTime?      @map("scheduled_at") @db.Timestamptz
   metaTitle    String?        @map("meta_title") @db.VarChar(255)
   metaDesc     String?        @map("meta_desc")
   ogImage      String?        @map("og_image")
@@ -931,18 +1058,18 @@ model Banner {
 }
 
 model SeoPage {
-  id             String   @id @default(uuid()) @db.Uuid
-  pagePath       String   @unique @map("page_path") @db.VarChar(500)
-  title          String?  @db.VarChar(255)
-  description    String?
-  ogTitle        String?  @map("og_title") @db.VarChar(255)
-  ogDescription  String?  @map("og_description")
-  ogImage        String?  @map("og_image")
-  canonicalUrl   String?  @map("canonical_url")
-  robots         String   @default("index,follow") @db.VarChar(100)
-  schemaJson     Json?    @map("schema_json")
-  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt      DateTime @updatedAt @map("updated_at") @db.Timestamptz
+  id            String   @id @default(uuid()) @db.Uuid
+  pagePath      String   @unique @map("page_path") @db.VarChar(500)
+  title         String?  @db.VarChar(255)
+  description   String?
+  ogTitle       String?  @map("og_title") @db.VarChar(255)
+  ogDescription String?  @map("og_description")
+  ogImage       String?  @map("og_image")
+  canonicalUrl  String?  @map("canonical_url")
+  robots        String   @default("index,follow") @db.VarChar(100)
+  schemaJson    Json?    @map("schema_json")
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt     DateTime @updatedAt @map("updated_at") @db.Timestamptz
 
   @@map("seo_pages")
 }
@@ -1011,16 +1138,16 @@ model BlockedIp {
 }
 
 model BidConfirmOtp {
-  id             String   @id @default(uuid()) @db.Uuid
-  userId         String   @map("user_id") @db.Uuid
-  auctionId      String   @map("auction_id") @db.Uuid
-  amount         Decimal  @db.Decimal(20, 2)
-  otp            String   @db.VarChar(6)
-  expiresAt      DateTime @map("expires_at") @db.Timestamptz
-  used           Boolean  @default(false)
-  requestCount   Int      @default(1) @map("request_count")
+  id              String   @id @default(uuid()) @db.Uuid
+  userId          String   @map("user_id") @db.Uuid
+  auctionId       String   @map("auction_id") @db.Uuid
+  amount          Decimal  @db.Decimal(20, 2)
+  otp             String   @db.VarChar(6)
+  expiresAt       DateTime @map("expires_at") @db.Timestamptz
+  used            Boolean  @default(false)
+  requestCount    Int      @default(1) @map("request_count")
   lastRequestedAt DateTime @default(now()) @map("last_requested_at") @db.Timestamptz
-  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz
+  createdAt       DateTime @default(now()) @map("created_at") @db.Timestamptz
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -1096,6 +1223,56 @@ model BfjShippingTier {
   @@map("bfj_shipping_tiers")
 }
 
+// Giỏ hàng server-side cho khách đã đăng nhập — phục vụ email bỏ giỏ hàng
+model Cart {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @unique @map("user_id") @db.Uuid
+  items     Json
+  reminded  Boolean  @default(false) // đã gửi email nhắc bỏ giỏ chưa (reset khi cập nhật giỏ)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([reminded, updatedAt])
+  @@map("carts")
+}
+
+// Template HTML tùy biến cho từng loại email tự động (dán từ builder ngoài)
+model EmailTemplate {
+  key       String   @id @db.VarChar(40) // welcome|otp|bfj_status|...
+  enabled   Boolean  @default(false)
+  subject   String?  @db.VarChar(300) // tùy chọn; rỗng = dùng tiêu đề mặc định
+  html      String   @db.Text
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@map("email_templates")
+}
+
+// Cấu hình bật/tắt + tham số cho từng automation email (config-based)
+model EmailAutomation {
+  key       String   @id @db.VarChar(40) // welcome|abandoned_cart|post_purchase|winback|digest
+  enabled   Boolean  @default(true)
+  config    Json     @default("{}") // {hours?, days?, dayOfWeek?, subject?}
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@map("email_automations")
+}
+
+// Log email marketing đã gửi — tránh gửi trùng + thống kê
+model EmailLog {
+  id     String   @id @default(uuid()) @db.Uuid
+  email  String   @db.VarChar(255)
+  type   String   @db.VarChar(50) // welcome | winback | digest | abandoned_cart
+  userId String?  @map("user_id") @db.Uuid
+  meta   Json?
+  sentAt DateTime @default(now()) @map("sent_at") @db.Timestamptz
+
+  @@index([email, type])
+  @@index([type, sentAt])
+  @@map("email_logs")
+}
+
 model Testimonial {
   id        String   @id @default(uuid()) @db.Uuid
   name      String   @db.VarChar(100)
@@ -1103,12 +1280,14 @@ model Testimonial {
   photoUrl  String?  @map("photo_url")
   text      String   @db.Text
   rating    Int      @default(5)
+  type      String   @default("GENERAL") @db.VarChar(20) // GENERAL | AUCTION
   sortOrder Int      @default(0) @map("sort_order")
   isActive  Boolean  @default(true) @map("is_active")
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
 
   @@index([isActive, sortOrder])
+  @@index([type, isActive])
   @@map("testimonials")
 }
 
@@ -1132,27 +1311,60 @@ enum ContentTaskStatus {
 }
 
 model ContentTask {
-  id            String            @id @default(uuid()) @db.Uuid
-  type          ContentTaskType
-  status        ContentTaskStatus @default(PENDING)
-  scheduledAt   DateTime          @map("scheduled_at") @db.Timestamptz
-  title         String            @db.VarChar(500)
-  topic         String?           @db.Text
-  keywords      String?           @db.Text
-  sourceUrl     String?           @map("source_url") @db.VarChar(1000)
-  productId     String?           @map("product_id") @db.Uuid
-  provider      String            @default("anthropic") @db.VarChar(50)
-  resultId      String?           @map("result_id") @db.Uuid
-  resultType    String?           @map("result_type") @db.VarChar(50)
-  errorMessage  String?           @map("error_message") @db.Text
-  ranAt         DateTime?         @map("ran_at") @db.Timestamptz
-  createdBy     String            @map("created_by") @db.Uuid
-  createdAt     DateTime          @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt     DateTime          @updatedAt @map("updated_at") @db.Timestamptz
+  id           String            @id @default(uuid()) @db.Uuid
+  type         ContentTaskType
+  status       ContentTaskStatus @default(PENDING)
+  scheduledAt  DateTime          @map("scheduled_at") @db.Timestamptz
+  title        String            @db.VarChar(500)
+  topic        String?           @db.Text
+  keywords     String?           @db.Text
+  sourceUrl    String?           @map("source_url") @db.VarChar(1000)
+  productId    String?           @map("product_id") @db.Uuid
+  provider     String            @default("anthropic") @db.VarChar(50)
+  resultId     String?           @map("result_id") @db.Uuid
+  resultType   String?           @map("result_type") @db.VarChar(50)
+  errorMessage String?           @map("error_message") @db.Text
+  ranAt        DateTime?         @map("ran_at") @db.Timestamptz
+  createdBy    String            @map("created_by") @db.Uuid
+  createdAt    DateTime          @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt    DateTime          @updatedAt @map("updated_at") @db.Timestamptz
 
   @@index([status, scheduledAt])
   @@index([createdBy])
   @@map("content_tasks")
+}
+
+// ─────────────────────────────────────────
+// FACEBOOK MARKETING — bài đăng fanpage (auto-publish)
+// ─────────────────────────────────────────
+
+enum FacebookPostStatus {
+  DRAFT // nháp
+  SCHEDULED // đã lên lịch, chờ đăng
+  PUBLISHED // đã đăng
+  FAILED // đăng lỗi
+}
+
+model FacebookPost {
+  id           String             @id @default(uuid()) @db.Uuid
+  message      String             @db.Text
+  imageUrl     String?            @map("image_url") @db.VarChar(1000)
+  imageUrls    String[]           @map("image_urls") // nhiều ảnh → đăng album (ưu tiên hơn imageUrl)
+  linkUrl      String?            @map("link_url") @db.VarChar(1000)
+  firstComment String?            @map("first_comment") @db.Text // text chèn trước link ở comment đầu (tăng reach)
+  angle        String             @default("product") @db.VarChar(20) // product | promo | tips
+  status       FacebookPostStatus @default(DRAFT)
+  scheduledAt  DateTime?          @map("scheduled_at") @db.Timestamptz
+  publishedAt  DateTime?          @map("published_at") @db.Timestamptz
+  fbPostId     String?            @map("fb_post_id") @db.VarChar(100)
+  errorMessage String?            @map("error_message") @db.Text
+  productId    String?            @map("product_id") @db.Uuid
+  createdBy    String             @map("created_by") @db.Uuid
+  createdAt    DateTime           @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt    DateTime           @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@index([status, scheduledAt])
+  @@map("facebook_posts")
 }
 
 model BfjFreightRate {
@@ -1168,4 +1380,201 @@ model BfjFreightRate {
 
   @@index([sortOrder])
   @@map("bfj_freight_rates")
+}
+
+// ─────────────────────────────────────────
+// DOMAIN: SUBSCRIBER (Email Marketing List)
+// ─────────────────────────────────────────
+
+enum SubscriberStatus {
+  ACTIVE
+  UNSUBSCRIBED
+  BOUNCED
+}
+
+model Subscriber {
+  id               Int              @id @default(autoincrement())
+  email            String           @unique @db.VarChar(255)
+  name             String?          @db.VarChar(255)
+  phone            String?          @db.VarChar(30)
+  city             String?          @db.VarChar(100)
+  status           SubscriberStatus @default(ACTIVE)
+  source           String?          @db.VarChar(100) // getresponse | manual | import | website
+  unsubscribeToken String?          @unique @map("unsubscribe_token") @db.VarChar(100)
+  createdAt        DateTime         @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt        DateTime         @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@index([status])
+  @@map("subscribers")
+}
+
+// ─────────────────────────────────────────
+// DOMAIN: CONTENT STUDIO (AI nội dung đa kênh)
+// Bảng MỚI, độc lập — KHÔNG sửa model/enum nào đang có.
+// Lưu createdBy/sourceProductId dạng UUID trần (giống ContentTask/FacebookPost),
+// nên không phải thêm relation vào User/Product.
+// ─────────────────────────────────────────
+
+enum ContentChannel {
+  FACEBOOK
+  ZALO
+  TIKTOK_CAPTION
+  TIKTOK_SCRIPT
+  YOUTUBE_SHORTS
+  YOUTUBE_OUTLINE
+  EMAIL
+  PUSH
+  BANNER
+  META_AD
+  CHATBOT
+}
+
+enum ContentAssetStatus {
+  DRAFT
+  AI_GENERATED
+  PENDING_REVIEW
+  REVISION_REQUIRED
+  APPROVED
+  SCHEDULED
+  PUBLISHED
+  REJECTED
+  ARCHIVED
+}
+
+model ContentAsset {
+  id              String             @id @default(uuid()) @db.Uuid
+  title           String             @db.VarChar(500)
+  channel         ContentChannel
+  body            String             @db.Text
+  metadata        Json?
+  provider        String             @default("auto") @db.VarChar(50)
+  status          ContentAssetStatus @default(AI_GENERATED)
+  sourceProductId String?            @map("source_product_id") @db.Uuid
+  sourceTopic     String?            @map("source_topic") @db.Text
+  goal            String?            @db.VarChar(50)
+  audience        String?            @db.VarChar(100)
+  scheduledAt     DateTime?          @map("scheduled_at") @db.Timestamptz
+  publishedAt     DateTime?          @map("published_at") @db.Timestamptz
+  publishedUrl    String?            @map("published_url") @db.VarChar(1000)
+  reviewNote      String?            @map("review_note") @db.Text
+  createdBy       String             @map("created_by") @db.Uuid
+  reviewedBy      String?            @map("reviewed_by") @db.Uuid
+  createdAt       DateTime           @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt       DateTime           @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@index([status, createdAt])
+  @@index([channel, status])
+  @@index([sourceProductId])
+  @@index([createdBy])
+  @@map("content_assets")
+}
+
+// ─────────────────────────────────────────
+// DOMAIN: KNOWLEDGE BASE (Kho tri thức có cấu trúc)
+// Bảng MỚI, độc lập — quan hệ chỉ GIỮA các bảng KB với nhau.
+// relatedProductId / createdBy / reviewedBy = UUID trần → không phải sửa Product/User.
+// ─────────────────────────────────────────
+
+enum KnowledgeStatus {
+  DRAFT
+  PENDING_REVIEW
+  APPROVED
+  ARCHIVED
+}
+
+enum FactVerification {
+  UNVERIFIED
+  VERIFIED
+  DISPUTED
+}
+
+model KnowledgeCategory {
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String   @db.VarChar(255)
+  slug        String   @unique @db.VarChar(255)
+  description String?  @db.Text
+  sortOrder   Int      @default(0) @map("sort_order")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  articles KnowledgeArticle[]
+
+  @@index([slug])
+  @@map("knowledge_categories")
+}
+
+model KnowledgeArticle {
+  id              String          @id @default(uuid()) @db.Uuid
+  categoryId      String?         @map("category_id") @db.Uuid
+  title           String          @db.VarChar(500)
+  slug            String          @unique @db.VarChar(500)
+  summary         String?         @db.Text
+  content         String          @db.Text
+  tags            String[]
+  sourceType      String?         @map("source_type") @db.VarChar(50)
+  sourceUrl       String?         @map("source_url") @db.VarChar(1000)
+  language        String          @default("vi") @db.VarChar(10)
+  status          KnowledgeStatus @default(DRAFT)
+  confidenceScore Int?            @map("confidence_score")
+  createdBy       String          @map("created_by") @db.Uuid
+  reviewedBy      String?         @map("reviewed_by") @db.Uuid
+  publishedAt     DateTime?       @map("published_at") @db.Timestamptz
+  createdAt       DateTime        @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt       DateTime        @updatedAt @map("updated_at") @db.Timestamptz
+
+  category KnowledgeCategory? @relation(fields: [categoryId], references: [id])
+  facts    KnowledgeFact[]
+
+  @@index([status, updatedAt])
+  @@index([categoryId])
+  @@index([slug])
+  @@map("knowledge_articles")
+}
+
+model KnowledgeFact {
+  id                 String           @id @default(uuid()) @db.Uuid
+  subject            String           @db.VarChar(500)
+  predicate          String           @db.VarChar(255)
+  object             String           @db.Text
+  sourceReference    String?          @map("source_reference") @db.VarChar(1000)
+  confidenceScore    Int?             @map("confidence_score")
+  verificationStatus FactVerification @default(UNVERIFIED) @map("verification_status")
+  relatedProductId   String?          @map("related_product_id") @db.Uuid
+  relatedArticleId   String?          @map("related_article_id") @db.Uuid
+  createdBy          String           @map("created_by") @db.Uuid
+  createdAt          DateTime         @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt          DateTime         @updatedAt @map("updated_at") @db.Timestamptz
+
+  article KnowledgeArticle? @relation(fields: [relatedArticleId], references: [id])
+
+  @@index([verificationStatus])
+  @@index([relatedProductId])
+  @@index([relatedArticleId])
+  @@map("knowledge_facts")
+}
+
+// Hồ sơ tri thức từng sản phẩm (kết quả phân tích AI: dịch JP→VI, rủi ro, điện áp…)
+// productId = UUID trần @unique (1 hồ sơ / sản phẩm) → không sửa model Product.
+model ProductKnowledgeProfile {
+  id                   String    @id @default(uuid()) @db.Uuid
+  productId            String    @unique @map("product_id") @db.Uuid
+  originalLanguage     String    @default("ja") @map("original_language") @db.VarChar(10)
+  originalSourceText   String?   @map("original_source_text") @db.Text
+  translatedSummary    String?   @map("translated_summary") @db.Text
+  verifiedFacts        String[]  @map("verified_facts")
+  missingFields        String[]  @map("missing_fields")
+  riskFlags            String[]  @map("risk_flags")
+  buyerGuidance        String?   @map("buyer_guidance") @db.Text
+  voltageGuidance      String?   @map("voltage_guidance") @db.Text
+  transformerGuidance  String?   @map("transformer_guidance") @db.Text
+  modelComparisonNotes String?   @map("model_comparison_notes") @db.Text
+  internalNotes        String?   @map("internal_notes") @db.Text
+  confidenceScore      Int?      @map("confidence_score")
+  lastVerifiedAt       DateTime? @map("last_verified_at") @db.Timestamptz
+  updatedBy            String?   @map("updated_by") @db.Uuid
+  createdAt            DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt            DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@index([productId])
+  @@map("product_knowledge_profiles")
 }

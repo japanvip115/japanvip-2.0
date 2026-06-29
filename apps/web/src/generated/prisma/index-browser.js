@@ -129,10 +129,14 @@ exports.Prisma.UserScalarFieldEnum = {
   role: 'role',
   status: 'status',
   emailVerified: 'emailVerified',
+  marketingOptIn: 'marketingOptIn',
+  unsubscribeToken: 'unsubscribeToken',
   fraudScore: 'fraudScore',
   sessionVersion: 'sessionVersion',
   failedLoginCount: 'failedLoginCount',
   lockedUntil: 'lockedUntil',
+  referralCode: 'referralCode',
+  pointsBalance: 'pointsBalance',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   deletedAt: 'deletedAt'
@@ -221,9 +225,11 @@ exports.Prisma.CategoryScalarFieldEnum = {
   slug: 'slug',
   description: 'description',
   imageUrl: 'imageUrl',
+  imagePosition: 'imagePosition',
   icon: 'icon',
   sortOrder: 'sortOrder',
   isActive: 'isActive',
+  showOnHome: 'showOnHome',
   metaTitle: 'metaTitle',
   metaDesc: 'metaDesc',
   createdAt: 'createdAt',
@@ -258,6 +264,8 @@ exports.Prisma.ProductScalarFieldEnum = {
   marketPrice: 'marketPrice',
   status: 'status',
   badge: 'badge',
+  showOnHome: 'showOnHome',
+  gifts: 'gifts',
   rating: 'rating',
   reviewCount: 'reviewCount',
   metaTitle: 'metaTitle',
@@ -282,6 +290,7 @@ exports.Prisma.ProductAttributeScalarFieldEnum = {
   productId: 'productId',
   name: 'name',
   value: 'value',
+  sortOrder: 'sortOrder',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -293,6 +302,28 @@ exports.Prisma.ExchangeRateScalarFieldEnum = {
   rate: 'rate',
   source: 'source',
   isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.QuickOrderScalarFieldEnum = {
+  id: 'id',
+  orderRef: 'orderRef',
+  name: 'name',
+  email: 'email',
+  phone: 'phone',
+  address: 'address',
+  notes: 'notes',
+  productId: 'productId',
+  productName: 'productName',
+  productImage: 'productImage',
+  productSlug: 'productSlug',
+  priceVnd: 'priceVnd',
+  quantity: 'quantity',
+  status: 'status',
+  adminNotes: 'adminNotes',
+  refCode: 'refCode',
+  affiliateId: 'affiliateId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -369,11 +400,15 @@ exports.Prisma.AuctionScalarFieldEnum = {
   autoExtend: 'autoExtend',
   extendMinutes: 'extendMinutes',
   extendTrigger: 'extendTrigger',
+  extensionCount: 'extensionCount',
+  maxExtensions: 'maxExtensions',
   winnerId: 'winnerId',
   winningBidId: 'winningBidId',
   commissionRate: 'commissionRate',
   buyerPremium: 'buyerPremium',
   settlementDue: 'settlementDue',
+  unitCondition: 'unitCondition',
+  unitImages: 'unitImages',
   createdBy: 'createdBy',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -430,6 +465,25 @@ exports.Prisma.AuctionSettlementScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.PaymentIntentScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  provider: 'provider',
+  purpose: 'purpose',
+  userId: 'userId',
+  amount: 'amount',
+  originalAmount: 'originalAmount',
+  pointsUsed: 'pointsUsed',
+  status: 'status',
+  referenceType: 'referenceType',
+  referenceId: 'referenceId',
+  providerRef: 'providerRef',
+  providerData: 'providerData',
+  paidAt: 'paidAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.WalletScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -461,6 +515,31 @@ exports.Prisma.TransactionScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.ReferralScalarFieldEnum = {
+  id: 'id',
+  referrerId: 'referrerId',
+  refereeId: 'refereeId',
+  code: 'code',
+  status: 'status',
+  referrerPoints: 'referrerPoints',
+  refereePoints: 'refereePoints',
+  qualifiedAt: 'qualifiedAt',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.PointTransactionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  type: 'type',
+  amount: 'amount',
+  balanceBefore: 'balanceBefore',
+  balanceAfter: 'balanceAfter',
+  referenceType: 'referenceType',
+  referenceId: 'referenceId',
+  note: 'note',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.PartnerProfileScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -469,11 +548,64 @@ exports.Prisma.PartnerProfileScalarFieldEnum = {
   bankName: 'bankName',
   bankAccount: 'bankAccount',
   bankHolder: 'bankHolder',
+  idCardNumber: 'idCardNumber',
+  idCardFront: 'idCardFront',
+  idCardBack: 'idCardBack',
+  adminNote: 'adminNote',
   commissionTier: 'commissionTier',
   defaultCommissionRate: 'defaultCommissionRate',
+  refCode: 'refCode',
+  totalEarned: 'totalEarned',
+  totalPaid: 'totalPaid',
   status: 'status',
   approvedAt: 'approvedAt',
   approvedBy: 'approvedBy',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.AffiliateCommissionScalarFieldEnum = {
+  id: 'id',
+  partnerId: 'partnerId',
+  quickOrderId: 'quickOrderId',
+  orderRef: 'orderRef',
+  productName: 'productName',
+  orderAmount: 'orderAmount',
+  commissionRate: 'commissionRate',
+  commissionAmount: 'commissionAmount',
+  status: 'status',
+  note: 'note',
+  approvedAt: 'approvedAt',
+  approvedBy: 'approvedBy',
+  paidAt: 'paidAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.AffiliateClickScalarFieldEnum = {
+  id: 'id',
+  partnerId: 'partnerId',
+  affiliateLinkId: 'affiliateLinkId',
+  refCode: 'refCode',
+  ipHash: 'ipHash',
+  userAgent: 'userAgent',
+  referrer: 'referrer',
+  landingUrl: 'landingUrl',
+  convertedOrderId: 'convertedOrderId',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.AffiliateLinkScalarFieldEnum = {
+  id: 'id',
+  partnerId: 'partnerId',
+  productId: 'productId',
+  trackingCode: 'trackingCode',
+  label: 'label',
+  destinationUrl: 'destinationUrl',
+  clicks: 'clicks',
+  orders: 'orders',
+  revenue: 'revenue',
+  commission: 'commission',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -512,6 +644,7 @@ exports.Prisma.BlogPostScalarFieldEnum = {
   thumbnailUrl: 'thumbnailUrl',
   status: 'status',
   publishedAt: 'publishedAt',
+  scheduledAt: 'scheduledAt',
   metaTitle: 'metaTitle',
   metaDesc: 'metaDesc',
   ogImage: 'ogImage',
@@ -615,6 +748,7 @@ exports.Prisma.BfjSettingScalarFieldEnum = {
   domesticShippingJpy: 'domesticShippingJpy',
   surchargeRate: 'surchargeRate',
   depositRate: 'depositRate',
+  profitMarginRate: 'profitMarginRate',
   translationProvider: 'translationProvider',
   translationApiKey: 'translationApiKey',
   smtpHost: 'smtpHost',
@@ -638,6 +772,205 @@ exports.Prisma.BfjShippingTierScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.CartScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  items: 'items',
+  reminded: 'reminded',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.EmailTemplateScalarFieldEnum = {
+  key: 'key',
+  enabled: 'enabled',
+  subject: 'subject',
+  html: 'html',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.EmailAutomationScalarFieldEnum = {
+  key: 'key',
+  enabled: 'enabled',
+  config: 'config',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.EmailLogScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  type: 'type',
+  userId: 'userId',
+  meta: 'meta',
+  sentAt: 'sentAt'
+};
+
+exports.Prisma.TestimonialScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  city: 'city',
+  photoUrl: 'photoUrl',
+  text: 'text',
+  rating: 'rating',
+  type: 'type',
+  sortOrder: 'sortOrder',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ContentTaskScalarFieldEnum = {
+  id: 'id',
+  type: 'type',
+  status: 'status',
+  scheduledAt: 'scheduledAt',
+  title: 'title',
+  topic: 'topic',
+  keywords: 'keywords',
+  sourceUrl: 'sourceUrl',
+  productId: 'productId',
+  provider: 'provider',
+  resultId: 'resultId',
+  resultType: 'resultType',
+  errorMessage: 'errorMessage',
+  ranAt: 'ranAt',
+  createdBy: 'createdBy',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.FacebookPostScalarFieldEnum = {
+  id: 'id',
+  message: 'message',
+  imageUrl: 'imageUrl',
+  imageUrls: 'imageUrls',
+  linkUrl: 'linkUrl',
+  firstComment: 'firstComment',
+  angle: 'angle',
+  status: 'status',
+  scheduledAt: 'scheduledAt',
+  publishedAt: 'publishedAt',
+  fbPostId: 'fbPostId',
+  errorMessage: 'errorMessage',
+  productId: 'productId',
+  createdBy: 'createdBy',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.BfjFreightRateScalarFieldEnum = {
+  id: 'id',
+  minWeightKg: 'minWeightKg',
+  maxWeightKg: 'maxWeightKg',
+  regularPricePerKg: 'regularPricePerKg',
+  difficultPricePerKg: 'difficultPricePerKg',
+  estimatedDays: 'estimatedDays',
+  sortOrder: 'sortOrder',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.SubscriberScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  name: 'name',
+  phone: 'phone',
+  city: 'city',
+  status: 'status',
+  source: 'source',
+  unsubscribeToken: 'unsubscribeToken',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ContentAssetScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  channel: 'channel',
+  body: 'body',
+  metadata: 'metadata',
+  provider: 'provider',
+  status: 'status',
+  sourceProductId: 'sourceProductId',
+  sourceTopic: 'sourceTopic',
+  goal: 'goal',
+  audience: 'audience',
+  scheduledAt: 'scheduledAt',
+  publishedAt: 'publishedAt',
+  publishedUrl: 'publishedUrl',
+  reviewNote: 'reviewNote',
+  createdBy: 'createdBy',
+  reviewedBy: 'reviewedBy',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.KnowledgeCategoryScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  slug: 'slug',
+  description: 'description',
+  sortOrder: 'sortOrder',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.KnowledgeArticleScalarFieldEnum = {
+  id: 'id',
+  categoryId: 'categoryId',
+  title: 'title',
+  slug: 'slug',
+  summary: 'summary',
+  content: 'content',
+  tags: 'tags',
+  sourceType: 'sourceType',
+  sourceUrl: 'sourceUrl',
+  language: 'language',
+  status: 'status',
+  confidenceScore: 'confidenceScore',
+  createdBy: 'createdBy',
+  reviewedBy: 'reviewedBy',
+  publishedAt: 'publishedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.KnowledgeFactScalarFieldEnum = {
+  id: 'id',
+  subject: 'subject',
+  predicate: 'predicate',
+  object: 'object',
+  sourceReference: 'sourceReference',
+  confidenceScore: 'confidenceScore',
+  verificationStatus: 'verificationStatus',
+  relatedProductId: 'relatedProductId',
+  relatedArticleId: 'relatedArticleId',
+  createdBy: 'createdBy',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ProductKnowledgeProfileScalarFieldEnum = {
+  id: 'id',
+  productId: 'productId',
+  originalLanguage: 'originalLanguage',
+  originalSourceText: 'originalSourceText',
+  translatedSummary: 'translatedSummary',
+  verifiedFacts: 'verifiedFacts',
+  missingFields: 'missingFields',
+  riskFlags: 'riskFlags',
+  buyerGuidance: 'buyerGuidance',
+  voltageGuidance: 'voltageGuidance',
+  transformerGuidance: 'transformerGuidance',
+  modelComparisonNotes: 'modelComparisonNotes',
+  internalNotes: 'internalNotes',
+  confidenceScore: 'confidenceScore',
+  lastVerifiedAt: 'lastVerifiedAt',
+  updatedBy: 'updatedBy',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -645,6 +978,10 @@ exports.Prisma.SortOrder = {
 
 exports.Prisma.NullableJsonNullValueInput = {
   DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull
+};
+
+exports.Prisma.JsonNullValueInput = {
   JsonNull: Prisma.JsonNull
 };
 
@@ -666,6 +1003,7 @@ exports.Prisma.JsonNullValueFilter = {
 exports.UserRole = exports.$Enums.UserRole = {
   CUSTOMER: 'CUSTOMER',
   PARTNER: 'PARTNER',
+  EDITOR: 'EDITOR',
   ADMIN: 'ADMIN',
   SUPER_ADMIN: 'SUPER_ADMIN'
 };
@@ -699,6 +1037,14 @@ exports.ProductStatus = exports.$Enums.ProductStatus = {
   ACTIVE: 'ACTIVE',
   SOLD: 'SOLD',
   ARCHIVED: 'ARCHIVED'
+};
+
+exports.QuickOrderStatus = exports.$Enums.QuickOrderStatus = {
+  PENDING: 'PENDING',
+  CONTACTED: 'CONTACTED',
+  CONFIRMED: 'CONFIRMED',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED'
 };
 
 exports.BfjOrderStatus = exports.$Enums.BfjOrderStatus = {
@@ -758,6 +1104,23 @@ exports.SettlementStatus = exports.$Enums.SettlementStatus = {
   CANCELLED: 'CANCELLED'
 };
 
+exports.PaymentProvider = exports.$Enums.PaymentProvider = {
+  VNPAY: 'VNPAY',
+  MOMO: 'MOMO'
+};
+
+exports.PaymentPurpose = exports.$Enums.PaymentPurpose = {
+  AUCTION_SETTLEMENT: 'AUCTION_SETTLEMENT',
+  BFJ_DEPOSIT: 'BFJ_DEPOSIT'
+};
+
+exports.PaymentIntentStatus = exports.$Enums.PaymentIntentStatus = {
+  PENDING: 'PENDING',
+  PAID: 'PAID',
+  FAILED: 'FAILED',
+  EXPIRED: 'EXPIRED'
+};
+
 exports.TransactionType = exports.$Enums.TransactionType = {
   DEPOSIT: 'DEPOSIT',
   WITHDRAWAL: 'WITHDRAWAL',
@@ -782,10 +1145,32 @@ exports.TransactionStatus = exports.$Enums.TransactionStatus = {
   REVERSED: 'REVERSED'
 };
 
+exports.ReferralStatus = exports.$Enums.ReferralStatus = {
+  PENDING: 'PENDING',
+  REWARDED: 'REWARDED',
+  CANCELLED: 'CANCELLED'
+};
+
+exports.PointTransactionType = exports.$Enums.PointTransactionType = {
+  REFERRAL_REFERRER: 'REFERRAL_REFERRER',
+  REFERRAL_REFEREE: 'REFERRAL_REFEREE',
+  REDEEM_AUCTION: 'REDEEM_AUCTION',
+  REDEEM_ORDER: 'REDEEM_ORDER',
+  ADMIN_ADJUST: 'ADMIN_ADJUST',
+  REFUND: 'REFUND'
+};
+
 exports.PartnerStatus = exports.$Enums.PartnerStatus = {
   PENDING: 'PENDING',
   APPROVED: 'APPROVED',
   SUSPENDED: 'SUSPENDED'
+};
+
+exports.CommissionStatus = exports.$Enums.CommissionStatus = {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  PAID: 'PAID',
+  REJECTED: 'REJECTED'
 };
 
 exports.NotificationChannel = exports.$Enums.NotificationChannel = {
@@ -804,6 +1189,7 @@ exports.NotificationStatus = exports.$Enums.NotificationStatus = {
 
 exports.BlogPostStatus = exports.$Enums.BlogPostStatus = {
   DRAFT: 'DRAFT',
+  SCHEDULED: 'SCHEDULED',
   PUBLISHED: 'PUBLISHED',
   ARCHIVED: 'ARCHIVED'
 };
@@ -813,6 +1199,72 @@ exports.FraudSeverity = exports.$Enums.FraudSeverity = {
   MEDIUM: 'MEDIUM',
   HIGH: 'HIGH',
   CRITICAL: 'CRITICAL'
+};
+
+exports.ContentTaskType = exports.$Enums.ContentTaskType = {
+  PRODUCT_DESCRIPTION: 'PRODUCT_DESCRIPTION',
+  BLOG_POST: 'BLOG_POST',
+  FAQ: 'FAQ',
+  SEO_META: 'SEO_META'
+};
+
+exports.ContentTaskStatus = exports.$Enums.ContentTaskStatus = {
+  PENDING: 'PENDING',
+  RUNNING: 'RUNNING',
+  DONE: 'DONE',
+  FAILED: 'FAILED'
+};
+
+exports.FacebookPostStatus = exports.$Enums.FacebookPostStatus = {
+  DRAFT: 'DRAFT',
+  SCHEDULED: 'SCHEDULED',
+  PUBLISHED: 'PUBLISHED',
+  FAILED: 'FAILED'
+};
+
+exports.SubscriberStatus = exports.$Enums.SubscriberStatus = {
+  ACTIVE: 'ACTIVE',
+  UNSUBSCRIBED: 'UNSUBSCRIBED',
+  BOUNCED: 'BOUNCED'
+};
+
+exports.ContentChannel = exports.$Enums.ContentChannel = {
+  FACEBOOK: 'FACEBOOK',
+  ZALO: 'ZALO',
+  TIKTOK_CAPTION: 'TIKTOK_CAPTION',
+  TIKTOK_SCRIPT: 'TIKTOK_SCRIPT',
+  YOUTUBE_SHORTS: 'YOUTUBE_SHORTS',
+  YOUTUBE_OUTLINE: 'YOUTUBE_OUTLINE',
+  EMAIL: 'EMAIL',
+  PUSH: 'PUSH',
+  BANNER: 'BANNER',
+  META_AD: 'META_AD',
+  CHATBOT: 'CHATBOT'
+};
+
+exports.ContentAssetStatus = exports.$Enums.ContentAssetStatus = {
+  DRAFT: 'DRAFT',
+  AI_GENERATED: 'AI_GENERATED',
+  PENDING_REVIEW: 'PENDING_REVIEW',
+  REVISION_REQUIRED: 'REVISION_REQUIRED',
+  APPROVED: 'APPROVED',
+  SCHEDULED: 'SCHEDULED',
+  PUBLISHED: 'PUBLISHED',
+  REJECTED: 'REJECTED',
+  ARCHIVED: 'ARCHIVED'
+};
+
+exports.KnowledgeStatus = exports.$Enums.KnowledgeStatus = {
+  DRAFT: 'DRAFT',
+  PENDING_REVIEW: 'PENDING_REVIEW',
+  APPROVED: 'APPROVED',
+  ARCHIVED: 'ARCHIVED'
+};
+
+exports.FactVerification = exports.$Enums.FactVerification = {
+  UNVERIFIED: 'UNVERIFIED',
+  VERIFIED: 'VERIFIED',
+  DISPUTED: 'DISPUTED'
 };
 
 exports.Prisma.ModelName = {
@@ -830,6 +1282,7 @@ exports.Prisma.ModelName = {
   ProductImage: 'ProductImage',
   ProductAttribute: 'ProductAttribute',
   ExchangeRate: 'ExchangeRate',
+  QuickOrder: 'QuickOrder',
   BfjOrder: 'BfjOrder',
   BfjOrderItem: 'BfjOrderItem',
   BfjUrlParseLog: 'BfjUrlParseLog',
@@ -838,9 +1291,15 @@ exports.Prisma.ModelName = {
   AuctionMaxBid: 'AuctionMaxBid',
   AuctionWatchlist: 'AuctionWatchlist',
   AuctionSettlement: 'AuctionSettlement',
+  PaymentIntent: 'PaymentIntent',
   Wallet: 'Wallet',
   Transaction: 'Transaction',
+  Referral: 'Referral',
+  PointTransaction: 'PointTransaction',
   PartnerProfile: 'PartnerProfile',
+  AffiliateCommission: 'AffiliateCommission',
+  AffiliateClick: 'AffiliateClick',
+  AffiliateLink: 'AffiliateLink',
   Notification: 'Notification',
   BlogCategory: 'BlogCategory',
   BlogPost: 'BlogPost',
@@ -853,7 +1312,21 @@ exports.Prisma.ModelName = {
   LoginHistory: 'LoginHistory',
   SiteSetting: 'SiteSetting',
   BfjSetting: 'BfjSetting',
-  BfjShippingTier: 'BfjShippingTier'
+  BfjShippingTier: 'BfjShippingTier',
+  Cart: 'Cart',
+  EmailTemplate: 'EmailTemplate',
+  EmailAutomation: 'EmailAutomation',
+  EmailLog: 'EmailLog',
+  Testimonial: 'Testimonial',
+  ContentTask: 'ContentTask',
+  FacebookPost: 'FacebookPost',
+  BfjFreightRate: 'BfjFreightRate',
+  Subscriber: 'Subscriber',
+  ContentAsset: 'ContentAsset',
+  KnowledgeCategory: 'KnowledgeCategory',
+  KnowledgeArticle: 'KnowledgeArticle',
+  KnowledgeFact: 'KnowledgeFact',
+  ProductKnowledgeProfile: 'ProductKnowledgeProfile'
 };
 
 /**

@@ -244,17 +244,7 @@ function SpecsTable({ attributes, specGroups }: { attributes: Attribute[]; specG
           <tbody className="divide-y divide-gray-50">
             {/* Ungrouped specs first */}
             {hasFlat && (() => {
-              const PIN_TOP = ['thương hiệu', 'model', 'tình trạng']
-              const sorted = [...attributes].sort((a, b) => {
-                const na = a.name.replace(/^\[[^\]]+\]/, '').toLowerCase()
-                const nb = b.name.replace(/^\[[^\]]+\]/, '').toLowerCase()
-                const ia = PIN_TOP.indexOf(na)
-                const ib = PIN_TOP.indexOf(nb)
-                if (ia !== -1 && ib !== -1) return ia - ib
-                if (ia !== -1) return -1
-                if (ib !== -1) return 1
-                return 0
-              })
+              const sorted = attributes
               return sorted.map((attr, i) => (
                 <tr key={attr.id} className={i % 2 === 0 ? 'bg-gray-50/60' : 'bg-white'}>
                   <td className="w-2/5 px-5 py-3 font-medium text-gray-500">{attr.name.replace(/^\[[^\]]+\]/, '')}</td>
