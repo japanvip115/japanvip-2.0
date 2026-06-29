@@ -609,7 +609,11 @@ export default async function ProductDetailPage({ params }: Props) {
               '@context': 'https://schema.org',
               '@type': 'Product',
               name: product.name,
-              description: product.description,
+              description: (product.metaDesc || product.description || '')
+                .replace(/<[^>]*>/g, ' ')
+                .replace(/\s+/g, ' ')
+                .trim()
+                .slice(0, 500),
               image: product.images.map((i) => i.url),
               brand: product.brand ? { '@type': 'Brand', name: product.brand.name } : undefined,
               ...(reviewsEnabled && product.rating ? {
@@ -627,12 +631,16 @@ export default async function ProductDetailPage({ params }: Props) {
                 priceCurrency: 'VND',
                 availability: 'https://schema.org/InStock',
                 seller: { '@type': 'Organization', name: 'Japan VIP' },
+                shippingDetails: { '@type': 'OfferShippingDetails', shippingRate: { '@type': 'MonetaryAmount', value: '0', currency: 'VND' }, deliveryTime: { '@type': 'ShippingDeliveryTime', handlingTime: { '@type': 'QuantitativeValue', minValue: 0, maxValue: 1, unitCode: 'DAY' }, transitTime: { '@type': 'QuantitativeValue', minValue: 1, maxValue: 3, unitCode: 'DAY' } }, shippingDestination: { '@type': 'DefinedRegion', addressCountry: 'VN' } },
+                hasMerchantReturnPolicy: { '@type': 'MerchantReturnPolicy', applicableCountry: 'VN', returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow', merchantReturnDays: 7, returnMethod: 'https://schema.org/ReturnByMail' },
               } : product.salePrice ? {
                 '@type': 'Offer',
                 price: Number(product.salePrice),
                 priceCurrency: 'VND',
                 availability: 'https://schema.org/InStock',
                 seller: { '@type': 'Organization', name: 'Japan VIP' },
+                shippingDetails: { '@type': 'OfferShippingDetails', shippingRate: { '@type': 'MonetaryAmount', value: '0', currency: 'VND' }, deliveryTime: { '@type': 'ShippingDeliveryTime', handlingTime: { '@type': 'QuantitativeValue', minValue: 0, maxValue: 1, unitCode: 'DAY' }, transitTime: { '@type': 'QuantitativeValue', minValue: 1, maxValue: 3, unitCode: 'DAY' } }, shippingDestination: { '@type': 'DefinedRegion', addressCountry: 'VN' } },
+                hasMerchantReturnPolicy: { '@type': 'MerchantReturnPolicy', applicableCountry: 'VN', returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow', merchantReturnDays: 7, returnMethod: 'https://schema.org/ReturnByMail' },
               } : undefined,
             },
             {
