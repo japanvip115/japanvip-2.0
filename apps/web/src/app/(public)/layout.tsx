@@ -2,6 +2,7 @@ import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
 import { FloatingContact } from '@/components/layout/floating-contact'
 import { ChatWidget } from '@/components/livechat/chat-widget'
+import { WebVitalsReporter } from '@/components/perf/web-vitals-reporter'
 
 const ORG_SCHEMA = {
   '@context': 'https://schema.org',
@@ -45,6 +46,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
       <Footer />
       <FloatingContact />
       <ChatWidget />
+      <WebVitalsReporter />
     </div>
   )
 }

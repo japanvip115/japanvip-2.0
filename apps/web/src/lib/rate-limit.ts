@@ -23,6 +23,8 @@ const CONFIGS: Record<string, RateLimitConfig> = {
   'upload:proof':    { limit: 10, windowSeconds: 3600 },
   'quick-order':     { limit: 5,  windowSeconds: 3600 },
   'quick-order-otp': { limit: 3,  windowSeconds: 3600 },
+  // RUM web-vitals: mỗi lượt xem trang gửi ~5 beacon; cho rộng để không mất mẫu
+  'vitals':          { limit: 150, windowSeconds: 60 },
   'default':         { limit: 60, windowSeconds: 60 },
 }
 

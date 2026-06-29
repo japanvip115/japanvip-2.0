@@ -83,6 +83,24 @@ export async function redisSetNX(key: string, value: string, ttlMs: number): Pro
   } catch { return true }
 }
 
+// Push lên đầu list rồi cắt giữ N phần tử mới nhất (cho RUM samples). Fire-and-forget.
+export async function redisLPushCapped(key: string, value: string, cap: number): Promise<void> {
+  try {
+    const r = getRedis()
+    if (!r) return
+    await r.lpush(key, value)
+    await r.ltrim(key, 0, cap - 1)
+  } catch { /* skip */ }
+}
+
+export async function redisLRange(key: string, start: number, stop: number): Promise<string[]> {
+  try {
+    const r = getRedis()
+    if (!r) return []
+    return await r.lrange<string>(key, start, stop)
+  } catch { return [] }
+}
+
 export const CacheKey = {
   auctionState: (id: string) => `auction:${id}:state`,
   auctionBids: (id: string) => `auction:${id}:bids`,
