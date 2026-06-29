@@ -206,6 +206,19 @@ export default async function ProductDetailPage({ params }: Props) {
 
       <AdminEditButton productId={product.id} />
 
+      {/* Breadcrumb hiển thị — khớp BreadcrumbList schema, hỗ trợ điều hướng + SEO */}
+      <nav aria-label="Breadcrumb" className="mb-4 flex flex-wrap items-center gap-1.5 text-xs text-gray-500">
+        <Link href="/" className="hover:text-brand-red">Trang chủ</Link>
+        <span>›</span>
+        {product.category && (
+          <>
+            <Link href={`/danh-muc/${product.category.slug}`} className="hover:text-brand-red">{product.category.name}</Link>
+            <span>›</span>
+          </>
+        )}
+        <span className="text-gray-700 line-clamp-1">{product.name}</span>
+      </nav>
+
       <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:items-start">
         {/* Gallery */}
         <div className="mt-6">

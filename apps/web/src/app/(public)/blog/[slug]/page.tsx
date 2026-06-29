@@ -138,8 +138,13 @@ export default async function BlogPostPage({ params }: Props) {
                 </span>
               )}
               <h1 className="text-xl md:text-3xl font-bold text-gray-900 leading-snug">{post.title}</h1>
-              <div className="mt-2 flex items-center gap-3 text-xs text-gray-400">
-                {post.publishedAt && <span>{new Date(post.publishedAt).toLocaleDateString('vi-VN')}</span>}
+              <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-gray-400">
+                {post.author?.profile?.fullName && <span className="font-medium text-gray-500">{post.author.profile.fullName}</span>}
+                {post.publishedAt && <span>Đăng {new Date(post.publishedAt).toLocaleDateString('vi-VN')}</span>}
+                {post.updatedAt && post.publishedAt &&
+                  new Date(post.updatedAt).getTime() - new Date(post.publishedAt).getTime() > 86_400_000 && (
+                    <span>· Cập nhật {new Date(post.updatedAt).toLocaleDateString('vi-VN')}</span>
+                  )}
               </div>
               {post.excerpt && (
                 <p className="mt-4 text-base text-gray-600 leading-relaxed border-l-4 border-brand-red pl-4 italic">{post.excerpt}</p>

@@ -86,6 +86,29 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
 
   return (
     <div className="bg-white min-h-screen">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify([
+            {
+              '@context': 'https://schema.org',
+              '@type': 'BreadcrumbList',
+              itemListElement: [
+                { '@type': 'ListItem', position: 1, name: 'Trang chủ', item: 'https://japanvip.vn' },
+                { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://japanvip.vn/blog' },
+              ],
+            },
+            {
+              '@context': 'https://schema.org',
+              '@type': 'CollectionPage',
+              name: 'Blog Japan VIP',
+              description: 'Kinh nghiệm chọn mua, hướng dẫn sử dụng & đánh giá hàng gia dụng nội địa Nhật Bản',
+              url: 'https://japanvip.vn/blog',
+              isPartOf: { '@id': 'https://japanvip.vn/#website' },
+            },
+          ]),
+        }}
+      />
       <div className="mx-auto max-w-7xl px-4 py-8">
         <header className="mb-6">
           <h1 className="text-2xl font-bold text-gray-900 md:text-3xl">Blog Japan VIP</h1>
