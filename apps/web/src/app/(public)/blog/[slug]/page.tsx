@@ -17,8 +17,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title,
     description,
     alternates: { canonical: `/blog/${slug}` },
-    openGraph: { title, description, type: 'article', images: post.thumbnailUrl ? [post.thumbnailUrl] : [] },
-    twitter: { card: 'summary_large_image', title, description, images: post.thumbnailUrl ? [post.thumbnailUrl] : [] },
+    openGraph: { title, description, type: 'article', images: [post.thumbnailUrl || '/og-default.jpg'] },
+    twitter: { card: 'summary_large_image', title, description, images: [post.thumbnailUrl || '/og-default.jpg'] },
   }
 }
 
@@ -258,11 +258,9 @@ export default async function BlogPostPage({ params }: Props) {
               image: post.thumbnailUrl ?? undefined,
               datePublished: post.publishedAt?.toISOString() ?? post.createdAt.toISOString(),
               dateModified: post.updatedAt?.toISOString() ?? post.createdAt.toISOString(),
-              author: {
-                '@type': 'Organization',
-                name: 'Japan VIP',
-                url: 'https://japanvip.vn',
-              },
+              author: post.author?.profile?.fullName
+                ? { '@type': 'Person', name: post.author.profile.fullName }
+                : { '@type': 'Organization', name: 'Japan VIP', url: 'https://japanvip.vn' },
               publisher: {
                 '@type': 'Organization',
                 name: 'Japan VIP',

@@ -26,7 +26,7 @@ export async function generateMetadata(): Promise<Metadata> {
       template: '%s | Japan VIP',
     },
     description:
-      'Phân phối hàng gia dụng nội địa Nhật Bản mới 100%, chính hãng: bếp từ, máy giặt, nồi cơm, tủ lạnh. Mua hộ & đấu giá hàng Nhật uy tín, giao toàn quốc.',
+      'Hàng gia dụng nội địa Nhật Bản mới 100% chính hãng: bếp từ, tủ lạnh, máy giặt, nồi cơm. Mua hộ & đấu giá hàng Nhật, bảo hành 12 tháng, giao toàn quốc.',
     keywords: ['hàng nội địa Nhật', 'gia dụng Nhật Bản', 'mua hộ Nhật', 'đấu giá hàng Nhật'],
     authors: [{ name: 'Japan VIP', url: APP_URL }],
     ...(faviconUrl

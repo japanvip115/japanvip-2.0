@@ -42,15 +42,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const product = await prisma.product.findUnique({
     where: { slug },
     select: {
-      name: true, metaTitle: true, metaDesc: true, description: true,
+      name: true, metaTitle: true, metaDesc: true, description: true, salePrice: true,
+      brand: { select: { name: true } }, category: { select: { name: true } },
       images: { where: { isPrimary: true }, take: 1, select: { url: true } },
     },
   })
   if (!product) return { title: 'Không tìm thấy — Japan VIP' }
 
   // Root layout có title.template '%s | Japan VIP' → strip brand nếu metaTitle đã kèm (tránh lặp).
-  const title = stripBrandSuffix(product.metaTitle ?? product.name)
-  const description = product.metaDesc ?? product.description ?? `${product.name} — Hàng gia dụng nội địa Nhật Bản chính hãng tại Japan VIP.`
+  // Fallback title kèm keyword mua hàng để nhắm long-tail ("[SP] chính hãng nội địa Nhật").
+  const title = stripBrandSuffix(product.metaTitle ?? `${product.name} Chính Hãng Nội Địa Nhật`)
+  const priceStr = product.salePrice ? `Giá ${Number(product.salePrice).toLocaleString('vi-VN')}₫. ` : ''
+  const description =
+    product.metaDesc ??
+    `${product.name}${product.brand ? ` ${product.brand.name}` : ''} chính hãng nội địa Nhật, mới 100%. ${priceStr}Bảo hành 12 tháng, giao toàn quốc — Japan VIP.`.slice(0, 165)
   const image = product.images[0]?.url
 
   return {
@@ -610,6 +615,7 @@ export default async function ProductDetailPage({ params }: Props) {
               '@context': 'https://schema.org',
               '@type': 'Product',
               name: product.name,
+              sku: product.slug,
               description: (product.metaDesc || product.description || '')
                 .replace(/<[^>]*>/g, ' ')
                 .replace(/\s+/g, ' ')
@@ -632,6 +638,7 @@ export default async function ProductDetailPage({ params }: Props) {
                 '@type': 'Offer',
                 price: Number(liveAuction.currentPrice),
                 priceCurrency: 'VND',
+                priceValidUntil: new Date(Date.now() + 90 * 86400000).toISOString().slice(0, 10),
                 availability: 'https://schema.org/InStock',
                 itemCondition: 'https://schema.org/NewCondition',
                 seller: { '@type': 'Organization', name: 'Japan VIP' },
@@ -641,6 +648,7 @@ export default async function ProductDetailPage({ params }: Props) {
                 '@type': 'Offer',
                 price: Number(product.salePrice),
                 priceCurrency: 'VND',
+                priceValidUntil: new Date(Date.now() + 90 * 86400000).toISOString().slice(0, 10),
                 availability: 'https://schema.org/InStock',
                 itemCondition: 'https://schema.org/NewCondition',
                 seller: { '@type': 'Organization', name: 'Japan VIP' },

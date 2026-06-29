@@ -3,6 +3,9 @@ import { prisma } from '@japanvip/db'
 
 const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://japanvip.vn'
 
+// Cache sitemap 1 ngày (ISR) — tránh query DB mỗi lần bot gọi.
+export const revalidate = 86400
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [products, categories, blogPosts] = await Promise.all([
     prisma.product.findMany({
