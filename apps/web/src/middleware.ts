@@ -18,7 +18,26 @@ const ROLE_LEVEL: Record<string, number> = {
 }
 
 export async function middleware(req: NextRequest) {
-  const { pathname } = req.nextUrl
+  const { pathname, searchParams } = req.nextUrl
+
+  // ── Redirect URL cũ từ host cũ (japanvip.net) ────────────────────────────
+  // 1. /slug/cXXX.html hoặc /slug/cXXX  →  /san-pham (danh mục theo ID cũ)
+  if (!pathname.startsWith('/api/') && !pathname.startsWith('/admin/')) {
+    const categoryIdPattern = /^(\/[^/]+)\/c\d+(?:\.html)?$/
+    if (categoryIdPattern.test(pathname)) {
+      return NextResponse.redirect(new URL('/san-pham', req.url), 301)
+    }
+
+    // 2. ?show_version=pc → strip param, redirect về URL sạch
+    if (searchParams.has('show_version')) {
+      const cleanUrl = new URL(req.url)
+      cleanUrl.searchParams.delete('show_version')
+      // Xóa luôn ?page=N nếu đi kèm (URL cũ pagination)
+      cleanUrl.searchParams.delete('page')
+      return NextResponse.redirect(cleanUrl, 301)
+    }
+  }
+  // ─────────────────────────────────────────────────────────────────────────
 
   // Affiliate attribution: ?ref=CODE → lưu cookie 30 ngày (last-click).
   // Đơn hàng (quick/bfj) đọc cookie này để gán hoa hồng cho CTV.
