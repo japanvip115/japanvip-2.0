@@ -87,8 +87,7 @@ export default async function CategoryPage({ params }: Props) {
       '@type': 'BreadcrumbList',
       itemListElement: [
         { '@type': 'ListItem', position: 1, name: 'Trang chủ', item: BASE_URL },
-        { '@type': 'ListItem', position: 2, name: 'Sản phẩm', item: `${BASE_URL}/san-pham` },
-        { '@type': 'ListItem', position: 3, name: category.name, item: `${BASE_URL}/danh-muc/${slug}` },
+        { '@type': 'ListItem', position: 2, name: category.name, item: `${BASE_URL}/danh-muc/${slug}` },
       ],
     },
   ]
@@ -96,12 +95,6 @@ export default async function CategoryPage({ params }: Props) {
   return (
     <div className="min-h-screen bg-white">
       <div className="mx-auto max-w-7xl px-4 py-8">
-        <nav className="mb-4 text-sm text-gray-400">
-          <Link href="/" className="hover:text-brand-red">Trang chủ</Link> /{' '}
-          <Link href="/san-pham" className="hover:text-brand-red">Sản phẩm</Link> /{' '}
-          <span className="text-gray-600">{category.name}</span>
-        </nav>
-
         {category.imageUrl && (
           <div className="relative mb-5 h-40 w-full overflow-hidden rounded-2xl bg-gray-100 md:h-56">
             <Image
