@@ -6,7 +6,7 @@
 
 ## ⚡ Nguyên tắc cộng tác với Claude (BẮT BUỘC — đọc trước MỌI task)
 
-> 4 luật nền. Tuân thủ trước khi làm bất cứ việc gì. Khi mâu thuẫn với phần khác trong tài liệu, ưu tiên 4 luật này.
+> 5 luật nền. Tuân thủ trước khi làm bất cứ việc gì. Khi mâu thuẫn với phần khác trong tài liệu, ưu tiên 4 luật này.
 
 ### §1 — THINK BEFORE CODING (Hỏi trước, đừng đoán, đừng giấu chỗ rối)
 
@@ -40,6 +40,11 @@
 - ✅ Đề mơ hồ → hỏi để chốt tiêu chí trước (xem §1), rồi mới chạy.
 - 💡 LLM cực giỏi lặp tới khi chạm goal. Tiêu chí mạnh → tự đi; tiêu chí yếu ("làm cho chạy") → phải cầm tay mãi.
 
+### §5 — KHÔNG TỰ Ý CHỈNH SỬA NHỮNG THỨ KHÔNG LIÊN QUAN
+- ❌ Không được tự ý chỉnh sửa, xoá bất cứ thứ gì khi chưa được cho phép.
+- ❌ Chỉ được Deloy khi đã chỉnh sửa local và hoàn hảo và đồng ý cho Deloy.
+- ❌ Trước khi chỉnh sửa hoặc xoá phải hỏi trước .
+- 
 ---
 
 ## 🔒 LOCKED — VÙNG CODE ĐÃ CHỐT, KHÔNG ĐƯỢC TỰ Ý SỬA/XOÁ
