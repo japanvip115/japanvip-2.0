@@ -13,6 +13,25 @@ updates:
         update-types:
           - minor
           - patch
+    # Bỏ qua major bump các framework — cần migration có chủ đích, không auto (PR major luôn fail build).
+    # Vẫn nhận minor/patch (vá bảo mật). Khi muốn lên major thì làm migration riêng rồi gỡ dòng tương ứng.
+    ignore:
+      - dependency-name: "tailwindcss"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "next"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "eslint-config-next"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "react"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "react-dom"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@types/react"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@types/react-dom"
+        update-types: ["version-update:semver-major"]
   - package-ecosystem: github-actions
     directory: "/"
     schedule:
