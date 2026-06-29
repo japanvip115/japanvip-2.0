@@ -145,7 +145,10 @@ export function NavLinks({ blogCategories = [], productCategories: _ = [] }: { b
   return (
     <nav className="hidden md:flex h-10 items-center justify-center gap-0.5">
       {/* Trang Chủ */}
-      <Link href="/" className={dropLinkCls('/')}>Trang Chủ</Link>
+      <Link href="/" className={dropLinkCls('/')}>
+        Trang Chủ
+        <ChevronDown className="h-3.5 w-3.5 opacity-0" />
+      </Link>
 
       {/* Mua Hàng Nhật — mega */}
       <div className="group relative">
