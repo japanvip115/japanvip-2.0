@@ -23,13 +23,13 @@ export function ProductCard({ product }: { product: ProductWithRelations }) {
     <Link href={`/${product.slug}`} className="group flex h-full">
       <div className="flex flex-col w-full overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm transition hover:shadow-md hover:-translate-y-0.5">
         {/* Image */}
-        <div className="relative aspect-square overflow-hidden bg-gray-50 flex-shrink-0">
+        <div className="relative aspect-square overflow-hidden bg-white flex-shrink-0">
           {image ? (
             <Image
               src={image.url}
               alt={image.altText ?? product.name}
               fill
-              className="object-cover transition duration-300 group-hover:scale-105"
+              className="object-contain transition duration-300 group-hover:scale-105"
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
             />
           ) : (
