@@ -44,7 +44,7 @@
 - ❌ Không được tự ý chỉnh sửa, xoá bất cứ thứ gì khi chưa được cho phép.
 - ❌ Chỉ được Deloy khi đã chỉnh sửa local và hoàn hảo và đồng ý cho Deloy.
 - ❌ Trước khi chỉnh sửa hoặc xoá phải hỏi trước .
-- 
+  
 ---
 
 ## 🔒 LOCKED — VÙNG CODE ĐÃ CHỐT, KHÔNG ĐƯỢC TỰ Ý SỬA/XOÁ
