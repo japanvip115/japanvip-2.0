@@ -611,8 +611,8 @@ function HeroBannerSlider({ banners, router }: { banners: HeroBanner[]; router: 
       onClick={() => { if (activeBanner.linkUrl) router.push(activeBanner.linkUrl) }}
     >
       {/* CHỈ render banner đang hiện — tránh tải đồng thời N ảnh ẩn làm chậm LCP.
-          key=URL → đổi banner thì remount, ảnh mới fade-in nhẹ. */}
-      <div key={activeBanner.imageUrl} style={{ position: 'absolute', inset: 0, zIndex: 1, animation: 'heroFadeIn 0.8s ease' }}>
+          KHÔNG fade opacity trên ảnh LCP (opacity:0 làm Chrome trễ ghi nhận LCP). */}
+      <div key={activeBanner.imageUrl} style={{ position: 'absolute', inset: 0, zIndex: 1 }}>
         {video ? (
           <>
             {/* Mobile/tablet: ảnh poster tĩnh (LCP nhanh, KHÔNG tải video) */}

@@ -156,8 +156,3 @@
   from { transform: scale(1) translateX(0); }
   to   { transform: scale(1.06) translateX(-1%); }
 }
-
-@keyframes heroFadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
