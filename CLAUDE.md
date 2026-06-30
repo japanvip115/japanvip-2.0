@@ -70,7 +70,24 @@
 | Lấy ảnh giới thiệu tính năng từ TRANG CHÍNH HÃNG (site render JS) bằng Playwright + Chrome local; lọc ảnh ≥300×200, bỏ logo/icon/nav. CHỈ chạy local (Vercel không có Chrome → 503). Kèm ô dán URL ảnh thủ công | `apps/web/src/app/api/v1/admin/ai/scrape-feature-images/route.ts` + UI `ai-writer-client.tsx` (`scrapeFeatureImages`, `addPastedImages`) |
 | Tư liệu tham khảo trang VN: lấy nội dung + bảng thông số + **ảnh ngữ cảnh** (dedup biến thể size WordPress, lọc rác URL; logo in chìm KHÔNG nhận diện được → admin tự chọn ảnh sạch) tiếng Việt (trang VN viết kỹ hơn trang Nhật), nạp nội dung+thông số vào prompt AI (Claude Code + API), ảnh vào kho chọn. AI ưu tiên dữ liệu gốc Nhật khi mâu thuẫn. Admin dán URL thủ công (auto-search gated chờ Google CSE) | `apps/web/src/app/api/v1/admin/ai/scrape-vn-reference/route.ts` + `generate-content/route.ts` → `buildVnReferenceBlock` + UI `scrapeVnReference` |
 
-**Lưu ý vận hành:** AI Writer dùng provider **Claude Code Opus 4.8 (miễn phí)** — chỉ chạy LOCAL (Vercel không có CLI). Không dùng Anthropic API (mất phí).
+#### Nâng cấp 2026-06-30 (đã chốt & khoá)
+
+| Quy tắc đã khoá | File / Hàm |
+|---|---|
+| Hỗ trợ thêm nguồn Nhật: **amazon.co.jp** (ảnh hi-res từ JSON script), **rakuten.co.jp** (JSON-LD), **general** (yodobashi/bic/joshin…) | `scrape-japan/route.ts` → `scrapeAmazonJP`, `scrapeRakuten`, `scrapeJapanGeneral` + routing theo host |
+| **Chuẩn hoá bảng thông số**: đổi đơn vị Nhật→Lít (合×0.18, 升×1.8, カップ; KHÔNG để "合/cup/hợp"), ký hiệu ○/×→Có/Không, rồi dịch JP→VI (tái dùng `translateSpecs` của BFJ). Áp cho mọi scraper | `scrape-japan/route.ts` → `normalizeSpecs`, `convertUnits`, `mapSymbols` |
+| **Màu biến thể** Kakaku: trích `colorVariants` (dịch JP→VI qua `COLOR_MAP`), hiện chip 🎨 + đưa vào `extra` để AI giới thiệu các màu | `scrape-japan/route.ts` (`colorVariants`, `translateColor`) + UI card |
+| **Gallery = CHỈ ảnh sản phẩm, mỗi màu 1 ảnh** (dedup theo K-id, bỏ hậu tố `_1/_2`). KHÔNG nhồi ảnh feature vào gallery (gây trùng ảnh nồi). Ảnh feature chỉ chèn vào bài viết | `scrape-japan/route.ts` (dedup `seenImgId`) + `publish-japan/route.ts` (`galleryUrls` = selectedImages only) |
+| **XOÁ CỨNG tiếng Nhật bằng code** (không phụ thuộc AI) cho tên SP, mô tả HTML, thông số, FAQ, meta — quét hiragana/katakana/kanji, dọn ngoặc rỗng. Giữ tiếng Việt có dấu + model Latinh | `publish-japan/route.ts` → `stripJapanese` + client `translateName` |
+| **Ảnh chèn vào bài (description/blog) = `selectedFeatureImages`** (ảnh tính năng trang hãng), TÁCH khỏi `selectedImages` (gallery). Thiếu ảnh feature → KHÔNG chèn (không lặp ảnh nồi). 2 nhóm ảnh riêng trên UI | `ai-writer-client.tsx` (`selectedFeatureImages`, `toggleFeatureImage`, streamOne) |
+| **Mirror ảnh feature nhúng trong mô tả về R2** (chống hotlink chết ảnh trang hãng) | `publish-japan/route.ts` (bước 5b quét `<img src>` ngoài R2) |
+| **Lấy ảnh trang hãng: fetch HTML TRƯỚC** (regex `src`/`data-src`/CSS `url()`, lọc rác + bỏ bản `_sp` mobile), Playwright+Chrome chỉ là FALLBACK khi HTML <3 ảnh. Tránh Chrome crash trong Next dev (lỗi "kết nối"). `waitUntil:'domcontentloaded'` (KHÔNG 'networkidle') | `scrape-feature-images/route.ts` → `htmlFetchImages` |
+| Auto lấy ảnh feature **chỉ khi có link trang model thật** (製品情報). Chỉ có trang chủ hãng → KHÔNG auto (tránh ảnh homepage), hiện hướng dẫn + nút ↗ Mở để admin tự tìm model rồi dán URL | `ai-writer-client.tsx` (handler `scrapeJapan`) |
+| Backlink nội bộ chạy **cả nhánh API + cả blog** (trước chỉ claude-code + description); tự nhận danh mục theo tên cho hàng Nhật + link trang `/danh-muc/{slug}` | `generate-content/route.ts` → `buildInternalLinks`, `detectCategoryByName` |
+| VI_ONLY_RULE mở rộng: ép bỏ kanji/kana + "(風乾燥)" trong bài lẫn bảng + đổi đơn vị Lít | `generate-content/route.ts` → `VI_ONLY_RULE` |
+| Nhớ `maxWords` (slider giới hạn số từ) vào localStorage `ai_max_words` | `ai-writer-client.tsx` |
+
+**Lưu ý vận hành:** AI Writer dùng provider **Claude Code Opus 4.8 (miễn phí)** — chỉ chạy LOCAL (Vercel không có CLI). Không dùng Anthropic API (mất phí). **Lấy ảnh trang hãng ưu tiên fetch HTML** (chạy cả trên Vercel); Playwright chỉ fallback local.
 
 ### Blog (AI Content Writer → loại "Bài viết Blog") — đã chốt 2026-06
 

@@ -61,13 +61,48 @@ function detectWordRange(productName: string, specs: string): WordRange {
   return DEFAULT_WORD_RANGE
 }
 
-// ── Fetch internal backlinks từ DB ────────────────────────────────────────────
-async function buildInternalLinks(productId?: string, categoryId?: string, brandId?: string): Promise<string> {
+// ── Tự nhận danh mục theo tên sản phẩm (hàng Nhật chưa có trong DB) ────────────
+const LINK_CAT_RULES: Array<{ kw: string[]; cat: string }> = [
+  { kw: ['nồi cơm', 'rice cooker', '炊飯', 'jhx', 'rcx', 'rcj', 'nx-', 'sr-'], cat: 'nồi cơm' },
+  { kw: ['tủ lạnh', 'refrigerator', '冷蔵', 'r-wx', 'mr-wz', 'nr-f'], cat: 'tủ lạnh' },
+  { kw: ['máy giặt', 'washing', '洗濯', 'bd-', 'na-', 'aw-'], cat: 'máy giặt' },
+  { kw: ['điều hòa', 'air conditioner', 'エアコン'], cat: 'điều hòa' },
+  { kw: ['máy hút bụi', 'vacuum', '掃除機'], cat: 'máy hút bụi' },
+  { kw: ['lò vi sóng', 'microwave', '電子レンジ', 'er-'], cat: 'lò vi sóng' },
+  { kw: ['máy lọc không khí', 'air purifier', '空気清浄', 'mck'], cat: 'lọc không khí' },
+  { kw: ['máy lọc nước', 'water purifier', '浄水'], cat: 'lọc nước' },
+  { kw: ['bồn cầu', 'toilet', 'washlet', 'ウォシュレット'], cat: 'vệ sinh' },
+]
+
+async function detectCategoryByName(productName: string): Promise<{ id: string; slug: string } | null> {
+  const lower = productName.toLowerCase()
+  const rule = LINK_CAT_RULES.find(r => r.kw.some(k => lower.includes(k.toLowerCase())))
+  if (!rule) return null
+  const cats = await prisma.category.findMany({ select: { id: true, slug: true, name: true } })
+  const cat = cats.find(c => c.name.toLowerCase().includes(rule.cat))
+  return cat ? { id: cat.id, slug: cat.slug } : null
+}
+
+// ── Fetch internal backlinks từ DB (sản phẩm liên quan + trang danh mục) ───────
+async function buildInternalLinks(opts: {
+  productId?: string; categoryId?: string; brandId?: string; productName?: string
+}): Promise<string> {
+  let { categoryId } = opts
+  const { productId, brandId, productName } = opts
+
+  let categorySlug = ''
+  if (!categoryId && productName) {
+    const detected = await detectCategoryByName(productName)
+    if (detected) { categoryId = detected.id; categorySlug = detected.slug }
+  } else if (categoryId) {
+    const c = await prisma.category.findUnique({ where: { id: categoryId }, select: { slug: true } })
+    categorySlug = c?.slug ?? ''
+  }
+
   if (!categoryId && !brandId) return ''
 
   const conditions: any[] = [{ status: 'ACTIVE' }]
   if (productId) conditions.push({ id: { not: productId } })
-
   const orConditions: any[] = []
   if (categoryId) orConditions.push({ categoryId })
   if (brandId) orConditions.push({ brandId })
@@ -79,10 +114,11 @@ async function buildInternalLinks(productId?: string, categoryId?: string, brand
     orderBy: { updatedAt: 'desc' },
   })
 
-  if (!related.length) return ''
+  if (!related.length && !categorySlug) return ''
 
   const lines = related.map(p => `- ${p.name}: /${p.slug}`).join('\n')
-  return `\n\n---\n🔗 INTERNAL LINKS — Chèn tự nhiên vào bài viết (KHÔNG liệt kê thành danh sách riêng, PHẢI dùng thẻ <a href="URL">tên sản phẩm</a> nhúng vào câu văn):\n${lines}\n---\n`
+  const catLine = categorySlug ? `- Xem thêm cùng danh mục: /danh-muc/${categorySlug}\n` : ''
+  return `\n\n---\n🔗 INTERNAL LINKS — Chèn TỰ NHIÊN vào câu văn (KHÔNG liệt kê thành danh sách riêng, PHẢI dùng thẻ <a href="URL">tên</a> nhúng vào câu, chèn 3–6 link rải đều bài):\n${catLine}${lines}\n---\n`
 }
 
 // 🔒 LOCKED (2026-06) — Trang Nhật đã chốt & khoá. KHÔNG sửa nếu chưa được chủ dự án yêu cầu rõ. Xem CLAUDE.md.
@@ -115,10 +151,14 @@ export async function POST(req: Request) {
 
   const vnBlock = type !== 'product_name' && !freePrompt?.trim() ? buildVnReferenceBlock(vnReference) : ''
 
+  // Backlink nội bộ — cho cả mô tả & blog, mọi nhánh provider (tự nhận danh mục cho hàng Nhật)
+  const links = (type === 'description' || type === 'blog') && !freePrompt?.trim()
+    ? await buildInternalLinks({ productId, categoryId, brandId, productName })
+    : ''
+
   // ── Claude Code path (dùng subscription, không cần API key) ─────────────
   if (provider === 'claude-code') {
     const kb = productName && type !== 'product_name' ? findRelevantKnowledge(productName) : ''
-    const links = type === 'description' ? await buildInternalLinks(productId, categoryId, brandId) : ''
     const fullPrompt = `${userPrompt}${vnBlock}${kb}${links}`
     const readable = streamWithClaudeCode(fullPrompt, systemPrompt, claudeCodeModel)
     return new Response(readable, {
@@ -141,7 +181,7 @@ export async function POST(req: Request) {
       model: 'claude-sonnet-4-6',
       max_tokens: maxTokens,
       system: systemPrompt,
-      messages: [{ role: 'user', content: `${userPrompt}${vnBlock}` }],
+      messages: [{ role: 'user', content: `${userPrompt}${vnBlock}${links}` }],
     })
   } catch (err) {
     const msg = err instanceof Error ? err.message : 'Lỗi khởi tạo AI'
@@ -189,9 +229,11 @@ const HTML_ONLY = `⛔ OUTPUT RULES (BẮT BUỘC, ƯU TIÊN CAO NHẤT):
 // ══════════════════════════════════════════════════════════════════════════════
 
 // ── Quy tắc CỨNG luôn áp dụng cho mô tả (không bị Style Editor ghi đè) ────────
-const VI_ONLY_RULE = `\n\n🈲 BẮT BUỘC — NGÔN NGỮ:
-- Toàn bộ bài viết PHẢI bằng tiếng Việt. DỊCH hết nhãn thông số tiếng Nhật/tiếng Anh sang tiếng Việt (vd: 電圧→Điện áp, ワット数→Công suất, 容量→Dung tích).
-- KHÔNG để nguyên ký tự tiếng Nhật (kanji/kana) trong bài, trừ khi là tên model/mã sản phẩm.`
+const VI_ONLY_RULE = `\n\n🈲 BẮT BUỘC — NGÔN NGỮ & ĐƠN VỊ:
+- Toàn bộ bài viết PHẢI bằng tiếng Việt. DỊCH hết nhãn + giá trị thông số tiếng Nhật/tiếng Anh sang tiếng Việt (vd: 電圧→Điện áp, ワット数→Công suất, 容量→Dung tích, 圧力IH炊飯器→Nồi cơm điện cao tần áp suất).
+- TUYỆT ĐỐI KHÔNG để sót ký tự tiếng Nhật (kanji/kana: 合, 升, 時間, ○, ×...) hay chữ trong ngoặc kiểu "(風乾燥)", "(予約)" trong bài VÀ trong bảng thông số. Chỉ giữ tiếng Nhật khi là tên model/mã sản phẩm.
+- DUNG TÍCH nồi cơm: ĐỔI sang LÍT, KHÔNG dùng "合", "cup", "hợp", "chén". Quy đổi: 5.5合 → "1.0 lít", 1升 (10合) → "1.8 lít", 3合 → "0.5 lít" (1合 ≈ 0.18 lít).
+- Ký hiệu ○ → "Có", × → "Không".`
 
 // 🔒 Không để placeholder lộ "máy móc" trong thông số hiển thị cho khách. Rule đã chốt với chủ dự án 2026-06.
 const NO_PLACEHOLDER_RULE = `\n\n🚫 BẮT BUỘC — THÔNG SỐ SẠCH (khách đọc):

@@ -12,6 +12,18 @@ export const maxDuration = 60
 
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36'
 
+// Xoá CỨNG mọi ký tự tiếng Nhật (hiragana/katakana/kanji) còn sót — AI đôi khi để lại "炎舞炊き".
+// Giữ chữ Latinh/số/model. Dọn ngoặc rỗng + khoảng trắng thừa sau khi xoá.
+function stripJapanese(s: string): string {
+  if (!s) return s
+  return s
+    .replace(/[぀-ヿ㐀-鿿ｦ-ﾟ　-〿]+/g, '')
+    .replace(/（\s*）|\(\s*\)|「\s*」|【\s*】/g, '')
+    .replace(/\s+([.,)\]）。、])/g, '$1')
+    .replace(/\s{2,}/g, ' ')
+    .trim()
+}
+
 function slugifyVi(str: string): string {
   return str
     .toLowerCase()
@@ -112,6 +124,7 @@ export async function POST(req: NextRequest) {
       productName,
       originUrl,
       selectedImages = [] as string[],
+      featureImages = [] as string[],
       description,
       faq,
       attributes,
@@ -120,7 +133,13 @@ export async function POST(req: NextRequest) {
       salePriceVnd,
     } = body
 
+    // Gallery = CHỈ ảnh sản phẩm (mỗi màu 1 ảnh, KHÔNG trùng). KHÔNG nhồi ảnh feature vào gallery
+    // vì ảnh feature trang hãng nhiều khi cũng là ảnh chụp nồi → gây trùng. Ảnh feature chỉ chèn vào bài.
+    void featureImages
+    const galleryUrls: string[] = [...new Set(selectedImages as string[])]
+
     if (!productName) return apiError('Thiếu tên sản phẩm', 400)
+    const cleanName = stripJapanese(productName) || productName
 
     // 🔒 LOCKED (2026-06) — Quy đổi giá + map ảnh R2 + khối phải admin-only. Xem CLAUDE.md. KHÔNG tự sửa.
     // Giá bán VNĐ: hàng Nhật quy đổi ¥→VNĐ theo tỷ giá; đối thủ đã là VNĐ
@@ -133,7 +152,7 @@ export async function POST(req: NextRequest) {
     }
 
     // 1. Tạo slug duy nhất
-    const baseSlug = slugifyVi(productName)
+    const baseSlug = slugifyVi(cleanName)
     let slug = baseSlug
     let idx = 0
     while (await prisma.product.findUnique({ where: { slug }, select: { id: true } })) {
@@ -142,8 +161,8 @@ export async function POST(req: NextRequest) {
 
     // 2. Lookup brand + category tự động
     const [brandId, categoryId] = await Promise.all([
-      findBrandId(productName),
-      findCategoryId(productName),
+      findBrandId(cleanName),
+      findCategoryId(cleanName),
     ])
 
     // 3. Parse SEO
@@ -158,12 +177,12 @@ export async function POST(req: NextRequest) {
       } catch { /* ignore */ }
     }
 
-    // 4. Upload ảnh song song lên R2 (làm TRƯỚC để có URL R2 thay vào mô tả)
-    const uploaded = selectedImages.length > 0
+    // 4. Upload ảnh gallery song song lên R2 (ảnh SP 1/màu + ảnh feature) — TRƯỚC để có URL R2 thay vào mô tả
+    const uploaded = galleryUrls.length > 0
       ? await Promise.all(
-          selectedImages.map((url: string, i: number) =>
+          galleryUrls.map((url: string, i: number) =>
             downloadAndUploadImage(url, originUrl ?? url).then(saved =>
-              saved ? { src: url, url: saved, isPrimary: i === 0, sortOrder: i, altText: productName } : null
+              saved ? { src: url, url: saved, isPrimary: i === 0, sortOrder: i, altText: cleanName } : null
             )
           )
         )
@@ -178,10 +197,32 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    // 5b. Mirror MỌI ảnh còn lại nhúng trong mô tả (ảnh tính năng từ trang hãng) về R2.
+    // Tránh hotlink trang hãng (dễ chặn/chết ảnh) trên trang sản phẩm live.
+    if (finalDescription) {
+      const r2Host = (process.env.R2_PUBLIC_URL ?? 'media.japanvip.vn').replace(/^https?:\/\//, '')
+      const srcSet = new Set<string>()
+      for (const m of finalDescription.matchAll(/<img[^>]+src=["'](https?:\/\/[^"']+)["']/gi)) {
+        const u = m[1]!
+        if (!u.includes(r2Host)) srcSet.add(u)
+      }
+      const mirrored = await Promise.all(
+        [...srcSet].map(src => downloadAndUploadImage(src, originUrl ?? src).then(r => (r ? { src, url: r } : null))),
+      )
+      for (const item of mirrored) {
+        if (item) finalDescription = finalDescription!.split(item.src).join(item.url)
+      }
+    }
+
+    // 5c. Xoá CỨNG tiếng Nhật còn sót trong mô tả (giữ tag HTML/Latinh) — phòng khi AI để lại "炎舞炊き".
+    if (finalDescription) finalDescription = stripJapanese(finalDescription)
+    if (metaTitle) metaTitle = stripJapanese(metaTitle)
+    if (metaDesc) metaDesc = stripJapanese(metaDesc)
+
     // 6. Tạo sản phẩm
     const product = await prisma.product.create({
       data: {
-        name: productName,
+        name: cleanName,
         slug,
         description: finalDescription,
         status: 'DRAFT',
@@ -234,8 +275,13 @@ export async function POST(req: NextRequest) {
       } catch { /* ignore */ }
     }
 
-    if (attrRows.length > 0) {
-      await prisma.productAttribute.createMany({ data: attrRows })
+    // Xoá CỨNG tiếng Nhật còn sót trong thông số/FAQ; bỏ dòng rỗng sau khi xoá.
+    const cleanAttrRows = attrRows
+      .map(a => ({ productId: a.productId, name: stripJapanese(a.name), value: stripJapanese(a.value) }))
+      .filter(a => a.name && a.value)
+
+    if (cleanAttrRows.length > 0) {
+      await prisma.productAttribute.createMany({ data: cleanAttrRows })
     }
 
     return NextResponse.json({
@@ -243,7 +289,7 @@ export async function POST(req: NextRequest) {
       productId: product.id,
       slug: product.slug,
       name: product.name,
-      attrCount: attrRows.length,
+      attrCount: cleanAttrRows.length,
     })
   } catch (err) {
     return handleApiError(err)

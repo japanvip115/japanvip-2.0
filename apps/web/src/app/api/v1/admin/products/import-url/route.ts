@@ -139,12 +139,30 @@ async function scrapeProduct(url: string) {
     headers: {
       'User-Agent': UA,
       Accept: 'text/html,application/xhtml+xml,*/*;q=0.9',
-      'Accept-Language': 'vi-VN,vi;q=0.9,en;q=0.8',
+      'Accept-Language': 'ja,vi;q=0.8,en;q=0.6',
     },
     signal: AbortSignal.timeout(15000),
   })
   if (!res.ok) throw new Error(`HTTP ${res.status}`)
-  const html = await res.text()
+
+  // Detect charset từ Content-Type header hoặc meta charset (kakaku = EUC-JP)
+  const buf = await res.arrayBuffer()
+  let charset = 'utf-8'
+  const ctCharset = (res.headers.get('content-type') ?? '').match(/charset=([\w-]+)/i)?.[1]
+  if (ctCharset) {
+    charset = ctCharset.toLowerCase()
+  } else {
+    // Sniff meta charset bằng latin1 (an toàn cho ASCII range)
+    const sniff = new TextDecoder('latin1').decode(buf.slice(0, 4096))
+    const metaCharset = sniff.match(/<meta[^>]+charset=["']?([\w-]+)/i)?.[1]
+    if (metaCharset) charset = metaCharset.toLowerCase()
+  }
+  let html: string
+  try {
+    html = new TextDecoder(charset).decode(buf)
+  } catch {
+    html = new TextDecoder('utf-8').decode(buf)
+  }
 
   const $ = cheerio.load(html)
   const baseUrl = new URL(url)

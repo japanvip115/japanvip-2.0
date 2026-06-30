@@ -4,6 +4,7 @@ import * as cheerio from 'cheerio'
 import { auth } from '@/lib/auth'
 import { hasRole } from '@/lib/auth-types'
 import { apiError, apiSuccess, handleApiError } from '@/lib/api-response'
+import { translateSpecs } from '@/modules/bfj/services/translate.service'
 
 export const maxDuration = 30
 
@@ -24,6 +25,72 @@ function resolveUrl(src: string, base: URL): string {
   if (src.startsWith('//')) return base.protocol + src
   if (src.startsWith('/')) return `${base.protocol}//${base.host}${src}`
   return ''
+}
+
+// ── Chuẩn hoá thông số: đổi đơn vị Nhật → Lít, ký hiệu ○/× → Có/Không, dịch JP→VI ──
+// Đổi 合(gō)/升(shō)/カップ → Lít (1合 ≈ 0.18L, 1升 = 1.8L). KHÔNG để "合", "cup", "hợp".
+function convertUnits(s: string): string {
+  if (!s) return s
+  return s
+    .replace(/(\d+(?:\.\d+)?)\s*升/g, (_, n) => `${(parseFloat(n) * 1.8).toFixed(1)} lít`)
+    .replace(/(\d+(?:\.\d+)?)\s*合/g, (_, n) => `${(Math.round(parseFloat(n) * 0.18 * 10) / 10).toFixed(1)} lít`)
+    .replace(/(\d+(?:\.\d+)?)\s*カップ/g, (_, n) => `${(Math.round(parseFloat(n) * 0.18 * 10) / 10).toFixed(1)} lít`)
+    .replace(/(\d+(?:\.\d+)?)\s*時間/g, '$1 giờ')
+    .replace(/(\d+(?:\.\d+)?)\s*分間?(?![\p{L}\d])/gu, '$1 phút')
+}
+
+const SYMBOL_MAP: Record<string, string> = {
+  '○': 'Có', '◯': 'Có', '〇': 'Có', '●': 'Có', '✓': 'Có', '有り': 'Có', '有': 'Có', 'あり': 'Có',
+  '×': 'Không', '✕': 'Không', '－': '-', 'ー': '-', '無し': 'Không', '無': 'Không', 'なし': 'Không',
+}
+function mapSymbols(s: string): string {
+  let out = (s || '').trim()
+  const exact = SYMBOL_MAP[out]
+  if (exact) return exact
+  for (const [k, v] of Object.entries(SYMBOL_MAP)) {
+    if (k.length > 1) out = out.split(k).join(v)
+  }
+  return out
+}
+
+const hasJapanese = (s: string) => /[぀-ヿ㐀-鿿]/.test(s)
+
+// Chuẩn hoá toàn bộ bảng thông số: local (đơn vị + ký hiệu) trước, rồi dịch JP→VI phần còn sót.
+async function normalizeSpecs(
+  specs: Array<{ name: string; value: string }>,
+): Promise<Array<{ name: string; value: string }>> {
+  if (!specs?.length) return specs
+  const pre = specs.map(s => ({
+    label: mapSymbols(convertUnits(s.name)),
+    value: mapSymbols(convertUnits(s.value)),
+  }))
+  let translated = pre
+  if (pre.some(s => hasJapanese(s.label) || hasJapanese(s.value))) {
+    try { translated = await translateSpecs(pre) } catch { /* giữ bản local nếu dịch lỗi */ }
+  }
+  return translated
+    .map(s => ({
+      name: (s.label || '').replace(/\s{2,}/g, ' ').trim(),
+      value: (s.value || '').replace(/\s{2,}/g, ' ').trim(),
+    }))
+    .filter(s => s.name && s.value)
+}
+
+// ── Màu sắc biến thể: tên màu JP → VI ─────────────────────────────────────────
+const COLOR_MAP: Record<string, string> = {
+  'ブラック': 'Đen', '黒': 'Đen', 'ホワイト': 'Trắng', '白': 'Trắng', 'シルバー': 'Bạc', '銀': 'Bạc',
+  'レッド': 'Đỏ', '赤': 'Đỏ', 'ブルー': 'Xanh dương', '青': 'Xanh dương', 'グリーン': 'Xanh lá',
+  'ゴールド': 'Vàng gold', 'ベージュ': 'Be', 'ブラウン': 'Nâu', '茶': 'Nâu', 'グレー': 'Xám', '灰': 'Xám',
+  'ネイビー': 'Xanh navy', 'ピンク': 'Hồng', 'パープル': 'Tím', 'オレンジ': 'Cam', 'イエロー': 'Vàng',
+  'メタリック': 'Ánh kim', 'ダークグレー': 'Xám đậm', 'ライトグレー': 'Xám nhạt',
+}
+function translateColor(raw: string): string {
+  let c = (raw || '').trim()
+  if (!c) return ''
+  for (const [jp, vi] of Object.entries(COLOR_MAP)) {
+    if (c.includes(jp)) return vi
+  }
+  return c // giữ nguyên nếu đã là Latin / không khớp
 }
 
 // ── Amazon.co.jp ──────────────────────────────────────────────────────────────
@@ -303,7 +370,17 @@ async function scrapeKakaku(url: string) {
     signal: AbortSignal.timeout(15000),
   })
   if (!res.ok) throw new Error(`HTTP ${res.status}`)
-  const html = await res.text()
+  const buf = await res.arrayBuffer()
+  const ctCharset = (res.headers.get('content-type') ?? '').match(/charset=([\w-]+)/i)?.[1]
+  let kakakuCharset = ctCharset?.toLowerCase() ?? ''
+  if (!kakakuCharset) {
+    const sniff = new TextDecoder('latin1').decode(buf.slice(0, 4096))
+    const m = sniff.match(/<meta[^>]+charset=["']?([\w-]+)/i)?.[1]
+    if (m) kakakuCharset = m.toLowerCase()
+  }
+  let html: string
+  try { html = new TextDecoder(kakakuCharset || 'utf-8').decode(buf) }
+  catch { html = new TextDecoder('utf-8').decode(buf) }
   const $ = cheerio.load(html)
   const base = new URL(url)
 
@@ -393,16 +470,52 @@ async function scrapeKakaku(url: string) {
   // Ưu tiên ảnh đúng item đang xem (itemId) lên đầu, biến thể màu khác xếp sau
   if (itemId) images.sort((a, b) => (b.includes(itemId) ? 1 : 0) - (a.includes(itemId) ? 1 : 0))
 
-  // Chỉ giữ ảnh sản phẩm chính thức — loại bỏ shopicon/logo/btn/balloon/icon trang
+  // Chỉ giữ ảnh sản phẩm chính thức — loại bỏ shopicon/logo/btn/balloon/icon trang.
+  // MỖI MÀU/BIẾN THỂ = 1 ID ảnh (K…) → chỉ giữ 1 ảnh/màu, KHÔNG trùng lặp cùng 1 sản phẩm.
+  const seenImgId = new Set<string>()
   const cleanImages = [...new Set(images)]
     .filter(src =>
       src.startsWith('http') &&
       /\/productimage\//i.test(src) &&
       !src.match(/\.(svg|gif)$/i)
     )
+    .filter(src => {
+      // ID ảnh = phần tên file trước đuôi (vd .../fullscale/K0001719424.jpg → K0001719424).
+      // Bỏ hậu tố _1/_2 (các góc chụp cùng 1 màu) để mỗi màu chỉ còn 1 ảnh.
+      const id = (src.split('/').pop() ?? '').replace(/\.(jpg|jpeg|png|webp)$/i, '').replace(/_\d+$/, '')
+      if (!id || seenImgId.has(id)) return false
+      seenImgId.add(id)
+      return true
+    })
     .slice(0, 10)
 
-  return { name, model, priceJPY, specs, images: cleanImages, site: 'kakaku' }
+  // Trang chính hãng — lấy từ mục メーカー公式情報
+  let manufacturerProductUrl = ''
+  let manufacturerTopUrl = ''
+  $('a').each((_, el) => {
+    const text = $(el).text().trim()
+    const href = $(el).attr('href') ?? ''
+    if (!href.startsWith('http')) return
+    if (!manufacturerProductUrl && /製品情報/i.test(text)) manufacturerProductUrl = href
+    if (!manufacturerTopUrl && /メーカートップ|トップページ/i.test(text)) manufacturerTopUrl = href
+  })
+
+  // Màu sắc biến thể — gom tên màu từ swatch/variant + alt ảnh + spec カラー/色
+  const colorSet = new Set<string>()
+  $('[class*="colorVariation"] a, [class*="ColorVariation"] a, [class*="color"] a, .p-colorVariation a').each((_, el) => {
+    const t = ($(el).attr('title') || $(el).find('img').attr('alt') || $(el).text() || '').trim()
+    const vi = translateColor(t)
+    if (vi && vi.length <= 20) colorSet.add(vi)
+  })
+  // Từ bảng thông số (カラー / 色 / 本体カラー)
+  for (const sp of specs) {
+    if (/カラー|本体色|色$/i.test(sp.name) && sp.value) {
+      sp.value.split(/[\/、,，]/).forEach(c => { const vi = translateColor(c.trim()); if (vi) colorSet.add(vi) })
+    }
+  }
+  const colorVariants = [...colorSet].slice(0, 8)
+
+  return { name, model, priceJPY, specs, images: cleanImages, site: 'kakaku', manufacturerProductUrl, manufacturerTopUrl, colorVariants }
 }
 
 // ── General Japanese product scraper ──────────────────────────────────────────
@@ -513,6 +626,9 @@ export async function POST(req: NextRequest) {
     if (!result.name && result.specs.length === 0) {
       return apiError('Không lấy được thông tin từ trang này', 422)
     }
+
+    // Chuẩn hoá bảng thông số: dịch JP→VI, đổi 合/升→Lít, ký hiệu ○/× → Có/Không
+    result.specs = await normalizeSpecs(result.specs)
 
     return apiSuccess(result)
   } catch (err) {

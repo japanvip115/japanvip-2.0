@@ -34,9 +34,38 @@ async function crawlerImages(target: string): Promise<string[]> {
   } catch { return [] }
 }
 
+// CÁCH 1 (ưu tiên): fetch HTML thường + regex lấy URL ảnh — nhanh, ổn định, KHÔNG cần Chrome.
+// Đa số trang hãng (Tiger, Zojirushi…) để URL ảnh feature thẳng trong HTML/CSS.
+const JUNK_FEATURE = /(logo|icon|sprite|nav|header|footer|btn|arrow|bullet|avatar|placeholder|loading|spacer|blank|banner|bnr[-_]|\/parts\/|\/present\/|sheettype|balloon|ogp|awards?|kadenhihyo|ranking|seal|mark|share|sns|qr|favicon|thumb)/i
+async function htmlFetchImages(target: string): Promise<string[]> {
+  try {
+    const res = await fetch(target, {
+      headers: { 'User-Agent': UA, 'Accept-Language': 'ja,en;q=0.5' },
+      signal: AbortSignal.timeout(15000),
+    })
+    if (!res.ok) return []
+    const html = await res.text()
+    const origin = new URL(target)
+    const found = new Set<string>()
+    const push = (u?: string) => {
+      if (!u) return
+      let abs = u
+      if (u.startsWith('//')) abs = origin.protocol + u
+      else if (u.startsWith('/')) abs = `${origin.protocol}//${origin.host}${u}`
+      else if (!u.startsWith('http')) return
+      found.add(abs)
+    }
+    for (const m of html.matchAll(/(?:src|data-src|data-original|data-lazy|content)=["']([^"']+\.(?:jpg|jpeg|png|webp))(?:\?[^"']*)?["']/gi)) push(m[1])
+    for (const m of html.matchAll(/url\(\s*["']?([^"')]+\.(?:jpg|jpeg|png|webp))(?:\?[^"')]*)?["']?\s*\)/gi)) push(m[1])
+    let imgs = [...found].filter(u => !JUNK_FEATURE.test(u))
+    // Bỏ bản _sp (mobile) khi đã có bản _pc tương ứng (tránh trùng)
+    imgs = imgs.filter(u => !/_sp\.(jpg|jpeg|png|webp)/i.test(u) || !imgs.some(o => o === u.replace(/_sp\./i, '_pc.')))
+    return imgs.slice(0, 20)
+  } catch { return [] }
+}
+
 // 🔒 LOCKED (2026-06) — Trang Nhật đã chốt & khoá. KHÔNG sửa nếu chưa được chủ dự án yêu cầu rõ. Xem CLAUDE.md.
-// Lấy ảnh giới thiệu tính năng từ TRANG CHÍNH HÃNG (site render JS) bằng Playwright + Chrome local.
-// Chỉ chạy ở máy local có Google Chrome — trên Vercel (không có Chrome) sẽ trả lỗi 503 gọn gàng.
+// Lấy ảnh giới thiệu tính năng từ TRANG CHÍNH HÃNG. Ưu tiên fetch HTML; fallback Playwright + Chrome local.
 export async function POST(req: NextRequest) {
   const session = await auth()
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -51,6 +80,13 @@ export async function POST(req: NextRequest) {
     const target = (url ?? '').toString().trim()
     if (!isSafeUrl(target)) return apiError('URL không hợp lệ', 400)
 
+    // CÁCH 1: fetch HTML thường (không Chrome) — đủ dùng cho phần lớn trang hãng
+    const htmlImgs = await htmlFetchImages(target)
+    if (htmlImgs.length >= 3) {
+      return apiSuccess({ images: htmlImgs, count: htmlImgs.length, source: 'html' }, `Lấy được ${htmlImgs.length} ảnh từ trang hãng`)
+    }
+
+    // CÁCH 2 (fallback): Playwright + Chrome local cho trang render JS hoàn toàn
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let chromium: any
     try {
@@ -71,8 +107,14 @@ export async function POST(req: NextRequest) {
 
     const context = await browser.newContext({ userAgent: UA })
     const page = await context.newPage()
-    await page.goto(target, { waitUntil: 'networkidle', timeout: 30000 })
-    await page.waitForTimeout(1200)
+    // 'domcontentloaded' (KHÔNG 'networkidle') — trang hãng JP nhiều tracker/analytics khiến
+    // 'networkidle' không bao giờ rảnh → treo hết timeout → đứt kết nối. domcontentloaded nhanh & ổn định.
+    try {
+      await page.goto(target, { waitUntil: 'domcontentloaded', timeout: 25000 })
+    } catch {
+      // goto timeout → vẫn thử đọc ảnh đã tải được (không bỏ cuộc)
+    }
+    await page.waitForTimeout(1500)
     // Cuộn hết trang để kích lazy-load mọi ảnh tính năng
     await page.evaluate(async () => {
       for (let y = 0; y < document.body.scrollHeight; y += 700) {
@@ -81,7 +123,7 @@ export async function POST(req: NextRequest) {
       }
       window.scrollTo(0, 0)
     })
-    await page.waitForTimeout(800)
+    await page.waitForTimeout(1000)
 
     const raw: Array<{ src: string; w: number; h: number }> = await page.evaluate(() => {
       const out: Array<{ src: string; w: number; h: number }> = []
