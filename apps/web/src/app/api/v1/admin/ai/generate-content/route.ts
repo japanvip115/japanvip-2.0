@@ -178,7 +178,7 @@ export async function POST(req: Request) {
   try {
     const maxTokens = type === 'product_name' ? 120 : testMode ? 600 : maxWords ? Math.min(Math.ceil(maxWords * 1.5 * 1.2), 8192) : 8192
     stream = client.messages.stream({
-      model: 'claude-sonnet-4-6',
+      model: 'claude-sonnet-5',
       max_tokens: maxTokens,
       system: systemPrompt,
       messages: [{ role: 'user', content: `${userPrompt}${vnBlock}${links}` }],

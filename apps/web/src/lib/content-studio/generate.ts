@@ -14,35 +14,45 @@ import {
 
 const API_MODELS: Record<string, string> = {
   'claude-opus-4-8': 'claude-opus-4-8',
-  'claude-sonnet-4-6': 'claude-sonnet-4-6',
+  'claude-sonnet-5': 'claude-sonnet-5',
+  'claude-sonnet-4-6': 'claude-sonnet-4-6', // giữ lại để tương thích lựa chọn cũ
 }
 
 const clean = (s: string) => s.replace(/```/g, '').trim()
+
+// Tuỳ chọn sinh nội dung. prefill: ép model bắt đầu bằng chuỗi cho trước (vd '{' để buộc ra JSON thuần).
+export type GenOpts = { maxTokens?: number; prefill?: string }
+
+export type GenResult = { message: string; source: string; truncated?: boolean }
 
 function collectStream(stream: ReadableStream<Uint8Array>): Promise<string> {
   return new Response(stream).text()
 }
 
-async function generateWithApi(system: string, prompt: string, model: string): Promise<{ message: string; source: string }> {
+async function generateWithApi(system: string, prompt: string, model: string, opts?: GenOpts): Promise<GenResult> {
   const apiKey = await getAnthropicApiKey()
   if (!apiKey) return { message: '', source: 'none' }
   const client = new Anthropic({ apiKey })
+  const messages: { role: 'user' | 'assistant'; content: string }[] = [{ role: 'user', content: prompt }]
+  if (opts?.prefill) messages.push({ role: 'assistant', content: opts.prefill })
   const msg = await client.messages.create({
     model,
-    max_tokens: 2000,
+    max_tokens: opts?.maxTokens ?? 4000,
     system,
-    messages: [{ role: 'user', content: prompt }],
+    messages,
   })
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const text = (msg.content.find((c: any) => c.type === 'text') as any)?.text ?? ''
-  return { message: clean(text), source: model }
+  // Anthropic không trả lại phần prefill trong response → ghép lại để có nội dung hoàn chỉnh.
+  const full = text ? (opts?.prefill ?? '') + text : ''
+  return { message: clean(full), source: model, truncated: msg.stop_reason === 'max_tokens' }
 }
 
-export async function generateText(system: string, prompt: string, model?: string): Promise<{ message: string; source: string }> {
+export async function generateText(system: string, prompt: string, model?: string, opts?: GenOpts): Promise<GenResult> {
   if (model && API_MODELS[model]) {
-    return generateWithApi(system, prompt, API_MODELS[model]!)
+    return generateWithApi(system, prompt, API_MODELS[model]!, opts)
   }
-  // Auto: local thử Claude Code trước (free)
+  // Auto: local thử Claude Code trước (free). Local không hỗ trợ prefill nhưng extractJson phía gọi vẫn xử lý được.
   if (!process.env.VERCEL) {
     try {
       const local = clean(await collectStream(streamWithClaudeCode(prompt, system)))
@@ -51,7 +61,7 @@ export async function generateText(system: string, prompt: string, model?: strin
       }
     } catch { /* rơi xuống dùng API */ }
   }
-  return generateWithApi(system, prompt, 'claude-sonnet-4-6')
+  return generateWithApi(system, prompt, 'claude-sonnet-5', opts)
 }
 
 export type ChannelResult = {

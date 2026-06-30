@@ -189,7 +189,7 @@ export function ProductAiClient({ products, profiles }: { products: Product[]; p
                   <select value={model} onChange={(e) => setModel(e.target.value)} className={`${inputCls} max-w-[260px] [color-scheme:dark]`}>
                     <option value="auto">⚡ Tự động (free khi chạy local)</option>
                     <option value="claude-opus-4-8">💎 Opus 4.8 · API</option>
-                    <option value="claude-sonnet-4-6">🚀 Sonnet 4.6 · API</option>
+                    <option value="claude-sonnet-5">🚀 Sonnet 5 · API</option>
                   </select>
                   <button onClick={analyze} disabled={analyzing}
                     className="flex items-center gap-1.5 rounded-lg bg-purple-600 px-4 py-2 text-sm font-semibold text-white hover:bg-purple-700 disabled:opacity-60">

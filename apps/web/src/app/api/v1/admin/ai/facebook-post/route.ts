@@ -42,7 +42,8 @@ const clean = (s: string) => s.replace(/```/g, '').trim()
 // Model cho phép chọn từ UI (whitelist chống injection)
 const API_MODELS: Record<string, string> = {
   'claude-opus-4-8': 'claude-opus-4-8',
-  'claude-sonnet-4-6': 'claude-sonnet-4-6',
+  'claude-sonnet-5': 'claude-sonnet-5',
+  'claude-sonnet-4-6': 'claude-sonnet-4-6', // giữ lại để tương thích lựa chọn cũ
 }
 
 async function generateWithApi(system: string, prompt: string, model: string): Promise<{ message: string; source: string }> {
@@ -63,7 +64,7 @@ async function generateWithApi(system: string, prompt: string, model: string): P
 /**
  * Sinh nội dung theo lựa chọn model:
  *  - 'auto' (mặc định): local thử Claude Code (free) → fallback API Sonnet
- *  - 'claude-opus-4-8' / 'claude-sonnet-4-6': gọi thẳng Anthropic API model đó
+ *  - 'claude-opus-4-8' / 'claude-sonnet-5': gọi thẳng Anthropic API model đó
  */
 async function generateContent(system: string, prompt: string, model?: string): Promise<{ message: string; source: string }> {
   // Chọn model API cụ thể → dùng API luôn
@@ -80,7 +81,7 @@ async function generateContent(system: string, prompt: string, model?: string): 
       }
     } catch { /* rơi xuống dùng API */ }
   }
-  return generateWithApi(system, prompt, 'claude-sonnet-4-6')
+  return generateWithApi(system, prompt, 'claude-sonnet-5')
 }
 
 export async function POST(req: NextRequest) {
