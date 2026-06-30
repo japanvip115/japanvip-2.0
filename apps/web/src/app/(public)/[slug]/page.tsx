@@ -656,7 +656,7 @@ export default async function ProductDetailPage({ params }: Props) {
                 itemCondition: 'https://schema.org/NewCondition',
                 seller: { '@type': 'Organization', name: 'Japan VIP' },
                 shippingDetails: { '@type': 'OfferShippingDetails', shippingRate: { '@type': 'MonetaryAmount', value: '0', currency: 'VND' }, deliveryTime: { '@type': 'ShippingDeliveryTime', handlingTime: { '@type': 'QuantitativeValue', minValue: 0, maxValue: 1, unitCode: 'DAY' }, transitTime: { '@type': 'QuantitativeValue', minValue: 1, maxValue: 3, unitCode: 'DAY' } }, shippingDestination: { '@type': 'DefinedRegion', addressCountry: 'VN' } },
-                hasMerchantReturnPolicy: { '@type': 'MerchantReturnPolicy', applicableCountry: 'VN', returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow', merchantReturnDays: 7, returnMethod: 'https://schema.org/ReturnByMail' },
+                hasMerchantReturnPolicy: { '@type': 'MerchantReturnPolicy', applicableCountry: 'VN', returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow', merchantReturnDays: 7, returnMethod: 'https://schema.org/ReturnByMail', returnFees: 'https://schema.org/FreeReturn' },
               } : product.salePrice ? {
                 '@type': 'Offer',
                 price: Number(product.salePrice),
@@ -666,7 +666,7 @@ export default async function ProductDetailPage({ params }: Props) {
                 itemCondition: 'https://schema.org/NewCondition',
                 seller: { '@type': 'Organization', name: 'Japan VIP' },
                 shippingDetails: { '@type': 'OfferShippingDetails', shippingRate: { '@type': 'MonetaryAmount', value: '0', currency: 'VND' }, deliveryTime: { '@type': 'ShippingDeliveryTime', handlingTime: { '@type': 'QuantitativeValue', minValue: 0, maxValue: 1, unitCode: 'DAY' }, transitTime: { '@type': 'QuantitativeValue', minValue: 1, maxValue: 3, unitCode: 'DAY' } }, shippingDestination: { '@type': 'DefinedRegion', addressCountry: 'VN' } },
-                hasMerchantReturnPolicy: { '@type': 'MerchantReturnPolicy', applicableCountry: 'VN', returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow', merchantReturnDays: 7, returnMethod: 'https://schema.org/ReturnByMail' },
+                hasMerchantReturnPolicy: { '@type': 'MerchantReturnPolicy', applicableCountry: 'VN', returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow', merchantReturnDays: 7, returnMethod: 'https://schema.org/ReturnByMail', returnFees: 'https://schema.org/FreeReturn' },
               } : undefined,
             },
             {
