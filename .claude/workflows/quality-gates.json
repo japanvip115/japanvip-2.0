@@ -1,0 +1,43 @@
+{
+  "minimumScore": 85,
+  "maxRepairCycles": 3,
+  "requiredChecks": [
+    "typecheck",
+    "lint",
+    "test",
+    "build",
+    "security-review",
+    "review-scorecard"
+  ],
+  "blockedBranches": [
+    "main",
+    "master",
+    "production",
+    "deploy",
+    "release"
+  ],
+  "forbiddenCommands": [
+    "git push --force",
+    "git reset --hard",
+    "rm -rf",
+    "drop database",
+    "prisma migrate reset"
+  ],
+  "pushPolicy": {
+    "allowFeatureBranchPush": true,
+    "allowMainPush": false,
+    "allowProductionDeploy": false
+  },
+  "commands": {
+    "prisma": "pnpm --filter @japanvip/db db:generate",
+    "typecheck": "pnpm --filter @japanvip/web exec tsc --noEmit",
+    "lint": "pnpm --filter @japanvip/web lint",
+    "test": "pnpm test",
+    "build": "pnpm --filter @japanvip/web build"
+  },
+  "notes": {
+    "test": "No test runner is configured yet; the test gate is conditional and reports 'n/a' until a runner exists. It must never be marked 'pass' when no tests ran.",
+    "blockOnHighFindings": true,
+    "blockOnCriticalFindings": true
+  }
+}
