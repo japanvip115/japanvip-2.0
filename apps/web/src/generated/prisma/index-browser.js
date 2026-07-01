@@ -291,6 +291,14 @@ exports.Prisma.CompetitorPriceScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.CompetitorPriceHistoryScalarFieldEnum = {
+  id: 'id',
+  productId: 'productId',
+  source: 'source',
+  priceVnd: 'priceVnd',
+  observedAt: 'observedAt'
+};
+
 exports.Prisma.ProductImageScalarFieldEnum = {
   id: 'id',
   productId: 'productId',
@@ -1297,6 +1305,7 @@ exports.Prisma.ModelName = {
   Brand: 'Brand',
   Product: 'Product',
   CompetitorPrice: 'CompetitorPrice',
+  CompetitorPriceHistory: 'CompetitorPriceHistory',
   ProductImage: 'ProductImage',
   ProductAttribute: 'ProductAttribute',
   ExchangeRate: 'ExchangeRate',

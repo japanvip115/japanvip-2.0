@@ -1,7 +1,8 @@
 'use client'
 
 import { useCallback, useEffect, useState } from 'react'
-import { RefreshCw, Link2, Check, Search } from 'lucide-react'
+import { RefreshCw, Link2, Check, Search, LineChart } from 'lucide-react'
+import PriceChart from './price-chart'
 
 interface Flag { level: string; code: string; message: string }
 interface Row {
@@ -25,6 +26,9 @@ interface Row {
 const vnd = (n: number | null) => (n == null ? '—' : n.toLocaleString('vi-VN') + 'đ')
 const pct = (n: number | null) => (n == null ? '—' : (n >= 0 ? '+' : '') + Math.round(n) + '%')
 
+const REF_SOURCES = ['congnghenhat', 'hangnhat123', 'hiephongjapan', 'phongcachnhat'] as const
+type Series = { source: string; points: { t: string; price: number }[] }
+
 export default function PricingClient() {
   const [rows, setRows] = useState<Row[]>([])
   const [loading, setLoading] = useState(true)
@@ -33,6 +37,8 @@ export default function PricingClient() {
   const [expanded, setExpanded] = useState<string | null>(null)
   const [busy, setBusy] = useState<string | null>(null)
   const [msg, setMsg] = useState('')
+  const [chartOpen, setChartOpen] = useState<string | null>(null)
+  const [charts, setCharts] = useState<Record<string, Series[]>>({})
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -75,6 +81,16 @@ export default function PricingClient() {
     setBusy(null)
     if (json.success) { setMsg('✅ Đã áp giá'); load() }
     else setMsg('❌ ' + (json.error || 'Lỗi'))
+  }
+
+  async function toggleChart(productId: string) {
+    if (chartOpen === productId) { setChartOpen(null); return }
+    setChartOpen(productId)
+    if (!charts[productId]) {
+      const res = await fetch(`/api/v1/admin/pricing/history?productId=${productId}`)
+      const json = await res.json()
+      if (json.success) setCharts((c) => ({ ...c, [productId]: json.data }))
+    }
   }
 
   return (
@@ -120,13 +136,27 @@ export default function PricingClient() {
                 <tr key={r.id} className="border-b border-gray-800 align-top">
                   <td className="max-w-xs px-3 py-3 text-gray-200">
                     <div className="line-clamp-2">{r.name}</div>
-                    <button onClick={() => setExpanded(expanded === r.id ? null : r.id)} className="mt-1 flex items-center gap-1 text-xs text-blue-400 hover:underline">
-                      <Link2 className="h-3 w-3" /> Nguồn giá
-                    </button>
+                    <div className="mt-1 flex items-center gap-3">
+                      <button onClick={() => setExpanded(expanded === r.id ? null : r.id)} className="flex items-center gap-1 text-xs text-blue-400 hover:underline">
+                        <Link2 className="h-3 w-3" /> Nguồn giá
+                      </button>
+                      <button onClick={() => toggleChart(r.id)} className="flex items-center gap-1 text-xs text-purple-400 hover:underline">
+                        <LineChart className="h-3 w-3" /> Xu hướng
+                      </button>
+                    </div>
                     {expanded === r.id && (
                       <div className="mt-2 space-y-2 rounded-lg bg-gray-900/70 p-2">
                         <SourceInput label="shopnoidianhat (mốc)" busy={busy === r.id + 'shopnoidianhat'} defaultUrl={r.anchorUrl ?? ''} onSubmit={(url) => linkSource(r.id, 'shopnoidianhat', url)} />
                         <SourceInput label="kakaku (giá Nhật)" busy={busy === r.id + 'kakaku'} defaultUrl="" onSubmit={(url) => linkSource(r.id, 'kakaku', url)} />
+                        <div className="border-t border-gray-800 pt-1 text-[10px] uppercase text-gray-600">4 trang tham khảo</div>
+                        {REF_SOURCES.map((s) => (
+                          <SourceInput key={s} label={s} busy={busy === r.id + s} defaultUrl="" onSubmit={(url) => linkSource(r.id, s, url)} />
+                        ))}
+                      </div>
+                    )}
+                    {chartOpen === r.id && (
+                      <div className="mt-2 rounded-lg bg-gray-900/70 p-2">
+                        {charts[r.id] ? <PriceChart series={charts[r.id]!} /> : <div className="py-3 text-center text-xs text-gray-500">Đang tải…</div>}
                       </div>
                     )}
                   </td>

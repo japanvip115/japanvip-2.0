@@ -462,6 +462,40 @@ export async function sendOtpEmail(email: string, code: string, fullName?: strin
   })
 }
 
+// ─── Cảnh báo giá cạnh tranh (gửi admin, không dính kill-switch marketing) ────
+export async function sendPriceAlertEmail(opts: {
+  to: string
+  items: Array<{ name: string; yourPrice: number | null; anchor: number | null; message: string }>
+}) {
+  const cfg = await getSmtpConfig()
+  const fmt = (n: number | null) => (n != null ? n.toLocaleString('vi-VN') + 'đ' : '—')
+  const rows = opts.items.map((i) => `
+    <tr>
+      <td style="padding:8px;border-bottom:1px solid #eee;font-size:13px;color:#111">${i.name}</td>
+      <td style="padding:8px;border-bottom:1px solid #eee;font-size:13px;color:#111;text-align:right">${fmt(i.yourPrice)}</td>
+      <td style="padding:8px;border-bottom:1px solid #eee;font-size:13px;color:#6b7280;text-align:right">${fmt(i.anchor)}</td>
+      <td style="padding:8px;border-bottom:1px solid #eee;font-size:12px;color:#c2410c">${i.message}</td>
+    </tr>`).join('')
+  await createTransport(cfg).sendMail({
+    from: cfg.from,
+    to: opts.to,
+    subject: `[Japan VIP] ${opts.items.length} sản phẩm lệch giá so với shopnoidianhat`,
+    html: emailLayout(`
+      <p style="margin:0 0 6px;font-size:20px;font-weight:800;color:#111">Cảnh báo giá cạnh tranh</p>
+      <p style="margin:0 0 20px;font-size:14px;color:#6b7280">${opts.items.length} sản phẩm đang lệch ngoài dải so với shopnoidianhat. Kiểm tra &amp; điều chỉnh trong Admin → Giá Cạnh Tranh.</p>
+      <table style="width:100%;border-collapse:collapse;margin-bottom:20px">
+        <thead><tr>
+          <th style="padding:8px;text-align:left;font-size:11px;text-transform:uppercase;color:#9ca3af">Sản phẩm</th>
+          <th style="padding:8px;text-align:right;font-size:11px;text-transform:uppercase;color:#9ca3af">Giá bạn</th>
+          <th style="padding:8px;text-align:right;font-size:11px;text-transform:uppercase;color:#9ca3af">shopnoidianhat</th>
+          <th style="padding:8px;text-align:left;font-size:11px;text-transform:uppercase;color:#9ca3af">Cảnh báo</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    `),
+  })
+}
+
 // ─── Báo giá mua hộ ──────────────────────────────────────────────────────────
 
 export async function sendQuoteRequestEmail(opts: {
