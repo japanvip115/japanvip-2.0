@@ -240,7 +240,7 @@ async function scrapeGenericVN(url: string): Promise<CompetitorProduct> {
 }
 
 // ── Router ────────────────────────────────────────────────────────────────────
-async function scrapeCompetitor(url: string): Promise<CompetitorProduct> {
+export async function scrapeCompetitor(url: string): Promise<CompetitorProduct> {
   const hostname = new URL(url).hostname
 
   if (hostname.includes('tiki.vn')) return scrapeTiki(url)

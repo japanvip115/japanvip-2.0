@@ -1,7 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useState } from 'react'
-import { RefreshCw, Link2, Check, Search, LineChart, Zap } from 'lucide-react'
+import { RefreshCw, Link2, Check, Search, LineChart, Zap, Plus } from 'lucide-react'
 import PriceChart from './price-chart'
 
 interface Flag { level: string; code: string; message: string }
@@ -107,6 +107,19 @@ export default function PricingClient() {
     } else setMsg('❌ ' + (json.error || 'Lỗi'))
   }
 
+  async function importProducts() {
+    if (!confirm('Import ~8 sản phẩm shopnoidianhat mà web CHƯA có → tạo NHÁP (tên + ảnh chính + giá + mô tả ngắn)?')) return
+    setBusy('import')
+    setMsg('⏳ Đang import SP mới từ shopnoidianhat (tải ảnh + tạo nháp)…')
+    const res = await fetch('/api/v1/admin/products/import-shopnoidianhat', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ limit: 8 }),
+    })
+    const json = await res.json()
+    setBusy(null)
+    if (json.success) setMsg(`✅ ${json.message} — xem ở Admin → Sản Phẩm (lọc trạng thái Nháp)`)
+    else setMsg('❌ ' + (json.error || 'Lỗi'))
+  }
+
   async function toggleChart(productId: string) {
     if (chartOpen === productId) { setChartOpen(null); return }
     setChartOpen(productId)
@@ -138,6 +151,9 @@ export default function PricingClient() {
         </button>
         <button onClick={autoMatch} disabled={busy === 'automatch'} className="flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3 py-2 text-sm font-semibold text-white hover:bg-emerald-500 disabled:opacity-50">
           <Zap className="h-4 w-4" /> Cào giá tự động
+        </button>
+        <button onClick={importProducts} disabled={busy === 'import'} title="Tạo SP nháp từ shopnoidianhat (SP web chưa có)" className="flex items-center gap-1.5 rounded-lg bg-indigo-600 px-3 py-2 text-sm font-semibold text-white hover:bg-indigo-500 disabled:opacity-50">
+          <Plus className="h-4 w-4" /> Import SP mới (shopnoidianhat)
         </button>
         {msg && <span className="text-sm text-gray-300">{msg}</span>}
       </div>
