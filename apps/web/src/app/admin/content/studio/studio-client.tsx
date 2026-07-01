@@ -283,7 +283,7 @@ export function StudioClient({ products }: { products: Product[] }) {
             <select value={model} onChange={(e) => setModel(e.target.value)} className={`${inputCls} [color-scheme:dark]`}>
               <option value="auto">⚡ Tự động (free khi chạy local)</option>
               <option value="claude-opus-4-8">💎 Opus 4.8 · API</option>
-              <option value="claude-sonnet-4-6">🚀 Sonnet 4.6 · API</option>
+              <option value="claude-sonnet-5">🚀 Sonnet 5 · API</option>
             </select>
           </div>
 

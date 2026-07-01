@@ -75,7 +75,7 @@ export async function analyzeProduct(
   const prompt = `Phân tích sản phẩm sau và trả về JSON theo đúng cấu trúc đã quy định:\n\n${lines.join('\n')}`
 
   try {
-    const { message, source } = await generateText(SYSTEM, prompt, model)
+    const { message, source, truncated } = await generateText(SYSTEM, prompt, model, { maxTokens: 4000, prefill: '{' })
     if (!message || message.startsWith('❌')) {
       return { analysis: null, source: 'none', error: 'Không sinh được phân tích (cần Claude Code local hoặc API key)' }
     }
@@ -83,7 +83,13 @@ export async function analyzeProduct(
     try {
       parsed = JSON.parse(extractJson(message))
     } catch {
-      return { analysis: null, source, error: 'AI trả về không đúng JSON — thử lại hoặc đổi model.' }
+      return {
+        analysis: null,
+        source,
+        error: truncated
+          ? 'Phân tích bị cắt do nội dung quá dài — thử lại hoặc chọn sản phẩm ít dữ liệu hơn.'
+          : 'AI trả về không đúng JSON — thử lại hoặc đổi model.',
+      }
     }
     const analysis: ProductAnalysis = {
       translatedSummary: str(parsed.translatedSummary),

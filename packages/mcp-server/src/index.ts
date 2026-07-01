@@ -246,7 +246,7 @@ server.tool(
     }
 
     const msg = await client.messages.create({
-      model: 'claude-sonnet-4-6',
+      model: 'claude-sonnet-5',
       max_tokens: 8192,
       system: 'Bạn là chuyên gia viết content sản phẩm cho Japan VIP — thương hiệu phân phối hàng gia dụng nội địa Nhật Bản tại Việt Nam. Viết tiếng Việt chuyên nghiệp, có số liệu cụ thể.',
       messages: [{ role: 'user', content: prompts[type]! }],

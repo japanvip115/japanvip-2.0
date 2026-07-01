@@ -182,7 +182,7 @@ Xuất ra JSON: {"title": "...", "description": "...", "keywords": [...], "slug"
 
   const client = new Anthropic({ apiKey })
   const msg = await client.messages.create({
-    model: 'claude-sonnet-4-6',
+    model: 'claude-sonnet-5',
     max_tokens: 8192,
     system: systemPrompt,
     messages: [{ role: 'user', content: userPrompt }],

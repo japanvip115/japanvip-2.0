@@ -10,7 +10,8 @@ import {
 const proxyImg = (url: string) =>
   `/api/v1/admin/ai/image-proxy?url=${encodeURIComponent(url)}`
 
-// ── Chi phí claude-sonnet-4-6 ─────────────────────────────────────────────────
+// ── Chi phí claude-sonnet-5 ───────────────────────────────────────────────────
+// Giá cơ bản $3/$15 /MTok (ưu đãi $2/$10 tới 31/08/2026 — dùng giá gốc để ước tính an toàn)
 const INPUT_PRICE_PER_TOKEN  = 3  / 1_000_000   // $3 / MTok
 const OUTPUT_PRICE_PER_TOKEN = 15 / 1_000_000   // $15 / MTok
 const USD_TO_VND = 25_500
@@ -1779,7 +1780,7 @@ export function AiWriterClient({ products }: { products: ProductSummary[] }) {
                   className="w-full px-2 py-1.5 rounded-md bg-gray-900 border border-gray-700 text-gray-200 text-[11px] focus:outline-none focus:border-green-500"
                 >
                   <option value="claude-opus-4-8">Opus 4.8 (mạnh nhất)</option>
-                  <option value="claude-sonnet-4-6">Sonnet 4.6 (cân bằng)</option>
+                  <option value="claude-sonnet-5">Sonnet 5 (cân bằng)</option>
                   <option value="claude-haiku-4-5-20251001">Haiku 4.5 (nhanh nhất)</option>
                 </select>
               </div>

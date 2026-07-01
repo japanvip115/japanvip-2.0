@@ -251,7 +251,7 @@ export function FacebookContentClient() {
                   className="flex-1 rounded-lg border bg-[#161d2b] px-3 py-2.5 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-red">
                   <option value="auto">⚡ Tự động (free khi chạy local)</option>
                   <option value="claude-opus-4-8">💎 Opus 4.8 · API (chất lượng cao nhất)</option>
-                  <option value="claude-sonnet-4-6">🚀 Sonnet 4.6 · API (nhanh, tiết kiệm)</option>
+                  <option value="claude-sonnet-5">🚀 Sonnet 5 · API (nhanh, tiết kiệm)</option>
                 </select>
                 <button onClick={generate} disabled={generating}
                   className="flex items-center gap-1.5 rounded-lg bg-purple-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-purple-700 disabled:opacity-60 whitespace-nowrap">
