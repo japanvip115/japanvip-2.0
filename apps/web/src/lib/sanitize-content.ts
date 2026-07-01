@@ -9,9 +9,11 @@ const OPTIONS: sanitizeHtml.IOptions = {
     'ul', 'ol', 'li', 'strong', 'b', 'em', 'i', 'u', 'small', 'sup', 'sub',
     'a', 'img', 'table', 'thead', 'tbody', 'tfoot', 'tr', 'td', 'th', 'caption', 'colgroup', 'col',
     'blockquote', 'figure', 'figcaption', 'div', 'span', 'br', 'hr', 'section',
+    'details', 'summary',
   ],
   allowedAttributes: {
     '*': ['class', 'id', 'style'],
+    details: ['open', 'class', 'id'],
     a: ['href', 'target', 'rel', 'title', 'class', 'id'],
     img: ['src', 'alt', 'title', 'width', 'height', 'loading', 'class', 'id'],
     td: ['colspan', 'rowspan', 'class', 'id', 'style'],

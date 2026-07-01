@@ -149,6 +149,17 @@ export default async function BlogPostPage({ params }: Props) {
               {post.excerpt && (
                 <p className="mt-4 text-base text-gray-600 leading-relaxed border-l-4 border-brand-red pl-4 italic">{post.excerpt}</p>
               )}
+              {/* FAQ accordion (thẻ <details class="faq-item">) — bấm câu hỏi mới sổ trả lời */}
+              <style dangerouslySetInnerHTML={{ __html: `
+                .faq-item{border:1px solid #e5e7eb;border-left:4px solid #3b82f6;border-radius:10px;margin:10px 0;background:#fff;overflow:hidden}
+                .faq-item>summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 16px;font-weight:600;color:#111827}
+                .faq-item>summary::-webkit-details-marker{display:none}
+                .faq-item>summary::after{content:'+';font-size:22px;font-weight:700;line-height:1;color:#3b82f6;flex:0 0 auto}
+                .faq-item[open]>summary::after{content:'\\2212'}
+                .faq-item>summary:hover{background:#f9fafb}
+                .faq-item[open]>summary{border-bottom:1px solid #f1f5f9}
+                .faq-item .faq-answer{padding:12px 16px 16px;color:#374151;font-size:15px;line-height:1.65}
+              ` }} />
               <div
                 className="mt-6 max-w-none text-gray-800 leading-relaxed
                   [&_h1]:text-2xl [&_h1]:font-bold [&_h1]:mt-8 [&_h1]:mb-3 [&_h1]:text-gray-900
