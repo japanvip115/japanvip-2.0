@@ -26,31 +26,45 @@ export async function fetchSourcePrice(url: string): Promise<FetchedPrice> {
 
   let price: number | null = null
 
-  const jsonLdBlocks = [...html.matchAll(/<script[^>]+type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/gi)]
-  for (const block of jsonLdBlocks) {
-    try {
-      const json = JSON.parse(block[1]!)
-      const items = Array.isArray(json) ? json : json['@graph'] ? json['@graph'] : [json]
-      for (const item of items) {
-        if (item['@type'] === 'Product') {
-          const p =
-            item.offers?.price ??
-            item.offers?.[0]?.price ??
-            item.offers?.lowPrice ??
-            item.offers?.[0]?.lowPrice ??
-            null
-          if (p != null) {
-            price = Number(p)
-            break
-          }
-        }
-      }
-    } catch {
-      /* ignore JSON lỗi */
-    }
-    if (price != null) break
+  // 1. og:price:amount / product:price:amount — giá VNĐ hiển thị ĐÚNG (Haravan/Bizweb/nhiều trang VN).
+  //    Ưu tiên hơn JSON-LD vì Haravan để giá dạng "xu" (×100) trong JSON.
+  const ogAmount =
+    html.match(/<meta[^>]+property=["']og:price:amount["'][^>]+content=["']([^"']+)["']/i)?.[1] ??
+    html.match(/<meta[^>]+property=["']product:price:amount["'][^>]+content=["']([^"']+)["']/i)?.[1]
+  if (ogAmount) {
+    const n = Number(ogAmount.replace(/[.,]\d{2}(?=\D*$)/, '').replace(/[^\d]/g, ''))
+    if (n > 0) price = n
   }
 
+  // 2. JSON-LD Product offers.price (fallback cho trang không có og:price, vd WooCommerce)
+  if (price == null) {
+    const jsonLdBlocks = [...html.matchAll(/<script[^>]+type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/gi)]
+    for (const block of jsonLdBlocks) {
+      try {
+        const json = JSON.parse(block[1]!)
+        const items = Array.isArray(json) ? json : json['@graph'] ? json['@graph'] : [json]
+        for (const item of items) {
+          if (item['@type'] === 'Product') {
+            const p =
+              item.offers?.price ??
+              item.offers?.[0]?.price ??
+              item.offers?.lowPrice ??
+              item.offers?.[0]?.lowPrice ??
+              null
+            if (p != null) {
+              price = Number(p)
+              break
+            }
+          }
+        }
+      } catch {
+        /* ignore JSON lỗi */
+      }
+      if (price != null) break
+    }
+  }
+
+  // 3. meta itemprop / "price" (last resort — có thể sai đơn vị vài nền, chỉ dùng khi hết cách)
   if (price == null) {
     const m =
       html.match(/<meta[^>]+itemprop="price"[^>]+content="([\d.]+)"/i) ??
@@ -58,5 +72,18 @@ export async function fetchSourcePrice(url: string): Promise<FetchedPrice> {
     if (m) price = Number(m[1])
   }
 
-  return { name: name || '', price: price != null && Number.isFinite(price) ? price : null }
+  return { name: decodeEntities(name || ''), price: price != null && Number.isFinite(price) ? price : null }
+}
+
+// Giải mã HTML entity trong tên (og:title Haravan mã hoá tiếng Việt kiểu &#226;)
+function decodeEntities(s: string): string {
+  return s
+    .replace(/&#(\d+);/g, (_, n) => String.fromCharCode(Number(n)))
+    .replace(/&#x([0-9a-f]+);/gi, (_, n) => String.fromCharCode(parseInt(n, 16)))
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .trim()
 }
