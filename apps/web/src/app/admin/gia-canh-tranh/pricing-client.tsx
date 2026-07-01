@@ -106,6 +106,17 @@ export default function PricingClient() {
     } else setMsg('❌ ' + (json.error || 'Lỗi'))
   }
 
+  async function kakakuMatch() {
+    if (!confirm('Cào giá Nhật (kakaku) cho ~12 SP? Chỉ chạy khi đang bật dev LOCAL (Vercel không có Chrome).')) return
+    setBusy('kakaku')
+    setMsg('⏳ Đang cào giá Nhật (Playwright, hơi chậm)…')
+    const res = await fetch('/api/v1/admin/pricing/kakaku-match', { method: 'POST' })
+    const json = await res.json()
+    setBusy(null)
+    if (json.success) { setMsg(`✅ ${json.message}`); load() }
+    else setMsg('❌ ' + (json.error || 'Lỗi') + (res.status === 503 ? ' (chạy trên máy local có Chrome)' : ''))
+  }
+
   async function toggleChart(productId: string) {
     if (chartOpen === productId) { setChartOpen(null); return }
     setChartOpen(productId)
@@ -137,6 +148,9 @@ export default function PricingClient() {
         </button>
         <button onClick={autoMatch} disabled={busy === 'automatch'} className="flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3 py-2 text-sm font-semibold text-white hover:bg-emerald-500 disabled:opacity-50">
           <Zap className="h-4 w-4" /> Cào giá tự động
+        </button>
+        <button onClick={kakakuMatch} disabled={busy === 'kakaku'} title="Cào giá Nhật kakaku — chỉ chạy khi bật dev LOCAL" className="flex items-center gap-1.5 rounded-lg bg-purple-600 px-3 py-2 text-sm font-semibold text-white hover:bg-purple-500 disabled:opacity-50">
+          <Zap className="h-4 w-4" /> Cào giá Nhật (local)
         </button>
         {msg && <span className="text-sm text-gray-300">{msg}</span>}
       </div>
