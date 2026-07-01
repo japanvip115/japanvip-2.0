@@ -1,0 +1,24 @@
+{
+  "minimumDraftScore": 85,
+  "minimumAutoPublishScore": 92,
+  "maxRevisionCycles": 3,
+  "defaultPublishingMode": "human_approval_required",
+  "blockedContentConditions": [
+    "unverified_product_model",
+    "unsupported_warranty_claim",
+    "unverified_price_claim",
+    "missing_100v_warning",
+    "copied_competitor_text",
+    "critical_factual_issue",
+    "missing_source_references"
+  ],
+  "autoPublishBlockedCategories": [
+    "product_page",
+    "price_comparison",
+    "warranty_policy",
+    "payment_policy",
+    "auction_content",
+    "medical_claim",
+    "legal_claim"
+  ]
+}

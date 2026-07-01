@@ -1,0 +1,18 @@
+{
+  "contentId": "20260701-blog-hang-nhat-100v-bien-ap",
+  "contentType": "blog",
+  "contentMode": "marketing_no_product",
+  "reviewedAt": "2026-07-01T00:00:00Z",
+  "scores": {
+    "productAccuracy": 28,
+    "seoQuality": 18,
+    "vietnameseReadabilityPremiumTone": 14,
+    "originalityInformationGain": 13,
+    "conversionCtaQuality": 9,
+    "structureMetadataFaqInternalLinks": 10
+  },
+  "totalScore": 92,
+  "blockedConditions": [],
+  "findings": [],
+  "verdict": "PASS"
+}

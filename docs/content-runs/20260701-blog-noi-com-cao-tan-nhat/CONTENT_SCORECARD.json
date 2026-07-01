@@ -1,0 +1,19 @@
+{
+  "contentId": "20260701-blog-noi-com-cao-tan-nhat",
+  "contentType": "blog",
+  "reviewedAt": "2026-07-01T00:00:00Z",
+  "scores": {
+    "productAccuracy": 28,
+    "seoQuality": 18,
+    "vietnameseReadabilityPremiumTone": 14,
+    "originalityInformationGain": 13,
+    "conversionCtaQuality": 9,
+    "structureMetadataFaqInternalLinks": 10
+  },
+  "totalScore": 92,
+  "blockedConditions": [],
+  "findings": [
+    { "severity": "Low", "issue": "Thiếu chiều sâu số liệu do KB chưa có bài duyệt về nồi cơm", "revisionTask": "Bổ sung KB fact VERIFIED rồi làm bản 2.0 sâu hơn" }
+  ],
+  "verdict": "PASS"
+}
