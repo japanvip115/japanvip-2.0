@@ -109,6 +109,17 @@ export function ProductDescription({ description, collapseHeight = COLLAPSE_HEIG
 
   return (
     <div ref={wrapperRef} className="p-6 lg:p-8">
+      {/* FAQ accordion trong mô tả (<details class="faq-item">) — bấm câu hỏi mới sổ đáp án */}
+      <style>{`
+        .faq-item{border:1px solid #e5e7eb;border-left:4px solid #3b82f6;border-radius:10px;margin:10px 0;background:#fff;overflow:hidden}
+        .faq-item>summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 16px;font-weight:600;color:#111827}
+        .faq-item>summary::-webkit-details-marker{display:none}
+        .faq-item>summary::after{content:'+';font-size:22px;font-weight:700;line-height:1;color:#3b82f6;flex:0 0 auto}
+        .faq-item[open]>summary::after{content:'\\2212'}
+        .faq-item>summary:hover{background:#f9fafb}
+        .faq-item[open]>summary{border-bottom:1px solid #f1f5f9}
+        .faq-item .faq-answer{padding:12px 16px 16px;color:#374151;font-size:15px;line-height:1.65}
+      `}</style>
       {/* ── TOC Box ── */}
       {toc.length > 0 && (
         <div className="mb-6 w-full max-w-lg rounded-xl border border-gray-200 bg-gray-50 overflow-hidden">

@@ -366,10 +366,39 @@ export function BlogPostForm({ mode, categories: initialCategories, authorId, in
                   placeholder="Nội dung bài viết (hỗ trợ HTML)..."
                 />
               ) : (
-                <div
-                  className="blog-content min-h-[320px] rounded-lg border border-gray-700 bg-white p-5 text-gray-900 overflow-auto"
-                  dangerouslySetInnerHTML={{ __html: form.content }}
-                />
+                <>
+                  {/* FAQ accordion (<details class="faq-item">) — bấm câu hỏi mới sổ đáp án */}
+                  <style dangerouslySetInnerHTML={{ __html: `
+                    .faq-item{border:1px solid #e5e7eb;border-left:4px solid #3b82f6;border-radius:10px;margin:10px 0;background:#fff;overflow:hidden}
+                    .faq-item>summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 16px;font-weight:600;color:#111827}
+                    .faq-item>summary::-webkit-details-marker{display:none}
+                    .faq-item>summary::after{content:'+';font-size:22px;font-weight:700;line-height:1;color:#3b82f6;flex:0 0 auto}
+                    .faq-item[open]>summary::after{content:'\\2212'}
+                    .faq-item>summary:hover{background:#f9fafb}
+                    .faq-item[open]>summary{border-bottom:1px solid #f1f5f9}
+                    .faq-item .faq-answer{padding:12px 16px 16px;color:#374151;font-size:15px;line-height:1.65}
+                  ` }} />
+                  <div
+                    className="min-h-[320px] rounded-lg border border-gray-700 bg-white p-5 text-gray-800 leading-relaxed overflow-auto
+                      [&_h1]:text-2xl [&_h1]:font-bold [&_h1]:mt-8 [&_h1]:mb-3 [&_h1]:text-gray-900
+                      [&_h2]:text-xl [&_h2]:font-bold [&_h2]:mt-7 [&_h2]:mb-2 [&_h2]:text-gray-900
+                      [&_h3]:text-lg [&_h3]:font-semibold [&_h3]:mt-6 [&_h3]:mb-2 [&_h3]:text-gray-900
+                      [&_h4]:text-base [&_h4]:font-semibold [&_h4]:mt-4 [&_h4]:mb-1 [&_h4]:text-gray-900
+                      [&_p]:mb-4 [&_p]:text-[15px]
+                      [&_ul]:my-3 [&_ul]:pl-5 [&_ul]:list-disc [&_ul]:space-y-1
+                      [&_ol]:my-3 [&_ol]:pl-5 [&_ol]:list-decimal [&_ol]:space-y-1
+                      [&_li]:text-[15px]
+                      [&_strong]:font-semibold [&_strong]:text-gray-900
+                      [&_figure]:my-5 [&_figure]:text-center
+                      [&_img]:rounded-xl [&_img]:my-4 [&_img]:mx-auto [&_img]:block [&_img]:max-w-full [&_img]:w-auto [&_img]:max-h-[460px] [&_img]:object-contain
+                      [&_table]:w-full [&_table]:my-5 [&_table]:border-collapse [&_table]:text-[14px] [&_table]:overflow-hidden [&_table]:rounded-lg [&_table]:border [&_table]:border-gray-200
+                      [&_th]:border [&_th]:border-gray-200 [&_th]:bg-gray-50 [&_th]:px-3 [&_th]:py-2 [&_th]:text-left [&_th]:font-semibold [&_th]:text-gray-900
+                      [&_td]:border [&_td]:border-gray-200 [&_td]:px-3 [&_td]:py-2 [&_td]:align-top
+                      [&_tr:nth-child(even)]:bg-gray-50/50
+                      [&_a]:text-brand-red [&_a]:underline-offset-2 [&_a]:hover:underline"
+                    dangerouslySetInnerHTML={{ __html: form.content }}
+                  />
+                </>
               )}
               <p className="mt-1 text-xs text-gray-500">{form.content.length} ký tự</p>
             </div>

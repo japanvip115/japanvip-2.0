@@ -95,7 +95,9 @@ Bắt buộc: điện áp 100V và biến áp, cách chọn công suất biến 
 Phân biệt hàng nội địa Nhật và hàng xuất khẩu, cách kiểm tra model number, năm sản xuất, tem điện áp, tình trạng sản phẩm, chọn dung tích/công suất phù hợp, lý do mua tại Japan VIP. KHÔNG hạ thấp thương hiệu khác.
 
 **Section 11 — Câu hỏi thường gặp (10–15 câu)**
-Format: <h3>Câu hỏi?</h3><p>Trả lời...</p>. Tập trung: điện áp, biến áp, bảo hành, vận chuyển, lắp đặt, phụ kiện, hướng dẫn tiếng Việt, chi phí điện, vệ sinh bảo trì.
+Bắt đầu bằng <h2>Câu hỏi thường gặp</h2>. Mỗi câu hỏi là 1 accordion (bấm mới xổ đáp án), dùng ĐÚNG format:
+<details class="faq-item"><summary>Câu hỏi?</summary><div class="faq-answer"><p>Trả lời...</p></div></details>
+KHÔNG dùng <h3> cho câu hỏi FAQ. Tập trung: điện áp, biến áp, bảo hành, vận chuyển, lắp đặt, phụ kiện, hướng dẫn tiếng Việt, chi phí điện, vệ sinh bảo trì.
 
 **Section 12 — Chính sách bảo hành tại Japan VIP**
 Thời gian bảo hành, phạm vi, hỗ trợ kỹ thuật, quy trình tiếp nhận. KHÔNG tự tạo số tháng khi chưa có dữ liệu.

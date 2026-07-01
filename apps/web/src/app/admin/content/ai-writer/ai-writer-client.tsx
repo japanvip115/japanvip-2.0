@@ -866,7 +866,7 @@ export function AiWriterClient({ products }: { products: ProductSummary[] }) {
   // 🔒 LOCKED (2026-06) — Lưu Blog riêng (KHÔNG nhồi vào sản phẩm) + excerpt. Xem CLAUDE.md. KHÔNG tự sửa.
   // ── Lưu bài Blog (riêng, KHÔNG tạo sản phẩm) ──
   async function saveBlog() {
-    const content = outputs['blog']
+    const content = activeTab === 'comparison' ? outputs['comparison'] : outputs['blog']
     if (!content || blogSaveStatus === 'saving') return
     setBlogSaveStatus('saving')
     try {
@@ -2020,8 +2020,8 @@ export function AiWriterClient({ products }: { products: ProductSummary[] }) {
                 </button>
               )}
 
-              {/* Lưu vào BLOG — khi đang ở tab Bài viết Blog (mọi nguồn) */}
-              {activeTab === 'blog' && output && !loading && blogSaveStatus !== 'done' && (
+              {/* Lưu vào BLOG — khi đang ở tab Bài viết Blog hoặc So sánh sản phẩm (mọi nguồn) */}
+              {(activeTab === 'blog' || activeTab === 'comparison') && output && !loading && blogSaveStatus !== 'done' && (
                 <button
                   onClick={saveBlog}
                   disabled={blogSaveStatus === 'saving'}
@@ -2036,7 +2036,7 @@ export function AiWriterClient({ products }: { products: ProductSummary[] }) {
                   )}
                 </button>
               )}
-              {activeTab === 'blog' && blogSaveStatus === 'done' && blogPostId && (
+              {(activeTab === 'blog' || activeTab === 'comparison') && blogSaveStatus === 'done' && blogPostId && (
                 <a
                   href={`/admin/content/blog/${blogPostId}`}
                   className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold bg-green-600 text-white hover:bg-green-700 transition"
@@ -2119,6 +2119,17 @@ export function AiWriterClient({ products }: { products: ProductSummary[] }) {
             </div>
           ) : viewMode === 'preview' && currentType.outputType === 'html' ? (
             <div className="h-full overflow-y-auto rounded-xl border border-gray-700 bg-white p-6">
+              {/* FAQ accordion (<details class="faq-item">) — bấm câu hỏi mới sổ đáp án */}
+              <style>{`
+                .faq-item{border:1px solid #e5e7eb;border-left:4px solid #3b82f6;border-radius:10px;margin:10px 0;background:#fff;overflow:hidden}
+                .faq-item>summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 16px;font-weight:600;color:#111827}
+                .faq-item>summary::-webkit-details-marker{display:none}
+                .faq-item>summary::after{content:'+';font-size:22px;font-weight:700;line-height:1;color:#3b82f6;flex:0 0 auto}
+                .faq-item[open]>summary::after{content:'\\2212'}
+                .faq-item>summary:hover{background:#f9fafb}
+                .faq-item[open]>summary{border-bottom:1px solid #f1f5f9}
+                .faq-item .faq-answer{padding:12px 16px 16px;color:#374151;font-size:15px;line-height:1.65}
+              `}</style>
               <div
                 className="prose prose-sm max-w-none text-gray-700 leading-7
                   [&_p]:mb-4 [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:mb-4 [&_ul_li]:mb-1
