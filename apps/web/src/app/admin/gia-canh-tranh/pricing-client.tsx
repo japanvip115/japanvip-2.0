@@ -1,7 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useState } from 'react'
-import { RefreshCw, Link2, Check, Search, LineChart } from 'lucide-react'
+import { RefreshCw, Link2, Check, Search, LineChart, Zap } from 'lucide-react'
 import PriceChart from './price-chart'
 
 interface Flag { level: string; code: string; message: string }
@@ -83,6 +83,20 @@ export default function PricingClient() {
     else setMsg('❌ ' + (json.error || 'Lỗi'))
   }
 
+  async function autoMatch() {
+    if (!confirm('Tự động khớp tất cả sản phẩm với shopnoidianhat theo model (qua sitemap) và lấy giá?')) return
+    setBusy('automatch')
+    setMsg('⏳ Đang khớp + lấy giá…')
+    const res = await fetch('/api/v1/admin/pricing/auto-match', { method: 'POST' })
+    const json = await res.json()
+    setBusy(null)
+    if (json.success) {
+      const d = json.data
+      setMsg(`✅ Khớp ${d.matched} SP · lấy giá ${d.priced}${d.pending ? ` · ${d.pending} chờ cron` : ''} · ${d.unmatched} chưa khớp (dán tay)`)
+      load()
+    } else setMsg('❌ ' + (json.error || 'Lỗi'))
+  }
+
   async function toggleChart(productId: string) {
     if (chartOpen === productId) { setChartOpen(null); return }
     setChartOpen(productId)
@@ -111,6 +125,9 @@ export default function PricingClient() {
         </label>
         <button onClick={load} className="flex items-center gap-1.5 rounded-lg bg-gray-700 px-3 py-2 text-sm text-white hover:bg-gray-600">
           <RefreshCw className="h-4 w-4" /> Tải lại
+        </button>
+        <button onClick={autoMatch} disabled={busy === 'automatch'} className="flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3 py-2 text-sm font-semibold text-white hover:bg-emerald-500 disabled:opacity-50">
+          <Zap className="h-4 w-4" /> Cào giá tự động
         </button>
         {msg && <span className="text-sm text-gray-300">{msg}</span>}
       </div>
