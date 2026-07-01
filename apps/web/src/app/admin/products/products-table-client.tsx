@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { ImageOff, ExternalLink, Trash2, Upload, EyeOff } from 'lucide-react'
+import { ImageOff, ExternalLink, Trash2, Upload, EyeOff, Archive } from 'lucide-react'
 import { ProductActions } from '@/components/admin/product-actions'
 
 type Status = 'DRAFT' | 'ACTIVE' | 'SOLD' | 'ARCHIVED'
@@ -46,7 +46,8 @@ export function ProductsTableClient({ products, returnTo }: { products: ProductR
 
   async function bulkDelete() {
     if (!sel.size) return
-    if (!confirm(`Xoá ${sel.size} sản phẩm đã chọn? Hành động không thể hoàn tác.`)) return
+    const ans = prompt(`⚠️ XOÁ VĨNH VIỄN ${sel.size} sản phẩm — KHÔNG khôi phục được!\n(Muốn tạm ẩn thì dùng "Vào thùng rác" để khôi phục sau.)\n\nGõ đúng số ${sel.size} để xác nhận xoá:`)
+    if (ans !== String(sel.size)) return
     setBusy(true)
     const res = await fetch('/api/v1/admin/products/bulk-delete', {
       method: 'POST',
@@ -61,9 +62,10 @@ export function ProductsTableClient({ products, returnTo }: { products: ProductR
     } else alert('❌ ' + (json.error || 'Lỗi'))
   }
 
-  async function bulkStatus(status: 'ACTIVE' | 'DRAFT') {
+  async function bulkStatus(status: 'ACTIVE' | 'DRAFT' | 'ARCHIVED') {
     if (!sel.size) return
-    if (!confirm(`${status === 'ACTIVE' ? 'ĐĂNG LÊN WEB' : 'Đưa về Nháp'} ${sel.size} sản phẩm đã chọn?`)) return
+    const verb = status === 'ACTIVE' ? 'ĐĂNG LÊN WEB' : status === 'ARCHIVED' ? 'Chuyển vào thùng rác (Lưu kho)' : 'Đưa về Nháp'
+    if (!confirm(`${verb} ${sel.size} sản phẩm đã chọn?`)) return
     setBusy(true)
     const res = await fetch('/api/v1/admin/products/bulk-status', {
       method: 'POST',
@@ -100,11 +102,20 @@ export function ProductsTableClient({ products, returnTo }: { products: ProductR
             <EyeOff className="h-4 w-4" /> Về Nháp
           </button>
           <button
+            onClick={() => bulkStatus('ARCHIVED')}
+            disabled={busy}
+            title="Ẩn khỏi web, giữ lại — khôi phục được (tab Lưu kho)"
+            className="flex items-center gap-1.5 rounded-lg bg-amber-600 px-3 py-1.5 text-sm font-semibold text-white transition-colors hover:bg-amber-500 disabled:opacity-50"
+          >
+            <Archive className="h-4 w-4" /> Vào thùng rác
+          </button>
+          <button
             onClick={bulkDelete}
             disabled={busy}
-            className="flex items-center gap-1.5 rounded-lg bg-red-600 px-3 py-1.5 text-sm font-semibold text-white transition-colors hover:bg-red-500 disabled:opacity-50"
+            title="Xoá vĩnh viễn — KHÔNG khôi phục được"
+            className="flex items-center gap-1.5 rounded-lg border border-red-500/50 bg-red-600/80 px-3 py-1.5 text-sm font-semibold text-white transition-colors hover:bg-red-600 disabled:opacity-50"
           >
-            <Trash2 className="h-4 w-4" /> Xoá đã chọn
+            <Trash2 className="h-4 w-4" /> Xoá vĩnh viễn
           </button>
           <button onClick={() => setSel(new Set())} className="ml-1 text-xs text-gray-400 hover:underline">Bỏ chọn</button>
           {busy && <span className="text-xs text-gray-400">Đang xử lý…</span>}
