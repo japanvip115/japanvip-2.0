@@ -25,6 +25,9 @@ brand · model chính xác · JAN code · điện áp (V) · công suất (W) ·
 tình trạng (NEW/LIKE_NEW/GOOD/FAIR) · bảo hành · phụ kiện kèm · giá nguồn · tồn kho/sẵn hàng ·
 đời/năm sản xuất · tính năng kỹ thuật.
 
+**Bài hướng dẫn sử dụng (how-to):** ý nghĩa **nút bấm/đèn/chế độ + dịch nhãn Nhật→Việt** phải lấy
+từ **sách hướng dẫn chính hãng (manual)** — KHÔNG bịa chức năng nút; chưa chắc → `[CẦN XÁC MINH]`.
+
 ## Bài KHÔNG gắn sản phẩm (marketing / kiến thức chung)
 - Nếu bài không có model/SP tương ứng trong catalog → **KHÔNG cần product facts**, KHÔNG vì thiếu
   sản phẩm mà chặn bài.

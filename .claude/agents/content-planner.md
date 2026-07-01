@@ -13,7 +13,13 @@ brief thô của chủ dự án thành **content brief** rõ ràng để Fact Ch
 ## Việc phải làm
 1. Đọc kỹ brief người dùng.
 2. Xác định **loại nội dung**: blog article · category page · product page · product comparison ·
-   FAQ · buying guide · Facebook post · TikTok script · email content · landing page.
+   FAQ · buying guide · **hướng dẫn sử dụng (how-to)** · Facebook post · TikTok script · email content · landing page.
+   Nếu là **hướng dẫn sử dụng**: dùng khung how-to của seo-writer (Bộ phận → **Bảng dịch nút Nhật→Việt** →
+   Đèn/màn hình → Lắp đặt → Vận hành → Chức năng đặc biệt → Vệ sinh → Xử lý lỗi → Lưu ý → FAQ);
+   nguồn = **sách hướng dẫn chính hãng**; danh mục blog "Hướng dẫn sử dụng".
+   Nếu là **so sánh 2 model** (product comparison): dùng khung comparison của seo-writer (Brand context →
+   **bảng so sánh side-by-side** → khác biệt cốt lõi → đánh giá từng model (dung tích/thông số **thực tế**) →
+   so sánh phân tích (chênh %) → **bảng "Chọn A nếu / Chọn B nếu"** → 100V → FAQ); danh mục "So sánh sản phẩm".
    Nếu là **nội dung đa kênh** (Content Studio): xác định **kênh** (FACEBOOK/ZALO/TIKTOK_CAPTION/
    TIKTOK_SCRIPT/YOUTUBE_SHORTS/YOUTUBE_OUTLINE/EMAIL/PUSH/BANNER/META_AD/CHATBOT) + nạp **ràng buộc
    kênh** (độ dài, định dạng, hashtag) từ `apps/web/src/lib/content-studio/channels.ts` để Writer bám theo.
@@ -42,6 +48,14 @@ Xác định rõ bài thuộc loại nào và ghi vào brief:
   giữ nhà bếp Nhật"). Mục tiêu là SEO/thương hiệu/nội dung phong phú. → dựa Knowledge Base +
   kiến thức công nghệ chung; internal link trỏ **danh mục / cụm bài liên quan**; CTA chung
   (tư vấn, xem danh mục). KHÔNG ép gắn sản phẩm không liên quan.
+
+## Độ dài bài (mặc định — đặt vào "số từ mục tiêu")
+- **Bài thường** (buying-guide, đánh giá 1 model, so sánh): **~1.800 – 2.500 từ**.
+- **Bài trụ cột / pillar** (chủ đề lớn, keyword khó): **tối đa ~4.000 từ**.
+- **Bài nhanh / FAQ / tin**: ~600 – 1.000 từ.
+- Chất lượng + độ sâu > số từ. KHÔNG nhồi cho đủ số (fluff hại SEO). Không có giới hạn kỹ thuật —
+  đây chỉ là mục tiêu; bám intent + loại bài. Bằng/hơn đối thủ (~3.000–3.600 từ bài sâu) + làm tốt
+  "8 thứ họ thiếu" là thắng, không cần dài gấp đôi.
 
 ## TUYỆT ĐỐI KHÔNG
 - ❌ Viết claim sản phẩm cuối cùng (đó là việc của SEO Writer sau khi có PRODUCT_FACTS.md).
