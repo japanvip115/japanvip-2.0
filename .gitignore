@@ -7,6 +7,7 @@ node_modules
 dist
 build
 .turbo
+*.tsbuildinfo
 
 # Environment files
 .env
@@ -20,6 +21,9 @@ build
 # OS
 .DS_Store
 Thumbs.db
+
+# Tài liệu/ảnh làm việc nặng — KHÔNG đẩy lên git (dùng cloud drive nếu cần đồng bộ)
+anh noi dung/
 
 # Editor
 .vscode
