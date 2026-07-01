@@ -123,6 +123,23 @@ export default async function BlogPostPage({ params }: Props) {
   // Bảo mật: sanitize HTML cuối (chặn stored-XSS từ nội dung AI/cào web). Giữ nguyên render đã chốt.
   const html = sanitizeContentHtml(rawHtml)
 
+  // FAQPage schema — trích Q&A từ FAQ accordion (<details class="faq-item">) để AI cite trực tiếp
+  const stripTags = (s: string) => s.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()
+  const faqPairs = [...html.matchAll(/<details class="faq-item">\s*<summary>([\s\S]*?)<\/summary>\s*<div class="faq-answer">([\s\S]*?)<\/div>\s*<\/details>/g)]
+    .map((m) => ({ q: stripTags(m[1] ?? ''), a: stripTags(m[2] ?? '') }))
+    .filter((x) => x.q && x.a)
+  const faqSchema = faqPairs.length
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: faqPairs.map((x) => ({
+          '@type': 'Question',
+          name: x.q,
+          acceptedAnswer: { '@type': 'Answer', text: x.a },
+        })),
+      }
+    : null
+
   return (
     <div className="bg-gray-50 min-h-screen">
       <div className="mx-auto max-w-7xl px-4 py-8">
@@ -294,6 +311,7 @@ export default async function BlogPostPage({ params }: Props) {
                 { '@type': 'ListItem', position: post.category ? 4 : 3, name: post.title, item: `https://japanvip.vn/blog/${post.slug}` },
               ],
             },
+            ...(faqSchema ? [faqSchema] : []),
           ]),
         }}
       />
