@@ -262,6 +262,7 @@ exports.Prisma.ProductScalarFieldEnum = {
   originPrice: 'originPrice',
   salePrice: 'salePrice',
   marketPrice: 'marketPrice',
+  costPrice: 'costPrice',
   status: 'status',
   badge: 'badge',
   showOnHome: 'showOnHome',
@@ -270,6 +271,22 @@ exports.Prisma.ProductScalarFieldEnum = {
   reviewCount: 'reviewCount',
   metaTitle: 'metaTitle',
   metaDesc: 'metaDesc',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.CompetitorPriceScalarFieldEnum = {
+  id: 'id',
+  productId: 'productId',
+  source: 'source',
+  market: 'market',
+  isPrimary: 'isPrimary',
+  url: 'url',
+  competitorName: 'competitorName',
+  priceVnd: 'priceVnd',
+  priceJpy: 'priceJpy',
+  fetchStatus: 'fetchStatus',
+  fetchedAt: 'fetchedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -1279,6 +1296,7 @@ exports.Prisma.ModelName = {
   Category: 'Category',
   Brand: 'Brand',
   Product: 'Product',
+  CompetitorPrice: 'CompetitorPrice',
   ProductImage: 'ProductImage',
   ProductAttribute: 'ProductAttribute',
   ExchangeRate: 'ExchangeRate',

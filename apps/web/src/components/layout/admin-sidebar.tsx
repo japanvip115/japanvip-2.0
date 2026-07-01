@@ -8,7 +8,7 @@ import {
   LayoutDashboard, Package, Gavel, Users, ShoppingBag,
   DollarSign, FileText, Settings, FolderOpen, Layers,
   ChevronRight, ChevronDown, ShieldAlert, Ban, LogOut, ExternalLink,
-  Home, ClipboardList, Gift, Mail, Sparkles, Megaphone, Key, Wand2, BookOpen, BrainCircuit, Activity,
+  Home, ClipboardList, Gift, Mail, Sparkles, Megaphone, Key, Wand2, BookOpen, BrainCircuit, Activity, TrendingUp,
 } from 'lucide-react'
 
 const NAV_SECTIONS = [
@@ -35,6 +35,7 @@ const NAV_SECTIONS = [
     label: 'Sản phẩm',
     items: [
       { href: '/admin/products', label: 'Sản Phẩm', icon: Package },
+      { href: '/admin/gia-canh-tranh', label: 'Giá Cạnh Tranh', icon: TrendingUp },
       { href: '/admin/categories', label: 'Danh Mục', icon: FolderOpen },
       { href: '/admin/brands', label: 'Thương Hiệu', icon: Layers },
     ],

@@ -277,6 +277,7 @@ model Product {
   originPrice Decimal?         @map("origin_price") @db.Decimal(15, 2)
   salePrice   Decimal?         @map("sale_price") @db.Decimal(15, 2)
   marketPrice Decimal?         @map("market_price") @db.Decimal(15, 2)
+  costPrice   Decimal?         @map("cost_price") @db.Decimal(15, 2)
   status      ProductStatus    @default(DRAFT)
   badge       String?          @db.VarChar(20)
   showOnHome  Boolean          @default(false) @map("show_on_home")
@@ -288,12 +289,13 @@ model Product {
   createdAt   DateTime         @default(now()) @map("created_at") @db.Timestamptz
   updatedAt   DateTime         @updatedAt @map("updated_at") @db.Timestamptz
 
-  category       Category?          @relation(fields: [categoryId], references: [id])
-  brand          Brand?             @relation(fields: [brandId], references: [id])
-  images         ProductImage[]
-  attributes     ProductAttribute[]
-  auctions       Auction[]
-  affiliateLinks AffiliateLink[]
+  category         Category?          @relation(fields: [categoryId], references: [id])
+  brand            Brand?             @relation(fields: [brandId], references: [id])
+  images           ProductImage[]
+  attributes       ProductAttribute[]
+  auctions         Auction[]
+  affiliateLinks   AffiliateLink[]
+  competitorPrices CompetitorPrice[]
 
   @@index([categoryId])
   @@index([brandId])
@@ -304,6 +306,31 @@ model Product {
   @@index([status, categoryId, createdAt])
   @@index([status, createdAt])
   @@map("products")
+}
+
+// ─────────────────────────────────────────
+// Giá cạnh tranh: mỗi SP link tới URL nguồn (shopnoidianhat = mốc, kakaku = giá Nhật, còn lại tham khảo)
+// 1 SP + 1 nguồn = 1 dòng; refetch định kỳ ghi đè giá mới nhất. Lịch sử/xu hướng để Phase 2.
+// ─────────────────────────────────────────
+model CompetitorPrice {
+  id             String    @id @default(uuid()) @db.Uuid
+  productId      String    @map("product_id") @db.Uuid
+  source         String    @db.VarChar(50) // 'shopnoidianhat' | 'kakaku' | 'congnghenhat' | ...
+  market         String    @default("vn") @db.VarChar(2) // 'vn' đối thủ VN | 'jp' kakaku
+  isPrimary      Boolean   @default(false) @map("is_primary") // true CHỈ cho shopnoidianhat (mốc)
+  url            String?   @db.Text // link nguồn đã dán
+  competitorName String?   @map("competitor_name") @db.VarChar(500)
+  priceVnd       Decimal?  @map("price_vnd") @db.Decimal(15, 2) // giá VNĐ (kakaku = ¥ × tỷ giá)
+  priceJpy       Decimal?  @map("price_jpy") @db.Decimal(15, 2) // giá yên gốc — CHỈ nguồn kakaku
+  fetchStatus    String    @default("ok") @map("fetch_status") @db.VarChar(20) // 'ok' | 'error'
+  fetchedAt      DateTime? @map("fetched_at") @db.Timestamptz // lần lấy giá gần nhất
+  createdAt      DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt      DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+  product        Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, source])
+  @@index([productId])
+  @@map("competitor_prices")
 }
 
 model ProductImage {
