@@ -1,7 +1,13 @@
 # Kế hoạch & Kiến trúc — Mở rộng Content Team sang Content Studio (đa kênh)
 
-> Trạng thái: **KẾ HOẠCH (chưa code)**. Hướng đã chốt với chủ dự án: **mở rộng Content Team
-> (an toàn) — KHÔNG sửa route `studio/generate` đang chạy**. Tài liệu này để duyệt trước.
+> Trạng thái: **ĐÃ TRIỂN KHAI (Phương án A, 2026-07-01)**. Hướng: mở rộng Content Team (an toàn) —
+> KHÔNG sửa route `studio/generate` đang chạy.
+>
+> **Đã làm:** (1) thêm `resolveEditorAuth` vào `POST /content/assets` — additive, tương thích
+> ngược, typecheck PASS, đã test tạo nháp `content_assets` (FACEBOOK/PENDING_REVIEW) qua API key
+> OK; (2) cập nhật 5 agent cho đa kênh (planner/writer/reviewer/cms-publisher/approval-manager);
+> (3) CLI thật `scripts/content.sh`. Route `studio/generate` giữ nguyên; cả 2 đường cùng đổ vào
+> `content_assets`. Chưa publish gì (draft-only).
 
 ## 1. Mục tiêu
 Cho phép Content Team (Plan → Fact-check → Write → Review/Score → Draft → Human approval) tạo

@@ -17,8 +17,12 @@ Bạn tạo **bản nháp** trên CMS sẵn có. Không bao giờ tự publish. 
 - Blog nháp: `POST /api/v1/admin/content/blog` với **`status: 'DRAFT'`**. **Tự gán đúng danh mục**
   (`categoryId`) theo danh mục blog mà content-planner đề xuất (map tên → BlogCategory.id); nếu
   thiếu thì suy ra từ loại nội dung (so sánh/đánh giá/hướng dẫn/FAQ/công nghệ). KHÔNG để trống danh mục.
-- Nội dung đa kênh (FB/TikTok/email): `POST /api/v1/admin/content/assets`
-  (`ContentAsset.status = AI_GENERATED` hoặc `PENDING_REVIEW`).
+- **Nội dung đa kênh** (FACEBOOK/ZALO/TIKTOK_CAPTION/TIKTOK_SCRIPT/YOUTUBE_SHORTS/YOUTUBE_OUTLINE/
+  EMAIL/PUSH/BANNER/META_AD/CHATBOT): `POST /api/v1/admin/content/assets` với `status:
+  'PENDING_REVIEW'` (sau khi fact-check + chấm ≥85). Route **đã chấp nhận Bearer API key content**
+  (auth thông cho Content Team, không lộ key). Gửi `metadata = { contentId, reviewerScore,
+  contentMode, sources[], blockedConditions[] }`, `provider: 'content-team'`, kèm
+  `sourceProductId/goal/audience` khi có. KHÔNG set `PUBLISHED` — người duyệt mới publish.
 
 ## Điều kiện BẮT BUỘC trước khi tạo nháp
 - SEO score **>= 85** (đọc `CONTENT_SCORECARD.json`).
@@ -50,5 +54,5 @@ Bạn tạo **bản nháp** trên CMS sẵn có. Không bao giờ tự publish. 
   metadata đã lưu.
 - Cập nhật `STATUS.json` → `draft_created` → `pending_human_approval`.
 
-> Vòng setup hiện tại: **CHƯA nối CMS production, CHƯA tạo nháp thật.** File này định nghĩa hành
-> vi; việc đấu nối thật chỉ chạy LOCAL, draft-only, sau khi chủ dự án duyệt kiến trúc.
+> Vận hành: đã nối CMS nội bộ, **chỉ chạy LOCAL, draft-only**. Blog + đa kênh (content_assets)
+> đã thông qua API key content; sản phẩm nháp qua `/admin/products`. Luôn dừng ở nháp — người duyệt mới publish.

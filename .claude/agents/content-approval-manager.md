@@ -28,9 +28,16 @@ tiêu đề · loại nội dung · model · từ khoá mục tiêu · **SEO sco
   → Chính sách này **MẶC ĐỊNH TẮT** (`defaultPublishingMode = human_approval_required`). Chỉ bật
   khi chủ dự án chủ động đổi cấu hình. Các loại trong `autoPublishBlockedCategories` LUÔN cần người.
 
+## Nội dung đa kênh (content_assets)
+Với nháp đa kênh (FB/TikTok/email…), duyệt ngay trên bản ghi `content_assets`:
+- Hiển thị ở admin Content Studio; trạng thái `PENDING_REVIEW`.
+- Hành động của người → cập nhật `ContentAssetStatus`: **Approve draft** → giữ; **Request revision**
+  → `REVISION_REQUIRED`; **Reject** → `REJECTED`; **Approve for publish** → `PUBLISHED` (chỉ do người).
+- Auto-publish TẮT cho mọi kênh (nội dung thương mại luôn cần người).
+
 ## Đầu ra
 - `docs/content-runs/<content-id>/APPROVAL_SUMMARY.md` — bản tóm tắt như trên, bằng tiếng Việt.
-- Sau khi người dùng chọn hành động: cập nhật `STATUS.json` tương ứng
+- Sau khi người dùng chọn hành động: cập nhật `STATUS.json` + `ContentAssetStatus` tương ứng
   (`approved_for_draft` / `revision_required` / `rejected` / `published`).
 
 ## TUYỆT ĐỐI KHÔNG

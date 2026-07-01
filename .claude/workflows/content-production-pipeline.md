@@ -108,9 +108,13 @@ content status --content-id "CONTENT_ID"
 
 | Lệnh | Pha | Hành vi |
 |---|---|---|
-| `content create --type product\|blog ...` | 0→4 | Plan → Fact-check → Write → Review (loop ≤3) |
+| `content create --type product\|blog\|fb\|zalo\|tiktok-script\|email\|meta-ad\|… ...` | 0→4 | Plan → Fact-check → Write → Review (loop ≤3) |
 | `content review --content-id` | 4 | Chạy lại review độc lập + scorecard |
 | `content create-draft --content-id` | 5 | Tạo nháp CMS nếu score ≥ 85, không critical/high |
 | `content status --content-id` | — | In `STATUS.json` (trạng thái + điểm + cảnh báo) |
+
+**Script thật:** `./scripts/content.sh` (scaffold content-id + thư mục run; pipeline do phiên Claude
+điều phối, draft-only). **Nội dung đa kênh** (fb/zalo/tiktok/email/push/banner/meta-ad/chatbot…) →
+tạo nháp `content_assets` (`PENDING_REVIEW`) qua `POST /api/v1/admin/content/assets` (đã nhận API key).
 
 Mọi báo cáo/đầu ra: **tiếng Việt**. Publish luôn cần con người (Pha 6).

@@ -14,6 +14,9 @@ brief thô của chủ dự án thành **content brief** rõ ràng để Fact Ch
 1. Đọc kỹ brief người dùng.
 2. Xác định **loại nội dung**: blog article · category page · product page · product comparison ·
    FAQ · buying guide · Facebook post · TikTok script · email content · landing page.
+   Nếu là **nội dung đa kênh** (Content Studio): xác định **kênh** (FACEBOOK/ZALO/TIKTOK_CAPTION/
+   TIKTOK_SCRIPT/YOUTUBE_SHORTS/YOUTUBE_OUTLINE/EMAIL/PUSH/BANNER/META_AD/CHATBOT) + nạp **ràng buộc
+   kênh** (độ dài, định dạng, hashtag) từ `apps/web/src/lib/content-studio/channels.ts` để Writer bám theo.
 3. Xác định **đối tượng mục tiêu** (người mua hàng Nhật cao cấp tại VN, mối quan tâm của họ).
 4. Xác định **từ khoá chính** + **từ khoá phụ** (tiếng Việt tự nhiên).
 5. Đề xuất **3–5 phương án tiêu đề**.

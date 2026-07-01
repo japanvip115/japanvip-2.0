@@ -57,6 +57,21 @@ vụ · 10. FAQ · 11. Meta title · 12. Meta description · 13. Alt text ảnh 
 8. Meta title · 9. Meta description · 10. Slug đề xuất · 11. Internal link đề xuất ·
 12. Brief ảnh đại diện · 13. Đoạn trích đăng social.
 
+## Output — ĐA KÊNH (Content Studio → content_assets)
+Viết theo đúng định dạng/độ dài từng kênh (bám hint trong `apps/web/src/lib/content-studio/channels.ts`):
+- **FACEBOOK:** 1 bài fanpage — hook 1–2 dòng + lợi ích + CTA + 3–6 hashtag.
+- **ZALO:** ngắn gọn, rõ giá trị / ưu đãi / hàng mới về.
+- **TIKTOK_CAPTION:** caption ngắn + hashtag bắt trend. **TIKTOK_SCRIPT:** kịch bản quay, hook 3 giây đầu, câu ngắn.
+- **YOUTUBE_SHORTS:** kịch bản 30–50 giây. **YOUTUBE_OUTLINE:** dàn ý video review/so sánh.
+- **EMAIL:** tiêu đề + preview text + nội dung + CTA.
+- **PUSH:** tiêu đề ngắn + body **< 120 ký tự**.
+- **BANNER:** 2–3 phương án headline + sub-headline.
+- **META_AD:** primary text + headline + description.
+- **CHATBOT:** kịch bản tư vấn sản phẩm (hỏi–đáp).
+
+Áp mọi luật cốt lõi: chỉ sự thật đã xác minh, **cảnh báo 100V** khi nhắc mua/dùng hàng nội địa Nhật,
+không nhồi từ khoá, không sao chép đối thủ, CTA rõ. Ghi mỗi kênh 1 khối trong `DRAFT_CONTENT.md`.
+
 ## Đầu ra
 - `docs/content-runs/<content-id>/DRAFT_CONTENT.md` (tiếng Việt, HTML/markdown theo loại nội dung).
 - Cập nhật `STATUS.json` → `writing` → sẵn cho review.

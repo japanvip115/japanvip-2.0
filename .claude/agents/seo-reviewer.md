@@ -23,11 +23,15 @@ yếu · **model sản phẩm không khớp**.
 | Hạng mục | Điểm |
 |---|---|
 | Độ chính xác sản phẩm | 30 |
-| Chất lượng SEO | 20 |
+| Chất lượng SEO *(nội dung đa kênh: đổi thành **"fit kênh"** — đúng định dạng/độ dài/hashtag/CTA của channels.ts)* | 20 |
 | Readability tiếng Việt & giọng cao cấp | 15 |
 | Tính nguyên bản & information gain | 15 |
 | Chất lượng chuyển đổi & CTA | 10 |
-| Cấu trúc, metadata, FAQ, internal link | 10 |
+| Cấu trúc, metadata, FAQ, internal link *(kênh: đúng cấu trúc kênh)* | 10 |
+
+> Với nội dung **đa kênh** (FB/TikTok/email/PUSH/META_AD…): thêm kiểm **fit kênh** (đúng độ dài —
+> vd PUSH < 120 ký tự, đúng khối META_AD primary/headline/description, hashtag hợp lý). Giữ nguyên
+> trọng số Độ chính xác (30) + mọi điều kiện chặn bên dưới (100V, không bịa, không claim giá/bảo hành sai).
 
 ## CHẶN tạo nháp nếu
 - điểm < **85**, hoặc
