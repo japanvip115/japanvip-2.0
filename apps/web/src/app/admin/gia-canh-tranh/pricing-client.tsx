@@ -24,6 +24,15 @@ interface Row {
 }
 
 const vnd = (n: number | null) => (n == null ? '—' : n.toLocaleString('vi-VN') + 'đ')
+// Gọn: 76.600.000 → "76.6tr", 850.000 → "850k"
+const compactVnd = (n: number | null) => {
+  if (n == null) return '—'
+  const sign = n < 0 ? '-' : ''
+  const a = Math.abs(n)
+  if (a >= 1e6) { const m = a / 1e6; return sign + (Number.isInteger(m) ? String(m) : m.toFixed(1).replace(/\.0$/, '')) + 'tr' }
+  if (a >= 1e3) return sign + Math.round(a / 1e3) + 'k'
+  return sign + a
+}
 const pct = (n: number | null) => (n == null ? '—' : (n >= 0 ? '+' : '') + Math.round(n) + '%')
 
 const REF_SOURCES = ['congnghenhat', 'hangnhat123', 'hiephongjapan', 'phongcachnhat'] as const
@@ -177,18 +186,18 @@ export default function PricingClient() {
                       </div>
                     )}
                   </td>
-                  <td className="px-3 py-3 font-medium text-white">{vnd(r.yourPrice)}</td>
-                  <td className="px-3 py-3 text-gray-200">{vnd(r.anchor)}</td>
+                  <td className="px-3 py-3 font-medium text-white">{compactVnd(r.yourPrice)}</td>
+                  <td className="px-3 py-3 text-gray-200">{compactVnd(r.anchor)}</td>
                   <td className={`px-3 py-3 font-medium ${diffColor}`}>
-                    {r.diffFromAnchor == null ? '—' : (r.diffFromAnchor >= 0 ? '+' : '') + vnd(r.diffFromAnchor)}
+                    {r.diffFromAnchor == null ? '—' : (r.diffFromAnchor >= 0 ? '+' : '') + compactVnd(r.diffFromAnchor)}
                     {(red || orange) && <div className="mt-0.5 text-[11px] font-normal text-gray-400">{(red || orange)!.message}</div>}
                   </td>
-                  <td className="px-3 py-3 text-gray-400">{vnd(r.japanVnd)}</td>
+                  <td className="px-3 py-3 text-gray-400">{compactVnd(r.japanVnd)}</td>
                   <td className="px-3 py-3 text-gray-400">{pct(r.importMarkupPct)}</td>
                   <td className="px-3 py-3 text-gray-400">
-                    {r.refCount ? <span>{vnd(r.refMin)} / <b className="text-gray-300">{vnd(r.refMedian)}</b> / {vnd(r.refMax)} <span className="text-gray-600">({r.refCount})</span></span> : '—'}
+                    {r.refCount ? <span>{compactVnd(r.refMin)} / <b className="text-gray-300">{compactVnd(r.refMedian)}</b> / {compactVnd(r.refMax)} <span className="text-gray-600">({r.refCount})</span></span> : '—'}
                   </td>
-                  <td className="px-3 py-3 font-semibold text-emerald-400">{vnd(r.suggested)}</td>
+                  <td className="px-3 py-3 font-semibold text-emerald-400">{compactVnd(r.suggested)}</td>
                   <td className="px-3 py-3">
                     {r.suggested != null && (
                       <button
