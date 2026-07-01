@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server'
 import { prisma } from '@japanvip/db'
 import { fetchSourcePrice } from '@/lib/pricing/source-price'
 import { jpyToVnd, priceFlags, median } from '@/lib/pricing/competitive'
+import { mapLimit } from '@/lib/pricing/match'
 import { sendPriceAlertEmail } from '@/lib/email.service'
 
 export const maxDuration = 60
@@ -23,6 +24,7 @@ export async function GET(req: NextRequest) {
 
   const rows = await prisma.competitorPrice.findMany({
     where: { url: { not: null } },
+    orderBy: { fetchedAt: { sort: 'asc', nulls: 'first' } },
     take: 150,
   })
 
@@ -33,14 +35,14 @@ export async function GET(req: NextRequest) {
   let updated = 0
   let failed = 0
 
-  // Cào tuần tự theo lô nhỏ (giữ nhẹ connection pool Neon + tránh chặn bot)
-  for (const row of rows) {
+  // Cào song song 5 luồng (row cũ nhất/chưa có giá trước) → cập nhật giá + ghi lịch sử
+  await mapLimit(rows, 5, async (row) => {
     try {
       const fetched = await fetchSourcePrice(row.url!)
       if (fetched.price == null) {
         await prisma.competitorPrice.update({ where: { id: row.id }, data: { fetchStatus: 'error', fetchedAt: new Date() } })
         failed++
-        continue
+        return
       }
       const isJp = row.market === 'jp'
       const priceJpy = isJp ? fetched.price : null
@@ -60,7 +62,7 @@ export async function GET(req: NextRequest) {
       await prisma.competitorPrice.update({ where: { id: row.id }, data: { fetchStatus: 'error', fetchedAt: new Date() } }).catch(() => {})
       failed++
     }
-  }
+  })
 
   // Tính cờ lệch dải → gom SP cần cảnh báo
   const productIds = [...new Set(rows.map((r) => r.productId))]

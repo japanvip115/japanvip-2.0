@@ -24,3 +24,15 @@ export function matchUrl(name: string, catalog: { url: string; norm: string }[])
   }
   return null
 }
+
+// Chạy fn cho từng item với tối đa `limit` luồng đồng thời (tránh timeout + quá tải nguồn).
+export async function mapLimit<T>(items: T[], limit: number, fn: (item: T) => Promise<unknown>): Promise<void> {
+  let i = 0
+  const workers = Array.from({ length: Math.min(limit, items.length) }, async () => {
+    while (i < items.length) {
+      const idx = i++
+      await fn(items[idx]!)
+    }
+  })
+  await Promise.all(workers)
+}
