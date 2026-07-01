@@ -185,6 +185,16 @@ export function StudioClient({ products }: { products: Product[] }) {
     setBusyId(''); loadSaved()
   }
 
+  // Cầu nối → Facebook Marketing: tạo NHÁP FacebookPost (không tự đăng)
+  async function toFacebook(id: string) {
+    setBusyId(id)
+    const res = await fetch(`/api/v1/admin/content/assets/${id}/to-facebook`, { method: 'POST' })
+    const d = await res.json().catch(() => ({}))
+    setBusyId('')
+    alert(d.success ? 'Đã tạo nháp bài fanpage — mở Facebook Marketing để đăng.' : (d.error || 'Không tạo được nháp fanpage'))
+    if (d.success) loadSaved()
+  }
+
   return (
     <div className="mx-auto max-w-7xl space-y-6 p-6 lg:p-8">
       {/* Header */}
@@ -396,6 +406,10 @@ export function StudioClient({ products }: { products: Product[] }) {
                             {a.status !== 'APPROVED' && (
                               <button onClick={() => setAssetStatus(a.id, 'APPROVED')} disabled={busyId === a.id}
                                 className="rounded-lg bg-emerald-600/80 px-2 py-1 text-xs font-medium text-white hover:bg-emerald-600 disabled:opacity-50">Duyệt</button>
+                            )}
+                            {a.status === 'APPROVED' && a.channel === 'FACEBOOK' && (
+                              <button onClick={() => toFacebook(a.id)} disabled={busyId === a.id}
+                                className="rounded-lg border border-blue-500/40 bg-blue-500/10 px-2 py-1 text-xs font-medium text-blue-300 hover:bg-blue-500/20 disabled:opacity-50">Đăng lên fanpage</button>
                             )}
                             {a.status !== 'PENDING_REVIEW' && a.status !== 'APPROVED' && (
                               <button onClick={() => setAssetStatus(a.id, 'PENDING_REVIEW')} disabled={busyId === a.id}

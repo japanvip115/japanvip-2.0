@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server'
 import { z } from 'zod'
 import { auth } from '@/lib/auth'
 import { hasRole } from '@/lib/auth-types'
+import { resolveEditorAuth } from '@/lib/api-auth'
 import { prisma, Prisma } from '@japanvip/db'
 import { apiError, apiSuccess, handleApiError } from '@/lib/api-response'
 import { createAuditLog } from '@/lib/audit'
@@ -71,13 +72,22 @@ const createSchema = z.object({
 })
 
 export async function POST(req: NextRequest) {
-  const session = await auth()
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const user = session?.user as any
-  if (!user || !hasRole(user.role, 'EDITOR')) return apiError('Unauthorized', 401)
+  // Cho phép session EDITOR/ADMIN (như cũ) HOẶC Bearer API key content (để Content Team ghi nháp)
+  if (!(await resolveEditorAuth(req))) return apiError('Unauthorized', 401)
 
   try {
     const input = createSchema.parse(await req.json())
+    // createdBy: ưu tiên user trong session; nếu xác thực bằng API key thì fallback admin đầu tiên
+    const session = await auth()
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const sessionUserId = (session?.user as any)?.id as string | undefined
+    const createdBy = sessionUserId ?? (await prisma.user.findFirst({
+      where: { role: { in: ['ADMIN', 'SUPER_ADMIN'] } },
+      select: { id: true },
+      orderBy: { createdAt: 'asc' },
+    }))?.id
+    if (!createdBy) return apiError('Thiếu người tạo', 400)
+
     const asset = await prisma.contentAsset.create({
       data: {
         title: input.title,
@@ -90,11 +100,11 @@ export async function POST(req: NextRequest) {
         goal: input.goal ?? null,
         audience: input.audience ?? null,
         metadata: (input.metadata ?? undefined) as Prisma.InputJsonValue | undefined,
-        createdBy: user.id,
+        createdBy,
       },
     })
     await createAuditLog({
-      userId: user.id,
+      userId: createdBy,
       action: 'content_asset.create',
       resourceType: 'ContentAsset',
       resourceId: asset.id,
