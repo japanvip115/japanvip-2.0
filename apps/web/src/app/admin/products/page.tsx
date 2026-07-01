@@ -1,10 +1,9 @@
 import type { Metadata } from 'next'
 import { prisma } from '@japanvip/db'
 import Link from 'next/link'
-import Image from 'next/image'
 import type { ProductStatus } from '@japanvip/db'
-import { Plus, ImageOff, Link2, Home, ExternalLink } from 'lucide-react'
-import { ProductActions } from '@/components/admin/product-actions'
+import { Plus, Link2, Home } from 'lucide-react'
+import { ProductsTableClient, type ProductRow } from './products-table-client'
 
 export const metadata: Metadata = { title: 'Admin — Quản Lý Sản Phẩm' }
 
@@ -15,20 +14,6 @@ const STATUS_TABS = [
   { label: 'Đã bán', value: 'SOLD' },
   { label: 'Lưu kho', value: 'ARCHIVED' },
 ]
-
-const STATUS_COLORS: Record<ProductStatus, string> = {
-  ACTIVE: 'bg-green-500/15 text-green-400 ring-1 ring-inset ring-green-500/20',
-  DRAFT: 'bg-gray-500/15 text-gray-400 ring-1 ring-inset ring-gray-500/20',
-  SOLD: 'bg-blue-500/15 text-blue-400 ring-1 ring-inset ring-blue-500/20',
-  ARCHIVED: 'bg-yellow-500/15 text-yellow-400 ring-1 ring-inset ring-yellow-500/20',
-}
-
-const STATUS_LABELS: Record<ProductStatus, string> = {
-  ACTIVE: 'Đang bán',
-  DRAFT: 'Bản nháp',
-  SOLD: 'Đã bán',
-  ARCHIVED: 'Lưu kho',
-}
 
 type SearchParams = Promise<{ status?: string; page?: string; q?: string; categoryId?: string }>
 
@@ -73,6 +58,19 @@ export default async function AdminProductsPage({ searchParams }: { searchParams
   ])
 
   const totalPages = Math.ceil(total / take)
+
+  const returnTo = `/admin/products?status=${status}&q=${q}&categoryId=${categoryId}&page=${pageNum}`
+  const rows: ProductRow[] = products.map((p) => ({
+    id: p.id,
+    name: p.name,
+    slug: p.slug,
+    imageUrl: p.images[0]?.url ?? null,
+    categoryName: p.category?.name ?? null,
+    brandName: p.brand?.name ?? null,
+    status: p.status as ProductRow['status'],
+    auctionCount: p._count.auctions,
+    createdAt: p.createdAt.toISOString(),
+  }))
 
   return (
     <div>
@@ -153,93 +151,8 @@ export default async function AdminProductsPage({ searchParams }: { searchParams
         </div>
       </div>
 
-      {/* Table */}
-      <div className="overflow-hidden rounded-xl border border-gray-700 bg-gray-800/60">
-        <table className="w-full text-sm">
-          <thead className="bg-gray-900/60">
-            <tr>
-              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Sản phẩm</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Danh mục / Thương hiệu</th>
-              <th className="px-4 py-3 text-center text-xs font-semibold uppercase tracking-wide text-gray-500">Trạng thái</th>
-              <th className="px-4 py-3 text-center text-xs font-semibold uppercase tracking-wide text-gray-500">Đấu giá</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Ngày tạo</th>
-              <th className="px-4 py-3" />
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-700/50">
-            {products.length === 0 ? (
-              <tr>
-                <td colSpan={6} className="py-12 text-center text-gray-500">
-                  Không có sản phẩm nào
-                </td>
-              </tr>
-            ) : (
-              products.map((product) => (
-                <tr key={product.id} className="hover:bg-gray-700/30 transition-colors">
-                  <td className="px-4 py-3">
-                    <Link href={`/admin/products/${product.id}?returnTo=${encodeURIComponent(`/admin/products?status=${status}&q=${q}&categoryId=${categoryId}&page=${pageNum}`)}`} className="flex items-center gap-3">
-                      {product.images[0] ? (
-                        <div className="relative h-10 w-10 flex-shrink-0 overflow-hidden rounded-lg border border-gray-700">
-                          <Image src={product.images[0].url} alt="" fill className="object-cover" sizes="40px" unoptimized={!product.images[0].url.includes('media.japanvip.vn')} />
-                        </div>
-                      ) : (
-                        <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg border border-gray-700 bg-gray-700/30">
-                          <ImageOff className="h-5 w-5 text-gray-600" />
-                        </div>
-                      )}
-                      <div className="min-w-0">
-                        <p className="max-w-[240px] truncate text-sm font-medium text-gray-300 hover:text-white">
-                          {product.name}
-                        </p>
-                        <p className="font-mono text-xs text-gray-500">{product.slug}</p>
-                      </div>
-                    </Link>
-                  </td>
-                  <td className="px-4 py-3">
-                    <p className="text-sm text-gray-300">{product.category?.name ?? '—'}</p>
-                    <p className="text-xs text-gray-500">{product.brand?.name ?? '—'}</p>
-                  </td>
-                  <td className="px-4 py-3 text-center">
-                    <span className={`inline-block whitespace-nowrap rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[product.status as ProductStatus]}`}>
-                      {STATUS_LABELS[product.status as ProductStatus]}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 text-center text-sm text-gray-300">
-                    {product._count.auctions}
-                  </td>
-                  <td className="px-4 py-3 text-xs text-gray-500">
-                    {new Date(product.createdAt).toLocaleDateString('vi-VN')}
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="flex items-center justify-end gap-3">
-                      <a
-                        href={`/${product.slug}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        title="Xem trên web"
-                        className="text-gray-400 hover:text-white transition-colors"
-                      >
-                        <ExternalLink size={15} />
-                      </a>
-                      <Link
-                        href={`/admin/products/${product.id}?returnTo=${encodeURIComponent(`/admin/products?status=${status}&q=${q}&categoryId=${categoryId}&page=${pageNum}`)}`}
-                        className="whitespace-nowrap text-xs font-medium text-red-400 hover:underline"
-                      >
-                        Chi tiết
-                      </Link>
-                      <ProductActions
-                        productId={product.id}
-                        status={product.status as 'DRAFT' | 'ACTIVE' | 'SOLD' | 'ARCHIVED'}
-                        auctionCount={product._count.auctions}
-                      />
-                    </div>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
+      {/* Table + chọn/xoá hàng loạt */}
+      <ProductsTableClient products={rows} returnTo={returnTo} />
 
       {/* Pagination */}
       {totalPages > 1 && (() => {
