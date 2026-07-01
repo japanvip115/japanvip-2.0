@@ -76,7 +76,7 @@ export async function fetchSourcePrice(url: string): Promise<FetchedPrice> {
 }
 
 // Giải mã HTML entity trong tên (og:title Haravan mã hoá tiếng Việt kiểu &#226;)
-function decodeEntities(s: string): string {
+export function decodeEntities(s: string): string {
   return s
     .replace(/&#(\d+);/g, (_, n) => String.fromCharCode(Number(n)))
     .replace(/&#x([0-9a-f]+);/gi, (_, n) => String.fromCharCode(parseInt(n, 16)))

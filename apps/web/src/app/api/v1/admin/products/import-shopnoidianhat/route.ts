@@ -4,7 +4,7 @@ import { auth } from '@/lib/auth'
 import { hasRole } from '@/lib/auth-types'
 import { apiSuccess, apiError, handleApiError } from '@/lib/api-response'
 import { uploadFile } from '@/lib/r2'
-import { fetchSourcePrice } from '@/lib/pricing/source-price'
+import { fetchSourcePrice, decodeEntities } from '@/lib/pricing/source-price'
 import { extractModels, norm, mapLimit } from '@/lib/pricing/match'
 import { scrapeCompetitor } from '@/app/api/v1/admin/ai/scrape-competitor/route'
 import sharp from 'sharp'
@@ -22,21 +22,37 @@ function slugifyVi(str: string): string {
     .replace(/[^a-z0-9\s-]/g, '').trim().replace(/\s+/g, '-').replace(/-+/g, '-').slice(0, 200)
 }
 
+// name keyword (đã decode, lowercase) → chuỗi khớp tên danh mục web. Xếp cụ thể trước, chung sau.
 const CAT_KEYWORDS: Array<{ match: string[]; cat: string }> = [
   { match: ['nồi cơm', 'rice cooker'], cat: 'nồi cơm' },
-  { match: ['quạt', 'fan'], cat: 'quạt' },
-  { match: ['tủ lạnh', 'refrigerator', 'fridge'], cat: 'tủ lạnh' },
+  { match: ['bếp từ', 'induction'], cat: 'bếp từ' },
+  { match: ['lò vi sóng', 'microwave', 'vi sóng'], cat: 'vi sóng' },
   { match: ['máy giặt', 'washing'], cat: 'máy giặt' },
+  { match: ['máy sấy bát', 'sấy bát'], cat: 'sấy bát' },
+  { match: ['máy rửa bát', 'rửa bát', 'dishwasher'], cat: 'rửa bát' },
+  { match: ['hút mùi', 'máy hút mùi'], cat: 'hút mùi' },
+  { match: ['máy hút bụi', 'hút bụi', 'vacuum'], cat: 'hút bụi' },
+  { match: ['máy hút ẩm', 'hút ẩm'], cat: 'hút ẩm' },
   { match: ['lọc nước', 'water purifier', 'ion kiềm'], cat: 'lọc nước' },
-  { match: ['lọc không khí', 'air purifier'], cat: 'lọc không khí' },
-  { match: ['vòi', 'bồn cầu', 'toilet', 'sen tắm', 'vệ sinh', 'nắp bệt'], cat: 'vệ sinh' },
+  { match: ['lọc không khí', 'lọc khí', 'air purifier'], cat: 'lọc khí' },
+  { match: ['điều hòa', 'máy lạnh', 'điều hoà'], cat: 'điều hòa' },
+  { match: ['ghế massage', 'massage'], cat: 'massage' },
+  { match: ['đồng hồ', 'clock', 'watch'], cat: 'đồng hồ' },
+  { match: ['nắp bệt', 'nắp bồn cầu'], cat: 'nắp bệt' },
+  { match: ['bồn cầu', 'bệt vệ sinh', 'toilet'], cat: 'bệt' },
+  { match: ['vòi bếp'], cat: 'vòi bếp' },
+  { match: ['vòi chậu', 'vòi lavabo', 'vòi rửa'], cat: 'vòi chậu' },
+  { match: ['sen tắm', 'vòi sen', 'thiết bị vệ sinh'], cat: 'vệ sinh' },
+  { match: ['tủ lạnh', 'refrigerator', 'fridge'], cat: 'tủ lạnh' },
+  { match: ['quạt', 'fan'], cat: 'quạt' },
 ]
 async function findCategoryId(name: string, cats: { id: string; name: string }[]): Promise<string | null> {
   const n = name.toLowerCase()
   for (const rule of CAT_KEYWORDS) {
     if (rule.match.some((kw) => n.includes(kw))) {
-      const c = cats.find((x) => x.name.toLowerCase().includes(rule.cat))
-      if (c) return c.id
+      // trong các danh mục khớp, ưu tiên tên NGẮN nhất (danh mục cha, tránh dính brand con)
+      const matched = cats.filter((x) => x.name.toLowerCase().includes(rule.cat)).sort((a, b) => a.name.length - b.name.length)
+      if (matched[0]) return matched[0].id
     }
   }
   return null
@@ -91,9 +107,10 @@ export async function POST(req: NextRequest) {
     await mapLimit(candidates, 3, async (url) => {
       try {
         const [data, priced] = await Promise.all([scrapeCompetitor(url), fetchSourcePrice(url)])
-        const name = (data.name || priced.name || '').trim()
+        const name = decodeEntities((priced.name || data.name || '').trim())
         if (!name) return
-        const price = priced.price ?? data.price ?? null
+        const priceRaw = priced.price ?? data.price ?? null
+        const price = priceRaw && priceRaw > 0 ? priceRaw : null
 
         const r2 = data.images[0] ? await uploadPrimaryImage(data.images[0]) : null
 
