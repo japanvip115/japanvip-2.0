@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { ImageOff, ExternalLink, Trash2 } from 'lucide-react'
+import { ImageOff, ExternalLink, Trash2, Upload, EyeOff } from 'lucide-react'
 import { ProductActions } from '@/components/admin/product-actions'
 
 type Status = 'DRAFT' | 'ACTIVE' | 'SOLD' | 'ARCHIVED'
@@ -61,21 +61,53 @@ export function ProductsTableClient({ products, returnTo }: { products: ProductR
     } else alert('❌ ' + (json.error || 'Lỗi'))
   }
 
+  async function bulkStatus(status: 'ACTIVE' | 'DRAFT') {
+    if (!sel.size) return
+    if (!confirm(`${status === 'ACTIVE' ? 'ĐĂNG LÊN WEB' : 'Đưa về Nháp'} ${sel.size} sản phẩm đã chọn?`)) return
+    setBusy(true)
+    const res = await fetch('/api/v1/admin/products/bulk-status', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ids: [...sel], status }),
+    })
+    const json = await res.json()
+    setBusy(false)
+    if (json.success) {
+      alert(json.message)
+      window.location.reload()
+    } else alert('❌ ' + (json.error || 'Lỗi'))
+  }
+
   const linkTo = (id: string) => `/admin/products/${id}?returnTo=${encodeURIComponent(returnTo)}`
 
   return (
     <>
       {sel.size > 0 && (
-        <div className="mb-3 flex items-center gap-3 rounded-lg border border-red-500/40 bg-red-500/10 px-4 py-2.5">
-          <span className="text-sm text-gray-200">Đã chọn <b className="text-white">{sel.size}</b> sản phẩm</span>
+        <div className="mb-3 flex flex-wrap items-center gap-2 rounded-lg border border-gray-600 bg-gray-800 px-4 py-2.5">
+          <span className="mr-1 text-sm text-gray-200">Đã chọn <b className="text-white">{sel.size}</b> sản phẩm</span>
+          <button
+            onClick={() => bulkStatus('ACTIVE')}
+            disabled={busy}
+            className="flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3 py-1.5 text-sm font-semibold text-white transition-colors hover:bg-emerald-500 disabled:opacity-50"
+          >
+            <Upload className="h-4 w-4" /> Đăng đã chọn
+          </button>
+          <button
+            onClick={() => bulkStatus('DRAFT')}
+            disabled={busy}
+            className="flex items-center gap-1.5 rounded-lg bg-gray-600 px-3 py-1.5 text-sm font-semibold text-white transition-colors hover:bg-gray-500 disabled:opacity-50"
+          >
+            <EyeOff className="h-4 w-4" /> Về Nháp
+          </button>
           <button
             onClick={bulkDelete}
             disabled={busy}
             className="flex items-center gap-1.5 rounded-lg bg-red-600 px-3 py-1.5 text-sm font-semibold text-white transition-colors hover:bg-red-500 disabled:opacity-50"
           >
-            <Trash2 className="h-4 w-4" /> {busy ? 'Đang xoá…' : 'Xoá đã chọn'}
+            <Trash2 className="h-4 w-4" /> Xoá đã chọn
           </button>
-          <button onClick={() => setSel(new Set())} className="text-xs text-gray-400 hover:underline">Bỏ chọn</button>
+          <button onClick={() => setSel(new Set())} className="ml-1 text-xs text-gray-400 hover:underline">Bỏ chọn</button>
+          {busy && <span className="text-xs text-gray-400">Đang xử lý…</span>}
         </div>
       )}
 
