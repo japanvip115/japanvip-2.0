@@ -46,7 +46,7 @@ function processDescription(html: string): { processed: string; toc: TocItem[] }
   html = stripMarkdownFence(html)
   // Thêm trụ sở HPhòng vào sau showroom HN trong cta-box (fix toàn bộ SP hiện có)
   html = html.replace(
-    /Showroom(?:\s+Hà\s+Nội\s*:\s*)?21\s+Lê\s+Văn\s+Lương[^<.·]*/gi,
+    /Showroom\s+(?:Hà\s+Nội\s*:\s*)?21\s+Lê\s+Văn\s+Lương[^<.]*/gi,
     'Showroom Hà Nội: 21 Lê Văn Lương, Thanh Xuân · Trụ sở Hải Phòng: 115 Đinh Tiên Hoàng, Hồng Bàng'
   )
   const toc: TocItem[] = []
