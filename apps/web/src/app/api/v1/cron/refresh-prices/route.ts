@@ -2,7 +2,8 @@ import { NextRequest } from 'next/server'
 import { prisma } from '@japanvip/db'
 import { fetchSourcePrice } from '@/lib/pricing/source-price'
 import { jpyToVnd, priceFlags, median } from '@/lib/pricing/competitive'
-import { mapLimit } from '@/lib/pricing/match'
+import { mapLimit, extractModels } from '@/lib/pricing/match'
+import { fetchRakutenPrice } from '@/lib/pricing/rakuten'
 import { sendPriceAlertEmail } from '@/lib/email.service'
 
 export const maxDuration = 60
@@ -25,6 +26,7 @@ export async function GET(req: NextRequest) {
   const rows = await prisma.competitorPrice.findMany({
     where: { url: { not: null } },
     orderBy: { fetchedAt: { sort: 'asc', nulls: 'first' } },
+    include: { product: { select: { name: true } } },
     take: 150,
   })
 
@@ -38,15 +40,30 @@ export async function GET(req: NextRequest) {
   // Cào song song 5 luồng (row cũ nhất/chưa có giá trước) → cập nhật giá + ghi lịch sử
   await mapLimit(rows, 5, async (row) => {
     try {
-      const fetched = await fetchSourcePrice(row.url!)
-      if (fetched.price == null) {
-        await prisma.competitorPrice.update({ where: { id: row.id }, data: { fetchStatus: 'error', fetchedAt: new Date() } })
-        failed++
-        return
+      // kakaku cũ (Playwright) không refresh được serverless → bỏ qua
+      if (row.market === 'jp' && row.source !== 'rakuten') return
+
+      let priceJpy: number | null = null
+      let priceVnd: number | null = null
+      if (row.source === 'rakuten') {
+        const model = extractModels(row.product.name)[0]
+        const r = model ? await fetchRakutenPrice(model) : null
+        if (!r) {
+          await prisma.competitorPrice.update({ where: { id: row.id }, data: { fetchStatus: 'error', fetchedAt: new Date() } })
+          failed++
+          return
+        }
+        priceJpy = r.priceJpy
+        priceVnd = rate ? jpyToVnd(r.priceJpy, rate) : null
+      } else {
+        const fetched = await fetchSourcePrice(row.url!)
+        if (fetched.price == null) {
+          await prisma.competitorPrice.update({ where: { id: row.id }, data: { fetchStatus: 'error', fetchedAt: new Date() } })
+          failed++
+          return
+        }
+        priceVnd = fetched.price
       }
-      const isJp = row.market === 'jp'
-      const priceJpy = isJp ? fetched.price : null
-      const priceVnd = isJp ? (rate ? jpyToVnd(fetched.price, rate) : null) : fetched.price
 
       await prisma.competitorPrice.update({
         where: { id: row.id },

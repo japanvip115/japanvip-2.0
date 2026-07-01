@@ -4,7 +4,7 @@ interface Series { source: string; points: Array<{ t: string; price: number }> }
 
 const COLORS: Record<string, string> = {
   shopnoidianhat: '#ef4444',
-  kakaku: '#a855f7',
+  rakuten: '#a855f7',
   congnghenhat: '#3b82f6',
   hangnhat123: '#22c55e',
   hiephongjapan: '#eab308',
