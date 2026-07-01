@@ -14,6 +14,7 @@ interface Row {
   suggested: number | null
   diffFromAnchor: number | null
   japanVnd: number | null
+  japanLowVnd: number | null
   japanJpy: number | null
   importMarkupPct: number | null
   refMin: number | null
@@ -106,17 +107,6 @@ export default function PricingClient() {
     } else setMsg('❌ ' + (json.error || 'Lỗi'))
   }
 
-  async function kakakuMatch() {
-    if (!confirm('Cào giá Nhật (kakaku) cho ~12 SP? Chỉ chạy khi đang bật dev LOCAL (Vercel không có Chrome).')) return
-    setBusy('kakaku')
-    setMsg('⏳ Đang cào giá Nhật (Playwright, hơi chậm)…')
-    const res = await fetch('/api/v1/admin/pricing/kakaku-match', { method: 'POST' })
-    const json = await res.json()
-    setBusy(null)
-    if (json.success) { setMsg(`✅ ${json.message}`); load() }
-    else setMsg('❌ ' + (json.error || 'Lỗi') + (res.status === 503 ? ' (chạy trên máy local có Chrome)' : ''))
-  }
-
   async function toggleChart(productId: string) {
     if (chartOpen === productId) { setChartOpen(null); return }
     setChartOpen(productId)
@@ -149,9 +139,6 @@ export default function PricingClient() {
         <button onClick={autoMatch} disabled={busy === 'automatch'} className="flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3 py-2 text-sm font-semibold text-white hover:bg-emerald-500 disabled:opacity-50">
           <Zap className="h-4 w-4" /> Cào giá tự động
         </button>
-        <button onClick={kakakuMatch} disabled={busy === 'kakaku'} title="Cào giá Nhật kakaku — chỉ chạy khi bật dev LOCAL" className="flex items-center gap-1.5 rounded-lg bg-purple-600 px-3 py-2 text-sm font-semibold text-white hover:bg-purple-500 disabled:opacity-50">
-          <Zap className="h-4 w-4" /> Cào giá Nhật (local)
-        </button>
         {msg && <span className="text-sm text-gray-300">{msg}</span>}
       </div>
 
@@ -159,7 +146,7 @@ export default function PricingClient() {
         <table className="w-full text-sm">
           <thead className="bg-gray-900/60 text-left">
             <tr className="border-b border-gray-700">
-              {['Sản phẩm', 'Giá bạn', 'shopnoidianhat (mốc)', 'Chênh mốc', 'Giá Nhật (kakaku)', 'Chênh NK', '4 trang khác', 'Đề xuất', ''].map((h) => (
+              {['Sản phẩm', 'Giá bạn', 'shopnoidianhat (mốc)', 'Chênh mốc', 'Giá Nhật (Rakuten)', 'Chênh NK', '4 trang khác', 'Đề xuất', ''].map((h) => (
                 <th key={h} className="px-3 py-3 text-xs font-semibold uppercase tracking-wide text-gray-500">{h}</th>
               ))}
             </tr>
@@ -206,8 +193,13 @@ export default function PricingClient() {
                     {r.diffFromAnchor == null ? '—' : (r.diffFromAnchor >= 0 ? '+' : '') + compactVnd(r.diffFromAnchor)}
                     {(red || orange) && <div className="mt-0.5 text-[11px] font-normal text-gray-400">{(red || orange)!.message}</div>}
                   </td>
-                  <td className="px-3 py-3 text-gray-400">{compactVnd(r.japanVnd)}</td>
-                  <td className="px-3 py-3 text-gray-400">{pct(r.importMarkupPct)}</td>
+                  <td className="px-3 py-3 text-gray-400">
+                    {compactVnd(r.japanVnd)}
+                    {r.japanLowVnd != null && r.japanLowVnd !== r.japanVnd && (
+                      <span className="block text-[11px] text-emerald-500" title="Giá thấp nhất trong lịch sử (đáy ≈ giá VN nhập)">↓ đáy {compactVnd(r.japanLowVnd)}</span>
+                    )}
+                  </td>
+                  <td className="px-3 py-3 text-gray-400" title="Chênh lệch tính theo giá Nhật ĐÁY (thấp nhất lịch sử)">{pct(r.importMarkupPct)}</td>
                   <td className="px-3 py-3 text-gray-400">
                     {r.refCount ? <span>{compactVnd(r.refMin)} / <b className="text-gray-300">{compactVnd(r.refMedian)}</b> / {compactVnd(r.refMax)} <span className="text-gray-600">({r.refCount})</span></span> : '—'}
                   </td>

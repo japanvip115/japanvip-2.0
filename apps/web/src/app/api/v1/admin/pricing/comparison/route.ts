@@ -42,12 +42,21 @@ export async function GET(req: NextRequest) {
       skip: offset,
     })
 
+    // Giá Nhật THẤP NHẤT trong lịch sử (đáy ≈ giá VN nhập thực) — tránh so nhầm lúc giá đỉnh
+    const lows = await prisma.competitorPriceHistory.groupBy({
+      by: ['productId'],
+      where: { source: 'rakuten', productId: { in: products.map((p) => p.id) }, priceVnd: { not: null } },
+      _min: { priceVnd: true },
+    })
+    const lowMap = new Map(lows.map((l) => [l.productId, l._min.priceVnd != null ? Number(l._min.priceVnd) : null]))
+
     const rows = products.map((p) => {
       const yourPrice = num(p.salePrice)
       const anchorRow = p.competitorPrices.find((c) => c.isPrimary) ?? null
       const anchor = num(anchorRow?.priceVnd)
-      const kakakuRow = p.competitorPrices.find((c) => c.source === 'kakaku') ?? null
+      const kakakuRow = p.competitorPrices.find((c) => c.source === 'rakuten') ?? p.competitorPrices.find((c) => c.market === 'jp') ?? null
       const japanVnd = num(kakakuRow?.priceVnd)
+      const japanLowVnd = lowMap.get(p.id) ?? japanVnd
       const refPrices = p.competitorPrices
         .filter((c) => c.market === 'vn' && !c.isPrimary && c.priceVnd != null)
         .map((c) => Number(c.priceVnd))
@@ -65,8 +74,9 @@ export async function GET(req: NextRequest) {
         suggested,
         diffFromAnchor: anchor != null && yourPrice != null ? yourPrice - anchor : null,
         japanVnd,
+        japanLowVnd,
         japanJpy: num(kakakuRow?.priceJpy),
-        importMarkupPct: japanVnd != null && yourPrice != null ? importMarkupPct(yourPrice, japanVnd) : null,
+        importMarkupPct: japanLowVnd != null && yourPrice != null ? importMarkupPct(yourPrice, japanLowVnd) : null,
         refMin: refPrices.length ? Math.min(...refPrices) : null,
         refMedian,
         refMax: refPrices.length ? Math.max(...refPrices) : null,
