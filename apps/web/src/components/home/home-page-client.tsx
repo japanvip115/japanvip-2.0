@@ -1083,7 +1083,7 @@ export default function HomePageClient({
                   {/* Featured large card */}
                   {blogPosts[0] && (
                     <a href={`/blog/${blogPosts[0].slug}`} className="group flex flex-col rounded-2xl overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow">
-                      <div className="relative aspect-[4/3] bg-gray-50 overflow-hidden">
+                      <div className="relative aspect-[4/3] bg-white overflow-hidden">
                         {blogPosts[0].thumbnailUrl ? (
                           <Image
                             src={blogPosts[0].thumbnailUrl} alt={blogPosts[0].title}
@@ -1118,11 +1118,11 @@ export default function HomePageClient({
                     <div className="grid grid-cols-2 gap-4">
                       {blogPosts.slice(1, 3).map((post) => (
                         <a key={post.slug} href={`/blog/${post.slug}`} className="group flex flex-col rounded-2xl overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow">
-                          <div className="relative aspect-[4/3] bg-gray-100 overflow-hidden">
+                          <div className="relative aspect-[4/3] bg-white overflow-hidden">
                             {post.thumbnailUrl ? (
                               <Image
                                 src={post.thumbnailUrl} alt={post.title}
-                                fill className="object-cover group-hover:scale-105 transition-transform duration-300"
+                                fill className="object-contain group-hover:scale-105 transition-transform duration-300"
                               />
                             ) : (
                               <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center text-2xl">📰</div>
@@ -1148,11 +1148,11 @@ export default function HomePageClient({
                     {/* Bottom horizontal cards */}
                     {[blogPosts[3], blogPosts[4]].filter((p): p is BlogPostItem => Boolean(p)).map((post) => (
                       <a key={post.slug} href={`/blog/${post.slug}`} className="group flex flex-1 gap-4 rounded-2xl overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow p-3 items-center">
-                        <div className="relative w-28 shrink-0 rounded-xl overflow-hidden bg-gray-100 aspect-square">
+                        <div className="relative w-28 shrink-0 rounded-xl overflow-hidden bg-white aspect-square">
                           {post.thumbnailUrl ? (
                             <Image
                               src={post.thumbnailUrl} alt={post.title}
-                              fill className="object-cover group-hover:scale-105 transition-transform duration-300"
+                              fill className="object-contain group-hover:scale-105 transition-transform duration-300"
                             />
                           ) : (
                             <div className="w-full h-full flex items-center justify-center text-2xl">📰</div>
