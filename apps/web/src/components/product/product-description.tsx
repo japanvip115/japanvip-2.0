@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { List } from 'lucide-react'
 import { sanitizeContentHtml } from '@/lib/sanitize-content'
+import { faqToAccordion } from '@/lib/faq-accordion'
 
 type TocItem = {
   id: string
@@ -44,6 +45,8 @@ function stripMarkdownFence(html: string): string {
 
 function processDescription(html: string): { processed: string; toc: TocItem[] } {
   html = stripMarkdownFence(html)
+  // FAQ cũ (<h3>/<p>) → accordion; nội dung mới đã là <details> nên bỏ qua
+  html = faqToAccordion(html)
   // Thêm trụ sở HPhòng vào sau showroom HN trong cta-box (fix toàn bộ SP hiện có)
   html = html.replace(
     /Showroom\s+(?:Hà\s+Nội\s*:\s*)?21\s+Lê\s+Văn\s+Lương[^<.]*/gi,

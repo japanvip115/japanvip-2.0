@@ -304,7 +304,7 @@ PHẢI hoàn thành trong giới hạn từ, không cắt giữa chừng.${build
 Chế độ: product_html — ${mode} (${range.min.toLocaleString()}–${targetWords.toLocaleString()} từ)
 
 Viết đầy đủ 14 section theo SEO Framework Japan VIP đã được định nghĩa trong system prompt. Tuân thủ đúng:
-- Cấu trúc heading: <h2> cho section, <h3> cho công nghệ và câu hỏi bên trong
+- Cấu trúc heading: <h2> cho section, <h3> cho công nghệ. RIÊNG Section 11 (Câu hỏi thường gặp): mỗi câu hỏi PHẢI là accordion <details class="faq-item"><summary>Câu hỏi?</summary><div class="faq-answer"><p>Trả lời...</p></div></details> — TUYỆT ĐỐI KHÔNG dùng <h3> cho câu hỏi FAQ
 - Quy tắc dữ liệu: KHÔNG tự tạo số liệu dB, kWh, °C, % nếu không có trong dữ liệu đầu vào
 - Bảo hành: dùng "Bảo hành theo chính sách Japan VIP", KHÔNG dùng "bảo hành chính hãng"
 - So sánh model (Section 6): nếu thiếu dữ liệu, BỎ section hoặc chỉ nêu định tính — KHÔNG ghi placeholder lộ máy móc

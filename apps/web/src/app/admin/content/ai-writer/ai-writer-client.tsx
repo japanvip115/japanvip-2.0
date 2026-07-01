@@ -6,6 +6,7 @@ import {
   X, Search, Loader2, AlertCircle, Globe, Database, CheckCircle2,
   PackagePlus, ExternalLink, Wallet, SlidersHorizontal, Square, Lock,
 } from 'lucide-react'
+import { faqToAccordion } from '@/lib/faq-accordion'
 
 const proxyImg = (url: string) =>
   `/api/v1/admin/ai/image-proxy?url=${encodeURIComponent(url)}`
@@ -2140,7 +2141,7 @@ export function AiWriterClient({ products }: { products: ProductSummary[] }) {
                   [&_.compare-grid]:grid [&_.compare-grid]:grid-cols-3 [&_.compare-grid]:gap-3 [&_.compare-grid]:my-5 [&_.compare-grid]:text-center [&_.compare-grid]:text-sm
                   [&_.compare-box]:rounded-xl [&_.compare-box]:border [&_.compare-box]:px-3 [&_.compare-box]:py-4
                   [&_.compare-val]:block [&_.compare-val]:text-2xl [&_.compare-val]:font-extrabold [&_.compare-val]:mb-1"
-                dangerouslySetInnerHTML={{ __html: output }}
+                dangerouslySetInnerHTML={{ __html: faqToAccordion(output) }}
               />
             </div>
           ) : (
