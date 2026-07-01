@@ -1,8 +1,13 @@
 # Kế hoạch — Nối cầu Content Studio → Facebook Marketing (đăng fanpage)
 
-> Trạng thái: **KẾ HOẠCH (chưa code)**. Option 1 chủ dự án đã chọn. Nguyên tắc: **người bấm mới
-> đăng — KHÔNG tự động**; chỉ tạo NHÁP FacebookPost, việc đăng lên fanpage vẫn là hành động
-> riêng của con người trong công cụ Facebook Marketing.
+> Trạng thái: **ĐÃ TRIỂN KHAI (Phương án A, 2026-07-01)**. Nguyên tắc: **người bấm mới đăng —
+> KHÔNG tự động**; chỉ tạo NHÁP FacebookPost, việc đăng lên fanpage vẫn là hành động riêng của
+> con người trong công cụ Facebook Marketing.
+>
+> **Đã làm & test:** (1) endpoint `POST /api/v1/admin/content/assets/[id]/to-facebook` — chỉ nhận
+> asset APPROVED/FACEBOOK, tạo FacebookPost `DRAFT`, ghi ngược `metadata.facebookPostId` (chống
+> trùng → 409). (2) nút UI "Đăng lên fanpage" cho asset APPROVED/FACEBOOK trong Content Studio.
+> Test runtime OK: tạo DRAFT (angle/linkUrl map đúng, publishedAt null), gọi lần 2 → 409. typecheck PASS.
 
 ## 1. Mục tiêu
 Từ một `content_asset` **đã duyệt (APPROVED)** kênh **FACEBOOK**, cho phép **1 nút "Đăng lên
