@@ -168,6 +168,9 @@ const nextConfig: NextConfig = {
   typedRoutes: false,
   serverExternalPackages: ['@prisma/client', '@japanvip/db', 'xlsx', 'playwright-core'],
   images: {
+    // Phục vụ ảnh gốc thẳng từ R2/Cloudflare (đã có CDN, miễn phí) thay vì bộ tối ưu của Vercel.
+    // Tránh lỗi 402 OPTIMIZED_IMAGE_REQUEST_PAYMENT_REQUIRED khi hết hạn mức Image Optimization.
+    unoptimized: true,
     formats: ['image/webp'],
     minimumCacheTTL: 31536000, // cache ảnh đã tối ưu 1 năm (giảm tải lại)
     remotePatterns: [
